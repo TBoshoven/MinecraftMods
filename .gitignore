@@ -1,0 +1,11 @@
+# Gradle stuff
+.gradle
+build
+
+# Minecraft Runtime
+run
+
+# IntelliJ IDEA project files
+*.iml
+*.ipr
+*.iws
