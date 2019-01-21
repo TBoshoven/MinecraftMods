@@ -15,7 +15,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "1.12.2-0.0.1.0"
 group = "com.tomboshoven.minecraft"
-archivesBaseName = "minecraftmod"
+archivesBaseName = "magic-mirror"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
