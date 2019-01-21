@@ -16,7 +16,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -27,13 +26,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @SuppressWarnings("unused")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@Mod(modid = ModMagicMirror.MOD_ID, version = ModMagicMirror.VERSION, name = ModMagicMirror.NAME)
+@Mod(modid = ModMagicMirror.MOD_ID, name = ModMagicMirror.NAME, useMetadata = true)
 @Mod.EventBusSubscriber()
 public class ModMagicMirror {
     @SuppressWarnings("WeakerAccess")
     public static final String MOD_ID = "magic_mirror";
-    @SuppressWarnings("WeakerAccess")
-    public static final String VERSION = "0.1";
     @SuppressWarnings("WeakerAccess")
     public static final String NAME = "Magic Mirror";
 
@@ -57,11 +54,6 @@ public class ModMagicMirror {
 
         GameRegistry.registerTileEntity(TileEntityMagicMirror.class, new ResourceLocation(MOD_ID, "magic_mirror"));
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMagicMirror.class, new TileEntityMagicMirrorRenderer());
-    }
-
-    @Mod.EventHandler
-    public void init(FMLPostInitializationEvent event) {
-        logger.info("{} version {} is initialized", NAME, VERSION);
     }
 
     @SubscribeEvent
