@@ -1,0 +1,87 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "magic_mirror:magic_mirror",
+    "uvlock": false
+  },
+  "variants": {
+    "complete=false,facing=north,part=top": [
+      {
+        "x": 180
+      }
+    ],
+    "complete=true,facing=north,part=top": [
+      {
+        "x": 180
+      }
+    ],
+    "complete=false,facing=east,part=top": [
+      {
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "complete=true,facing=east,part=top": [
+      {
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "complete=false,facing=south,part=top": [
+      {
+        "x": 180,
+        "y": 180
+      }
+    ],
+    "complete=true,facing=south,part=top": [
+      {
+        "x": 180,
+        "y": 180
+      }
+    ],
+    "complete=false,facing=west,part=top": [
+      {
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "complete=true,facing=west,part=top": [
+      {
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "complete=false,facing=north,part=bottom": [
+      {
+        "y": 180
+      }
+    ],
+    "complete=true,facing=north,part=bottom": [
+      {
+        "y": 180
+      }
+    ],
+    "complete=false,facing=east,part=bottom": [
+      {
+        "y": 270
+      }
+    ],
+    "complete=true,facing=east,part=bottom": [
+      {
+        "y": 270
+      }
+    ],
+    "complete=false,facing=south,part=bottom": [{}],
+    "complete=true,facing=south,part=bottom": [{}],
+    "complete=false,facing=west,part=bottom": [
+      {
+        "y": 90
+      }
+    ],
+    "complete=true,facing=west,part=bottom": [
+      {
+        "y": 90
+      }
+    ]
+  }
+}
