@@ -5,6 +5,9 @@ build
 # Minecraft Runtime
 run
 
+# Scratch folder
+scratch
+
 # IntelliJ IDEA project files
 *.iml
 *.ipr
