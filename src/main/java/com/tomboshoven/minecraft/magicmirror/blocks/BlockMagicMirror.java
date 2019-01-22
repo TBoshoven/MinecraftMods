@@ -38,7 +38,7 @@ public class BlockMagicMirror extends BlockHorizontal {
     /**
      * Property describing which part of the mirror is being represented by this block.
      */
-    private static final PropertyEnum<EnumPart> PART = PropertyEnum.create("part", EnumPart.class);
+    private static final PropertyEnum<EnumPartType> PART = PropertyEnum.create("part", EnumPartType.class);
 
     /**
      * The bounding boxes of the various orientations of this block; should be indexed by facing.horizontalIndex()
@@ -61,7 +61,7 @@ public class BlockMagicMirror extends BlockHorizontal {
         setDefaultState(
                 this.blockState.getBaseState()
                         .withProperty(COMPLETE, Boolean.FALSE)
-                        .withProperty(PART, EnumPart.BOTTOM)
+                        .withProperty(PART, EnumPartType.BOTTOM)
         );
 
         setHardness(.8f);
@@ -76,11 +76,11 @@ public class BlockMagicMirror extends BlockHorizontal {
         IBlockState blockBelow = worldIn.getBlockState(pos.down());
         IBlockState blockAbove = worldIn.getBlockState(pos.up());
         if (blockBelow.getBlock() == this && !blockBelow.getValue(COMPLETE) && blockBelow.getValue(FACING) == state.getValue(FACING)) {
-            worldIn.setBlockState(pos.down(), blockBelow.withProperty(COMPLETE, true).withProperty(PART, EnumPart.BOTTOM));
-            worldIn.setBlockState(pos, state.withProperty(COMPLETE, true).withProperty(PART, EnumPart.TOP));
+            worldIn.setBlockState(pos.down(), blockBelow.withProperty(COMPLETE, true).withProperty(PART, EnumPartType.BOTTOM));
+            worldIn.setBlockState(pos, state.withProperty(COMPLETE, true).withProperty(PART, EnumPartType.TOP));
         } else if (blockAbove.getBlock() == this && !blockAbove.getValue(COMPLETE) && blockAbove.getValue(FACING) == state.getValue(FACING)) {
-            worldIn.setBlockState(pos.up(), blockAbove.withProperty(COMPLETE, true).withProperty(PART, EnumPart.TOP));
-            worldIn.setBlockState(pos, state.withProperty(COMPLETE, true).withProperty(PART, EnumPart.BOTTOM));
+            worldIn.setBlockState(pos.up(), blockAbove.withProperty(COMPLETE, true).withProperty(PART, EnumPartType.TOP));
+            worldIn.setBlockState(pos, state.withProperty(COMPLETE, true).withProperty(PART, EnumPartType.BOTTOM));
         }
     }
 
@@ -91,8 +91,8 @@ public class BlockMagicMirror extends BlockHorizontal {
         // Break the mirror if the other part is broken.
         if (state.getValue(COMPLETE)) {
             if (
-                    (state.getValue(PART) == EnumPart.TOP && worldIn.getBlockState(pos.down()).getBlock() != this) ||
-                            (state.getValue(PART) == EnumPart.BOTTOM && worldIn.getBlockState(pos.up()).getBlock() != this)
+                    (state.getValue(PART) == EnumPartType.TOP && worldIn.getBlockState(pos.down()).getBlock() != this) ||
+                            (state.getValue(PART) == EnumPartType.BOTTOM && worldIn.getBlockState(pos.up()).getBlock() != this)
             ) {
                 worldIn.setBlockState(pos, state.withProperty(COMPLETE, false));
             }
@@ -116,7 +116,7 @@ public class BlockMagicMirror extends BlockHorizontal {
         return this.getDefaultState()
                 .withProperty(FACING, EnumFacing.byHorizontalIndex(meta & 3))
                 .withProperty(COMPLETE, (meta & (1 << 2)) != 0)
-                .withProperty(PART, (meta & (1 << 3)) != 0 ? EnumPart.TOP : EnumPart.BOTTOM);
+                .withProperty(PART, (meta & (1 << 3)) != 0 ? EnumPartType.TOP : EnumPartType.BOTTOM);
     }
 
 
@@ -152,13 +152,13 @@ public class BlockMagicMirror extends BlockHorizontal {
 
     @Override
     public boolean hasTileEntity(IBlockState blockState) {
-        return blockState.getValue(COMPLETE);
+        return hasTileEntity();
     }
 
     @Nullable
     @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
-        return new TileEntityMagicMirror(state.getValue(FACING), state.getValue(PART));
+        return new TileEntityMagicMirror();
     }
 
     public IBlockState withRotation(IBlockState state, Rotation rot) {
@@ -176,9 +176,33 @@ public class BlockMagicMirror extends BlockHorizontal {
     }
 
     /**
+     * @param blockState: The blockstate to evaluate.
+     * @return Which direction this mirror block is facing in.
+     */
+    public EnumFacing getFacing(IBlockState blockState) {
+        return blockState.getValue(FACING);
+    }
+
+    /**
+     * @param blockState: The blockstate to evaluate.
+     * @return Which part is represented by this block.
+     */
+    public EnumPartType getPart(IBlockState blockState) {
+        return blockState.getValue(PART);
+    }
+
+    /**
+     * @param blockState: The blockstate to evaluate.
+     * @return Whether the mirror is completely constructed.
+     */
+    public boolean isComplete(IBlockState blockState) {
+        return blockState.getValue(COMPLETE);
+    }
+
+    /**
      * The mirror has two parts: top and bottom.
      */
-    public enum EnumPart implements IStringSerializable {
+    public enum EnumPartType implements IStringSerializable {
         TOP("top", 0),
         BOTTOM("bottom", 1),
         ;
@@ -186,7 +210,7 @@ public class BlockMagicMirror extends BlockHorizontal {
         String name;
         int value;
 
-        EnumPart(String name, int value) {
+        EnumPartType(String name, int value) {
             this.name = name;
             this.value = value;
         }
