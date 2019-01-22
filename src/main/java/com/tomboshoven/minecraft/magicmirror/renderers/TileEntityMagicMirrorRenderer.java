@@ -26,9 +26,7 @@ public class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<Til
     public void render(TileEntityMagicMirror te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         super.render(te, x, y, z, partialTicks, destroyStage, alpha);
 
-        if (te.isComplete()) {
-            renderReflection(te, x, y, z, partialTicks, alpha);
-        }
+        renderReflection(te, x, y, z, partialTicks, alpha);
     }
 
     private void renderReflection(TileEntityMagicMirror te, double x, double y, double z, float partialTicks, float alpha) {
@@ -75,9 +73,9 @@ public class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<Til
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
 
-        BlockMagicMirror.EnumPartType part = te.getPart();
-        double texTop = part == BlockMagicMirror.EnumPartType.TOP ? 0 : .5;
-        double texBottom = part == BlockMagicMirror.EnumPartType.TOP ? .5 : 1;
+        BlockMagicMirror.EnumPart part = te.getPart();
+        double texTop = part == BlockMagicMirror.EnumPart.TOP ? 0 : .5;
+        double texBottom = part == BlockMagicMirror.EnumPart.TOP ? .5 : 1;
 
         // Draw a simple quad
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);

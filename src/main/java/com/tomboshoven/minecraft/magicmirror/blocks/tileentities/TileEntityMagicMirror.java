@@ -3,8 +3,6 @@ package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
 import com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -32,23 +30,17 @@ public class TileEntityMagicMirror extends TileEntity implements ITickable {
     private int reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
 
     // Some values copied from the blockstate
-    private EnumFacing facing = EnumFacing.NORTH;
-    private BlockMagicMirror.EnumPartType part = BlockMagicMirror.EnumPartType.TOP;
-    private boolean complete = false;
+    private EnumFacing facing;
+    private BlockMagicMirror.EnumPart part;
 
-    @Override
-    public void onLoad() {
-        // Synchronize with blockstate; we need to know some of this in order to render the reflection.
-        IBlockState blockState = getWorld().getBlockState(getPos());
-        Block block = blockState.getBlock();
-        if (block instanceof BlockMagicMirror) {
-            BlockMagicMirror blockMagicMirror = (BlockMagicMirror) block;
-            facing = blockMagicMirror.getFacing(blockState);
-            part = blockMagicMirror.getPart(blockState);
-            complete = blockMagicMirror.isComplete(blockState);
-        }
-
-        reflection.setFacing(facing.getHorizontalAngle());
+    /**
+     * @param facing: The direction in which the mirror is facing
+     * @param part:   The part of the mirror that is described.
+     */
+    public TileEntityMagicMirror(EnumFacing facing, BlockMagicMirror.EnumPart part) {
+        super();
+        this.facing = facing;
+        this.part = part;
     }
 
     /**
@@ -128,14 +120,7 @@ public class TileEntityMagicMirror extends TileEntity implements ITickable {
     /**
      * @return Which part of the mirror this tile entity belongs to.
      */
-    public BlockMagicMirror.EnumPartType getPart() {
+    public BlockMagicMirror.EnumPart getPart() {
         return part;
-    }
-
-    /**
-     * @return Whether the mirror is completely constructed.
-     */
-    public boolean isComplete() {
-        return complete;
     }
 }
