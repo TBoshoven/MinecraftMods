@@ -29,7 +29,7 @@ public class Reflection {
 
     private static int activeReflections = 0;
 
-    private static float lastRenderPartialTicks = -1f;
+    private float lastRenderPartialTicks = -1f;
 
     /**
      * Get the total number of active reflections in this instance; used for debugging leaks.
