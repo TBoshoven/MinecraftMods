@@ -152,7 +152,7 @@ public class BlockMagicMirror extends BlockHorizontal {
 
     @Override
     public boolean hasTileEntity(IBlockState blockState) {
-        return hasTileEntity();
+        return blockState.getValue(COMPLETE);
     }
 
     @Nullable

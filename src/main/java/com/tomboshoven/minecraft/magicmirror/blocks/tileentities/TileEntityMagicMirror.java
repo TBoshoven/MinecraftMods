@@ -138,4 +138,14 @@ public class TileEntityMagicMirror extends TileEntity implements ITickable {
     public boolean isComplete() {
         return complete;
     }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        // Stop reflecting, but prepare to restart the next tick, in case we get validated again
+        // We need to make sure that we stop reflecting when the tile entity is destroyed, so we don't leak any frame
+        // buffers and textures
+        reflection.stopReflecting();
+        reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
+    }
 }

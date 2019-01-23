@@ -2,6 +2,7 @@ package com.tomboshoven.minecraft.magicmirror;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirror;
+import com.tomboshoven.minecraft.magicmirror.commands.MagicMirrorCommand;
 import com.tomboshoven.minecraft.magicmirror.renderers.TileEntityMagicMirrorRenderer;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
@@ -10,6 +11,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -54,6 +56,8 @@ public class ModMagicMirror {
 
         GameRegistry.registerTileEntity(TileEntityMagicMirror.class, new ResourceLocation(MOD_ID, "magic_mirror"));
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMagicMirror.class, new TileEntityMagicMirrorRenderer());
+
+        ClientCommandHandler.instance.registerCommand(new MagicMirrorCommand());
     }
 
     @SubscribeEvent

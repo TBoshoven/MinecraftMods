@@ -27,6 +27,15 @@ public class Reflection {
     private Render<Entity> entityRenderer = null;
     private float facing = 0f;
 
+    private static int activeReflections = 0;
+
+    /**
+     * Get the total number of active reflections in this instance; used for debugging leaks.
+     */
+    public static int getActiveReflections() {
+        return activeReflections;
+    }
+
     /**
      * Stop reflecting any entities.
      * This cleans up all used resources.
@@ -40,6 +49,7 @@ public class Reflection {
             }
             entityToReflect = null;
             entityRenderer = null;
+            --activeReflections;
         }
     }
 
@@ -53,6 +63,7 @@ public class Reflection {
             if (this.entityToReflect == null) {
                 frameBuffer = new Framebuffer(64, 128, true);
                 frameBuffer.unbindFramebuffer();
+                ++activeReflections;
             }
             this.entityToReflect = entityToReflect;
             entityRenderer = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(entityToReflect);
