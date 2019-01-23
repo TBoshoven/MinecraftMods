@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.renderers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirror;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorPart;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
@@ -18,12 +18,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<TileEntityMagicMirror> {
+public class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<TileEntityMagicMirrorPart> {
 
     private static final double MAX_DISTANCE = 8;
 
     @Override
-    public void render(TileEntityMagicMirror te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+    public void render(TileEntityMagicMirrorPart te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         super.render(te, x, y, z, partialTicks, destroyStage, alpha);
 
         if (te.isComplete()) {
@@ -31,8 +31,13 @@ public class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<Til
         }
     }
 
-    private void renderReflection(TileEntityMagicMirror te, double x, double y, double z, float partialTicks, float alpha) {
+    private void renderReflection(TileEntityMagicMirrorPart te, double x, double y, double z, float partialTicks, float alpha) {
         Reflection reflection = te.getReflection();
+
+        if (reflection == null) {
+            // Nothing to do if we somehow don't have a reflection
+            return;
+        }
 
         Entity reflected = reflection.getReflected();
 

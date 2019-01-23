@@ -29,6 +29,8 @@ public class Reflection {
 
     private static int activeReflections = 0;
 
+    private static float lastRenderPartialTicks = -1f;
+
     /**
      * Get the total number of active reflections in this instance; used for debugging leaks.
      */
@@ -91,6 +93,13 @@ public class Reflection {
      * @param partialTicks: The partial ticks, used for rendering smooth animations.
      */
     public void render(float partialTicks) {
+        // Don't render twice per partial tick; this is a simple hack for multiblock optimization.
+        // This requires that forceRerender() is called each tick.
+        if (lastRenderPartialTicks >= partialTicks) {
+            return;
+        }
+        lastRenderPartialTicks = partialTicks;
+
         if (entityToReflect != null && frameBuffer != null) {
             frameBuffer.framebufferClear();
             frameBuffer.bindFramebuffer(true);
@@ -114,6 +123,14 @@ public class Reflection {
 
             frameBuffer.unbindFramebuffer();
         }
+    }
+
+    /**
+     * Force the next render operation to re-render the texture.
+     * Because of partialTick optimization, this should be called each tick, before starting to render.
+     */
+    public void forceRerender() {
+        lastRenderPartialTicks = -1f;
     }
 
     /**

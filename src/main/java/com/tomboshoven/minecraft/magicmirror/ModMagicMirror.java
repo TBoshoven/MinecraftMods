@@ -1,7 +1,8 @@
 package com.tomboshoven.minecraft.magicmirror;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirror;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorCore;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorPart;
 import com.tomboshoven.minecraft.magicmirror.commands.MagicMirrorCommand;
 import com.tomboshoven.minecraft.magicmirror.renderers.TileEntityMagicMirrorRenderer;
 import mcp.MethodsReturnNonnullByDefault;
@@ -54,21 +55,25 @@ public class ModMagicMirror {
                 .setRegistryName(MOD_ID, "magic_mirror")
                 .setCreativeTab(CreativeTabs.MISC);
 
-        GameRegistry.registerTileEntity(TileEntityMagicMirror.class, new ResourceLocation(MOD_ID, "magic_mirror"));
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMagicMirror.class, new TileEntityMagicMirrorRenderer());
+        // Register tile entities
+        GameRegistry.registerTileEntity(TileEntityMagicMirrorCore.class, new ResourceLocation(MOD_ID, "magic_mirror_core"));
+        GameRegistry.registerTileEntity(TileEntityMagicMirrorPart.class, new ResourceLocation(MOD_ID, "magic_mirror"));
+
+        // Register custom renderers
+        TileEntityMagicMirrorRenderer renderer = new TileEntityMagicMirrorRenderer();
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMagicMirrorCore.class, renderer);
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMagicMirrorPart.class, renderer);
 
         ClientCommandHandler.instance.registerCommand(new MagicMirrorCommand());
     }
 
     @SubscribeEvent
     public void registerBlocks(RegistryEvent.Register<Block> event) {
-        logger.info("Registering blocks");
         event.getRegistry().registerAll(blockMagicMirror);
     }
 
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
-        logger.info("Registering items");
         event.getRegistry().registerAll(itemBlockMagicMirror);
     }
 

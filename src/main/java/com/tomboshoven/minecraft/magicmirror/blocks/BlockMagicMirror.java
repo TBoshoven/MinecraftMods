@@ -1,6 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirror;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorCore;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorPart;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
@@ -158,7 +159,11 @@ public class BlockMagicMirror extends BlockHorizontal {
     @Nullable
     @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
-        return new TileEntityMagicMirror();
+        // The bottom part is the core of the mirror which has all the logic; the top part just uses the results.
+        if (state.getValue(PART) == EnumPartType.BOTTOM) {
+            return new TileEntityMagicMirrorCore();
+        }
+        return new TileEntityMagicMirrorPart();
     }
 
     public IBlockState withRotation(IBlockState state, Rotation rot) {
