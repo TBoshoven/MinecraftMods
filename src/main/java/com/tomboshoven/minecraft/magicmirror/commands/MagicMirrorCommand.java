@@ -40,7 +40,7 @@ public class MagicMirrorCommand extends CommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         if (args.length == 1) {
-            return getListOfStringsMatchingLastWord(new String[] {"debug"});
+            return getListOfStringsMatchingLastWord(new String[]{"debug"});
         }
         return Collections.<String>emptyList();
     }

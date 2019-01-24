@@ -13,7 +13,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A reflection of an entity.
- *
  * This class is mainly responsible for rendering this reflection and making it available as a texture.
  */
 @ParametersAreNonnullByDefault
@@ -57,6 +56,7 @@ public class Reflection {
 
     /**
      * Reflect an entity.
+     *
      * @param entityToReflect: Which entity to start reflecting.
      */
     public void setEntityToReflect(Entity entityToReflect) {
@@ -90,6 +90,7 @@ public class Reflection {
     /**
      * Render the reflection of the entity to the texture.
      * This operation unbinds the frame buffer, so rebinding may be required afterward.
+     *
      * @param partialTicks: The partial ticks, used for rendering smooth animations.
      */
     public void render(float partialTicks) {

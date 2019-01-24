@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "|e|",
+    "| |",
+    "|#|"
+  ],
+  "key": {
+    "|": {
+      "item": "minecraft:stick"
+    },
+    "#": {
+      "item": "minecraft:glass_pane"
+    },
+    "e": {
+      "item": "minecraft:ender_eye"
+    }
+  },
+  "result": {
+    "item": "magic_mirror:magic_mirror",
+    "count": 2
+  }
+}
