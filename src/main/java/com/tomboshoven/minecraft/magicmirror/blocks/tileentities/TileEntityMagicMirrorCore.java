@@ -18,7 +18,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorPart implements ITickable {
+public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase implements ITickable {
     /**
      * Number of ticks between updating who we're reflecting
      */
@@ -34,6 +34,12 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorPart impleme
         super.onLoad();
 
         reflection.setFacing(getFacing().getHorizontalAngle());
+    }
+
+    @Nullable
+    @Override
+    protected TileEntityMagicMirrorCore getCore() {
+        return this;
     }
 
     /**
