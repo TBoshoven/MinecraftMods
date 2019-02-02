@@ -1,15 +1,15 @@
 package com.tomboshoven.minecraft.magicmirror.reflection;
 
+import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicmirror.ModMagicMirror;
+import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
+import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierArmor;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 /**
  * A reflection of an entity.
@@ -18,23 +18,27 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class Reflection {
-    @Nullable
-    private Entity entityToReflect = null;
-    @Nullable
-    private Framebuffer frameBuffer = null;
-    @Nullable
-    private Render<Entity> entityRenderer = null;
-    private float facing = 0f;
-
-    private static int activeReflections = 0;
-
-    private float lastRenderPartialTicks = -1f;
+    /**
+     * The number of currently active reflections on the client side.
+     */
+    static int activeReflectionsClient = 0;
 
     /**
-     * Get the total number of active reflections in this instance; used for debugging leaks.
+     * An ordered list of all the modifiers.
      */
-    public static int getActiveReflections() {
-        return activeReflections;
+    final List<ReflectionModifier> modifiers = Lists.newArrayList();
+
+    /**
+     * The entity that is currently being reflected, if any.
+     */
+    @Nullable
+    private Entity reflectedEntity;
+
+    /**
+     * Get the total number of active reflections in this instance's client thread; used for debugging leaks.
+     */
+    public static int getActiveReflectionsClient() {
+        return activeReflectionsClient;
     }
 
     /**
@@ -42,88 +46,112 @@ public class Reflection {
      * This cleans up all used resources.
      */
     public void stopReflecting() {
-        if (entityToReflect != null) {
-            ModMagicMirror.logger.debug("No longer reflecting {}", entityToReflect.getName());
-            if (frameBuffer != null) {
-                frameBuffer.deleteFramebuffer();
-                frameBuffer = null;
-            }
-            entityToReflect = null;
-            entityRenderer = null;
-            --activeReflections;
+        if (reflectedEntity != null) {
+            ModMagicMirror.logger.debug("No longer reflecting {}", reflectedEntity.getName());
+            cleanUpFrameBuffer();
+            cleanUpRenderer();
+            reflectedEntity = null;
+            decrementActiveReflections();
         }
     }
 
     /**
-     * Reflect an entity.
-     *
-     * @param entityToReflect: Which entity to start reflecting.
+     * Increment the variable that keeps track of the number of active reflections on the client side.
      */
-    public void setEntityToReflect(Entity entityToReflect) {
-        if (this.entityToReflect != entityToReflect) {
-            ModMagicMirror.logger.debug("Reflecting {}", entityToReflect.getName());
-            if (this.entityToReflect == null) {
-                frameBuffer = new Framebuffer(64, 128, true);
-                frameBuffer.unbindFramebuffer();
-                ++activeReflections;
-            }
-            this.entityToReflect = entityToReflect;
-            entityRenderer = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(entityToReflect);
-        }
+    void incrementActiveClientReflections() {
+        // Nothing to do, since we're server-side.
+    }
+
+    /**
+     * Decrement the variable that keeps track of the number of active reflections on the client side.
+     */
+    void decrementActiveReflections() {
+        // Nothing to do, since we're server-side.
+    }
+
+    /**
+     * Construct a new frame buffer to render to.
+     */
+    void buildFrameBuffer() {
+    }
+
+    /**
+     * Clean up the current frame buffer.
+     */
+    void cleanUpFrameBuffer() {
+    }
+
+    /**
+     * Re-create the reflection renderer.
+     * Used when a new modifier is introduced.
+     */
+    void rebuildRenderer() {
+    }
+
+    /**
+     * Clean up the current reflection renderer.
+     */
+    void cleanUpRenderer() {
     }
 
     /**
      * @return Which entity is currently being reflected, or null if none.
      */
     @Nullable
-    public Entity getReflected() {
-        return entityToReflect;
+    public Entity getReflectedEntity() {
+        return reflectedEntity;
     }
 
     /**
-     * @param facing: The way the reflection is facing; used for determining which side of the subject to show.
+     * Reflect an entity.
+     *
+     * @param reflectedEntity Which entity to start reflecting.
+     */
+    public void setReflectedEntity(Entity reflectedEntity) {
+        if (this.reflectedEntity != reflectedEntity) {
+            ModMagicMirror.logger.debug("Reflecting {}", reflectedEntity.getName());
+            if (this.reflectedEntity == null) {
+                buildFrameBuffer();
+                incrementActiveClientReflections();
+            }
+            this.reflectedEntity = reflectedEntity;
+            rebuildRenderer();
+        }
+    }
+
+    /**
+     * Add a new modifier to the reflection.
+     *
+     * @param modifier The modifier to be added. Must be valid in combination with the existing ones.
+     */
+    public void addModifier(ReflectionModifier modifier) {
+        modifiers.add(modifier);
+        rebuildRenderer();
+    }
+
+    /**
+     * Remove an existing modifier from the reflection.
+     *
+     * @param modifier The modifier to be removed. Must be one of the current modifiers of this reflection.
+     */
+    public void removeModifier(ReflectionModifierArmor modifier) {
+        modifiers.remove(modifier);
+        rebuildRenderer();
+    }
+
+    /**
+     * @param facing The way the reflection is facing; used for determining which side of the subject to show.
      */
     public void setFacing(float facing) {
-        this.facing = facing;
     }
 
     /**
      * Render the reflection of the entity to the texture.
      * This operation unbinds the frame buffer, so rebinding may be required afterward.
      *
-     * @param partialTicks: The partial ticks, used for rendering smooth animations.
+     * @param partialTicks The partial ticks, used for rendering smooth animations.
      */
     public void render(float partialTicks) {
-        // Don't render twice per partial tick; this is a simple hack for multiblock optimization.
-        // This requires that forceRerender() is called each tick.
-        if (lastRenderPartialTicks >= partialTicks) {
-            return;
-        }
-        lastRenderPartialTicks = partialTicks;
-
-        if (entityToReflect != null && frameBuffer != null) {
-            frameBuffer.framebufferClear();
-            frameBuffer.bindFramebuffer(true);
-
-            GlStateManager.pushMatrix();
-
-            GlStateManager.loadIdentity();
-
-            GlStateManager.rotate(180, 1, 0, 0);
-            // Compensate for the rectangular texture
-            GlStateManager.scale(3, 1, 1);
-
-            GlStateManager.translate(0, 0, 2);
-            GlStateManager.rotate(facing, 0, 1, 0);
-
-            if (entityRenderer != null) {
-                entityRenderer.doRender(entityToReflect, 0, -1, 0, 0, partialTicks);
-            }
-
-            GlStateManager.popMatrix();
-
-            frameBuffer.unbindFramebuffer();
-        }
     }
 
     /**
@@ -131,7 +159,6 @@ public class Reflection {
      * Because of partialTick optimization, this should be called each tick, before starting to render.
      */
     public void forceRerender() {
-        lastRenderPartialTicks = -1f;
     }
 
     /**
@@ -140,9 +167,31 @@ public class Reflection {
      * became active.
      */
     public void bind() {
-        if (frameBuffer == null) {
-            throw new RuntimeException("No active reflection");
+    }
+
+    /**
+     * Factory for the reflection, used for creating the proper objects on server-side and client-side.
+     * <p>
+     * This factory is intended for servers. See ReflectionClient.Factory for the client version.
+     */
+    public static class ReflectionFactory {
+        /**
+         * Create a server-side reflection object.
+         *
+         * @return A new Reflection object.
+         */
+        @SuppressWarnings("MethodMayBeStatic")
+        public Reflection createServer() {
+            return new Reflection();
         }
-        frameBuffer.bindFramebufferTexture();
+
+        /**
+         * Create a client-side reflection object.
+         *
+         * @return A new Reflection object.
+         */
+        public Reflection createClient() {
+            return new Reflection();
+        }
     }
 }

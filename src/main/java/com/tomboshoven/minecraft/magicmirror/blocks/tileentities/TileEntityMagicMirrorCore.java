@@ -1,17 +1,29 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
 
+import com.google.common.collect.Lists;
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
+import com.tomboshoven.minecraft.magicmirror.reflection.Reflection.ReflectionFactory;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.common.SidedProxy;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The tile entity for the bottom mirror block; this is the block that has all the reflection logic.
@@ -20,18 +32,35 @@ import java.util.List;
 @MethodsReturnNonnullByDefault
 public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase implements ITickable {
     /**
+     * Factory for reflections; this is a sided proxy so we spawn a renderless reflection on the server side.
+     */
+    @SidedProxy(
+            clientSide = "com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient$ReflectionFactory",
+            serverSide = "com.tomboshoven.minecraft.magicmirror.reflection.Reflection$ReflectionFactory"
+    )
+    private static ReflectionFactory reflectionFactory;
+
+    /**
      * Number of ticks between updating who we're reflecting
      */
     private static final int REFLECTION_UPDATE_INTERVAL = 10;
 
-    private Reflection reflection = new Reflection();
-
+    /**
+     * The reflection object, used for keeping track of who is being reflected and rendering.
+     */
+    private Reflection reflection;
+    /**
+     * The list of all modifiers to the mirror.
+     */
+    private final List<MagicMirrorTileEntityModifier> modifiers = Lists.newArrayList();
     // Start the update counter at its max, so we update on the first tick.
     private int reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
 
     @Override
     public void onLoad() {
         super.onLoad();
+
+        reflection = getWorld().isRemote ? reflectionFactory.createClient() : reflectionFactory.createServer();
 
         reflection.setFacing(getFacing().getHorizontalAngle());
     }
@@ -45,32 +74,32 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     /**
      * Find all players that can be reflected.
      *
-     * @param world:       The world in which the tile entity exists.
-     * @param ownPosition: The position of the tile entity in the world.
+     * @param world       The world in which the tile entity exists.
+     * @param ownPosition The position of the tile entity in the world.
      * @return A list of players that are candidates for reflecting.
      */
-    private List<AbstractClientPlayer> findReflectablePlayers(World world, BlockPos ownPosition) {
+    private List<EntityPlayer> findReflectablePlayers(World world, BlockPos ownPosition) {
         // TODO: Add facing limitations
         AxisAlignedBB scanBB = new AxisAlignedBB(ownPosition.add(-10, -4, -10), ownPosition.add(10, 4, 10));
-        return world.getEntitiesWithinAABB(AbstractClientPlayer.class, scanBB);
+        List<EntityPlayer> playerEntities = world.getEntitiesWithinAABB(EntityPlayer.class, scanBB);
+        // Only return real players
+        return playerEntities.stream().filter(player -> !(player instanceof FakePlayer)).collect(Collectors.toList());
     }
 
     /**
      * Find the best player to reflect.
      *
-     * @param world:       The world in which the tile entity exists.
-     * @param ownPosition: The position of the tile entity in the world.
+     * @param world       The world in which the tile entity exists.
+     * @param ownPosition The position of the tile entity in the world.
      * @return A player to reflect, or null if there are no valid candidates.
      */
     @Nullable
-    private AbstractClientPlayer findPlayerToReflect(World world, BlockPos ownPosition) {
-        List<AbstractClientPlayer> players = findReflectablePlayers(world, ownPosition);
+    private EntityPlayer findPlayerToReflect(World world, BlockPos ownPosition) {
+        List<EntityPlayer> players = findReflectablePlayers(world, ownPosition);
         if (players.isEmpty()) {
             return null;
         }
-        return Collections.min(players, (playerA, playerB) ->
-                (int) (playerA.getPosition().distanceSq(ownPosition) - playerB.getPosition().distanceSq(ownPosition))
-        );
+        return Collections.min(players, Comparator.comparingDouble(player -> player.getPosition().distanceSq(ownPosition)));
     }
 
     /**
@@ -79,12 +108,12 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     private void updateReflection() {
         World world = getWorld();
 
-        AbstractClientPlayer playerToReflect = findPlayerToReflect(world, getPos());
+        EntityPlayer playerToReflect = findPlayerToReflect(world, getPos());
 
         if (playerToReflect == null) {
             reflection.stopReflecting();
         } else {
-            reflection.setEntityToReflect(playerToReflect);
+            reflection.setReflectedEntity(playerToReflect);
         }
     }
 
@@ -96,6 +125,7 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
         }
         // Make sure we re-render each full tick, to make the partialTick optimization work
         reflection.forceRerender();
+        modifiers.forEach(MagicMirrorTileEntityModifier::coolDown);
     }
 
     @Override
@@ -114,9 +144,78 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
         reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
     }
 
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        return writeInternal(super.writeToNBT(compound));
+    }
+
+    /**
+     * Write out the data for the magic mirror core to an NBT compound.
+     *
+     * @param compound The NBT compound to write to.
+     * @return The nbt parameter, for chaining.
+     */
+    private NBTTagCompound writeInternal(NBTTagCompound compound) {
+        NBTTagList modifierList = new NBTTagList();
+        for (MagicMirrorTileEntityModifier modifier : modifiers) {
+            NBTTagCompound modifierCompound = new NBTTagCompound();
+            modifierCompound.setString("name", modifier.getName());
+            modifierList.appendTag(modifier.writeToNBT(modifierCompound));
+        }
+        compound.setTag("modifiers", modifierList);
+        return compound;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+        NBTTagList modifiers = compound.getTagList("modifiers", 10);
+        for (NBTBase modifierCompound : modifiers) {
+            if (modifierCompound instanceof NBTTagCompound) {
+                String name = ((NBTTagCompound) modifierCompound).getString("name");
+                MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(name);
+                if (modifier != null) {
+                    modifier.apply(this, (NBTTagCompound) modifierCompound);
+                }
+            }
+        }
+    }
+
     @Nullable
     @Override
     public Reflection getReflection() {
         return reflection;
+    }
+
+    @Override
+    public List<MagicMirrorTileEntityModifier> getModifiers() {
+        return Collections.unmodifiableList(modifiers);
+    }
+
+    @Override
+    public boolean tryActivate(EntityPlayer playerIn, EnumHand hand) {
+        return modifiers.stream().anyMatch(modifier -> modifier.tryPlayerActivate(this, playerIn, hand));
+    }
+
+    @Override
+    public void addModifier(MagicMirrorTileEntityModifier modifier) {
+        modifiers.add(modifier);
+        modifier.activate(this);
+        markDirty();
+    }
+
+    @Override
+    public void removeModifiers(World worldIn, BlockPos pos) {
+        for (MagicMirrorTileEntityModifier modifier : modifiers) {
+            modifier.deactivate(this);
+            modifier.remove(worldIn, pos);
+        }
+        modifiers.clear();
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        NBTTagCompound compound = super.getUpdateTag();
+        return writeInternal(compound);
     }
 }

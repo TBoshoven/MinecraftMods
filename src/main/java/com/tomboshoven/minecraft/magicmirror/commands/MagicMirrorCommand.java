@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicmirror.commands;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
@@ -15,6 +14,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Commands related to the mod.
+ * Currently, this only features a debug command.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MagicMirrorCommand extends CommandBase {
@@ -30,11 +33,11 @@ public class MagicMirrorCommand extends CommandBase {
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws WrongUsageException {
         if (args.length != 1 || !"debug".equals(args[0])) {
             throw new WrongUsageException("commands.magic_mirror.usage");
         }
-        sender.sendMessage(new TextComponentTranslation("commands.magic_mirror.debug.reflections", Reflection.getActiveReflections()));
+        sender.sendMessage(new TextComponentTranslation("commands.magic_mirror.debug.reflections", Reflection.getActiveReflectionsClient()));
     }
 
     @Override
@@ -42,6 +45,6 @@ public class MagicMirrorCommand extends CommandBase {
         if (args.length == 1) {
             return getListOfStringsMatchingLastWord(new String[]{"debug"});
         }
-        return Collections.<String>emptyList();
+        return Collections.emptyList();
     }
 }

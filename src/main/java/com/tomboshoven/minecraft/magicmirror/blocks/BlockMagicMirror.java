@@ -1,5 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorBase;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorCore;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorPart;
 import mcp.MethodsReturnNonnullByDefault;
@@ -14,12 +16,16 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -28,18 +34,19 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BlockMagicMirror extends BlockHorizontal {
     /**
      * Property describing whether the mirror is completely constructed.
      */
-    private static final PropertyBool COMPLETE = PropertyBool.create("complete");
+    public static final PropertyBool COMPLETE = PropertyBool.create("complete");
 
     /**
      * Property describing which part of the mirror is being represented by this block.
      */
-    private static final PropertyEnum<EnumPartType> PART = PropertyEnum.create("part", EnumPartType.class);
+    public static final PropertyEnum<EnumPartType> PART = PropertyEnum.create("part", EnumPartType.class);
 
     /**
      * The bounding boxes of the various orientations of this block; should be indexed by facing.horizontalIndex()
@@ -55,12 +62,16 @@ public class BlockMagicMirror extends BlockHorizontal {
             new AxisAlignedBB(0, 0, 0, 0.125, 1, 1),
     };
 
-    public BlockMagicMirror() {
+    /**
+     * Create a new Magic Mirror block.
+     * This is typically not necessary. Use Blocks.blockMagicMirror instead.
+     */
+    BlockMagicMirror() {
         super(new Material(MapColor.GRAY));
 
         // By default, we're the bottom part of a broken mirror
         setDefaultState(
-                this.blockState.getBaseState()
+                blockState.getBaseState()
                         .withProperty(COMPLETE, Boolean.FALSE)
                         .withProperty(PART, EnumPartType.BOTTOM)
         );
@@ -92,8 +103,8 @@ public class BlockMagicMirror extends BlockHorizontal {
         // Break the mirror if the other part is broken.
         if (state.getValue(COMPLETE)) {
             if (
-                    (state.getValue(PART) == EnumPartType.TOP && worldIn.getBlockState(pos.down()).getBlock() != this) ||
-                            (state.getValue(PART) == EnumPartType.BOTTOM && worldIn.getBlockState(pos.up()).getBlock() != this)
+                    state.getValue(PART) == EnumPartType.TOP && worldIn.getBlockState(pos.down()).getBlock() != this ||
+                            state.getValue(PART) == EnumPartType.BOTTOM && worldIn.getBlockState(pos.up()).getBlock() != this
             ) {
                 worldIn.setBlockState(pos, state.withProperty(COMPLETE, false));
             }
@@ -114,13 +125,13 @@ public class BlockMagicMirror extends BlockHorizontal {
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return this.getDefaultState()
+        return getDefaultState()
                 .withProperty(FACING, EnumFacing.byHorizontalIndex(meta & 3))
-                .withProperty(COMPLETE, (meta & (1 << 2)) != 0)
-                .withProperty(PART, (meta & (1 << 3)) != 0 ? EnumPartType.TOP : EnumPartType.BOTTOM);
+                .withProperty(COMPLETE, (meta & 1 << 2) != 0)
+                .withProperty(PART, (meta & 1 << 3) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP);
     }
 
-
+    @Override
     public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face) {
         // Only the opposite face is default
         return state.getValue(FACING).getOpposite() == face ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
@@ -152,8 +163,8 @@ public class BlockMagicMirror extends BlockHorizontal {
     }
 
     @Override
-    public boolean hasTileEntity(IBlockState blockState) {
-        return blockState.getValue(COMPLETE);
+    public boolean hasTileEntity(IBlockState state) {
+        return state.getValue(COMPLETE);
     }
 
     @Nullable
@@ -166,42 +177,51 @@ public class BlockMagicMirror extends BlockHorizontal {
         return new TileEntityMagicMirrorPart();
     }
 
+    @Override
     public IBlockState withRotation(IBlockState state, Rotation rot) {
         return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
     }
 
+    @Override
     public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
         // Make sure the mirror is facing the right way when placed
         return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
 
     @Override
-    public String getTranslationKey() {
-        return super.getTranslationKey();
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        // First, see if we can add a modifier
+        ItemStack heldItem = playerIn.getHeldItem(hand);
+        if (!heldItem.isEmpty()) {
+            for (MagicMirrorModifier modifier : MagicMirrorModifier.getModifiers()) {
+                if (modifier.canModify(worldIn, pos, heldItem)) {
+                    modifier.apply(worldIn, pos, heldItem);
+                    worldIn.playSound(pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);
+                    return true;
+                }
+            }
+        }
+
+        // Then, see if any existing modifier can do something.
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if (tileEntity instanceof TileEntityMagicMirrorBase) {
+            if (((TileEntityMagicMirrorBase) tileEntity).tryActivate(playerIn, hand)) {
+                return true;
+            }
+        }
+
+        return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
     }
 
-    /**
-     * @param blockState: The blockstate to evaluate.
-     * @return Which direction this mirror block is facing in.
-     */
-    public EnumFacing getFacing(IBlockState blockState) {
-        return blockState.getValue(FACING);
-    }
-
-    /**
-     * @param blockState: The blockstate to evaluate.
-     * @return Which part is represented by this block.
-     */
-    public EnumPartType getPart(IBlockState blockState) {
-        return blockState.getValue(PART);
-    }
-
-    /**
-     * @param blockState: The blockstate to evaluate.
-     * @return Whether the mirror is completely constructed.
-     */
-    public boolean isComplete(IBlockState blockState) {
-        return blockState.getValue(COMPLETE);
+    @Override
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+        if (state.getValue(COMPLETE)) {
+            TileEntity tileEntity = worldIn.getTileEntity(pos);
+            if (tileEntity instanceof TileEntityMagicMirrorBase) {
+                ((TileEntityMagicMirrorBase) tileEntity).removeModifiers(worldIn, pos);
+            }
+        }
+        super.breakBlock(worldIn, pos, state);
     }
 
     /**
@@ -212,9 +232,13 @@ public class BlockMagicMirror extends BlockHorizontal {
         BOTTOM("bottom", 1),
         ;
 
-        String name;
-        int value;
+        private final String name;
+        private final int value;
 
+        /**
+         * @param name  The name of the part.
+         * @param value The integer value of the part; used for setting block metadata.
+         */
         EnumPartType(String name, int value) {
             this.name = name;
             this.value = value;
@@ -225,8 +249,11 @@ public class BlockMagicMirror extends BlockHorizontal {
             return name;
         }
 
+        /**
+         * @return The integer value of the part; used for setting block metadata.
+         */
         int getValue() {
-            return this.value;
+            return value;
         }
     }
 }
