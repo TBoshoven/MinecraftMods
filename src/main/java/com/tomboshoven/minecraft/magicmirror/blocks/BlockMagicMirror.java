@@ -1,9 +1,12 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
+import com.tomboshoven.minecraft.magicmirror.ModMagicMirror;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorBase;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorCore;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorPart;
+import com.tomboshoven.minecraft.magicmirror.packets.Network;
+import io.netty.buffer.ByteBuf;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
@@ -15,6 +18,8 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -30,6 +35,13 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -63,6 +75,16 @@ public class BlockMagicMirror extends BlockHorizontal {
     };
 
     /**
+     * Handler for messages describing modifiers being attached to mirrors.
+     */
+    @SuppressWarnings("PublicField")
+    @SidedProxy(
+            clientSide = "com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror$MessageHandlerAttachModifierClient",
+            serverSide = "com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror$MessageHandlerAttachModifierServer"
+    )
+    public static IMessageHandler<MessageAttachModifier, IMessage> messageHandlerAttachModifier;
+
+    /**
      * Create a new Magic Mirror block.
      * This is typically not necessary. Use Blocks.blockMagicMirror instead.
      */
@@ -78,6 +100,24 @@ public class BlockMagicMirror extends BlockHorizontal {
 
         setHardness(.8f);
         setSoundType(SoundType.GLASS);
+    }
+
+    /**
+     * Attach a modifier to the mirror at the specified position.
+     *
+     * @param worldIn  The world containing the mirror.
+     * @param pos      The position of the mirror in the world.
+     * @param heldItem The item used to attach the modifier to the mirror.
+     * @param modifier The modifier to attach to the mirror.
+     */
+    private static void attachModifier(World worldIn, BlockPos pos, ItemStack heldItem, MagicMirrorModifier modifier) {
+        modifier.apply(worldIn, pos, heldItem);
+        if (worldIn.isRemote) {
+            worldIn.playSound(pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);
+        } else {
+            IMessage mirrorMessage = new MessageAttachModifier(pos, heldItem, modifier);
+            Network.sendToAllTracking(mirrorMessage, worldIn, pos);
+        }
     }
 
     @Override
@@ -190,27 +230,32 @@ public class BlockMagicMirror extends BlockHorizontal {
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        // First, see if we can add a modifier
-        ItemStack heldItem = playerIn.getHeldItem(hand);
-        if (!heldItem.isEmpty()) {
-            for (MagicMirrorModifier modifier : MagicMirrorModifier.getModifiers()) {
-                if (modifier.canModify(worldIn, pos, heldItem)) {
-                    modifier.apply(worldIn, pos, heldItem);
-                    worldIn.playSound(pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);
-                    return true;
+        // The mirror will only do anything if it's used from the front.
+        if (state.getValue(FACING) == facing) {
+            if (!worldIn.isRemote) {
+                // First, see if we can add a modifier
+                ItemStack heldItem = playerIn.getHeldItem(hand);
+                if (!heldItem.isEmpty()) {
+                    for (MagicMirrorModifier modifier : MagicMirrorModifier.getModifiers()) {
+                        if (modifier.canModify(worldIn, pos, heldItem)) {
+                            attachModifier(worldIn, pos, heldItem, modifier);
+                            return true;
+                        }
+                    }
+                }
+
+                // Then, see if any existing modifier can do something.
+                TileEntity tileEntity = worldIn.getTileEntity(pos);
+                if (tileEntity instanceof TileEntityMagicMirrorBase) {
+                    if (((TileEntityMagicMirrorBase) tileEntity).tryActivate(playerIn, hand)) {
+                        return true;
+                    }
                 }
             }
+            return true;
         }
 
-        // Then, see if any existing modifier can do something.
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicMirrorBase) {
-            if (((TileEntityMagicMirrorBase) tileEntity).tryActivate(playerIn, hand)) {
-                return true;
-            }
-        }
-
-        return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
+        return false;
     }
 
     @Override
@@ -254,6 +299,89 @@ public class BlockMagicMirror extends BlockHorizontal {
          */
         int getValue() {
             return value;
+        }
+    }
+
+    /**
+     * Message describing the action of attaching a new modifier to a mirror.
+     */
+    public static class MessageAttachModifier implements IMessage {
+        /**
+         * The position of the mirror in the world.
+         */
+        BlockPos mirrorPos;
+        /**
+         * The item used to attach the modifier to the mirror.
+         */
+        ItemStack usedItemStack;
+        /**
+         * The name of the modifier this is being attached.
+         */
+        String modifierName;
+
+        @SuppressWarnings("unused")
+        public MessageAttachModifier() {
+        }
+
+        /**
+         * @param mirrorPos     The position of the mirror in the world.
+         * @param usedItemStack The item used to attach the modifier to the mirror.
+         * @param modifier      The modifier this is being attached.
+         */
+        MessageAttachModifier(BlockPos mirrorPos, ItemStack usedItemStack, MagicMirrorModifier modifier) {
+            this.mirrorPos = mirrorPos;
+            this.usedItemStack = usedItemStack;
+            modifierName = modifier.getName();
+        }
+
+        @Override
+        public void fromBytes(ByteBuf buf) {
+            mirrorPos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+            usedItemStack = ByteBufUtils.readItemStack(buf);
+            modifierName = ByteBufUtils.readUTF8String(buf);
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf) {
+            buf.writeInt(mirrorPos.getX());
+            buf.writeInt(mirrorPos.getY());
+            buf.writeInt(mirrorPos.getZ());
+            ByteBufUtils.writeItemStack(buf, usedItemStack);
+            ByteBufUtils.writeUTF8String(buf, modifierName);
+        }
+    }
+
+    /**
+     * Handler for messages describing modifiers being attached to mirrors (client side).
+     */
+    @SideOnly(Side.CLIENT)
+    public static class MessageHandlerAttachModifierClient implements IMessageHandler<MessageAttachModifier, IMessage> {
+        @Nullable
+        @Override
+        public IMessage onMessage(MessageAttachModifier message, MessageContext ctx) {
+            WorldClient world = Minecraft.getMinecraft().world;
+            TileEntity te = world.getTileEntity(message.mirrorPos);
+            if (te instanceof TileEntityMagicMirrorBase) {
+                MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
+                if (modifier == null) {
+                    ModMagicMirror.logger.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
+                    return null;
+                }
+                attachModifier(world, message.mirrorPos, message.usedItemStack, modifier);
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Handler for messages describing modifiers being attached to mirrors (server side).
+     */
+    @SideOnly(Side.SERVER)
+    public static class MessageHandlerAttachModifierServer implements IMessageHandler<MessageAttachModifier, IMessage> {
+        @Nullable
+        @Override
+        public IMessage onMessage(MessageAttachModifier message, MessageContext ctx) {
+            return null;
         }
     }
 }

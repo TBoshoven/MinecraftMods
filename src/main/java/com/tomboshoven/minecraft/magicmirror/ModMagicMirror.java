@@ -6,12 +6,11 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifie
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorCore;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorPart;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
-import com.tomboshoven.minecraft.magicmirror.commands.MagicMirrorCommand;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
+import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -26,7 +25,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Mod(modid = ModMagicMirror.MOD_ID, name = ModMagicMirror.NAME, useMetadata = true)
 public class ModMagicMirror {
     public static final String MOD_ID = "magic_mirror";
-    @SuppressWarnings("WeakerAccess")
     static final String NAME = "Magic Mirror";
 
     @SuppressWarnings("PublicField")
@@ -39,6 +37,9 @@ public class ModMagicMirror {
         MinecraftForge.EVENT_BUS.register(Blocks.class);
         MinecraftForge.EVENT_BUS.register(Items.class);
         MinecraftForge.EVENT_BUS.register(Renderers.class);
+
+        // Register packets
+        Network.registerMessages();
 
         // Register tile entities
         GameRegistry.registerTileEntity(TileEntityMagicMirrorCore.class, new ResourceLocation(MOD_ID, "magic_mirror_core"));

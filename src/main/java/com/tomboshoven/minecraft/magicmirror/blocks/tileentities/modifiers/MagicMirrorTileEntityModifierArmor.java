@@ -3,22 +3,35 @@ package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
 import com.tomboshoven.minecraft.magicmirror.ModMagicMirror;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorBase;
+import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierArmor;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierArmor.Factory;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketSetSlot;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -28,19 +41,37 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
      * The number of ticks this modifier needs to cool down.
      */
     private static final int COOLDOWN_TICKS = 20;
-    private static final int SWAP_PARTICLE_COUNT = 64;
-
     /**
-     * The replacement armor as stored in the mirror.
+     * The number of particles to spawn around a player that swaps armor with the mirror.
      */
-    private final ReplacementArmor replacementArmor = new ReplacementArmor();
-
+    private static final int SWAP_PARTICLE_COUNT = 64;
+    /**
+     * Handler for messages of players swapping armor with the mirror (mirror side).
+     */
+    @SuppressWarnings("PublicField")
+    @SidedProxy(
+            clientSide = "com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor$MessageHandlerSwapMirrorClient",
+            serverSide = "com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor$MessageHandlerSwapMirrorServer"
+    )
+    public static IMessageHandler<MessageSwapMirror, IMessage> messageHandlerSwapMirror;
+    /**
+     * Handler for messages of players swapping armor with the mirror (player side).
+     */
+    @SuppressWarnings("PublicField")
+    @SidedProxy(
+            clientSide = "com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor$MessageHandlerSwapPlayerClient",
+            serverSide = "com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor$MessageHandlerSwapPlayerServer"
+    )
+    public static IMessageHandler<MessageSwapPlayer, IMessage> messageHandlerSwapPlayer;
+    /**
+     * Factory for creating the reflection modifier.
+     */
     @SidedProxy(
             serverSide = "com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierArmor$Factory",
             clientSide = "com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierArmorClient$Factory"
     )
     private static Factory reflectionModifierFactory;
-
+    private final ReplacementArmor replacementArmor = new ReplacementArmor();
     /**
      * The object that modifies the reflection in the mirror to show the replacement armor.
      */
@@ -96,34 +127,54 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
             return false;
         }
 
-        ModMagicMirror.logger.debug("Swapped inventory");
-        replacementArmor.swap(playerIn.inventory.armorInventory);
-        playerIn.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, .8f, .4f);
-        Random random = new Random();
-        for (int i = 0; i < SWAP_PARTICLE_COUNT; ++i) {
-            playerIn.getEntityWorld().spawnParticle(
-                    EnumParticleTypes.PORTAL,
-                    playerIn.posX + random.nextGaussian() / 4,
-                    playerIn.posY + 2 * random.nextDouble(),
-                    playerIn.posZ + random.nextGaussian() / 4,
-                    random.nextGaussian() / 2,
-                    random.nextDouble(),
-                    random.nextGaussian() / 2
-            );
+        // Can only be done on server side.
+        if (!(playerIn instanceof EntityPlayerMP)) {
+            return false;
         }
+
+        // Send two individual messages, to cover the situation where a player is tracked but the mirror isn't and vice
+        // versa.
+        BlockPos pos = tileEntity.getPos();
+        IMessage mirrorMessage = new MessageSwapMirror(tileEntity, playerIn);
+        Network.sendToAllTracking(mirrorMessage, tileEntity.getWorld(), pos);
+        IMessage playerMessage = new MessageSwapPlayer(this, playerIn);
+        Network.sendTo(playerMessage, (EntityPlayerMP) playerIn);
+        Network.sendToAllTracking(playerMessage, playerIn);
+
+        // Swap on the server side.
+        replacementArmor.swap(playerIn);
+        ModMagicMirror.logger.debug("Swapped inventory of mirror");
+
         setCooldown(COOLDOWN_TICKS);
         tileEntity.markDirty();
         return true;
     }
 
     /**
+     * The replacement armor as stored in the mirror.
+     */
+    private ReplacementArmor getReplacementArmor() {
+        return replacementArmor;
+    }
+
+    /**
      * Container class for a swapped-out inventory.
      */
     public static class ReplacementArmor {
-        /**
-         * The armor inventory that is swapped out.
-         */
-        private final NonNullList<ItemStack> replacementInventory = NonNullList.withSize(4, ItemStack.EMPTY);
+        private final NonNullList<ItemStack> replacementInventory;
+
+        ReplacementArmor() {
+            replacementInventory = NonNullList.withSize(4, ItemStack.EMPTY);
+        }
+
+        ReplacementArmor(Iterable<ItemStack> armor) {
+            replacementInventory = NonNullList.create();
+            armor.forEach(replacementInventory::add);
+        }
+
+        void set(int i, ItemStack stack) {
+            replacementInventory.set(i, stack);
+        }
 
         /**
          * Swap the current inventory with another.
@@ -138,6 +189,23 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
                     replacementInventory.set(i, inventory.get(i));
                     inventory.set(i, replacement);
                 }
+            }
+        }
+
+        /**
+         * Swap the current stored armor inventory with a player's.
+         *
+         * @param player The player to swap armor with.
+         */
+        void swap(EntityPlayer player) {
+            for (int i = 0; i < 4; ++i) {
+                if (player instanceof EntityPlayerMP) {
+                    // Usually the case for EntityPlayerMP, so server-side stuff.
+                    ((EntityPlayerMP) player).connection.sendPacket(new SPacketSetSlot(-2, i + 36, replacementInventory.get(i)));
+                }
+                ItemStack replacement = replacementInventory.get(i);
+                replacementInventory.set(i, player.inventory.armorInventory.get(i));
+                player.inventory.armorInventory.set(i, replacement);
             }
         }
 
@@ -176,6 +244,171 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
                     itemStack.setCount(0);
                 }
             }
+        }
+
+        void swap(MagicMirrorTileEntityModifierArmor modifier) {
+            ModMagicMirror.logger.info("Swapping with mirror");
+            swap(modifier.getReplacementArmor().replacementInventory);
+        }
+    }
+
+    /**
+     * Base class for messages describing players swapping armor with the mirror.
+     */
+    static class MessageSwap implements IMessage {
+        final ReplacementArmor armor;
+
+        MessageSwap() {
+            armor = new ReplacementArmor();
+        }
+
+        MessageSwap(Iterable<ItemStack> armor) {
+            this.armor = new ReplacementArmor(armor);
+        }
+
+        @Override
+        public void fromBytes(ByteBuf buf) {
+            for (int i = 0; i < 4; ++i) {
+                armor.set(i, ByteBufUtils.readItemStack(buf));
+            }
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf) {
+            for (ItemStack stack : armor.replacementInventory) {
+                ByteBufUtils.writeItemStack(buf, stack);
+            }
+        }
+    }
+
+    /**
+     * Message describing players swapping armor with the mirror (mirror side).
+     */
+    public static class MessageSwapMirror extends MessageSwap {
+        BlockPos mirrorPos;
+
+        @SuppressWarnings("unused")
+        public MessageSwapMirror() {
+        }
+
+        MessageSwapMirror(TileEntityMagicMirrorBase magicMirrorBase, EntityPlayer player) {
+            super(player.getArmorInventoryList());
+            mirrorPos = magicMirrorBase.getPos();
+        }
+
+        @Override
+        public void fromBytes(ByteBuf buf) {
+            super.fromBytes(buf);
+            mirrorPos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf) {
+            super.toBytes(buf);
+            buf.writeInt(mirrorPos.getX());
+            buf.writeInt(mirrorPos.getY());
+            buf.writeInt(mirrorPos.getZ());
+        }
+    }
+
+    /**
+     * Message describing players swapping armor with the mirror (player side).
+     */
+    public static class MessageSwapPlayer extends MessageSwap {
+        int entityId;
+
+        @SuppressWarnings("unused")
+        public MessageSwapPlayer() {
+        }
+
+        MessageSwapPlayer(MagicMirrorTileEntityModifierArmor armorModifier, EntityPlayer player) {
+            super(armorModifier.getReplacementArmor().replacementInventory);
+            entityId = player.getEntityId();
+        }
+
+        @Override
+        public void fromBytes(ByteBuf buf) {
+            super.fromBytes(buf);
+            entityId = buf.readInt();
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf) {
+            super.toBytes(buf);
+            buf.writeInt(entityId);
+        }
+    }
+
+    /**
+     * Handler for messages describing players swapping armor with the mirror (mirror side, client).
+     */
+    @SideOnly(Side.CLIENT)
+    public static class MessageHandlerSwapMirrorClient implements IMessageHandler<MessageSwapMirror, IMessage> {
+        @Nullable
+        @Override
+        public IMessage onMessage(MessageSwapMirror message, MessageContext ctx) {
+            TileEntity te = Minecraft.getMinecraft().world.getTileEntity(message.mirrorPos);
+            if (te instanceof TileEntityMagicMirrorBase) {
+                ((TileEntityMagicMirrorBase) te).getModifiers().stream()
+                        .filter(modifier -> modifier instanceof MagicMirrorTileEntityModifierArmor).findFirst()
+                        .ifPresent(modifier -> message.armor.swap((MagicMirrorTileEntityModifierArmor) modifier));
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Handler for messages describing players swapping armor with the mirror (mirror side, server).
+     */
+    @SideOnly(Side.SERVER)
+    public static class MessageHandlerSwapMirrorServer implements IMessageHandler<MessageSwapMirror, IMessage> {
+        @Nullable
+        @Override
+        public IMessage onMessage(MessageSwapMirror message, MessageContext ctx) {
+            return null;
+        }
+    }
+
+    /**
+     * Handler for messages describing players swapping armor with the mirror (player side, client).
+     */
+    @SideOnly(Side.CLIENT)
+    public static class MessageHandlerSwapPlayerClient implements IMessageHandler<MessageSwapPlayer, IMessage> {
+        @Nullable
+        @Override
+        public IMessage onMessage(MessageSwapPlayer message, MessageContext ctx) {
+            Entity entity = Minecraft.getMinecraft().world.getEntityByID(message.entityId);
+
+            if (entity instanceof EntityPlayer) {
+                message.armor.swap((EntityPlayer) entity);
+
+                entity.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, .8f, .4f);
+                Random random = new Random();
+                for (int i = 0; i < SWAP_PARTICLE_COUNT; ++i) {
+                    entity.getEntityWorld().spawnParticle(
+                            EnumParticleTypes.PORTAL,
+                            entity.posX + random.nextGaussian() / 4,
+                            entity.posY + 2 * random.nextDouble(),
+                            entity.posZ + random.nextGaussian() / 4,
+                            random.nextGaussian() / 2,
+                            random.nextDouble(),
+                            random.nextGaussian() / 2
+                    );
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Handler for messages describing players swapping armor with the mirror (player side, server).
+     */
+    @SideOnly(Side.SERVER)
+    public static class MessageHandlerSwapPlayerServer implements IMessageHandler<MessageSwapPlayer, IMessage> {
+        @Nullable
+        @Override
+        public IMessage onMessage(MessageSwapPlayer message, MessageContext ctx) {
+            return null;
         }
     }
 }

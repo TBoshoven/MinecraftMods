@@ -33,6 +33,11 @@ public class MagicMirrorCommand extends CommandBase {
     }
 
     @Override
+    public int getRequiredPermissionLevel() {
+        return 0;
+    }
+
+    @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws WrongUsageException {
         if (args.length != 1 || !"debug".equals(args[0])) {
             throw new WrongUsageException("commands.magic_mirror.usage");

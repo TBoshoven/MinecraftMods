@@ -10,6 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -17,6 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,6 +36,10 @@ import java.util.stream.Collectors;
 @MethodsReturnNonnullByDefault
 public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase implements ITickable {
     /**
+     * Number of ticks between updating who we're reflecting
+     */
+    private static final int REFLECTION_UPDATE_INTERVAL = 10;
+    /**
      * Factory for reflections; this is a sided proxy so we spawn a renderless reflection on the server side.
      */
     @SidedProxy(
@@ -39,37 +47,16 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
             serverSide = "com.tomboshoven.minecraft.magicmirror.reflection.Reflection$ReflectionFactory"
     )
     private static ReflectionFactory reflectionFactory;
-
-    /**
-     * Number of ticks between updating who we're reflecting
-     */
-    private static final int REFLECTION_UPDATE_INTERVAL = 10;
-
-    /**
-     * The reflection object, used for keeping track of who is being reflected and rendering.
-     */
-    private Reflection reflection;
     /**
      * The list of all modifiers to the mirror.
      */
     private final List<MagicMirrorTileEntityModifier> modifiers = Lists.newArrayList();
+    /**
+     * The reflection object, used for keeping track of who is being reflected and rendering.
+     */
+    private Reflection reflection;
     // Start the update counter at its max, so we update on the first tick.
     private int reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-
-        reflection = getWorld().isRemote ? reflectionFactory.createClient() : reflectionFactory.createServer();
-
-        reflection.setFacing(getFacing().getHorizontalAngle());
-    }
-
-    @Nullable
-    @Override
-    protected TileEntityMagicMirrorCore getCore() {
-        return this;
-    }
 
     /**
      * Find all players that can be reflected.
@@ -78,7 +65,7 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
      * @param ownPosition The position of the tile entity in the world.
      * @return A list of players that are candidates for reflecting.
      */
-    private List<EntityPlayer> findReflectablePlayers(World world, BlockPos ownPosition) {
+    private static List<EntityPlayer> findReflectablePlayers(World world, BlockPos ownPosition) {
         // TODO: Add facing limitations
         AxisAlignedBB scanBB = new AxisAlignedBB(ownPosition.add(-10, -4, -10), ownPosition.add(10, 4, 10));
         List<EntityPlayer> playerEntities = world.getEntitiesWithinAABB(EntityPlayer.class, scanBB);
@@ -94,12 +81,27 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
      * @return A player to reflect, or null if there are no valid candidates.
      */
     @Nullable
-    private EntityPlayer findPlayerToReflect(World world, BlockPos ownPosition) {
+    private static EntityPlayer findPlayerToReflect(World world, BlockPos ownPosition) {
         List<EntityPlayer> players = findReflectablePlayers(world, ownPosition);
         if (players.isEmpty()) {
             return null;
         }
         return Collections.min(players, Comparator.comparingDouble(player -> player.getPosition().distanceSq(ownPosition)));
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+
+        reflection = getWorld().isRemote ? reflectionFactory.createClient() : reflectionFactory.createServer();
+
+        reflection.setFacing(getFacing().getHorizontalAngle());
+    }
+
+    @Nullable
+    @Override
+    protected TileEntityMagicMirrorCore getCore() {
+        return this;
     }
 
     /**
@@ -215,7 +217,18 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
 
     @Override
     public NBTTagCompound getUpdateTag() {
-        NBTTagCompound compound = super.getUpdateTag();
-        return writeInternal(compound);
+        return writeInternal(super.getUpdateTag());
+    }
+
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        return new SPacketUpdateTileEntity(getPos(), 1, getUpdateTag());
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        readFromNBT(pkt.getNbtCompound());
     }
 }
