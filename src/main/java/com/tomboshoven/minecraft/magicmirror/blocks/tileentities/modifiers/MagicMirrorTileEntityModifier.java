@@ -2,16 +2,21 @@ package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorBase;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A magic mirror modifier as applied to a tile entity.
  * Instead of using this directly, apply it using a MagicMirrorModifier instance.
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class MagicMirrorTileEntityModifier {
     /**
      * The modifier that applied this object to the tile entity.
@@ -53,7 +58,7 @@ public abstract class MagicMirrorTileEntityModifier {
      *
      * @param nbt The NBT tag compound to read from.
      */
-    void readFromNBT(NBTTagCompound nbt) {
+    public void readFromNBT(NBTTagCompound nbt) {
     }
 
     /**

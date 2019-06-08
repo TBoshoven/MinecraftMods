@@ -3,6 +3,7 @@ package com.tomboshoven.minecraft.magicmirror;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifierArmor;
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifierCreature;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorCore;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorPart;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
@@ -50,5 +51,6 @@ public class ModMagicMirror {
 
         // Register modifiers
         MagicMirrorModifier.register(new MagicMirrorModifierArmor());
+        MagicMirrorModifier.register(new MagicMirrorModifierCreature());
     }
 }

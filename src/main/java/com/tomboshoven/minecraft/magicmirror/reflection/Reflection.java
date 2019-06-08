@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicmirror.reflection;
 import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicmirror.ModMagicMirror;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
-import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierArmor;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.Entity;
 
@@ -134,7 +133,7 @@ public class Reflection {
      *
      * @param modifier The modifier to be removed. Must be one of the current modifiers of this reflection.
      */
-    public void removeModifier(ReflectionModifierArmor modifier) {
+    public void removeModifier(ReflectionModifier modifier) {
         modifiers.remove(modifier);
         rebuildRenderer();
     }
