@@ -12,9 +12,12 @@ jobs:
           name: Updating build number
           # Library version is MC version followed by tag name (or "MASTER" or "DEV") and build number.
           command: |
-            [[ ${CIRCLE_BRANCH} = 'master' ]] && LIB_VERSION=MASTER || LIB_VERSION=DEV
-            LIB_VERSION="${CIRCLE_TAG:-$LIB_VERSION}.$CIRCLE_BUILD_NUM"
-            sed -Ei 's/^(version = "([0-9]+\.){2}[0-9]+-)DEV\.0+"$/\1'$LIB_VERSION'"/' build.gradle
+            if [[ $CIRCLE_TAG ]]; then
+              sed -Ei 's/^(version = ")([0-9]+\.){2}[0-9]+-DEV\.0+"$/\1'$CIRCLE_TAG'.'$CIRCLE_BUILD_NUM'"/' build.gradle
+            else
+              [[ ${CIRCLE_BRANCH} = 'master' ]] && LIB_VERSION=MASTER || LIB_VERSION=DEV
+              sed -Ei 's/^(version = "([0-9]+\.){2}[0-9]+-)DEV\.0+"$/\1'$LIB_VERSION'.'$CIRCLE_BUILD_NUM'"/' build.gradle
+            fi
       - restore_cache:
           key: circleci-minecraft-mods-gradle-{{ checksum "build.gradle.original" }}
       - run:
