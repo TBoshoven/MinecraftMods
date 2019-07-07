@@ -62,6 +62,8 @@ workflows:
             tags:
               only: /.*/
       - release-github:
+          requires:
+            - build
           filters:
             branches:
               ignore: /.*/
