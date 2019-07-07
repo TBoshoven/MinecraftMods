@@ -6,3 +6,5 @@ jobs:
     steps:
       - checkout
       - run: ./gradlew build
+    store_artifacts:
+      path: build/libs
