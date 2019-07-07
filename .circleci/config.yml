@@ -5,9 +5,17 @@ jobs:
       - image: circleci/openjdk:8-jdk
     steps:
       - checkout
+      - run:
+          name: Copy build.gradle for caching
+          command: cp build.gradle build.gradle.original
+      - run:
+          name: Updating build number
+          command: sed -Ei 's/^(version = "([0-9]+\.){2}[0-9]+-([0-9]+\.){3})[0-9]+"$/\1'$CIRCLE_BUILD_NUM'"/' build.gradle
       - restore_cache:
-          key: circleci-minecraft-mods-gradle-{{ checksum "build.gradle" }}
-      - run: ./gradlew build
+          key: circleci-minecraft-mods-gradle-{{ checksum "build.gradle.original" }}
+      - run:
+          name: Build
+          command: ./gradlew build
       - store_artifacts:
           path: build/libs
           destination: libs
@@ -15,4 +23,4 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: circleci-minecraft-mods-gradle-{{ checksum "build.gradle" }}
+          key: circleci-minecraft-mods-gradle-{{ checksum "build.gradle.original" }}
