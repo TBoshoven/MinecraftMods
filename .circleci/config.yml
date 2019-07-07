@@ -5,7 +5,14 @@ jobs:
       - image: circleci/openjdk:8-jdk
     steps:
       - checkout
+      - restore_cache:
+          key: circleci-minecraft-mods-gradle-{{ checksum "build.gradle" }}
       - run: ./gradlew build
       - store_artifacts:
           path: build/libs
           destination: libs
+      # Save the Gradle cache so we don't have to redownload things all the time
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: circleci-minecraft-mods-gradle-{{ checksum "build.gradle" }}
