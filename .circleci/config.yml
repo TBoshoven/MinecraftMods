@@ -32,9 +32,9 @@ jobs:
             - ~/.gradle
           key: circleci-minecraft-mods-gradle-{{ checksum "build.gradle.original" }}
       - persist_to_workspace:
-          root: build
+          root: .
           paths:
-            - libs/*.jar
+            - '*/build/libs/*.jar'
   release-github:
     docker:
       - image: gableroux/github-release:v1.0.2
@@ -45,7 +45,7 @@ jobs:
           name: Upload assets to GitHub
           command: |
             for f in /tmp/workspace/libs/*.jar; do
-              github-release upload -u "$CIRCLE_PROJECT_USERNAME" -r "$CIRCLE_PROJECT_REPONAME" -t "$CIRCLE_TAG" -n "$(basename "$f")" -f "$f"
+              github-release upload -u "$CIRCLE_PROJECT_USERNAME" -r "$CIRCLE_PROJECT_REPONAME" -t "$CIRCLE_TAG" -n "$(basename "$f")" -f "$f" 2>/dev/null
             done
 
 workflows:
