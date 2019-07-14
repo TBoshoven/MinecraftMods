@@ -11,40 +11,40 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.12.2-DEV.0"
-group = "com.tomboshoven.minecraft"
-archivesBaseName = "magic-mirror"
+subprojects {
+    apply plugin: 'net.minecraftforge.gradle.forge'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+    version = "1.12.2-DEV.0"
+    group = "com.tomboshoven.minecraft.magicmirror"
+    archivesBaseName = project.projectDir.name
 
-minecraft {
-    version = "1.12.2-14.23.5.2807"
-    runDir = "run"
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
-    mappings = "stable_39"
-}
+    minecraft {
+        version = "1.12.2-14.23.5.2807"
+        runDir = new File(rootProject.projectDir.path, 'run')
 
-dependencies {
-}
-
-processResources {
-    // This will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mc_version", project.minecraft.version
-
-    // Replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-
-        // Replace version and mcversion
-        expand 'version': project.version, 'mc_version': project.minecraft.version
+        mappings = "stable_39"
     }
 
-    // Copy everything else that's not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+    processResources {
+        // This will ensure that this task is redone when the versions change.
+        inputs.property "version", project.version
+        inputs.property "mc_version", project.minecraft.version
+
+        // Replace stuff in mcmod.info, nothing else
+        from(sourceSets.main.resources.srcDirs) {
+            include 'mcmod.info'
+
+            // Replace version and mcversion
+            expand 'version': project.version, 'mc_version': project.minecraft.version
+        }
+
+        // Copy everything else that's not the mcmod.info
+        from(sourceSets.main.resources.srcDirs) {
+            exclude 'mcmod.info'
+        }
     }
 }

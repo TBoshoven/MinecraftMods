@@ -1,0 +1,2 @@
+rootProject.name = 'MinecraftMods'
+include "MagicMirror"
