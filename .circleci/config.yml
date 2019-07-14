@@ -23,6 +23,11 @@ jobs:
       - run:
           name: Building
           command: ./gradlew build
+      - run:
+          name: Collecting artifacts
+          command: |
+            mkdir -p build/libs
+            cp */build/libs/*.jar build/libs
       - store_artifacts:
           path: build/libs
           destination: libs
@@ -32,9 +37,9 @@ jobs:
             - ~/.gradle
           key: circleci-minecraft-mods-gradle-{{ checksum "build.gradle.original" }}
       - persist_to_workspace:
-          root: .
+          root: build
           paths:
-            - '*/build/libs/*.jar'
+            - libs/*.jar
   release-github:
     docker:
       - image: gableroux/github-release:v1.0.2
