@@ -14,10 +14,10 @@ jobs:
           command: |
             if [[ $CIRCLE_TAG ]]; then
               TAG_VERSION="$(echo "$CIRCLE_TAG" | sed -E 's/[^0-9]+//')"
-              sed -Ei 's/^(version = ")([0-9]+\.){2}[0-9]+-DEV\.0+"$/\1'$TAG_VERSION'.'$CIRCLE_BUILD_NUM'"/' build.gradle
+              sed -Ei 's/^(\s*version = ")([0-9]+\.){2}[0-9]+-DEV\.0+"$/\1'$TAG_VERSION'.'$CIRCLE_BUILD_NUM'"/' build.gradle
             else
               [[ $CIRCLE_BRANCH = 'master' ]] && LIB_VERSION=MASTER || LIB_VERSION=DEV
-              sed -Ei 's/^(version = "([0-9]+\.){2}[0-9]+-)DEV\.0+"$/\1'$LIB_VERSION'.'$CIRCLE_BUILD_NUM'"/' build.gradle
+              sed -Ei 's/^(\s*version = "([0-9]+\.){2}[0-9]+-)DEV\.0+"$/\1'$LIB_VERSION'.'$CIRCLE_BUILD_NUM'"/' build.gradle
             fi
       - restore_cache:
           key: circleci-minecraft-mods-gradle-{{ checksum "build.gradle.original" }}
