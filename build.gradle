@@ -29,7 +29,7 @@ subprojects {
     targetCompatibility = 1.8
 
     minecraft {
-        version = "1.12.2-14.23.5.2807"
+        version = "1.12.2-14.23.5.2838"
         runDir = new File(rootProject.projectDir.path, 'run')
 
         mappings = "stable_39"
