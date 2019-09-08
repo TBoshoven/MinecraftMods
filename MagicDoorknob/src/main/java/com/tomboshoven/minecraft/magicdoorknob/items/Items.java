@@ -1,7 +1,7 @@
-package com.tomboshoven.minecraft.magicmirror.items;
+package com.tomboshoven.minecraft.magicdoorknob.items;
 
-import com.tomboshoven.minecraft.magicmirror.ModMagicMirror;
-import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
+import com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -20,10 +20,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public final class Items {
     /**
-     * The item version of the magic mirror block.
+     * The item version of the magic doorway block.
      */
-    public static final Item itemBlockMagicMirror = new ItemBlock(Blocks.blockMagicMirror)
-            .setRegistryName(ModMagicMirror.MOD_ID, "magic_mirror")
+    public static final Item itemMagicDoorknob = new ItemMagicDoorknob()
+            .setRegistryName(ModMagicDoorknob.MOD_ID, "magic_doorknob")
             .setCreativeTab(CreativeTabs.MISC);
 
     private Items() {
@@ -32,6 +32,6 @@ public final class Items {
     @SuppressWarnings("BoundedWildcard")
     @SubscribeEvent
     public static void registerItems(Register<Item> event) {
-        event.getRegistry().registerAll(itemBlockMagicMirror);
+        event.getRegistry().registerAll(itemMagicDoorknob);
     }
 }

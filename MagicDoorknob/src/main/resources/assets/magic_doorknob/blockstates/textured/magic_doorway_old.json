@@ -1,0 +1,19 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "magic_doorknob:magic_doorway_open_two_way_bottom",
+    "uvlock": false
+  },
+  "variants": {
+    "open_east_west=false,open_north_south=false,part=bottom": [{}],
+    "open_east_west=false,open_north_south=false,part=top": [{}],
+    "open_east_west=false,open_north_south=true,part=bottom": [{}],
+    "open_east_west=false,open_north_south=true,part=top": [{}],
+    "open_east_west=true,open_north_south=false,part=bottom": [{}],
+    "open_east_west=true,open_north_south=false,part=top": [{}],
+    "open_east_west=true,open_north_south=true,part=bottom": [{
+      "model": "magic_doorknob:magic_doorway_open_two_way_bottom"
+    }],
+    "open_east_west=true,open_north_south=true,part=top": [{}]
+  }
+}

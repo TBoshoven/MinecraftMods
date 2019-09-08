@@ -1,0 +1,63 @@
+{
+  "textures": {
+    "particle": "minecraft:blocks/obsidian",
+    "main": "property:texture_main",
+    "highlight": "property:texture_highlight"
+  },
+  "display": {
+    "ground": {
+      "rotation": [0, 0, 0],
+      "translation": [0, 3, 2],
+      "scale": [0.25, 0.25, 0.25]
+    },
+    "fixed": {
+      "rotation": [0, 180, 0],
+      "translation": [0, 0, -12],
+      "scale": [1, 1, 1]
+    }
+  },
+  "elements": [
+    {
+      "name": "Top",
+      "from": [0, 15, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "down": {
+          "texture": "#main",
+          "uv": [0, 0, 16, 16],
+          "tintindex": 1
+        },
+        "east": {
+          "texture": "#main",
+          "uv": [0, 0, 16, 1],
+          "tintindex": 1,
+          "cullface": "east"
+        },
+        "north": {
+          "texture": "#main",
+          "uv": [0, 0, 16, 1],
+          "tintindex": 1,
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#main",
+          "uv": [0, 0, 16, 1],
+          "tintindex": 1,
+          "cullface": "south"
+        },
+        "up": {
+          "texture": "#main",
+          "uv": [0, 0, 16, 16],
+          "tintindex": 1,
+          "cullface": "up"
+        },
+        "west": {
+          "texture": "#main",
+          "uv": [0, 0, 16, 1],
+          "tintindex": 1,
+          "cullface": "west"
+        }
+      }
+    }
+  ]
+}

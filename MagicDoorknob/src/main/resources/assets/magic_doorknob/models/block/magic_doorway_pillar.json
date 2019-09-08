@@ -1,0 +1,170 @@
+{
+  "textures": {
+    "particle": "minecraft:blocks/obsidian",
+    "main": "property:texture_main",
+    "highlight": "property:texture_highlight"
+  },
+  "display": {
+    "ground": {
+      "rotation": [0, 0, 0],
+      "translation": [0, 3, 2],
+      "scale": [0.25, 0.25, 0.25]
+    },
+    "fixed": {
+      "rotation": [0, 180, 0],
+      "translation": [0, 0, -12],
+      "scale": [1, 1, 1]
+    }
+  },
+  "elements": [
+    {
+      "name": "Top",
+      "from": [0, 10, 0],
+      "to": [1, 16, 1],
+      "faces": {
+        "east": {
+          "texture": "#main",
+          "uv": [15, 0, 16, 6],
+          "tintindex": 1
+        },
+        "north": {
+          "texture": "#main",
+          "uv": [15, 0, 16, 6],
+          "tintindex": 1,
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#main",
+          "uv": [0, 0, 1, 6],
+          "tintindex": 1
+        },
+        "up": {
+          "texture": "#main",
+          "uv": [0, 0, 1, 1],
+          "tintindex": 1,
+          "cullface": "up"
+        },
+        "west": {
+          "texture": "#main",
+          "uv": [0, 0, 1, 6],
+          "tintindex": 1,
+          "cullface": "west"
+        }
+      }
+    },
+    {
+      "name": "TopHighlight",
+      "from": [0, 9, 0],
+      "to": [1, 10, 1],
+      "faces": {
+        "east": {
+          "texture": "#highlight",
+          "uv": [15, 6, 16, 7]
+        },
+        "north": {
+          "texture": "#highlight",
+          "uv": [15, 6, 16, 7],
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#highlight",
+          "uv": [0, 6, 1, 7]
+        },
+        "west": {
+          "texture": "#highlight",
+          "uv": [0, 6, 1, 7],
+          "cullface": "west"
+        }
+      }
+    },
+    {
+      "name": "Middle",
+      "from": [0, 8, 0],
+      "to": [1, 9, 1],
+      "faces": {
+        "east": {
+          "texture": "#main",
+          "uv": [15, 7, 16, 8],
+          "tintindex": 1
+        },
+        "north": {
+          "texture": "#main",
+          "uv": [15, 7, 16, 8],
+          "tintindex": 1,
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#main",
+          "uv": [0, 7, 1, 8],
+          "tintindex": 1
+        },
+        "west": {
+          "texture": "#main",
+          "uv": [0, 7, 1, 8],
+          "tintindex": 1,
+          "cullface": "west"
+        }
+      }
+    },
+    {
+      "name": "BottomHighlight",
+      "from": [0, 7, 0],
+      "to": [1, 8, 1],
+      "faces": {
+        "east": {
+          "texture": "#highlight",
+          "uv": [15, 8, 16, 9]
+        },
+        "north": {
+          "texture": "#highlight",
+          "uv": [15, 8, 16, 9],
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#highlight",
+          "uv": [0, 8, 1, 9]
+        },
+        "west": {
+          "texture": "#highlight",
+          "uv": [0, 8, 1, 9],
+          "cullface": "west"
+        }
+      }
+    },
+    {
+      "name": "Bottom",
+      "from": [0, 0, 0],
+      "to": [1, 7, 1],
+      "faces": {
+        "down": {
+          "texture": "#main",
+          "uv": [15, 15, 16, 16],
+          "tintindex": 1,
+          "cullface": "down"
+        },
+        "east": {
+          "texture": "#main",
+          "uv": [15, 9, 16, 16],
+          "tintindex": 1
+        },
+        "north": {
+          "texture": "#main",
+          "uv": [15, 9, 16, 16],
+          "tintindex": 1,
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#main",
+          "uv": [0, 9, 1, 16],
+          "tintindex": 1
+        },
+        "west": {
+          "texture": "#main",
+          "uv": [0, 9, 1, 16],
+          "tintindex": 1,
+          "cullface": "west"
+        }
+      }
+    }
+  ]
+}
