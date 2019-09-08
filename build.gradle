@@ -1,3 +1,9 @@
+/*
+Build script for all mods.
+In principle, building a mod is as simple as adding an empty build.gradle to the mod's directory and updating
+settings.gradle.
+*/
+
 // For those who want the bleeding edge
 buildscript {
     repositories {
