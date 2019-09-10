@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
@@ -86,8 +87,7 @@ public class BlockMagicDoorway extends Block {
             addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_PILLAR_NW);
             addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_PILLAR_SE);
             addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_PILLAR_SW);
-        }
-        else {
+        } else {
             if (!openNorthSouth) {
                 addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_WALL_N);
                 addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_WALL_S);
@@ -119,6 +119,10 @@ public class BlockMagicDoorway extends Block {
         return super.getBlockFaceShape(worldIn, state, pos, face);
     }
 
+    public BlockRenderLayer getRenderLayer() {
+        return BlockRenderLayer.CUTOUT_MIPPED;
+    }
+
     @Override
     public boolean isOpaqueCube(IBlockState state) {
         return false;
@@ -143,7 +147,7 @@ public class BlockMagicDoorway extends Block {
             TextureAtlasSprite texture = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(replacedBlock);
             return ((IExtendedBlockState) state)
                     .withProperty(TEXTURE_MAIN, new ResourceLocation(texture.getIconName()))
-                    .withProperty(TEXTURE_HIGHLIGHT, new ResourceLocation("minecraft:blocks/glass_red"));
+                    .withProperty(TEXTURE_HIGHLIGHT, new ResourceLocation("minecraft:blocks/redstone_block"));
         }
         return state;
     }
