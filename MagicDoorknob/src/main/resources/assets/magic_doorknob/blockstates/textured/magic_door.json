@@ -1,0 +1,23 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "uvlock": false,
+    "model": "builtin/generated",
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "part=top": [{
+      "submodel": {
+        "door": {
+          "model": "magic_doorknob:magic_door"
+        },
+        "knob": {
+          "model": "magic_doorknob:magic_door_knob"
+        }
+      }
+    }],
+    "part=bottom": [{
+      "model": "magic_doorknob:magic_door_top"
+    }]
+  }
+}
