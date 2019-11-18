@@ -6,7 +6,7 @@
     "transform": "forge:default-item"
   },
   "variants": {
-    "part=top": [{
+    "facing=north,part=top": [{
       "submodel": {
         "door": {
           "model": "magic_doorknob:magic_door"
@@ -16,8 +16,47 @@
         }
       }
     }],
-    "part=bottom": [{
-      "model": "magic_doorknob:magic_door_top"
+    "facing=north,part=bottom": [{
+      "model": "magic_doorknob:magic_door"
+    }],
+    "facing=east,part=top": [{
+      "submodel": {
+        "door": {
+          "model": "magic_doorknob:magic_door"
+        },
+        "knob": {
+          "model": "magic_doorknob:magic_door_knob"
+        }
+      }
+    }],
+    "facing=east,part=bottom": [{
+      "model": "magic_doorknob:magic_door"
+    }],
+    "facing=south,part=top": [{
+      "submodel": {
+        "door": {
+          "model": "magic_doorknob:magic_door"
+        },
+        "knob": {
+          "model": "magic_doorknob:magic_door_knob"
+        }
+      }
+    }],
+    "facing=south,part=bottom": [{
+      "model": "magic_doorknob:magic_door"
+    }],
+    "facing=west,part=top": [{
+      "submodel": {
+        "door": {
+          "model": "magic_doorknob:magic_door"
+        },
+        "knob": {
+          "model": "magic_doorknob:magic_door_knob"
+        }
+      }
+    }],
+    "facing=west,part=bottom": [{
+      "model": "magic_doorknob:magic_door"
     }]
   }
 }

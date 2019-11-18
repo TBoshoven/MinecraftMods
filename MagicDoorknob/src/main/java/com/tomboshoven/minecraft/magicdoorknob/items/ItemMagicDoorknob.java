@@ -1,5 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.items;
 
+import com.tomboshoven.minecraft.magicdoorknob.blocks.BlockMagicDoor;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.BlockMagicDoorway;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
@@ -36,13 +38,16 @@ public class ItemMagicDoorknob extends Item {
 
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if (facing.getHorizontalIndex() < 0) {
+            return EnumActionResult.FAIL;
+        }
         if(!worldIn.isRemote) {
             IBlockState blockState = worldIn.getBlockState(pos);
             if (blockState.getBlock().hasTileEntity(blockState)) {
                 return EnumActionResult.FAIL;
             }
             BlockPos doorPos = pos.offset(facing, 1);
-            worldIn.setBlockState(doorPos, Blocks.blockMagicDoor.getDefaultState());
+            worldIn.setBlockState(doorPos, Blocks.blockMagicDoor.getDefaultState().withProperty(BlockMagicDoor.FACING, facing));
             TileEntity tileEntity = worldIn.getTileEntity(doorPos);
             if (tileEntity instanceof TileEntityMagicDoor) {
                 ((TileEntityMagicDoor) tileEntity).setTextureBlock(blockState);

@@ -4,6 +4,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMag
 import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.MaterialTransparent;
 import net.minecraft.block.properties.PropertyEnum;
@@ -13,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -25,11 +27,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+public
 class BlockMagicDoor extends Block {
     /**
      * Property describing which part of the door is being represented by this block.
      */
     private static final PropertyEnum<EnumPartType> PART = PropertyEnum.create("part", EnumPartType.class);
+    public static final PropertyEnum<EnumFacing> FACING = BlockHorizontal.FACING;
 
     private static final PropertyTexture TEXTURE_MAIN = new PropertyTexture("texture_main");
     private static final PropertyTexture TEXTURE_HIGHLIGHT = new PropertyTexture("texture_highlight");
@@ -56,6 +60,7 @@ class BlockMagicDoor extends Block {
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer.Builder(this)
                 .add(PART)
+                .add(FACING)
                 .add(TEXTURE_MAIN)
                 .add(TEXTURE_HIGHLIGHT)
                 .build();
@@ -82,12 +87,14 @@ class BlockMagicDoor extends Block {
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        return state.getValue(PART).getValue();
+        return state.getValue(PART).getValue() | (state.getValue(FACING).getHorizontalIndex() << 1);
     }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(PART, (meta & 1) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP);
+        return getDefaultState()
+                .withProperty(PART, (meta & 1) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP)
+                .withProperty(FACING, EnumFacing.byHorizontalIndex(meta >> 1));
     }
 
     @Override
