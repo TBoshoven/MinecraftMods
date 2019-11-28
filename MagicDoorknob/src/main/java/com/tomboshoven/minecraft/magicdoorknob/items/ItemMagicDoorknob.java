@@ -56,8 +56,18 @@ public class ItemMagicDoorknob extends Item {
         EnumFacing doorwayFacing = facing.getOpposite();
         boolean isNorthSouth = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH;
         for (int i = 0; i < 10; ++i) {
-            placeDoorwayElement(world, pos.offset(doorwayFacing, i), isNorthSouth, BlockMagicDoorway.EnumPartType.TOP);
-            placeDoorwayElement(world, pos.offset(doorwayFacing, i).down(), isNorthSouth, BlockMagicDoorway.EnumPartType.BOTTOM);
+            BlockPos elementPos = pos.offset(doorwayFacing, i);
+            if (
+                    (isReplaceable(world, elementPos) && !isEmpty(world, elementPos)) ||
+                    (isReplaceable(world, elementPos.down()) && !isEmpty(world, elementPos.down()))
+            ) {
+                placeDoorwayElement(world, elementPos, isNorthSouth, BlockMagicDoorway.EnumPartType.TOP);
+                placeDoorwayElement(world, elementPos.down(), isNorthSouth, BlockMagicDoorway.EnumPartType.BOTTOM);
+            }
+            else {
+                // Stop iterating if we've hit two empty blocks
+                break;
+            }
         }
     }
 
