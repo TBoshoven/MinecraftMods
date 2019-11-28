@@ -1,6 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
+import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
@@ -14,6 +15,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
+import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -49,6 +52,44 @@ class BlockMagicDoor extends Block {
 
     BlockMagicDoor() {
         super(new MaterialTransparent(MapColor.AIR));
+    }
+
+    @Override
+    public boolean isReplaceable(IBlockAccess worldIn, BlockPos pos) {
+        return false;
+    }
+
+    @Override
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
+        super.neighborChanged(state, worldIn, pos, blockIn, fromPos);
+
+        EnumPartType part = state.getValue(PART);
+
+        // Break the door if the other part is broken.
+        if (
+                part == EnumPartType.TOP && worldIn.getBlockState(pos.down()).getBlock() != this ||
+                        part == EnumPartType.BOTTOM && worldIn.getBlockState(pos.up()).getBlock() != this
+        ) {
+            InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.itemMagicDoorknob, 1, 0));
+            worldIn.destroyBlock(pos, false);
+        }
+    }
+
+    @Override
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+        breakDoorway(worldIn, pos, state.getValue(FACING));
+        super.breakBlock(worldIn, pos, state);
+    }
+
+    private void breakDoorway(World world, BlockPos pos, EnumFacing facing) {
+        EnumFacing doorwayFacing = facing.getOpposite();
+        for (int i = 0; i < 10; ++i) {
+            BlockPos blockPos = pos.offset(doorwayFacing, i);
+            IBlockState state = world.getBlockState(blockPos);
+            if (state.getBlock() == Blocks.blockMagicDoorway) {
+                world.destroyBlock(blockPos, false);
+            }
+        }
     }
 
     @Override

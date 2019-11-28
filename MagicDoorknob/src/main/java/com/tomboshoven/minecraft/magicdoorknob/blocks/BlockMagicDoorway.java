@@ -78,6 +78,20 @@ public class BlockMagicDoorway extends Block {
     }
 
     @Override
+    public boolean isReplaceable(IBlockAccess worldIn, BlockPos pos) {
+        return false;
+    }
+
+    @Override
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if (tileEntity instanceof TileEntityMagicDoorway) {
+            worldIn.setBlockState(pos, ((TileEntityMagicDoorway) tileEntity).getReplacedBlock());
+        }
+        super.breakBlock(worldIn, pos, state);
+    }
+
+    @Override
     public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
         boolean openNorthSouth = state.getValue(OPEN_NORTH_SOUTH);
         boolean openEastWest = state.getValue(OPEN_EAST_WEST);
