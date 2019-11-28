@@ -35,16 +35,16 @@ public class BlockMagicDoorway extends Block {
     /**
      * Property describing which part of the doorway is being represented by this block.
      */
-    private static final PropertyEnum<EnumPartType> PART = PropertyEnum.create("part", EnumPartType.class);
+    public static final PropertyEnum<EnumPartType> PART = PropertyEnum.create("part", EnumPartType.class);
 
     /**
      * Property describing whether the block forms a doorway between north and south.
      */
-    private static final PropertyBool OPEN_NORTH_SOUTH = PropertyBool.create("open_north_south");
+    public static final PropertyBool OPEN_NORTH_SOUTH = PropertyBool.create("open_north_south");
     /**
      * Property describing whether the block forms a doorway between east and west.
      */
-    private static final PropertyBool OPEN_EAST_WEST = PropertyBool.create("open_east_west");
+    public static final PropertyBool OPEN_EAST_WEST = PropertyBool.create("open_east_west");
 
     private static final PropertyTexture TEXTURE_MAIN = new PropertyTexture("texture_main");
     private static final PropertyTexture TEXTURE_HIGHLIGHT = new PropertyTexture("texture_highlight");

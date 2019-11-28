@@ -32,7 +32,7 @@ class BlockMagicDoor extends Block {
     /**
      * Property describing which part of the door is being represented by this block.
      */
-    private static final PropertyEnum<EnumPartType> PART = PropertyEnum.create("part", EnumPartType.class);
+    public static final PropertyEnum<EnumPartType> PART = PropertyEnum.create("part", EnumPartType.class);
     public static final PropertyEnum<EnumFacing> FACING = BlockHorizontal.FACING;
 
     private static final PropertyTexture TEXTURE_MAIN = new PropertyTexture("texture_main");
