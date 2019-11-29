@@ -6,6 +6,7 @@ import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.MaterialTransparent;
 import net.minecraft.block.properties.PropertyEnum;
@@ -15,6 +16,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -22,10 +24,13 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import javax.annotation.Nullable;
@@ -52,6 +57,34 @@ class BlockMagicDoor extends Block {
 
     BlockMagicDoor() {
         super(new MaterialTransparent(MapColor.AIR));
+    }
+
+    @Override
+    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof TileEntityMagicDoor) {
+            return ((TileEntityMagicDoor) tileEntity).getTextureBlock().getLightValue(world, pos);
+        }
+        return super.getLightValue(state, world, pos);
+    }
+
+    @Override
+    public SoundType getSoundType(IBlockState state, World world, BlockPos pos, @Nullable Entity entity) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof TileEntityMagicDoor) {
+            IBlockState textureBlock = ((TileEntityMagicDoor) tileEntity).getTextureBlock();
+            SoundType actualSoundType = textureBlock.getBlock().getSoundType(textureBlock, world, pos, entity);
+            return new SoundType(
+                    actualSoundType.volume,
+                    actualSoundType.pitch,
+                    SoundEvents.BLOCK_WOODEN_DOOR_CLOSE,
+                    actualSoundType.getStepSound(),
+                    SoundEvents.BLOCK_WOODEN_DOOR_OPEN,
+                    actualSoundType.getHitSound(),
+                    actualSoundType.getFallSound()
+            );
+        }
+        return super.getSoundType(state, world, pos, entity);
     }
 
     @Override

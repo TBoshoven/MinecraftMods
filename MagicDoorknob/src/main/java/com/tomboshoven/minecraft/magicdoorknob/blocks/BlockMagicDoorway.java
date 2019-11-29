@@ -1,9 +1,11 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
+import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
 import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.MaterialTransparent;
 import net.minecraft.block.properties.PropertyBool;
@@ -14,6 +16,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -75,6 +78,25 @@ public class BlockMagicDoorway extends Block {
                         .withProperty(OPEN_EAST_WEST, Boolean.TRUE)
                         .withProperty(OPEN_NORTH_SOUTH, Boolean.FALSE)
         );
+    }
+
+    @Override
+    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof TileEntityMagicDoorway) {
+            return ((TileEntityMagicDoorway) tileEntity).getReplacedBlock().getLightValue(world, pos);
+        }
+        return super.getLightValue(state, world, pos);
+    }
+
+    @Override
+    public SoundType getSoundType(IBlockState state, World world, BlockPos pos, @Nullable Entity entity) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof TileEntityMagicDoorway) {
+            IBlockState replacedBlock = ((TileEntityMagicDoorway) tileEntity).getReplacedBlock();
+            return replacedBlock.getBlock().getSoundType(replacedBlock, world, pos, entity);
+        }
+        return super.getSoundType(state, world, pos, entity);
     }
 
     @Override

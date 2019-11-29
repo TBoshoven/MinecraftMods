@@ -13,6 +13,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 
 public class ItemMagicDoorknob extends Item {
@@ -34,26 +35,29 @@ public class ItemMagicDoorknob extends Item {
     }
 
     void placeDoor(World world, BlockPos pos, EnumFacing facing) {
+        BlockPos doorPos = pos.offset(facing);
         world.setBlockState(
-                pos.offset(facing),
+                doorPos,
                 Blocks.blockMagicDoor.getDefaultState()
                         .withProperty(BlockMagicDoor.FACING, facing)
                         .withProperty(BlockMagicDoor.PART, BlockMagicDoor.EnumPartType.TOP)
         );
-        TileEntity topTileEntity = world.getTileEntity(pos.offset(facing));
+        TileEntity topTileEntity = world.getTileEntity(doorPos);
         if (topTileEntity instanceof TileEntityMagicDoor) {
             ((TileEntityMagicDoor) topTileEntity).setTextureBlock(world.getBlockState(pos));
         }
         world.setBlockState(
-                pos.offset(facing).down(),
+                doorPos.down(),
                 Blocks.blockMagicDoor.getDefaultState()
                         .withProperty(BlockMagicDoor.FACING, facing)
                         .withProperty(BlockMagicDoor.PART, BlockMagicDoor.EnumPartType.BOTTOM)
         );
-        TileEntity bottomTileEntity = world.getTileEntity(pos.offset(facing).down());
+        TileEntity bottomTileEntity = world.getTileEntity(doorPos.down());
         if (bottomTileEntity instanceof TileEntityMagicDoor) {
             ((TileEntityMagicDoor) bottomTileEntity).setTextureBlock(world.getBlockState(pos.down()));
         }
+        world.checkLightFor(EnumSkyBlock.BLOCK, doorPos);
+        world.checkLightFor(EnumSkyBlock.BLOCK, doorPos.down());
     }
 
     void placeDoorway(World world, BlockPos pos, EnumFacing facing) {
@@ -84,6 +88,8 @@ public class ItemMagicDoorknob extends Item {
             if (tileEntity instanceof TileEntityMagicDoorway) {
                 ((TileEntityMagicDoorway) tileEntity).setReplacedBlock(state);
             }
+
+            world.checkLightFor(EnumSkyBlock.BLOCK, pos);
         }
     }
 
