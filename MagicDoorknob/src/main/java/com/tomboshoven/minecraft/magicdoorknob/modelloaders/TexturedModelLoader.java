@@ -2,6 +2,7 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -28,15 +29,18 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class TexturedModelLoader implements ICustomModelLoader {
     private static final String PROPERTY_NAMESPACE = "property";
     Map<ResourceLocation, ResourceLocation> baseModels = Maps.newHashMap();
+    Set<ResourceLocation> extraTextures = Sets.newHashSet();
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
@@ -52,6 +56,10 @@ public class TexturedModelLoader implements ICustomModelLoader {
         baseModels.put(modelLocation, baseModelLocation);
     }
 
+    public void registerTexture(ResourceLocation textureLocation) {
+        extraTextures.add(textureLocation);
+    }
+
     @Override
     public IModel loadModel(ResourceLocation modelLocation) throws Exception {
         ModelResourceLocation modelResourceLocation = (ModelResourceLocation) modelLocation;
@@ -60,14 +68,16 @@ public class TexturedModelLoader implements ICustomModelLoader {
         ResourceLocation augmentedBaseModelLocation = new ModelResourceLocation(baseModelLocation, modelResourceLocation.getVariant());
         // FIXME: This causes the untextured model to be cached and dummy textures to be requested
         IModel baseModel = ModelLoaderRegistry.getModel(augmentedBaseModelLocation);
-        return new TexturedModel(baseModel);
+        return new TexturedModel(baseModel, Collections.unmodifiableSet(extraTextures));
     }
 
     private class TexturedModel implements IModel {
+        private final Set<ResourceLocation> extraTextures;
         IModel wrappedModel;
 
-        TexturedModel(IModel wrappedModel) {
+        TexturedModel(IModel wrappedModel, Set<ResourceLocation> extraTextures) {
             this.wrappedModel = wrappedModel;
+            this.extraTextures = extraTextures;
         }
 
         @Override
@@ -77,10 +87,10 @@ public class TexturedModelLoader implements ICustomModelLoader {
 
         @Override
         public Collection<ResourceLocation> getTextures() {
-            List<ResourceLocation> textures = wrappedModel.getTextures().stream()
+            Set<ResourceLocation> textures = wrappedModel.getTextures().stream()
                     .filter(location -> !PROPERTY_NAMESPACE.equals(location.getNamespace()))
-                    .collect(Collectors.toList());
-            return textures;
+                    .collect(Collectors.toSet());
+            return Sets.union(textures, extraTextures);
         }
 
         @Override
@@ -106,27 +116,27 @@ public class TexturedModelLoader implements ICustomModelLoader {
 
         @Override
         public IModel process(ImmutableMap<String, String> customData) {
-            return new TexturedModel(wrappedModel.process(customData));
+            return new TexturedModel(wrappedModel.process(customData), extraTextures);
         }
 
         @Override
         public IModel smoothLighting(boolean value) {
-            return new TexturedModel(wrappedModel.smoothLighting(value));
+            return new TexturedModel(wrappedModel.smoothLighting(value), extraTextures);
         }
 
         @Override
         public IModel gui3d(boolean value) {
-            return new TexturedModel(wrappedModel.gui3d(value));
+            return new TexturedModel(wrappedModel.gui3d(value), extraTextures);
         }
 
         @Override
         public IModel uvlock(boolean value) {
-            return new TexturedModel(wrappedModel.uvlock(value));
+            return new TexturedModel(wrappedModel.uvlock(value), extraTextures);
         }
 
         @Override
         public IModel retexture(ImmutableMap<String, String> textures) {
-            return new TexturedModel(wrappedModel.retexture(textures));
+            return new TexturedModel(wrappedModel.retexture(textures), extraTextures);
         }
 
         @Override

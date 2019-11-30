@@ -24,13 +24,10 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import javax.annotation.Nullable;
@@ -156,6 +153,9 @@ class BlockMagicDoor extends Block {
             IBlockState textureBlock = ((TileEntityMagicDoor) tileEntity).getTextureBlock();
             // Try to get the block's texture
             TextureAtlasSprite texture = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(textureBlock);
+            if ("missingno".equals(texture.getIconName())) {
+                texture = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelManager().getTextureMap().getAtlasSprite("magic_doorknob:blocks/empty");
+            }
             return ((IExtendedBlockState) state)
                     .withProperty(TEXTURE_MAIN, new ResourceLocation(texture.getIconName()))
                     .withProperty(TEXTURE_HIGHLIGHT, new ResourceLocation("minecraft:blocks/redstone_block"));

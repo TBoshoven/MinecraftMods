@@ -47,6 +47,7 @@ public class ModMagicDoorknob {
         TexturedModelLoader modelLoader = new TexturedModelLoader();
         modelLoader.register(new ResourceLocation("magic_doorknob", "magic_doorway"), new ResourceLocation("magic_doorknob", "textured/magic_doorway"));
         modelLoader.register(new ResourceLocation("magic_doorknob", "magic_door"), new ResourceLocation("magic_doorknob", "textured/magic_door"));
+        modelLoader.registerTexture(new ResourceLocation("magic_doorknob", "blocks/empty"));
         ModelLoaderRegistry.registerLoader(modelLoader);
     }
 

@@ -181,6 +181,9 @@ public class BlockMagicDoorway extends Block {
             IBlockState replacedBlock = ((TileEntityMagicDoorway) tileEntity).getReplacedBlock();
             // Try to get the block's texture
             TextureAtlasSprite texture = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(replacedBlock);
+            if ("missingno".equals(texture.getIconName())) {
+                texture = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelManager().getTextureMap().getAtlasSprite("magic_doorknob:blocks/empty");
+            }
             return ((IExtendedBlockState) state)
                     .withProperty(TEXTURE_MAIN, new ResourceLocation(texture.getIconName()))
                     .withProperty(TEXTURE_HIGHLIGHT, new ResourceLocation("minecraft:blocks/redstone_block"));
