@@ -261,7 +261,9 @@ class BlockMagicDoor extends Block {
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        breakBlock(worldIn, pos, state);
+        if (!worldIn.isRemote) {
+            breakBlock(worldIn, pos, state);
+        }
         return true;
     }
 

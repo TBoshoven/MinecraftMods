@@ -19,10 +19,10 @@ import net.minecraft.world.World;
 public class ItemMagicDoorknob extends Item {
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (facing == EnumFacing.UP || facing == EnumFacing.DOWN) {
-            return EnumActionResult.FAIL;
-        }
         if (!worldIn.isRemote) {
+            if (facing == EnumFacing.UP || facing == EnumFacing.DOWN) {
+                return EnumActionResult.FAIL;
+            }
             if (canPlaceDoor(worldIn, pos, facing)) {
                 placeDoor(worldIn, pos, facing);
                 placeDoorway(worldIn, pos, facing);
