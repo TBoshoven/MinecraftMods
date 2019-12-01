@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
+import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
 import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
 import mcp.MethodsReturnNonnullByDefault;
@@ -16,7 +16,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -24,12 +23,16 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
@@ -99,7 +102,8 @@ public class BlockMagicDoorway extends Block {
     }
 
     @Override
-    public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {TileEntity tileEntity = worldIn.getTileEntity(pos);
+    public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorway) {
             return ((TileEntityMagicDoorway) tileEntity).getReplacedBlock().getBlockHardness(worldIn, pos);
         }
@@ -143,27 +147,30 @@ public class BlockMagicDoorway extends Block {
 
     @Override
     public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
+        for (AxisAlignedBB bb : getCollisionBoxes(state)) {
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, bb);
+        }
+    }
+
+    private List<AxisAlignedBB> getCollisionBoxes(IBlockState state) {
         boolean openNorthSouth = state.getValue(OPEN_NORTH_SOUTH);
         boolean openEastWest = state.getValue(OPEN_EAST_WEST);
         boolean isTop = state.getValue(PART) == EnumPartType.TOP;
+        ArrayList<AxisAlignedBB> result = Lists.newArrayList();
         if (openNorthSouth && openEastWest) {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_PILLAR_NE);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_PILLAR_NW);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_PILLAR_SE);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_PILLAR_SW);
+            Collections.addAll(result, BOUNDING_BOX_PILLAR_NE, BOUNDING_BOX_PILLAR_NW, BOUNDING_BOX_PILLAR_SE, BOUNDING_BOX_PILLAR_SW);
         } else {
             if (!openNorthSouth) {
-                addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_WALL_N);
-                addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_WALL_S);
+                Collections.addAll(result, BOUNDING_BOX_WALL_N, BOUNDING_BOX_WALL_S);
             }
             if (!openEastWest) {
-                addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_WALL_E);
-                addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_WALL_W);
+                Collections.addAll(result, BOUNDING_BOX_WALL_E, BOUNDING_BOX_WALL_W);
             }
         }
         if (isTop) {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_TOP);
+            result.add(BOUNDING_BOX_TOP);
         }
+        return result;
     }
 
     @Override
@@ -259,6 +266,31 @@ public class BlockMagicDoorway extends Block {
     @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
         return new TileEntityMagicDoorway();
+    }
+
+    @Nullable
+    public RayTraceResult collisionRayTrace(IBlockState blockState, World worldIn, BlockPos pos, Vec3d start, Vec3d end) {
+        List<RayTraceResult> rayTraceResults = Lists.<RayTraceResult>newArrayList();
+
+        for (AxisAlignedBB bb : getCollisionBoxes(blockState)) {
+            rayTraceResults.add(this.rayTrace(pos, start, end, bb));
+        }
+
+        RayTraceResult result = null;
+        double longest = 0.0D;
+
+        for (RayTraceResult rayTraceResult : rayTraceResults) {
+            if (rayTraceResult != null) {
+                double distance = rayTraceResult.hitVec.squareDistanceTo(end);
+
+                if (distance > longest) {
+                    result = rayTraceResult;
+                    longest = distance;
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
