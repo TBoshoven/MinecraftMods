@@ -66,6 +66,25 @@ class BlockMagicDoor extends Block {
     }
 
     @Override
+    public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if (tileEntity instanceof TileEntityMagicDoor) {
+            return ((TileEntityMagicDoor) tileEntity).getTextureBlock().getBlockHardness(worldIn, pos);
+        }
+        return super.getBlockHardness(blockState, worldIn, pos);
+    }
+
+    @Override
+    public int getHarvestLevel(IBlockState state) {
+        return -1;
+    }
+
+    @Nullable
+    @Override
+    public String getHarvestTool(IBlockState state) {
+        return null;
+    }
+
+    @Override
     public SoundType getSoundType(IBlockState state, World world, BlockPos pos, @Nullable Entity entity) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoor) {
