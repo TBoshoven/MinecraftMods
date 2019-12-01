@@ -90,6 +90,15 @@ public class BlockMagicDoorway extends Block {
     }
 
     @Override
+    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof TileEntityMagicDoorway) {
+            return ((TileEntityMagicDoorway) tileEntity).getReplacedBlock().getLightOpacity(world, pos);
+        }
+        return super.getLightOpacity(state, world, pos);
+    }
+
+    @Override
     public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorway) {
             return ((TileEntityMagicDoorway) tileEntity).getReplacedBlock().getBlockHardness(worldIn, pos);

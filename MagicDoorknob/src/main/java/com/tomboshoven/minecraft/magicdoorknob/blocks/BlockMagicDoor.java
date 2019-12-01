@@ -1,6 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
 import mcp.MethodsReturnNonnullByDefault;
@@ -63,6 +64,15 @@ class BlockMagicDoor extends Block {
             return ((TileEntityMagicDoor) tileEntity).getTextureBlock().getLightValue(world, pos);
         }
         return super.getLightValue(state, world, pos);
+    }
+
+    @Override
+    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof TileEntityMagicDoor) {
+            return ((TileEntityMagicDoor) tileEntity).getTextureBlock().getLightOpacity(world, pos);
+        }
+        return super.getLightOpacity(state, world, pos);
     }
 
     @Override
@@ -163,6 +173,19 @@ class BlockMagicDoor extends Block {
     @Override
     public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face) {
         return BlockFaceShape.UNDEFINED;
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        switch(state.getValue(FACING)) {
+            case NORTH:
+                return BOUNDING_BOX_WALL_W;
+            case EAST:
+                return BOUNDING_BOX_WALL_N;
+            case SOUTH:
+                return BOUNDING_BOX_WALL_E;
+        }
+        return BOUNDING_BOX_WALL_S;
     }
 
     @Override
