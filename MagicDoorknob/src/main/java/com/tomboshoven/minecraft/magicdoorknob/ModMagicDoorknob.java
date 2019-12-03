@@ -3,6 +3,8 @@ package com.tomboshoven.minecraft.magicdoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
+import com.tomboshoven.minecraft.magicdoorknob.items.Items;
+import com.tomboshoven.minecraft.magicdoorknob.modelloaders.ModelLoaders;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.TexturedModelLoader;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.state.IBlockState;
@@ -40,15 +42,12 @@ public class ModMagicDoorknob {
     public void init(FMLPreInitializationEvent event) {
         logger = event.getModLog();
         MinecraftForge.EVENT_BUS.register(Blocks.class);
+        MinecraftForge.EVENT_BUS.register(Items.class);
+        MinecraftForge.EVENT_BUS.register(ModelLoaders.class);
 
+        // Register tile entities
         GameRegistry.registerTileEntity(TileEntityMagicDoorway.class, new ResourceLocation(MOD_ID, "magic_doorway"));
         GameRegistry.registerTileEntity(TileEntityMagicDoor.class, new ResourceLocation(MOD_ID, "magic_door"));
-
-        TexturedModelLoader modelLoader = new TexturedModelLoader();
-        modelLoader.register(new ResourceLocation("magic_doorknob", "magic_doorway"), new ResourceLocation("magic_doorknob", "textured/magic_doorway"));
-        modelLoader.register(new ResourceLocation("magic_doorknob", "magic_door"), new ResourceLocation("magic_doorknob", "textured/magic_door"));
-        modelLoader.registerTexture(new ResourceLocation("magic_doorknob", "blocks/empty"));
-        ModelLoaderRegistry.registerLoader(modelLoader);
     }
 
     @EventHandler
