@@ -1,6 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers.BlockColorHandlers;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
@@ -52,12 +53,6 @@ public class ModMagicDoorknob {
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
-            TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityMagicDoorway) {
-                return Minecraft.getMinecraft().getBlockColors().colorMultiplier(((TileEntityMagicDoorway) tileEntity).getReplacedBlock(), worldIn, pos, tintIndex);
-            }
-            return -1;
-        }, Blocks.blockMagicDoorway);
+        BlockColorHandlers.registerColorHandlers();
     }
 }
