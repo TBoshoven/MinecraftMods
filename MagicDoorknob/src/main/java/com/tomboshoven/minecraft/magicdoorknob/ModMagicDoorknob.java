@@ -25,7 +25,7 @@ public class ModMagicDoorknob {
     public static final String MOD_ID = "magic_doorknob";
     static final String NAME = "Magic Doorknob";
 
-    @SuppressWarnings("PublicField")
+    @SuppressWarnings({"PublicField", "StaticNonFinalField", "NonConstantLogger"})
     public static Logger logger;
 
     @SuppressWarnings("MethodMayBeStatic")

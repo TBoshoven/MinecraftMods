@@ -5,6 +5,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.BlockMagicDoorway;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -14,8 +15,13 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ItemMagicDoorknob extends Item {
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
@@ -34,7 +40,7 @@ public class ItemMagicDoorknob extends Item {
         return EnumActionResult.SUCCESS;
     }
 
-    void placeDoor(World world, BlockPos pos, EnumFacing facing) {
+    private static void placeDoor(World world, BlockPos pos, EnumFacing facing) {
         BlockPos doorPos = pos.offset(facing);
         world.setBlockState(
                 doorPos,
@@ -60,7 +66,7 @@ public class ItemMagicDoorknob extends Item {
         world.checkLightFor(EnumSkyBlock.BLOCK, doorPos.down());
     }
 
-    void placeDoorway(World world, BlockPos pos, EnumFacing facing) {
+    private static void placeDoorway(World world, BlockPos pos, EnumFacing facing) {
         EnumFacing doorwayFacing = facing.getOpposite();
         boolean isNorthSouth = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH;
         for (int i = 0; i < 10; ++i) {
@@ -79,7 +85,7 @@ public class ItemMagicDoorknob extends Item {
         }
     }
 
-    void placeDoorwayElement(World world, BlockPos pos, boolean isNorthSouth, BlockMagicDoorway.EnumPartType part) {
+    private static void placeDoorwayElement(World world, BlockPos pos, boolean isNorthSouth, BlockMagicDoorway.EnumPartType part) {
         if (isReplaceable(world, pos)) {
             IBlockState state = world.getBlockState(pos);
             world.setBlockState(pos, Blocks.blockMagicDoorway.getDefaultState().withProperty(BlockMagicDoorway.OPEN_NORTH_SOUTH, isNorthSouth).withProperty(BlockMagicDoorway.OPEN_EAST_WEST, !isNorthSouth).withProperty(BlockMagicDoorway.PART, part));
@@ -93,30 +99,23 @@ public class ItemMagicDoorknob extends Item {
         }
     }
 
-    boolean canPlaceDoor(World world, BlockPos pos, EnumFacing facing) {
+    private static boolean canPlaceDoor(IBlockAccess world, BlockPos pos, EnumFacing facing) {
         if (!isReplaceable(world, pos) || !isReplaceable(world, pos.down())) {
             return false;
         }
-        if (!isEmpty(world, pos.offset(facing)) || !isEmpty(world, pos.offset(facing).down())) {
-            return false;
-        }
-        return true;
+        return isEmpty(world, pos.offset(facing)) && isEmpty(world, pos.offset(facing).down());
     }
 
-    boolean isEmpty(World world, BlockPos pos) {
+    private static boolean isEmpty(IBlockAccess world, BlockPos pos) {
         IBlockState blockState = world.getBlockState(pos);
         if (blockState.getBlock().isAir(blockState, world, pos)) {
             return true;
         }
 
-        if (blockState.getBlock().isReplaceable(world, pos)) {
-            return true;
-        }
-
-        return false;
+        return blockState.getBlock().isReplaceable(world, pos);
     }
 
-    boolean isReplaceable(World world, BlockPos pos) {
+    private static boolean isReplaceable(IBlockAccess world, BlockPos pos) {
         IBlockState blockState = world.getBlockState(pos);
         if (blockState.getBlock().hasTileEntity(blockState)) {
             return false;

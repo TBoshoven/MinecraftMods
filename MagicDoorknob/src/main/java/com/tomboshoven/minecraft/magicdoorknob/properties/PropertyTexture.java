@@ -3,10 +3,18 @@ package com.tomboshoven.minecraft.magicdoorknob.properties;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
+/**
+ * A (unlisted) property type containing texture information.
+ */
 public class PropertyTexture implements IUnlistedProperty<ResourceLocation> {
-
+    /**
+     * Name of the property.
+     */
     private final String name;
 
+    /**
+     * @param name The name of the property.
+     */
     public PropertyTexture(String name) {
         this.name = name;
     }
@@ -38,6 +46,6 @@ public class PropertyTexture implements IUnlistedProperty<ResourceLocation> {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof PropertyTexture && getName().equals(((PropertyTexture) o).getName());
+        return o instanceof PropertyTexture && name.equals(((PropertyTexture) o).name);
     }
 }

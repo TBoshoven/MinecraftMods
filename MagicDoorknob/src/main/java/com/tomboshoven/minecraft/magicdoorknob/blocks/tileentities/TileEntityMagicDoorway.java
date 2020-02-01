@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
 
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -12,18 +13,21 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class TileEntityMagicDoorway extends TileEntity {
-    IBlockState replacedBlock = Blocks.AIR.getDefaultState();
+    private IBlockState replacedBlock = Blocks.AIR.getDefaultState();
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         return writeInternal(super.writeToNBT(compound));
     }
 
-    public NBTTagCompound writeInternal(NBTTagCompound compound) {
+    private NBTTagCompound writeInternal(NBTTagCompound compound) {
         NBTTagCompound result = super.writeToNBT(compound);
-        ResourceLocation registryName = this.replacedBlock.getBlock().getRegistryName();
+        ResourceLocation registryName = replacedBlock.getBlock().getRegistryName();
         if (registryName != null) {
             result.setString("replacedBlock", registryName.toString());
             result.setShort("replacedBlockData", (short)replacedBlock.getBlock().getMetaFromState(replacedBlock));

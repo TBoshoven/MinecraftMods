@@ -8,15 +8,21 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ModelLoaders {
+/**
+ * Collection of custom model loaders.
+ */
+public final class ModelLoaders {
     @SidedProxy(
             serverSide = "com.tomboshoven.minecraft.magicdoorknob.modelloaders.ModelLoaders$ModelLoaderRegistration",
             clientSide = "com.tomboshoven.minecraft.magicdoorknob.modelloaders.ModelLoaders$ModelLoaderRegistrationClient"
     )
     private static ModelLoaderRegistration modelLoaderRegistration;
 
+    private ModelLoaders() {
+    }
+
     @SubscribeEvent
-    public static void registerRenders(ModelRegistryEvent event) {
+    public static void registerModelLoaders(ModelRegistryEvent event) {
         //noinspection StaticVariableUsedBeforeInitialization
         modelLoaderRegistration.registerModelLoaders();
     }
@@ -25,6 +31,7 @@ public class ModelLoaders {
      * Class for model loader registration.
      * This class is intended for servers. See ModelLoaderRegistrationClient for the client version.
      */
+    @SuppressWarnings("WeakerAccess")
     public static class ModelLoaderRegistration {
         /**
          * Register all model loaders.
@@ -38,12 +45,14 @@ public class ModelLoaders {
      * Class for model loader registration.
      * This class is intended for clients. See ModelLoaderRegistration for the server version.
      */
+    @SuppressWarnings("unused")
     @SideOnly(Side.CLIENT)
     public static class ModelLoaderRegistrationClient extends ModelLoaderRegistration {
         @Override
         void registerModelLoaders() {
             super.registerModelLoaders();
 
+            // Initialize textured model loader
             TexturedModelLoader modelLoader = new TexturedModelLoader();
             modelLoader.register(
                     new ResourceLocation("magic_doorknob", "magic_doorway"),

@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
 import mcp.MethodsReturnNonnullByDefault;
@@ -142,7 +141,7 @@ class BlockMagicDoor extends Block {
         super.breakBlock(worldIn, pos, state);
     }
 
-    private void breakDoorway(World world, BlockPos pos, EnumFacing facing) {
+    private static void breakDoorway(World world, BlockPos pos, EnumFacing facing) {
         EnumFacing doorwayFacing = facing.getOpposite();
         for (int i = 0; i < 10; ++i) {
             BlockPos blockPos = pos.offset(doorwayFacing, i);

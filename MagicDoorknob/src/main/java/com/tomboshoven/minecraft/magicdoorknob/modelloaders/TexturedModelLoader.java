@@ -4,12 +4,14 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BakedQuadRetextured;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelBlock;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -19,14 +21,15 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.animation.IClip;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.vecmath.Matrix4f;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,10 +40,12 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class TexturedModelLoader implements ICustomModelLoader {
     private static final String PROPERTY_NAMESPACE = "property";
-    Map<ResourceLocation, ResourceLocation> baseModels = Maps.newHashMap();
-    Set<ResourceLocation> extraTextures = Sets.newHashSet();
+    private Map<ResourceLocation, ResourceLocation> baseModels = Maps.newHashMap();
+    private Set<ResourceLocation> extraTextures = Sets.newHashSet();
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
@@ -52,11 +57,11 @@ public class TexturedModelLoader implements ICustomModelLoader {
         return baseModels.containsKey(new ResourceLocation(modelLocation.getNamespace(), modelLocation.getPath()));
     }
 
-    public void register(ResourceLocation modelLocation, ResourceLocation baseModelLocation) {
+    void register(ResourceLocation modelLocation, ResourceLocation baseModelLocation) {
         baseModels.put(modelLocation, baseModelLocation);
     }
 
-    public void registerTexture(ResourceLocation textureLocation) {
+    void registerTexture(ResourceLocation textureLocation) {
         extraTextures.add(textureLocation);
     }
 
@@ -64,16 +69,16 @@ public class TexturedModelLoader implements ICustomModelLoader {
     public IModel loadModel(ResourceLocation modelLocation) throws Exception {
         ModelResourceLocation modelResourceLocation = (ModelResourceLocation) modelLocation;
         ResourceLocation baseResourceLocation = new ResourceLocation(modelLocation.getNamespace(), modelLocation.getPath());
-        ResourceLocation baseModelLocation = baseModels.getOrDefault(baseResourceLocation, ModelLoader.MODEL_MISSING);
+        ResourceLocation baseModelLocation = baseModels.getOrDefault(baseResourceLocation, ModelBakery.MODEL_MISSING);
         ResourceLocation augmentedBaseModelLocation = new ModelResourceLocation(baseModelLocation, modelResourceLocation.getVariant());
         // FIXME: This causes the untextured model to be cached and dummy textures to be requested
         IModel baseModel = ModelLoaderRegistry.getModel(augmentedBaseModelLocation);
         return new TexturedModel(baseModel, Collections.unmodifiableSet(extraTextures));
     }
 
-    private class TexturedModel implements IModel {
+    private static class TexturedModel implements IModel {
         private final Set<ResourceLocation> extraTextures;
-        IModel wrappedModel;
+        private IModel wrappedModel;
 
         TexturedModel(IModel wrappedModel, Set<ResourceLocation> extraTextures) {
             this.wrappedModel = wrappedModel;
@@ -144,20 +149,20 @@ public class TexturedModelLoader implements ICustomModelLoader {
             return wrappedModel.asVanillaModel();
         }
 
-        private class PropertySprite extends TextureAtlasSprite {
-            public PropertySprite(String name) {
+        private static class PropertySprite extends TextureAtlasSprite {
+            PropertySprite(String name) {
                 super(name);
-                this.width = 16;
-                this.height = 16;
+                width = 16;
+                height = 16;
                 initSprite(16, 16, 0, 0, false);
             }
         }
 
-        private class TexturedBakedModel implements IBakedModel {
-            IBakedModel wrappedBakedModel;
-            private Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter;
+        private static class TexturedBakedModel implements IBakedModel {
+            private IBakedModel wrappedBakedModel;
+            private Function<? super ResourceLocation, ? extends TextureAtlasSprite> bakedTextureGetter;
 
-            public TexturedBakedModel(IBakedModel wrappedBakedModel, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+            TexturedBakedModel(IBakedModel wrappedBakedModel, Function<? super ResourceLocation, ? extends TextureAtlasSprite> bakedTextureGetter) {
                 this.wrappedBakedModel = wrappedBakedModel;
                 this.bakedTextureGetter = bakedTextureGetter;
             }
@@ -180,7 +185,7 @@ public class TexturedModelLoader implements ICustomModelLoader {
 
             TextureAtlasSprite mapSprite(PropertySprite spriteToMap, IExtendedBlockState blockState) {
                 String name = spriteToMap.getIconName();
-                PropertyTexture property = new PropertyTexture(name);
+                IUnlistedProperty<ResourceLocation> property = new PropertyTexture(name);
                 ResourceLocation spriteLocation = blockState.getValue(property);
                 if (spriteLocation == null) {
                     spriteLocation = new ResourceLocation("missingno");

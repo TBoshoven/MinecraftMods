@@ -31,7 +31,6 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -147,16 +146,16 @@ public class BlockMagicDoorway extends Block {
 
     @Override
     public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
-        for (AxisAlignedBB bb : getCollisionBoxes(state)) {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, bb);
+        for (AxisAlignedBB collisionBox : getCollisionBoxes(state)) {
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, collisionBox);
         }
     }
 
-    private List<AxisAlignedBB> getCollisionBoxes(IBlockState state) {
+    private static List<AxisAlignedBB> getCollisionBoxes(IBlockState state) {
         boolean openNorthSouth = state.getValue(OPEN_NORTH_SOUTH);
         boolean openEastWest = state.getValue(OPEN_EAST_WEST);
         boolean isTop = state.getValue(PART) == EnumPartType.TOP;
-        ArrayList<AxisAlignedBB> result = Lists.newArrayList();
+        List<AxisAlignedBB> result = Lists.newArrayList();
         if (openNorthSouth && openEastWest) {
             Collections.addAll(result, BOUNDING_BOX_PILLAR_NE, BOUNDING_BOX_PILLAR_NW, BOUNDING_BOX_PILLAR_SE, BOUNDING_BOX_PILLAR_SW);
         } else {
@@ -270,10 +269,10 @@ public class BlockMagicDoorway extends Block {
 
     @Nullable
     public RayTraceResult collisionRayTrace(IBlockState blockState, World worldIn, BlockPos pos, Vec3d start, Vec3d end) {
-        List<RayTraceResult> rayTraceResults = Lists.<RayTraceResult>newArrayList();
+        List<RayTraceResult> rayTraceResults = Lists.newArrayList();
 
-        for (AxisAlignedBB bb : getCollisionBoxes(blockState)) {
-            rayTraceResults.add(this.rayTrace(pos, start, end, bb));
+        for (AxisAlignedBB collisionBox : getCollisionBoxes(blockState)) {
+            rayTraceResults.add(rayTrace(pos, start, end, collisionBox));
         }
 
         RayTraceResult result = null;
