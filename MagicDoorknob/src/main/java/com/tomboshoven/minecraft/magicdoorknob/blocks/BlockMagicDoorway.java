@@ -125,7 +125,7 @@ public class BlockMagicDoorway extends Block {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorway) {
             IBlockState replacedBlock = ((TileEntityMagicDoorway) tileEntity).getReplacedBlock();
-            return replacedBlock.getBlock().getSoundType(replacedBlock, world, pos, entity);
+            return replacedBlock.getBlock().getSoundType(replacedBlock, world, pos, null);
         }
         return super.getSoundType(state, world, pos, entity);
     }

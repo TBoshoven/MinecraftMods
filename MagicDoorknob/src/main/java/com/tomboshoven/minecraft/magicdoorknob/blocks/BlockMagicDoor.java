@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
+import com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
@@ -100,7 +101,7 @@ class BlockMagicDoor extends Block {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoor) {
             IBlockState textureBlock = ((TileEntityMagicDoor) tileEntity).getTextureBlock();
-            SoundType actualSoundType = textureBlock.getBlock().getSoundType(textureBlock, world, pos, entity);
+            SoundType actualSoundType = textureBlock.getBlock().getSoundType(textureBlock, world, pos, null);
             return new SoundType(
                     actualSoundType.volume,
                     actualSoundType.pitch,
@@ -261,7 +262,7 @@ class BlockMagicDoor extends Block {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
-            breakBlock(worldIn, pos, state);
+            worldIn.setBlockState(pos, net.minecraft.init.Blocks.AIR.getDefaultState());
         }
         return true;
     }
