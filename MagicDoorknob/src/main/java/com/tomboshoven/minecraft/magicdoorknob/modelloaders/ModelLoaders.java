@@ -8,6 +8,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import static com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob.MOD_ID;
+
 /**
  * Collection of custom model loaders.
  */
@@ -55,12 +57,12 @@ public final class ModelLoaders {
             // Initialize textured model loader
             TexturedModelLoader modelLoader = new TexturedModelLoader();
             modelLoader.register(
-                    new ResourceLocation("magic_doorknob", "magic_doorway"),
-                    new ResourceLocation("magic_doorknob", "textured/magic_doorway")
+                    new ResourceLocation(MOD_ID, "magic_doorway"),
+                    new ResourceLocation(MOD_ID, "textured/magic_doorway")
             );
             modelLoader.register(
-                    new ResourceLocation("magic_doorknob", "magic_door"),
-                    new ResourceLocation("magic_doorknob", "textured/magic_door")
+                    new ResourceLocation(MOD_ID, "magic_door"),
+                    new ResourceLocation(MOD_ID, "textured/magic_door")
             );
             modelLoader.registerTexture(new ResourceLocation("magic_doorknob", "blocks/empty"));
             ModelLoaderRegistry.registerLoader(modelLoader);

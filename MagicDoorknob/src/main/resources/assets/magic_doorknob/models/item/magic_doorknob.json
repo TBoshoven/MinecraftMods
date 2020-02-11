@@ -1,0 +1,39 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "main": "property:texture_main"
+  },
+  "elements": [
+    {
+      "name": "Base",
+      "from": [3, 3, 6],
+      "to": [13, 13, 9],
+      "faces": {
+        "north": {
+          "texture": "#main",
+          "uv": [3, 3, 13, 13]
+        },
+        "south": {
+          "texture": "#main",
+          "uv": [13, 3, 3, 13]
+        },
+        "east": {
+          "texture": "#main",
+          "uv": [13, 3, 13, 13]
+        },
+        "west": {
+          "texture": "#main",
+          "uv": [3, 3, 3, 13]
+        },
+        "up": {
+          "texture": "#main",
+          "uv": [3, 3, 13, 3]
+        },
+        "down": {
+          "texture": "#main",
+          "uv": [3, 13, 13, 13]
+        }
+      }
+    }
+  ]
+}

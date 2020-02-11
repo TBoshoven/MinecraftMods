@@ -22,6 +22,7 @@ public final class Items {
      */
     public static final Item itemMagicDoorknob = new ItemMagicDoorknob()
             .setRegistryName(ModMagicDoorknob.MOD_ID, "magic_doorknob")
+            .setTranslationKey(String.format("%s.magic_doorknob", ModMagicDoorknob.MOD_ID))
             .setCreativeTab(CreativeTabs.MISC);
 
     private Items() {
