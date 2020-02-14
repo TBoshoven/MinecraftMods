@@ -6,6 +6,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMag
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.ModelLoaders;
+import com.tomboshoven.minecraft.magicdoorknob.models.Models;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
@@ -37,13 +38,11 @@ public class ModMagicDoorknob {
         MinecraftForge.EVENT_BUS.register(Blocks.class);
         MinecraftForge.EVENT_BUS.register(Items.class);
         MinecraftForge.EVENT_BUS.register(ModelLoaders.class);
+        MinecraftForge.EVENT_BUS.register(Models.class);
 
         // Register tile entities
         GameRegistry.registerTileEntity(TileEntityMagicDoorway.class, new ResourceLocation(MOD_ID, "magic_doorway"));
         GameRegistry.registerTileEntity(TileEntityMagicDoor.class, new ResourceLocation(MOD_ID, "magic_door"));
-
-        // Register item models
-        ModelLoader.setCustomModelResourceLocation(Items.itemMagicDoorknob, 0, new ModelResourceLocation(new ResourceLocation(MOD_ID, "magic_doorknob"), null));
     }
 
     @EventHandler

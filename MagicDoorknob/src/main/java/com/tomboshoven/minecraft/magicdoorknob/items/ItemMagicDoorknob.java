@@ -21,6 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -129,6 +131,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public ITextureMapper getTextureMapper(ItemStack stack) {
         return (spriteToMap, blockState) -> {
             String name = spriteToMap.getIconName();
