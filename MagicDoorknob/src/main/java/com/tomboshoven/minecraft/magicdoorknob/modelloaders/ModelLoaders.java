@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.modelloaders;
 
+import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedModelLoader;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -63,6 +64,10 @@ public final class ModelLoaders {
             modelLoader.register(
                     new ResourceLocation(MOD_ID, "magic_door"),
                     new ResourceLocation(MOD_ID, "textured/magic_door")
+            );
+            modelLoader.register(
+                    new ResourceLocation(MOD_ID, "magic_doorknob"),
+                    new ResourceLocation(MOD_ID, "textured/magic_doorknob")
             );
             modelLoader.registerTexture(new ResourceLocation("magic_doorknob", "blocks/empty"));
             ModelLoaderRegistry.registerLoader(modelLoader);
