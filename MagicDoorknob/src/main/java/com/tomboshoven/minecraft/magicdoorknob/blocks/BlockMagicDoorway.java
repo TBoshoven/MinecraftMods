@@ -14,6 +14,7 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -80,6 +81,12 @@ public class BlockMagicDoorway extends Block {
                         .withProperty(OPEN_EAST_WEST, Boolean.TRUE)
                         .withProperty(OPEN_NORTH_SOUTH, Boolean.FALSE)
         );
+    }
+
+    @Override
+    public boolean addDestroyEffects(World world, BlockPos pos, ParticleManager manager) {
+        // Skip all block breaking textures
+        return true;
     }
 
     @Override
