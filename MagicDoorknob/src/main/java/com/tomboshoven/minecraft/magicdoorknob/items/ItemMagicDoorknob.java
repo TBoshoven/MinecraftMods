@@ -114,6 +114,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMagicDoorway) {
                 ((TileEntityMagicDoorway) tileEntity).setReplacedBlock(state);
+                ((TileEntityMagicDoorway) tileEntity).setDoorknob(this);
             }
 
             world.checkLightFor(EnumSkyBlock.BLOCK, pos);

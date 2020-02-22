@@ -1,5 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
 
+import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
+import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -19,6 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class TileEntityMagicDoorway extends TileEntity {
     private IBlockState replacedBlock = Blocks.AIR.getDefaultState();
+    private ItemMagicDoorknob doorknob;
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
@@ -32,6 +35,9 @@ public class TileEntityMagicDoorway extends TileEntity {
             result.setString("replacedBlock", registryName.toString());
             result.setShort("replacedBlockData", (short)replacedBlock.getBlock().getMetaFromState(replacedBlock));
         }
+        if (doorknob != null) {
+            result.setString("doorknobType", doorknob.getTypeName());
+        }
         return result;
     }
 
@@ -44,6 +50,8 @@ public class TileEntityMagicDoorway extends TileEntity {
             short blockMeta = compound.getShort("replacedBlockData");
             replacedBlock = block.getStateFromMeta(blockMeta);
         }
+        String doorknobType = compound.getString("doorknobType");
+        doorknob = Items.itemDoorknobs.get(doorknobType);
     }
 
     @Override
@@ -69,5 +77,14 @@ public class TileEntityMagicDoorway extends TileEntity {
 
     public void setReplacedBlock(IBlockState replacedBlock) {
         this.replacedBlock = replacedBlock;
+    }
+
+    @Nullable
+    public ItemMagicDoorknob getDoorknob() {
+        return doorknob;
+    }
+
+    public void setDoorknob(ItemMagicDoorknob doorknob) {
+        this.doorknob = doorknob;
     }
 }

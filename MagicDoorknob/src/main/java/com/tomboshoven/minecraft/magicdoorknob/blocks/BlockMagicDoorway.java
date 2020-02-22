@@ -1,7 +1,10 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.google.common.collect.Lists;
+import com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
+import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
@@ -15,7 +18,9 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -219,15 +224,28 @@ public class BlockMagicDoorway extends Block {
     public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorway) {
-            IBlockState replacedBlock = ((TileEntityMagicDoorway) tileEntity).getReplacedBlock();
+            TileEntityMagicDoorway tileEntityMagicDoorway = (TileEntityMagicDoorway) tileEntity;
+
+            BlockModelShapes blockModelShapes = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes();
+
+            IBlockState replacedBlock = tileEntityMagicDoorway.getReplacedBlock();
             // Try to get the block's texture
-            TextureAtlasSprite texture = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(replacedBlock);
-            if ("missingno".equals(texture.getIconName())) {
-                texture = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelManager().getTextureMap().getAtlasSprite("magic_doorknob:blocks/empty");
+            TextureAtlasSprite blockTexture = blockModelShapes.getTexture(replacedBlock);
+            if ("missingno".equals(blockTexture.getIconName())) {
+                blockTexture = blockModelShapes.getModelManager().getTextureMap().getAtlasSprite(ModMagicDoorknob.MOD_ID + ":blocks/empty");
+            }
+
+            ItemMagicDoorknob doorknob = tileEntityMagicDoorway.getDoorknob();
+            ResourceLocation highlightTextureLocation;
+            if (doorknob != null) {
+                highlightTextureLocation = doorknob.getMainTextureLocation();
+            }
+            else {
+                highlightTextureLocation = TextureMap.LOCATION_MISSING_TEXTURE;
             }
             return ((IExtendedBlockState) state)
-                    .withProperty(TEXTURE_MAIN, new ResourceLocation(texture.getIconName()))
-                    .withProperty(TEXTURE_HIGHLIGHT, new ResourceLocation("minecraft:blocks/redstone_block"));
+                    .withProperty(TEXTURE_MAIN, new ResourceLocation(blockTexture.getIconName()))
+                    .withProperty(TEXTURE_HIGHLIGHT, highlightTextureLocation);
         }
         return state;
     }

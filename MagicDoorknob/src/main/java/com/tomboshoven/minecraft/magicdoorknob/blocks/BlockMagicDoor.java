@@ -18,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -232,7 +233,7 @@ class BlockMagicDoor extends Block {
                 doorknobTextureLocation = doorknob.getMainTextureLocation();
             }
             else {
-                doorknobTextureLocation = new ResourceLocation(ModMagicDoorknob.MOD_ID, "blocks/empty");
+                doorknobTextureLocation = TextureMap.LOCATION_MISSING_TEXTURE;
             }
             return ((IExtendedBlockState) state)
                     .withProperty(TEXTURE_MAIN, new ResourceLocation(blockTexture.getIconName()))
