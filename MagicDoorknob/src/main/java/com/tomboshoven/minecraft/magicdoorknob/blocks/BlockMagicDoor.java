@@ -8,14 +8,11 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.material.MaterialTransparent;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -26,10 +23,8 @@ import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -44,7 +39,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public
-class BlockMagicDoor extends Block {
+class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     /**
      * Property describing which part of the door is being represented by this block.
      */
@@ -58,53 +53,6 @@ class BlockMagicDoor extends Block {
     private static final AxisAlignedBB BOUNDING_BOX_WALL_N = new AxisAlignedBB(0, 0, 0.9375, 1, 1, 1);
     private static final AxisAlignedBB BOUNDING_BOX_WALL_E = new AxisAlignedBB(0, 0, 0, 0.0625, 1, 1);
     private static final AxisAlignedBB BOUNDING_BOX_WALL_W = new AxisAlignedBB(0.9375, 0, 0, 1, 1, 1);
-
-    BlockMagicDoor() {
-        super(new MaterialTransparent(MapColor.AIR));
-    }
-
-    @Override
-    public boolean addDestroyEffects(World world, BlockPos pos, ParticleManager manager) {
-        // Skip all block breaking textures
-        return true;
-    }
-
-    @Override
-    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoor) {
-            return ((TileEntityMagicDoor) tileEntity).getBaseBlockState().getLightValue(world, pos);
-        }
-        return super.getLightValue(state, world, pos);
-    }
-
-    @Override
-    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoor) {
-            return ((TileEntityMagicDoor) tileEntity).getBaseBlockState().getLightOpacity(world, pos);
-        }
-        return super.getLightOpacity(state, world, pos);
-    }
-
-    @Override
-    public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoor) {
-            return ((TileEntityMagicDoor) tileEntity).getBaseBlockState().getBlockHardness(worldIn, pos);
-        }
-        return super.getBlockHardness(blockState, worldIn, pos);
-    }
-
-    @Override
-    public int getHarvestLevel(IBlockState state) {
-        return -1;
-    }
-
-    @Nullable
-    @Override
-    public String getHarvestTool(IBlockState state) {
-        return null;
-    }
 
     @Override
     public SoundType getSoundType(IBlockState state, World world, BlockPos pos, @Nullable Entity entity) {
@@ -123,11 +71,6 @@ class BlockMagicDoor extends Block {
             );
         }
         return super.getSoundType(state, world, pos, entity);
-    }
-
-    @Override
-    public boolean isReplaceable(IBlockAccess worldIn, BlockPos pos) {
-        return false;
     }
 
     @Override
@@ -256,23 +199,9 @@ class BlockMagicDoor extends Block {
                 .build();
     }
 
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT_MIPPED;
-    }
-
-    @Override
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
-    }
-
-    @Override
-    public boolean isFullCube(IBlockState state) {
-        return false;
-    }
-
     @Override
     public boolean isTopSolid(IBlockState state) {
-        return state.getValue(PART) == BlockMagicDoor.EnumPartType.TOP;
+        return false;
     }
 
     @Override
@@ -287,11 +216,6 @@ class BlockMagicDoor extends Block {
                 .withProperty(FACING, EnumFacing.byHorizontalIndex(meta >> 1));
     }
 
-    @Override
-    public boolean hasTileEntity(IBlockState state) {
-        return true;
-    }
-
     @Nullable
     @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
@@ -304,38 +228,5 @@ class BlockMagicDoor extends Block {
             worldIn.setBlockState(pos, net.minecraft.init.Blocks.AIR.getDefaultState());
         }
         return true;
-    }
-
-    /**
-     * The door has two parts: top and bottom.
-     */
-    public enum EnumPartType implements IStringSerializable {
-        TOP("top", 0),
-        BOTTOM("bottom", 1),
-        ;
-
-        private final String name;
-        private final int value;
-
-        /**
-         * @param name  The name of the part.
-         * @param value The integer value of the part; used for setting block metadata.
-         */
-        EnumPartType(String name, int value) {
-            this.name = name;
-            this.value = value;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        /**
-         * @return The integer value of the part; used for setting block metadata.
-         */
-        int getValue() {
-            return value;
-        }
     }
 }
