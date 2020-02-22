@@ -22,23 +22,12 @@ import java.util.Map;
 @MethodsReturnNonnullByDefault
 public final class Items {
     /**
-     * The magic doorknob items.
+     * The magic doorknob items by type name.
      */
     public static final Map<String, ItemMagicDoorknob> itemDoorknobs = Maps.newHashMap();
 
-    static void addDoorknob(String typeName, Item.ToolMaterial material, ResourceLocation mainTexture) {
-        Item i = new ItemMagicDoorknob(typeName, material, mainTexture)
-                .setRegistryName(ModMagicDoorknob.MOD_ID, String.format("magic_doorknob_%s", typeName))
-                .setTranslationKey(String.format("%s.magic_doorknob.%s", ModMagicDoorknob.MOD_ID, typeName))
-                .setCreativeTab(CreativeTabs.MISC);
-        itemDoorknobs.put(typeName, (ItemMagicDoorknob) i);
-    }
-
-    static void addDoorknob(String name, Item.ToolMaterial material, String blockName) {
-        addDoorknob(name, material, new ResourceLocation("minecraft", String.format("blocks/%s", blockName)));
-    }
-
     static {
+        // Add all Vanilla tool materials
         addDoorknob("wood", Item.ToolMaterial.WOOD, "planks_oak");
         addDoorknob("stone", Item.ToolMaterial.STONE, "stone");
         addDoorknob("iron", Item.ToolMaterial.IRON, "iron_block");
@@ -47,6 +36,34 @@ public final class Items {
     }
 
     private Items() {
+    }
+
+    /**
+     * Add a doorknob item.
+     * <p>
+     * Make sure to add a translation key.
+     *
+     * @param typeName    The type name of the item. Keep this stable, since it is used in NBT data.
+     * @param material    The material this doorknob is made of
+     * @param mainTexture The main texture of the doorknob
+     */
+    private static void addDoorknob(String typeName, Item.ToolMaterial material, ResourceLocation mainTexture) {
+        Item i = new ItemMagicDoorknob(typeName, material, mainTexture)
+                .setRegistryName(ModMagicDoorknob.MOD_ID, String.format("magic_doorknob_%s", typeName))
+                .setTranslationKey(String.format("%s.magic_doorknob.%s", ModMagicDoorknob.MOD_ID, typeName))
+                .setCreativeTab(CreativeTabs.MISC);
+        itemDoorknobs.put(typeName, (ItemMagicDoorknob) i);
+    }
+
+    /**
+     * Convenience function for doorknobs using Vanilla materials.
+     *
+     * @param typeName  The type name of the item. Keep this stable, since it is used in NBT data.
+     * @param material  The material this doorknob is made of
+     * @param blockName The name of the block that provides the texture of the doorknob
+     */
+    private static void addDoorknob(String typeName, Item.ToolMaterial material, String blockName) {
+        addDoorknob(typeName, material, new ResourceLocation("minecraft", String.format("blocks/%s", blockName)));
     }
 
     @SuppressWarnings("BoundedWildcard")
