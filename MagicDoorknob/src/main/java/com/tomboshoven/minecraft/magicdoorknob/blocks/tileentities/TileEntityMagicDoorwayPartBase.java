@@ -17,10 +17,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * Base class for tile entities that make up magic doorways.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
+    // The block we're basing the appearance of this block on.
     private IBlockState baseBlockState = Blocks.AIR.getDefaultState();
+    // The doorknob that caused this block to be created.
     private ItemMagicDoorknob doorknob;
 
     @Override
@@ -71,19 +76,31 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
         readFromNBT(pkt.getNbtCompound());
     }
 
+    /**
+     * @return The blockstate that the appearance of this block is based on.
+     */
     public IBlockState getBaseBlockState() {
         return baseBlockState;
     }
 
+    /**
+     * @param baseBlockState The blockstate that the appearance of this block is based on.
+     */
     public void setBaseBlockState(IBlockState baseBlockState) {
         this.baseBlockState = baseBlockState;
     }
 
+    /**
+     * @return The doorknob that was used to create this block.
+     */
     @Nullable
     public ItemMagicDoorknob getDoorknob() {
         return doorknob;
     }
 
+    /**
+     * @param doorknob The doorknob that was used to create this block.
+     */
     public void setDoorknob(ItemMagicDoorknob doorknob) {
         this.doorknob = doorknob;
     }

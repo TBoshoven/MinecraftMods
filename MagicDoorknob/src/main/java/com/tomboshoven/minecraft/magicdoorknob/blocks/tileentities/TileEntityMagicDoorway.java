@@ -4,6 +4,9 @@ import mcp.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * Tile entity for the magic doorway parts.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class TileEntityMagicDoorway extends TileEntityMagicDoorwayPartBase {

@@ -1,13 +1,10 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -17,6 +14,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * Class for registering color handlers in the clients.
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public final class BlockColorHandlers {
     @SidedProxy(
             serverSide = "com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers.BlockColorHandlers$BlockColorHandlerRegistration",
@@ -54,8 +53,6 @@ public final class BlockColorHandlers {
      * This class is intended for clients. See BlockColorHandlerRegistration for the server version.
      */
     @SuppressWarnings("unused")
-    @ParametersAreNonnullByDefault
-    @MethodsReturnNonnullByDefault
     @SideOnly(Side.CLIENT)
     public static class BlockColorHandlerRegistrationClient extends BlockColorHandlerRegistration {
         @Override
@@ -63,26 +60,10 @@ public final class BlockColorHandlers {
             super.registerBlockColorHandlers();
 
             BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
-            blockColors.registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
-                if (worldIn != null && pos != null) {
-                    TileEntity tileEntity = worldIn.getTileEntity(pos);
-                    if (tileEntity instanceof TileEntityMagicDoorway) {
-                        IBlockState replacedBlock = ((TileEntityMagicDoorway) tileEntity).getBaseBlockState();
-                        return blockColors.colorMultiplier(replacedBlock, worldIn, pos, tintIndex);
-                    }
-                }
-                return -1;
-            }, Blocks.blockMagicDoorway);
-            blockColors.registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
-                if (worldIn != null && pos != null) {
-                    TileEntity tileEntity = worldIn.getTileEntity(pos);
-                    if (tileEntity instanceof TileEntityMagicDoor) {
-                        IBlockState textureBlock = ((TileEntityMagicDoor) tileEntity).getBaseBlockState();
-                        return blockColors.colorMultiplier(textureBlock, worldIn, pos, tintIndex);
-                    }
-                }
-                return -1;
-            }, Blocks.blockMagicDoor);
+
+            IBlockColor doorwayBlockColorHandler = new DoorwayBlockColorHandler();
+            blockColors.registerBlockColorHandler(doorwayBlockColorHandler, Blocks.blockMagicDoorway);
+            blockColors.registerBlockColorHandler(doorwayBlockColorHandler, Blocks.blockMagicDoor);
         }
     }
 }
