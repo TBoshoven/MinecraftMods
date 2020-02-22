@@ -124,7 +124,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
         // If the doorknob can't be found, just go with some high number (32)
         float depth = doorknob == null ? 32 : doorknob.getMaterial().getEfficiency();
 
-        for (int i = 0; i < depth; ++i) {
+        for (int i = 1; i <= depth; ++i) {
             BlockPos blockPos = pos.offset(doorwayFacing, i);
             IBlockState state = world.getBlockState(blockPos);
             if (state.getBlock() == Blocks.blockMagicDoorway) {
