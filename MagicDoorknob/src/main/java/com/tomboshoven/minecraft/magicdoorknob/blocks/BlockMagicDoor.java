@@ -164,9 +164,13 @@ class BlockMagicDoor extends Block {
         super.breakBlock(worldIn, pos, state);
     }
 
-    private static void breakDoorway(World world, BlockPos pos, EnumFacing facing) {
+    private void breakDoorway(World world, BlockPos pos, EnumFacing facing) {
         EnumFacing doorwayFacing = facing.getOpposite();
-        for (int i = 0; i < 10; ++i) {
+
+        ItemMagicDoorknob doorknob = getDoorknob(world, pos);
+        float depth = doorknob == null ? 32 : doorknob.getMaterial().getEfficiency();
+
+        for (int i = 0; i < depth; ++i) {
             BlockPos blockPos = pos.offset(doorwayFacing, i);
             IBlockState state = world.getBlockState(blockPos);
             if (state.getBlock() == Blocks.blockMagicDoorway) {

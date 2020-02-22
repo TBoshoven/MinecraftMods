@@ -165,4 +165,8 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
     public String getTypeName() {
         return typeName;
     }
+
+    public ToolMaterial getMaterial() {
+        return material;
+    }
 }
