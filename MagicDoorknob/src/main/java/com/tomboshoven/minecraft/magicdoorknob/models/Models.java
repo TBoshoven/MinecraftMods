@@ -1,12 +1,10 @@
 package com.tomboshoven.minecraft.magicdoorknob.models;
 
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
-import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedModelLoader;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -15,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import static com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob.MOD_ID;
 
 /**
- * Collection of custom model loaders.
+ * Collection of custom models.
  */
 public final class Models {
     @SidedProxy(

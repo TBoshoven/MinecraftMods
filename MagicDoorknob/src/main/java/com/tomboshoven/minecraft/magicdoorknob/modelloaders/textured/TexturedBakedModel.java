@@ -27,14 +27,25 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * A baked model that fills in the texture properties dynamically.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @SideOnly(Side.CLIENT)
 class TexturedBakedModel implements IBakedModel {
+    // The original baked model
     private IBakedModel wrappedBakedModel;
+    // The baked texture getter
     private Function<? super ResourceLocation, ? extends TextureAtlasSprite> bakedTextureGetter;
+    // The mapper that replaces property textures by their values
     private ITextureMapper textureMapper;
 
+    /**
+     * @param wrappedBakedModel  The original baked model
+     * @param bakedTextureGetter The baked texture getter
+     * @param textureMapper      The mapper that replaces property textures by their values
+     */
     TexturedBakedModel(IBakedModel wrappedBakedModel, Function<? super ResourceLocation, ? extends TextureAtlasSprite> bakedTextureGetter, ITextureMapper textureMapper) {
         this.wrappedBakedModel = wrappedBakedModel;
         this.bakedTextureGetter = bakedTextureGetter;
@@ -43,6 +54,7 @@ class TexturedBakedModel implements IBakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+        // Return the original quads, with the property sprites replaced by actual ones
         List<BakedQuad> quads = wrappedBakedModel.getQuads(state, side, rand);
         return quads.stream().map(quad -> {
             TextureAtlasSprite sprite = quad.getSprite();
@@ -92,13 +104,22 @@ class TexturedBakedModel implements IBakedModel {
 
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+        // No easy way to fix the first element of the tuple, but it's very rarely different from the original baked
+        // model, so we just replace it by this.
         Pair<? extends IBakedModel, Matrix4f> result = wrappedBakedModel.handlePerspective(cameraTransformType);
         return Pair.of(this, result.getRight());
     }
 
+    /**
+     * We use override lists to dynamically texture items.
+     */
     private class TexturedOverrideList extends ItemOverrideList {
+        // The original baked model's override list
         private final ItemOverrideList wrappedOverrideList;
 
+        /**
+         * @param wrappedOverrideList The original baked model's override list
+         */
         public TexturedOverrideList(ItemOverrideList wrappedOverrideList) {
             super(Lists.newArrayList());
             this.wrappedOverrideList = wrappedOverrideList;
@@ -112,6 +133,7 @@ class TexturedBakedModel implements IBakedModel {
 
         @Override
         public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, @Nullable World world, @Nullable EntityLivingBase entity) {
+            // If the item has a texture mapper, use it.
             Item item = stack.getItem();
             if (item instanceof IItemStackTextureMapperProvider) {
                 return new TexturedBakedModel(wrappedBakedModel, bakedTextureGetter, ((IItemStackTextureMapperProvider) item).getTextureMapper(stack));

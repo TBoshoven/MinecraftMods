@@ -21,14 +21,25 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * A model that has dynamic properties that are used to determine textures at runtime.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @SideOnly(Side.CLIENT)
 class TexturedModel implements IModel {
+    // The namespace of the properties; used in model definitions
     private static final String PROPERTY_NAMESPACE = "property";
+    // The extra textures to include with this model; used to enable textures that are not already present in the game
     private final Set<ResourceLocation> extraTextures;
+    // The original model
     private IModel wrappedModel;
 
+    /**
+     * @param wrappedModel  The original model
+     * @param extraTextures The extra textures to include with this model; used to enable textures that are not already
+     *                      present in the game
+     */
     TexturedModel(IModel wrappedModel, Set<ResourceLocation> extraTextures) {
         this.wrappedModel = wrappedModel;
         this.extraTextures = extraTextures;
@@ -41,6 +52,7 @@ class TexturedModel implements IModel {
 
     @Override
     public Collection<ResourceLocation> getTextures() {
+        // Filter out the property textures since they don't get filled in until runtime
         Set<ResourceLocation> textures = wrappedModel.getTextures().stream()
                 .filter(location -> !PROPERTY_NAMESPACE.equals(location.getNamespace()))
                 .collect(Collectors.toSet());
@@ -49,6 +61,7 @@ class TexturedModel implements IModel {
 
     @Override
     public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+        // Use a custom texture getter and baked model
         Function<ResourceLocation, TextureAtlasSprite> augmentedTextureGetter = resourceLocation -> {
             if (PROPERTY_NAMESPACE.equals(resourceLocation.getNamespace())) {
                 return new PropertySprite(resourceLocation.getPath());

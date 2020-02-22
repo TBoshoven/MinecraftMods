@@ -11,10 +11,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * Extract the texture location from an extended blockstate.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @SideOnly(Side.CLIENT)
 class BlockStateTextureMapper implements ITextureMapper {
+    @Override
     public ResourceLocation mapSprite(PropertySprite spriteToMap, @Nullable IExtendedBlockState blockState) {
         if (blockState != null) {
             String name = spriteToMap.getIconName();

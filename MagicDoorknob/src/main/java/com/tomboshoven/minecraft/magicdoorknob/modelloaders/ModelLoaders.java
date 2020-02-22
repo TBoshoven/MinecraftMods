@@ -57,6 +57,7 @@ public final class ModelLoaders {
 
             // Initialize textured model loader
             TexturedModelLoader modelLoader = new TexturedModelLoader();
+            // Register all textured models with the model loader
             modelLoader.register(
                     new ResourceLocation(MOD_ID, "magic_doorway"),
                     new ResourceLocation(MOD_ID, "textured/magic_doorway")

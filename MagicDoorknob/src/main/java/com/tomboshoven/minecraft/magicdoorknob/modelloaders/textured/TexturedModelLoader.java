@@ -18,27 +18,44 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A model loader that deals with dynamic properties that are used to determine textures at runtime.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @SideOnly(Side.CLIENT)
 public class TexturedModelLoader implements ICustomModelLoader {
+    // A mapping from configured textured models to the models they're based on
     private Map<ResourceLocation, ResourceLocation> baseModels = Maps.newHashMap();
+    // All extra textures that were requested.
     private Set<ResourceLocation> extraTextures = Sets.newHashSet();
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
-
     }
 
     @Override
     public boolean accepts(ResourceLocation modelLocation) {
+        // Check to see if we know about the given model
         return baseModels.containsKey(new ResourceLocation(modelLocation.getNamespace(), modelLocation.getPath()));
     }
 
+    /**
+     * Register a new textured model.
+     *
+     * @param modelLocation     The location for the textured model
+     * @param baseModelLocation The location of the model to base it on
+     */
     public void register(ResourceLocation modelLocation, ResourceLocation baseModelLocation) {
         baseModels.put(modelLocation, baseModelLocation);
     }
 
+    /**
+     * Register an additional texture to load with the models.
+     * This makes the texture available for use in properties.
+     *
+     * @param textureLocation The location of the texture to include
+     */
     public void registerTexture(ResourceLocation textureLocation) {
         extraTextures.add(textureLocation);
     }
