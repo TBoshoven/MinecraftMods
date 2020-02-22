@@ -1,9 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
-import com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
 import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
-import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
@@ -12,10 +10,6 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -25,29 +19,29 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+/**
+ * Top or bottom part of a magic door.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public
-class BlockMagicDoor extends BlockMagicDoorwayPartBase {
+public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     /**
      * Property describing which part of the door is being represented by this block.
      */
     public static final PropertyEnum<EnumPartType> PART = PropertyEnum.create("part", EnumPartType.class);
+    /**
+     * Property describing which way the door is facing.
+     */
     public static final PropertyEnum<EnumFacing> FACING = BlockHorizontal.FACING;
-
-    private static final PropertyTexture TEXTURE_MAIN = new PropertyTexture("texture_main");
-    private static final PropertyTexture TEXTURE_HIGHLIGHT = new PropertyTexture("texture_highlight");
 
     private static final AxisAlignedBB BOUNDING_BOX_WALL_S = new AxisAlignedBB(0, 0, 0, 1, 1, 0.0625);
     private static final AxisAlignedBB BOUNDING_BOX_WALL_N = new AxisAlignedBB(0, 0, 0.9375, 1, 1, 1);
@@ -56,6 +50,7 @@ class BlockMagicDoor extends BlockMagicDoorwayPartBase {
 
     @Override
     public SoundType getSoundType(IBlockState state, World world, BlockPos pos, @Nullable Entity entity) {
+        // Return the sound type of the base block, except that placing and removing it are door open and close sounds.
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoor) {
             IBlockState textureBlock = ((TileEntityMagicDoor) tileEntity).getBaseBlockState();
@@ -84,14 +79,22 @@ class BlockMagicDoor extends BlockMagicDoorwayPartBase {
                 part == EnumPartType.TOP && worldIn.getBlockState(pos.down()).getBlock() != this ||
                         part == EnumPartType.BOTTOM && worldIn.getBlockState(pos.up()).getBlock() != this
         ) {
-            Item item = getDoorknob(worldIn, pos);
-            if (item != null) {
-                InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(item, 1, 0));
+            // Spawn the doorknob before breaking the block.
+            Item doorknob = getDoorknob(worldIn, pos);
+            if (doorknob != null) {
+                InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(doorknob, 1, 0));
             }
             worldIn.destroyBlock(pos, false);
         }
     }
 
+    /**
+     * Get the doorknob that opened this door.
+     *
+     * @param world The world containing the door
+     * @param pos   The position of the door block
+     * @return The doorknob if it can be found
+     */
     @Nullable
     private ItemMagicDoorknob getDoorknob(World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
@@ -107,10 +110,18 @@ class BlockMagicDoor extends BlockMagicDoorwayPartBase {
         super.breakBlock(worldIn, pos, state);
     }
 
+    /**
+     * Break the doorway in the area of influence of this block.
+     *
+     * @param world  The world containing the door
+     * @param pos    The position of the door block
+     * @param facing The direction the door is facing in (opposite to doorway)
+     */
     private void breakDoorway(World world, BlockPos pos, EnumFacing facing) {
         EnumFacing doorwayFacing = facing.getOpposite();
 
         ItemMagicDoorknob doorknob = getDoorknob(world, pos);
+        // If the doorknob can't be found, just go with some high number (32)
         float depth = doorknob == null ? 32 : doorknob.getMaterial().getEfficiency();
 
         for (int i = 0; i < depth; ++i) {
@@ -124,6 +135,7 @@ class BlockMagicDoor extends BlockMagicDoorwayPartBase {
 
     @Override
     public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
+        // Collisions for the door consist of a single box (the knob does not cause collisions).
         EnumFacing facing = state.getValue(FACING);
         switch (facing) {
             case NORTH:
@@ -148,7 +160,8 @@ class BlockMagicDoor extends BlockMagicDoorwayPartBase {
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        switch(state.getValue(FACING)) {
+        // Return one of the pre-defined bounding boxes.
+        switch (state.getValue(FACING)) {
             case NORTH:
                 return BOUNDING_BOX_WALL_W;
             case EAST:
@@ -157,36 +170,6 @@ class BlockMagicDoor extends BlockMagicDoorwayPartBase {
                 return BOUNDING_BOX_WALL_E;
         }
         return BOUNDING_BOX_WALL_S;
-    }
-
-    @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoor) {
-            TileEntityMagicDoor tileEntityMagicDoor = (TileEntityMagicDoor) tileEntity;
-
-            BlockModelShapes blockModelShapes = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes();
-
-            IBlockState textureBlock = tileEntityMagicDoor.getBaseBlockState();
-            // Try to get the block's texture
-            TextureAtlasSprite blockTexture = blockModelShapes.getTexture(textureBlock);
-            if ("missingno".equals(blockTexture.getIconName())) {
-                blockTexture = blockModelShapes.getModelManager().getTextureMap().getAtlasSprite(ModMagicDoorknob.MOD_ID + ":blocks/empty");
-            }
-
-            ItemMagicDoorknob doorknob = tileEntityMagicDoor.getDoorknob();
-            ResourceLocation doorknobTextureLocation;
-            if (doorknob != null) {
-                doorknobTextureLocation = doorknob.getMainTextureLocation();
-            }
-            else {
-                doorknobTextureLocation = TextureMap.LOCATION_MISSING_TEXTURE;
-            }
-            return ((IExtendedBlockState) state)
-                    .withProperty(TEXTURE_MAIN, new ResourceLocation(blockTexture.getIconName()))
-                    .withProperty(TEXTURE_HIGHLIGHT, doorknobTextureLocation);
-        }
-        return state;
     }
 
     @Override
@@ -216,7 +199,6 @@ class BlockMagicDoor extends BlockMagicDoorwayPartBase {
                 .withProperty(FACING, EnumFacing.byHorizontalIndex(meta >> 1));
     }
 
-    @Nullable
     @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
         return new TileEntityMagicDoor();

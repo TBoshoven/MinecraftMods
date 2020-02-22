@@ -1,38 +1,31 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.google.common.collect.Lists;
-import com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
-import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
-import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Part of a magic doorway.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
@@ -45,13 +38,11 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
      * Property describing whether the block forms a doorway between north and south.
      */
     public static final PropertyBool OPEN_NORTH_SOUTH = PropertyBool.create("open_north_south");
+
     /**
      * Property describing whether the block forms a doorway between east and west.
      */
     public static final PropertyBool OPEN_EAST_WEST = PropertyBool.create("open_east_west");
-
-    private static final PropertyTexture TEXTURE_MAIN = new PropertyTexture("texture_main");
-    private static final PropertyTexture TEXTURE_HIGHLIGHT = new PropertyTexture("texture_highlight");
 
     private static final AxisAlignedBB BOUNDING_BOX_PILLAR_NW = new AxisAlignedBB(0, 0, 0.9375, 0.0625, 1, 1);
     private static final AxisAlignedBB BOUNDING_BOX_PILLAR_NE = new AxisAlignedBB(0.9375, 0, 0, 1, 1, 0.0625);
@@ -79,32 +70,10 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
         );
     }
 
-    @Override
-    public SoundType getSoundType(IBlockState state, World world, BlockPos pos, @Nullable Entity entity) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoorway) {
-            IBlockState replacedBlock = ((TileEntityMagicDoorway) tileEntity).getBaseBlockState();
-            return replacedBlock.getBlock().getSoundType(replacedBlock, world, pos, null);
-        }
-        return super.getSoundType(state, world, pos, entity);
-    }
-
-    @Override
-    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoorway) {
-            worldIn.setBlockState(pos, ((TileEntityMagicDoorway) tileEntity).getBaseBlockState());
-        }
-        super.breakBlock(worldIn, pos, state);
-    }
-
-    @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
-        for (AxisAlignedBB collisionBox : getCollisionBoxes(state)) {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, collisionBox);
-        }
-    }
-
+    /**
+     * @param state The blockstate of the doorway
+     * @return A list of all bounding boxes for collision purposes
+     */
     private static List<AxisAlignedBB> getCollisionBoxes(IBlockState state) {
         boolean openNorthSouth = state.getValue(OPEN_NORTH_SOUTH);
         boolean openEastWest = state.getValue(OPEN_EAST_WEST);
@@ -127,6 +96,23 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     }
 
     @Override
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+        // When this block is destroyed (manually or by closing the door), replace it by its base block.
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if (tileEntity instanceof TileEntityMagicDoorway) {
+            worldIn.setBlockState(pos, ((TileEntityMagicDoorway) tileEntity).getBaseBlockState());
+        }
+        super.breakBlock(worldIn, pos, state);
+    }
+
+    @Override
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
+        for (AxisAlignedBB collisionBox : getCollisionBoxes(state)) {
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, collisionBox);
+        }
+    }
+
+    @Override
     public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face) {
         switch (face) {
             case DOWN:
@@ -146,36 +132,6 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     @Override
     public boolean isTopSolid(IBlockState state) {
         return state.getValue(PART) == EnumPartType.TOP;
-    }
-
-    @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoorway) {
-            TileEntityMagicDoorway tileEntityMagicDoorway = (TileEntityMagicDoorway) tileEntity;
-
-            BlockModelShapes blockModelShapes = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes();
-
-            IBlockState replacedBlock = tileEntityMagicDoorway.getBaseBlockState();
-            // Try to get the block's texture
-            TextureAtlasSprite blockTexture = blockModelShapes.getTexture(replacedBlock);
-            if ("missingno".equals(blockTexture.getIconName())) {
-                blockTexture = blockModelShapes.getModelManager().getTextureMap().getAtlasSprite(ModMagicDoorknob.MOD_ID + ":blocks/empty");
-            }
-
-            ItemMagicDoorknob doorknob = tileEntityMagicDoorway.getDoorknob();
-            ResourceLocation highlightTextureLocation;
-            if (doorknob != null) {
-                highlightTextureLocation = doorknob.getMainTextureLocation();
-            }
-            else {
-                highlightTextureLocation = TextureMap.LOCATION_MISSING_TEXTURE;
-            }
-            return ((IExtendedBlockState) state)
-                    .withProperty(TEXTURE_MAIN, new ResourceLocation(blockTexture.getIconName()))
-                    .withProperty(TEXTURE_HIGHLIGHT, highlightTextureLocation);
-        }
-        return state;
     }
 
     @Override
@@ -215,8 +171,10 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
         return new TileEntityMagicDoorway();
     }
 
+    @Override
     @Nullable
     public RayTraceResult collisionRayTrace(IBlockState blockState, World worldIn, BlockPos pos, Vec3d start, Vec3d end) {
+        // Manually override collisions so we can break things from within this block
         List<RayTraceResult> rayTraceResults = Lists.newArrayList();
 
         for (AxisAlignedBB collisionBox : getCollisionBoxes(blockState)) {
