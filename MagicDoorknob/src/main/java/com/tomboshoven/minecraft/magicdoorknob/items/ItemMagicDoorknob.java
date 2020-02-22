@@ -8,6 +8,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMag
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.IItemStackTextureMapperProvider;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ITextureMapper;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -29,6 +30,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperProvider {
+
+    private ToolMaterial material;
+    private final ResourceLocation mainTexture;
+
+    public ItemMagicDoorknob(ToolMaterial material, ResourceLocation mainTexture) {
+        this.material = material;
+        this.mainTexture = mainTexture;
+    }
+
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
@@ -72,10 +82,11 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         world.checkLightFor(EnumSkyBlock.BLOCK, doorPos.down());
     }
 
-    private static void placeDoorway(World world, BlockPos pos, EnumFacing facing) {
+    private void placeDoorway(World world, BlockPos pos, EnumFacing facing) {
         EnumFacing doorwayFacing = facing.getOpposite();
         boolean isNorthSouth = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH;
-        for (int i = 0; i < 10; ++i) {
+        float depth = material.getEfficiency();
+        for (int i = 0; i < depth; ++i) {
             BlockPos elementPos = pos.offset(doorwayFacing, i);
             if (
                     (isReplaceable(world, elementPos) && !isEmpty(world, elementPos)) ||
@@ -91,7 +102,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         }
     }
 
-    private static void placeDoorwayElement(World world, BlockPos pos, boolean isNorthSouth, BlockMagicDoorway.EnumPartType part) {
+    private void placeDoorwayElement(World world, BlockPos pos, boolean isNorthSouth, BlockMagicDoorway.EnumPartType part) {
         if (isReplaceable(world, pos)) {
             IBlockState state = world.getBlockState(pos);
             world.setBlockState(pos, Blocks.blockMagicDoorway.getDefaultState().withProperty(BlockMagicDoorway.OPEN_NORTH_SOUTH, isNorthSouth).withProperty(BlockMagicDoorway.OPEN_EAST_WEST, !isNorthSouth).withProperty(BlockMagicDoorway.PART, part));
@@ -105,7 +116,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         }
     }
 
-    private static boolean canPlaceDoor(IBlockAccess world, BlockPos pos, EnumFacing facing) {
+    private boolean canPlaceDoor(IBlockAccess world, BlockPos pos, EnumFacing facing) {
         if (!isReplaceable(world, pos) || !isReplaceable(world, pos.down())) {
             return false;
         }
@@ -121,13 +132,13 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         return blockState.getBlock().isReplaceable(world, pos);
     }
 
-    private static boolean isReplaceable(IBlockAccess world, BlockPos pos) {
+    private boolean isReplaceable(IBlockAccess world, BlockPos pos) {
         IBlockState blockState = world.getBlockState(pos);
-        if (blockState.getBlock().hasTileEntity(blockState)) {
+        Block block = blockState.getBlock();
+        if (block.hasTileEntity(blockState)) {
             return false;
         }
-        // TODO: Whitelist, Evaluate hardness
-        return true;
+        return block.getHarvestLevel(blockState) <= material.getHarvestLevel();
     }
 
     @Override
@@ -135,8 +146,10 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
     public ITextureMapper getTextureMapper(ItemStack stack) {
         return (spriteToMap, blockState) -> {
             String name = spriteToMap.getIconName();
-
-            return new ResourceLocation("minecraft:blocks/redstone_block");
+            if ("texture_main".equals(name)) {
+                return mainTexture;
+            }
+            return new ResourceLocation("missingno");
         };
     }
 }

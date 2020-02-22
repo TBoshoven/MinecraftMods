@@ -138,7 +138,8 @@ class BlockMagicDoor extends Block {
                 part == EnumPartType.TOP && worldIn.getBlockState(pos.down()).getBlock() != this ||
                         part == EnumPartType.BOTTOM && worldIn.getBlockState(pos.up()).getBlock() != this
         ) {
-            InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.itemMagicDoorknob, 1, 0));
+            // TODO: Return the right doorknob
+            InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.itemDoorknobs.get(0), 1, 0));
             worldIn.destroyBlock(pos, false);
         }
     }
