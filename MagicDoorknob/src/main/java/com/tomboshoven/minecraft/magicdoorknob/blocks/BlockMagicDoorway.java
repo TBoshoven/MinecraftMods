@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob;
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
 import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
@@ -98,7 +97,7 @@ public class BlockMagicDoorway extends Block {
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorway) {
-            return ((TileEntityMagicDoorway) tileEntity).getReplacedBlock().getLightValue(world, pos);
+            return ((TileEntityMagicDoorway) tileEntity).getBaseBlockState().getLightValue(world, pos);
         }
         return super.getLightValue(state, world, pos);
     }
@@ -107,7 +106,7 @@ public class BlockMagicDoorway extends Block {
     public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorway) {
-            return ((TileEntityMagicDoorway) tileEntity).getReplacedBlock().getLightOpacity(world, pos);
+            return ((TileEntityMagicDoorway) tileEntity).getBaseBlockState().getLightOpacity(world, pos);
         }
         return super.getLightOpacity(state, world, pos);
     }
@@ -116,7 +115,7 @@ public class BlockMagicDoorway extends Block {
     public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {
         TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorway) {
-            return ((TileEntityMagicDoorway) tileEntity).getReplacedBlock().getBlockHardness(worldIn, pos);
+            return ((TileEntityMagicDoorway) tileEntity).getBaseBlockState().getBlockHardness(worldIn, pos);
         }
         return super.getBlockHardness(blockState, worldIn, pos);
     }
@@ -136,7 +135,7 @@ public class BlockMagicDoorway extends Block {
     public SoundType getSoundType(IBlockState state, World world, BlockPos pos, @Nullable Entity entity) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorway) {
-            IBlockState replacedBlock = ((TileEntityMagicDoorway) tileEntity).getReplacedBlock();
+            IBlockState replacedBlock = ((TileEntityMagicDoorway) tileEntity).getBaseBlockState();
             return replacedBlock.getBlock().getSoundType(replacedBlock, world, pos, null);
         }
         return super.getSoundType(state, world, pos, entity);
@@ -151,7 +150,7 @@ public class BlockMagicDoorway extends Block {
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorway) {
-            worldIn.setBlockState(pos, ((TileEntityMagicDoorway) tileEntity).getReplacedBlock());
+            worldIn.setBlockState(pos, ((TileEntityMagicDoorway) tileEntity).getBaseBlockState());
         }
         super.breakBlock(worldIn, pos, state);
     }
@@ -228,7 +227,7 @@ public class BlockMagicDoorway extends Block {
 
             BlockModelShapes blockModelShapes = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes();
 
-            IBlockState replacedBlock = tileEntityMagicDoorway.getReplacedBlock();
+            IBlockState replacedBlock = tileEntityMagicDoorway.getBaseBlockState();
             // Try to get the block's texture
             TextureAtlasSprite blockTexture = blockModelShapes.getTexture(replacedBlock);
             if ("missingno".equals(blockTexture.getIconName())) {

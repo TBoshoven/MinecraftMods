@@ -73,7 +73,7 @@ class BlockMagicDoor extends Block {
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoor) {
-            return ((TileEntityMagicDoor) tileEntity).getTextureBlock().getLightValue(world, pos);
+            return ((TileEntityMagicDoor) tileEntity).getBaseBlockState().getLightValue(world, pos);
         }
         return super.getLightValue(state, world, pos);
     }
@@ -82,7 +82,7 @@ class BlockMagicDoor extends Block {
     public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoor) {
-            return ((TileEntityMagicDoor) tileEntity).getTextureBlock().getLightOpacity(world, pos);
+            return ((TileEntityMagicDoor) tileEntity).getBaseBlockState().getLightOpacity(world, pos);
         }
         return super.getLightOpacity(state, world, pos);
     }
@@ -90,7 +90,7 @@ class BlockMagicDoor extends Block {
     @Override
     public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoor) {
-            return ((TileEntityMagicDoor) tileEntity).getTextureBlock().getBlockHardness(worldIn, pos);
+            return ((TileEntityMagicDoor) tileEntity).getBaseBlockState().getBlockHardness(worldIn, pos);
         }
         return super.getBlockHardness(blockState, worldIn, pos);
     }
@@ -110,7 +110,7 @@ class BlockMagicDoor extends Block {
     public SoundType getSoundType(IBlockState state, World world, BlockPos pos, @Nullable Entity entity) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoor) {
-            IBlockState textureBlock = ((TileEntityMagicDoor) tileEntity).getTextureBlock();
+            IBlockState textureBlock = ((TileEntityMagicDoor) tileEntity).getBaseBlockState();
             SoundType actualSoundType = textureBlock.getBlock().getSoundType(textureBlock, world, pos, null);
             return new SoundType(
                     actualSoundType.volume,
@@ -224,7 +224,7 @@ class BlockMagicDoor extends Block {
 
             BlockModelShapes blockModelShapes = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes();
 
-            IBlockState textureBlock = tileEntityMagicDoor.getTextureBlock();
+            IBlockState textureBlock = tileEntityMagicDoor.getBaseBlockState();
             // Try to get the block's texture
             TextureAtlasSprite blockTexture = blockModelShapes.getTexture(textureBlock);
             if ("missingno".equals(blockTexture.getIconName())) {

@@ -14,6 +14,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * Class for registering color handlers in the clients.
+ */
 public final class BlockColorHandlers {
     @SidedProxy(
             serverSide = "com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers.BlockColorHandlers$BlockColorHandlerRegistration",
@@ -24,6 +27,9 @@ public final class BlockColorHandlers {
     private BlockColorHandlers() {
     }
 
+    /**
+     * Register all color handlers if we're running a client.
+     */
     public static void registerColorHandlers() {
         //noinspection StaticVariableUsedBeforeInitialization
         blockColorHandlerRegistration.registerBlockColorHandlers();
@@ -47,6 +53,7 @@ public final class BlockColorHandlers {
      * Class for block color handler registration.
      * This class is intended for clients. See BlockColorHandlerRegistration for the server version.
      */
+    @SuppressWarnings("unused")
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
     @SideOnly(Side.CLIENT)
@@ -60,7 +67,7 @@ public final class BlockColorHandlers {
                 if (worldIn != null && pos != null) {
                     TileEntity tileEntity = worldIn.getTileEntity(pos);
                     if (tileEntity instanceof TileEntityMagicDoorway) {
-                        IBlockState replacedBlock = ((TileEntityMagicDoorway) tileEntity).getReplacedBlock();
+                        IBlockState replacedBlock = ((TileEntityMagicDoorway) tileEntity).getBaseBlockState();
                         return blockColors.colorMultiplier(replacedBlock, worldIn, pos, tintIndex);
                     }
                 }
@@ -70,7 +77,7 @@ public final class BlockColorHandlers {
                 if (worldIn != null && pos != null) {
                     TileEntity tileEntity = worldIn.getTileEntity(pos);
                     if (tileEntity instanceof TileEntityMagicDoor) {
-                        IBlockState textureBlock = ((TileEntityMagicDoor) tileEntity).getTextureBlock();
+                        IBlockState textureBlock = ((TileEntityMagicDoor) tileEntity).getBaseBlockState();
                         return blockColors.colorMultiplier(textureBlock, worldIn, pos, tintIndex);
                     }
                 }

@@ -68,7 +68,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         );
         TileEntity topTileEntity = world.getTileEntity(doorPos);
         if (topTileEntity instanceof TileEntityMagicDoor) {
-            ((TileEntityMagicDoor) topTileEntity).setTextureBlock(world.getBlockState(pos));
+            ((TileEntityMagicDoor) topTileEntity).setBaseBlockState(world.getBlockState(pos));
             ((TileEntityMagicDoor) topTileEntity).setDoorknob(this);
         }
         world.setBlockState(
@@ -79,7 +79,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         );
         TileEntity bottomTileEntity = world.getTileEntity(doorPos.down());
         if (bottomTileEntity instanceof TileEntityMagicDoor) {
-            ((TileEntityMagicDoor) bottomTileEntity).setTextureBlock(world.getBlockState(pos.down()));
+            ((TileEntityMagicDoor) bottomTileEntity).setBaseBlockState(world.getBlockState(pos.down()));
             ((TileEntityMagicDoor) bottomTileEntity).setDoorknob(this);
         }
         world.checkLightFor(EnumSkyBlock.BLOCK, doorPos);
@@ -113,7 +113,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
 
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMagicDoorway) {
-                ((TileEntityMagicDoorway) tileEntity).setReplacedBlock(state);
+                ((TileEntityMagicDoorway) tileEntity).setBaseBlockState(state);
                 ((TileEntityMagicDoorway) tileEntity).setDoorknob(this);
             }
 
