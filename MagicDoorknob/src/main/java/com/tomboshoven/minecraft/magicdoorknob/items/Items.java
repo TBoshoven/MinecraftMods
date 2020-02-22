@@ -1,6 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.items;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,6 +14,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Collection of all items in the mod.
@@ -24,14 +26,14 @@ public final class Items {
     /**
      * The magic doorknob items.
      */
-    public static final List<Item> itemDoorknobs = Lists.newArrayList();
+    public static final Map<String, ItemMagicDoorknob> itemDoorknobs = Maps.newHashMap();
 
-    static void addDoorknob(String name, Item.ToolMaterial material, ResourceLocation mainTexture) {
-        Item i = new ItemMagicDoorknob(material, mainTexture)
-                .setRegistryName(ModMagicDoorknob.MOD_ID, String.format("magic_doorknob_%s", name))
-                .setTranslationKey(String.format("%s.magic_doorknob.%s", ModMagicDoorknob.MOD_ID, name))
+    static void addDoorknob(String typeName, Item.ToolMaterial material, ResourceLocation mainTexture) {
+        Item i = new ItemMagicDoorknob(typeName, material, mainTexture)
+                .setRegistryName(ModMagicDoorknob.MOD_ID, String.format("magic_doorknob_%s", typeName))
+                .setTranslationKey(String.format("%s.magic_doorknob.%s", ModMagicDoorknob.MOD_ID, typeName))
                 .setCreativeTab(CreativeTabs.MISC);
-        itemDoorknobs.add(i);
+        itemDoorknobs.put(typeName, (ItemMagicDoorknob) i);
     }
 
     static void addDoorknob(String name, Item.ToolMaterial material, String blockName) {
@@ -53,6 +55,6 @@ public final class Items {
     @SubscribeEvent
     public static void registerItems(Register<Item> event) {
         IForgeRegistry<Item> registry = event.getRegistry();
-        itemDoorknobs.forEach(registry::register);
+        itemDoorknobs.values().forEach(registry::register);
     }
 }

@@ -31,12 +31,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperProvider {
 
+    private String typeName;
     private ToolMaterial material;
-    private final ResourceLocation mainTexture;
+    private final ResourceLocation mainTextureLocation;
 
-    public ItemMagicDoorknob(ToolMaterial material, ResourceLocation mainTexture) {
+    public ItemMagicDoorknob(String typeName, ToolMaterial material, ResourceLocation mainTextureLocation) {
+        this.typeName = typeName;
         this.material = material;
-        this.mainTexture = mainTexture;
+        this.mainTextureLocation = mainTextureLocation;
     }
 
     @Override
@@ -56,7 +58,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         return EnumActionResult.SUCCESS;
     }
 
-    private static void placeDoor(World world, BlockPos pos, EnumFacing facing) {
+    private void placeDoor(World world, BlockPos pos, EnumFacing facing) {
         BlockPos doorPos = pos.offset(facing);
         world.setBlockState(
                 doorPos,
@@ -67,6 +69,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         TileEntity topTileEntity = world.getTileEntity(doorPos);
         if (topTileEntity instanceof TileEntityMagicDoor) {
             ((TileEntityMagicDoor) topTileEntity).setTextureBlock(world.getBlockState(pos));
+            ((TileEntityMagicDoor) topTileEntity).setDoorknob(this);
         }
         world.setBlockState(
                 doorPos.down(),
@@ -77,6 +80,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         TileEntity bottomTileEntity = world.getTileEntity(doorPos.down());
         if (bottomTileEntity instanceof TileEntityMagicDoor) {
             ((TileEntityMagicDoor) bottomTileEntity).setTextureBlock(world.getBlockState(pos.down()));
+            ((TileEntityMagicDoor) bottomTileEntity).setDoorknob(this);
         }
         world.checkLightFor(EnumSkyBlock.BLOCK, doorPos);
         world.checkLightFor(EnumSkyBlock.BLOCK, doorPos.down());
@@ -147,9 +151,17 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         return (spriteToMap, blockState) -> {
             String name = spriteToMap.getIconName();
             if ("texture_main".equals(name)) {
-                return mainTexture;
+                return mainTextureLocation;
             }
             return new ResourceLocation("missingno");
         };
+    }
+
+    public ResourceLocation getMainTextureLocation() {
+        return mainTextureLocation;
+    }
+
+    public String getTypeName() {
+        return typeName;
     }
 }

@@ -2,7 +2,7 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
-import com.tomboshoven.minecraft.magicdoorknob.items.Items;
+import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
@@ -16,11 +16,13 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -138,10 +140,21 @@ class BlockMagicDoor extends Block {
                 part == EnumPartType.TOP && worldIn.getBlockState(pos.down()).getBlock() != this ||
                         part == EnumPartType.BOTTOM && worldIn.getBlockState(pos.up()).getBlock() != this
         ) {
-            // TODO: Return the right doorknob
-            InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.itemDoorknobs.get(0), 1, 0));
+            Item item = getDoorknob(worldIn, pos);
+            if (item != null) {
+                InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(item, 1, 0));
+            }
             worldIn.destroyBlock(pos, false);
         }
+    }
+
+    @Nullable
+    private ItemMagicDoorknob getDoorknob(World world, BlockPos pos) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof TileEntityMagicDoor) {
+            return ((TileEntityMagicDoor) tileEntity).getDoorknob();
+        }
+        return null;
     }
 
     @Override
@@ -202,15 +215,28 @@ class BlockMagicDoor extends Block {
     public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoor) {
-            IBlockState textureBlock = ((TileEntityMagicDoor) tileEntity).getTextureBlock();
+            TileEntityMagicDoor tileEntityMagicDoor = (TileEntityMagicDoor) tileEntity;
+
+            BlockModelShapes blockModelShapes = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes();
+
+            IBlockState textureBlock = tileEntityMagicDoor.getTextureBlock();
             // Try to get the block's texture
-            TextureAtlasSprite texture = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(textureBlock);
-            if ("missingno".equals(texture.getIconName())) {
-                texture = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelManager().getTextureMap().getAtlasSprite("magic_doorknob:blocks/empty");
+            TextureAtlasSprite blockTexture = blockModelShapes.getTexture(textureBlock);
+            if ("missingno".equals(blockTexture.getIconName())) {
+                blockTexture = blockModelShapes.getModelManager().getTextureMap().getAtlasSprite(ModMagicDoorknob.MOD_ID + ":blocks/empty");
+            }
+
+            ItemMagicDoorknob doorknob = tileEntityMagicDoor.getDoorknob();
+            ResourceLocation doorknobTextureLocation;
+            if (doorknob != null) {
+                doorknobTextureLocation = doorknob.getMainTextureLocation();
+            }
+            else {
+                doorknobTextureLocation = new ResourceLocation(ModMagicDoorknob.MOD_ID, "blocks/empty");
             }
             return ((IExtendedBlockState) state)
-                    .withProperty(TEXTURE_MAIN, new ResourceLocation(texture.getIconName()))
-                    .withProperty(TEXTURE_HIGHLIGHT, new ResourceLocation("minecraft:blocks/redstone_block"));
+                    .withProperty(TEXTURE_MAIN, new ResourceLocation(blockTexture.getIconName()))
+                    .withProperty(TEXTURE_HIGHLIGHT, doorknobTextureLocation);
         }
         return state;
     }

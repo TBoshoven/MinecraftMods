@@ -60,7 +60,7 @@ public final class Models {
 
             // Register item models
             ModelResourceLocation modelDoorknob = new ModelResourceLocation(new ResourceLocation(MOD_ID, "magic_doorknob"), null);
-            Items.itemDoorknobs.forEach(item -> ModelLoader.setCustomModelResourceLocation(item, 0, modelDoorknob));
+            Items.itemDoorknobs.values().forEach(item -> ModelLoader.setCustomModelResourceLocation(item, 0, modelDoorknob));
         }
     }
 }
