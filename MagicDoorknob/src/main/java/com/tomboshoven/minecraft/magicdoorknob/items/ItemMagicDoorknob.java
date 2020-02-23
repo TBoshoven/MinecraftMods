@@ -11,6 +11,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -18,6 +19,8 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
@@ -116,8 +119,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
             ((TileEntityMagicDoor) bottomTileEntity).setBaseBlockState(world.getBlockState(pos.down()));
             ((TileEntityMagicDoor) bottomTileEntity).setDoorknob(this);
         }
-        world.checkLightFor(EnumSkyBlock.BLOCK, doorPos);
-        world.checkLightFor(EnumSkyBlock.BLOCK, doorPos.down());
+        world.playSound(null, doorPos, SoundEvents.BLOCK_WOODEN_DOOR_OPEN, SoundCategory.BLOCKS, 1, 1);
     }
 
     /**
