@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public final class Items {
     /**
-     * The item version of the magic mirror mod.
+     * The item version of the magic mirror block.
      */
     public static final Item itemBlockMagicMirror = new ItemBlock(Blocks.blockMagicMirror)
             .setRegistryName(ModMagicMirror.MOD_ID, "magic_mirror")

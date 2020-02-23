@@ -1,10 +1,10 @@
 [
   {
-    "modid": "magic_mirror",
-    "name": "Magic Mirror",
+    "modid": "magic_doorknob",
+    "name": "Magic Doorknob",
     "version": "${version}",
     "mcversion": "${mc_version}",
-    "description": "A mod adding a magic mirror to the game.",
+    "description": "A mod adding a magic doorknob, which does not need a door to work.",
     "url": "https://github.com/TBoshoven/",
     "authorList": [
       "Tom Boshoven"

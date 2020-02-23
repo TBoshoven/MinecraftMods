@@ -1,3 +1,9 @@
+/*
+Build script for all mods.
+In principle, building a mod is as simple as adding an empty build.gradle to the mod's directory and updating
+settings.gradle.
+*/
+
 // For those who want the bleeding edge
 buildscript {
     repositories {
@@ -23,7 +29,7 @@ subprojects {
     targetCompatibility = 1.8
 
     minecraft {
-        version = "1.12.2-14.23.5.2807"
+        version = "1.12.2-14.23.5.2838"
         runDir = new File(rootProject.projectDir.path, 'run')
 
         mappings = "stable_39"
