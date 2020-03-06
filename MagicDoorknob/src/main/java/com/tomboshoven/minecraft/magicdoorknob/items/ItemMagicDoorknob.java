@@ -20,7 +20,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
@@ -100,7 +99,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         world.setBlockState(
                 doorPos,
                 Blocks.blockMagicDoor.getDefaultState()
-                        .withProperty(BlockMagicDoor.FACING, facing)
+                        .withProperty(BlockMagicDoor.HORIZONTAL_FACING, facing)
                         .withProperty(BlockMagicDoor.PART, BlockMagicDoor.EnumPartType.TOP)
         );
         TileEntity topTileEntity = world.getTileEntity(doorPos);
@@ -111,7 +110,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         world.setBlockState(
                 doorPos.down(),
                 Blocks.blockMagicDoor.getDefaultState()
-                        .withProperty(BlockMagicDoor.FACING, facing)
+                        .withProperty(BlockMagicDoor.HORIZONTAL_FACING, facing)
                         .withProperty(BlockMagicDoor.PART, BlockMagicDoor.EnumPartType.BOTTOM)
         );
         TileEntity bottomTileEntity = world.getTileEntity(doorPos.down());

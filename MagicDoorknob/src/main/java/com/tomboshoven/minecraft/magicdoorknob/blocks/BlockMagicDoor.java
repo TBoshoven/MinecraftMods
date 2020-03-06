@@ -4,7 +4,6 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMag
 import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.block.state.BlockFaceShape;
@@ -16,6 +15,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -41,7 +41,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     /**
      * Property describing which way the door is facing.
      */
-    public static final EnumProperty<EnumFacing> FACING = BlockHorizontal.FACING;
+    public static final EnumProperty<EnumFacing> HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     private static final AxisAlignedBB BOUNDING_BOX_WALL_S = new AxisAlignedBB(0, 0, 0, 1, 1, 0.0625);
     private static final AxisAlignedBB BOUNDING_BOX_WALL_N = new AxisAlignedBB(0, 0, 0.9375, 1, 1, 1);
@@ -106,7 +106,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
 
     @Override
     public void breakBlock(World worldIn, BlockPos pos, BlockState state) {
-        breakDoorway(worldIn, pos, state.getValue(FACING));
+        breakDoorway(worldIn, pos, state.getValue(HORIZONTAL_FACING));
         super.breakBlock(worldIn, pos, state);
     }
 
@@ -136,7 +136,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     @Override
     public void addCollisionBoxToList(BlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
         // Collisions for the door consist of a single box (the knob does not cause collisions).
-        EnumFacing facing = state.getValue(FACING);
+        EnumFacing facing = state.getValue(HORIZONTAL_FACING);
         switch (facing) {
             case NORTH:
                 addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_WALL_W);
@@ -161,7 +161,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     @Override
     public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
         // Return one of the pre-defined bounding boxes.
-        switch (state.getValue(FACING)) {
+        switch (state.getValue(HORIZONTAL_FACING)) {
             case NORTH:
                 return BOUNDING_BOX_WALL_W;
             case EAST:
@@ -176,7 +176,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer.Builder(this)
                 .add(PART)
-                .add(FACING)
+                .add(HORIZONTAL_FACING)
                 .add(TEXTURE_MAIN)
                 .add(TEXTURE_HIGHLIGHT)
                 .build();
@@ -189,14 +189,14 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
 
     @Override
     public int getMetaFromState(BlockState state) {
-        return state.getValue(PART).getValue() | (state.getValue(FACING).getHorizontalIndex() << 1);
+        return state.getValue(PART).getValue() | (state.getValue(HORIZONTAL_FACING).getHorizontalIndex() << 1);
     }
 
     @Override
     public BlockState getStateFromMeta(int meta) {
         return getDefaultState()
                 .withProperty(PART, (meta & 1) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP)
-                .withProperty(FACING, EnumFacing.byHorizontalIndex(meta >> 1));
+                .withProperty(HORIZONTAL_FACING, EnumFacing.byHorizontalIndex(meta >> 1));
     }
 
     @Override

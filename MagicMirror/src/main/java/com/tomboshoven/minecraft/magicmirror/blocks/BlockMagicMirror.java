@@ -9,7 +9,7 @@ import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import io.netty.buffer.ByteBuf;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockHorizontal;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -49,7 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BlockMagicMirror extends BlockHorizontal {
+public class BlockMagicMirror extends HorizontalBlock {
     /**
      * Property describing whether the mirror is completely constructed.
      */
