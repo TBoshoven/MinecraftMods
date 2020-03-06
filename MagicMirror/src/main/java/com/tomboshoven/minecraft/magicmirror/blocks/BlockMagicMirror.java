@@ -14,7 +14,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
@@ -58,7 +58,7 @@ public class BlockMagicMirror extends BlockHorizontal {
     /**
      * Property describing which part of the mirror is being represented by this block.
      */
-    public static final PropertyEnum<EnumPartType> PART = PropertyEnum.create("part", EnumPartType.class);
+    public static final EnumProperty<EnumPartType> PART = EnumProperty.create("part", EnumPartType.class);
 
     /**
      * The bounding boxes of the various orientations of this block; should be indexed by facing.horizontalIndex()

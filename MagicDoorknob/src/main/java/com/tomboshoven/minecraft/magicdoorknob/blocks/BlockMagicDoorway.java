@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
@@ -32,7 +32,7 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     /**
      * Property describing which part of the doorway is being represented by this block.
      */
-    public static final PropertyEnum<EnumPartType> PART = PropertyEnum.create("part", EnumPartType.class);
+    public static final EnumProperty<EnumPartType> PART = EnumProperty.create("part", EnumPartType.class);
 
     /**
      * Property describing whether the block forms a doorway between north and south.

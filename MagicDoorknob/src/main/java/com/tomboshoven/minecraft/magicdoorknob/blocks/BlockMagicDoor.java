@@ -6,7 +6,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
@@ -37,11 +37,11 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     /**
      * Property describing which part of the door is being represented by this block.
      */
-    public static final PropertyEnum<EnumPartType> PART = PropertyEnum.create("part", EnumPartType.class);
+    public static final EnumProperty<EnumPartType> PART = EnumProperty.create("part", EnumPartType.class);
     /**
      * Property describing which way the door is facing.
      */
-    public static final PropertyEnum<EnumFacing> FACING = BlockHorizontal.FACING;
+    public static final EnumProperty<EnumFacing> FACING = BlockHorizontal.FACING;
 
     private static final AxisAlignedBB BOUNDING_BOX_WALL_S = new AxisAlignedBB(0, 0, 0, 1, 1, 0.0625);
     private static final AxisAlignedBB BOUNDING_BOX_WALL_N = new AxisAlignedBB(0, 0, 0.9375, 1, 1, 1);
