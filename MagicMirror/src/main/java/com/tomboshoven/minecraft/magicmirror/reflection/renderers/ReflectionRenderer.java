@@ -30,7 +30,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
      */
     public ReflectionRenderer(Entity entity) {
         this.entity = entity;
-        entityRenderer = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(entity);
+        entityRenderer = Minecraft.getInstance().getRenderManager().getEntityRenderObject(entity);
     }
 
     @Override

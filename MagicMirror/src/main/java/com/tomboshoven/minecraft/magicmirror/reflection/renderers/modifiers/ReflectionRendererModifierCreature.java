@@ -41,7 +41,7 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
      */
     public ReflectionRendererModifierCreature(ReflectionRendererBase baseRenderer) {
         super(baseRenderer);
-        replacementRenderer = new RenderOffModelPlayer(Minecraft.getMinecraft().getRenderManager(), new ModelSkeletonPlayer(), new ResourceLocation("textures/entity/skeleton/skeleton.png"));
+        replacementRenderer = new RenderOffModelPlayer(Minecraft.getInstance().getRenderManager(), new ModelSkeletonPlayer(), new ResourceLocation("textures/entity/skeleton/skeleton.png"));
     }
 
     @Override

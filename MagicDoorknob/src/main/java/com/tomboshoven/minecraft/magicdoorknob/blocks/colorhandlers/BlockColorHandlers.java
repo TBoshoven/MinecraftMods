@@ -59,7 +59,7 @@ public final class BlockColorHandlers {
         void registerBlockColorHandlers() {
             super.registerBlockColorHandlers();
 
-            BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
+            BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 
             IBlockColor doorwayBlockColorHandler = new DoorwayBlockColorHandler();
             blockColors.registerBlockColorHandler(doorwayBlockColorHandler, Blocks.blockMagicDoorway);

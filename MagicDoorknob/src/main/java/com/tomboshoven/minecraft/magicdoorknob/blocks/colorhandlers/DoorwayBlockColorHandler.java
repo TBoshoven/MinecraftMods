@@ -25,7 +25,7 @@ class DoorwayBlockColorHandler implements IBlockColor {
     @Override
     public int colorMultiplier(BlockState state, @Nullable IEnviromentBlockReader worldIn, @Nullable BlockPos pos, int tintIndex) {
         if (worldIn != null && pos != null) {
-            BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
+            BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 
             TileEntity tileEntity = worldIn.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {

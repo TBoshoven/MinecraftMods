@@ -359,7 +359,7 @@ public class BlockMagicMirror extends HorizontalBlock {
         @Nullable
         @Override
         public IMessage onMessage(MessageAttachModifier message, MessageContext ctx) {
-            WorldClient world = Minecraft.getMinecraft().world;
+            WorldClient world = Minecraft.getInstance().world;
             TileEntity te = world.getTileEntity(message.mirrorPos);
             if (te instanceof TileEntityMagicMirrorBase) {
                 MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);

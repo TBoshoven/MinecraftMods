@@ -69,7 +69,7 @@ class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<TileEntity
 
         // Rebind original frame buffer.
         // This could be done in a nicer way, but I don't think a frame buffer stacking mechanism is available.
-        Minecraft.getMinecraft().getFramebuffer().bindFramebuffer(true);
+        Minecraft.getInstance().getFramebuffer().bindFramebuffer(true);
 
         GlStateManager.pushMatrix();
 

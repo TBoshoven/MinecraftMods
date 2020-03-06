@@ -351,7 +351,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         @Nullable
         @Override
         public IMessage onMessage(MessageSwapMirror message, MessageContext ctx) {
-            TileEntity te = Minecraft.getMinecraft().world.getTileEntity(message.mirrorPos);
+            TileEntity te = Minecraft.getInstance().world.getTileEntity(message.mirrorPos);
             if (te instanceof TileEntityMagicMirrorBase) {
                 ((TileEntityMagicMirrorBase) te).getModifiers().stream()
                         .filter(modifier -> modifier instanceof MagicMirrorTileEntityModifierArmor).findFirst()
@@ -381,7 +381,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         @Nullable
         @Override
         public IMessage onMessage(MessageSwapPlayer message, MessageContext ctx) {
-            Entity entity = Minecraft.getMinecraft().world.getEntityByID(message.entityId);
+            Entity entity = Minecraft.getInstance().world.getEntityByID(message.entityId);
 
             if (entity instanceof EntityPlayer) {
                 message.armor.swap((EntityPlayer) entity);

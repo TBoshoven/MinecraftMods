@@ -144,7 +144,7 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
         if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
             TileEntityMagicDoorwayPartBase tileEntityMagicDoorwayPart = (TileEntityMagicDoorwayPartBase) tileEntity;
 
-            BlockModelShapes blockModelShapes = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes();
+            BlockModelShapes blockModelShapes = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes();
 
             // Get the base block texture
             BlockState baseBlockState = tileEntityMagicDoorwayPart.getBaseBlockState();
