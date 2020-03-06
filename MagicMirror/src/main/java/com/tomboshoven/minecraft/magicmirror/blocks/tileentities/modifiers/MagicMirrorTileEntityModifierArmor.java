@@ -31,8 +31,8 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -346,7 +346,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
     /**
      * Handler for messages describing players swapping armor with the mirror (mirror side, client).
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static class MessageHandlerSwapMirrorClient implements IMessageHandler<MessageSwapMirror, IMessage> {
         @Nullable
         @Override
@@ -376,7 +376,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
     /**
      * Handler for messages describing players swapping armor with the mirror (player side, client).
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static class MessageHandlerSwapPlayerClient implements IMessageHandler<MessageSwapPlayer, IMessage> {
         @Nullable
         @Override

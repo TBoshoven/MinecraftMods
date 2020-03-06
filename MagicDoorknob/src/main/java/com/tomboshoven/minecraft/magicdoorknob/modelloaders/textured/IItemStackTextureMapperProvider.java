@@ -2,8 +2,8 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -17,6 +17,6 @@ public interface IItemStackTextureMapperProvider {
      * @param stack The item stack to provide a texture mapper for
      * @return A texture mapper
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     ITextureMapper getTextureMapper(ItemStack stack);
 }

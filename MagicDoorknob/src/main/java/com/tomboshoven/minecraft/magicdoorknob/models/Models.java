@@ -7,8 +7,8 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import static com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob.MOD_ID;
 
@@ -50,7 +50,7 @@ public final class Models {
      * This class is intended for clients. See ModelRegistration for the server version.
      */
     @SuppressWarnings("unused")
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static class ModelRegistrationClient extends ModelRegistration {
         @Override
         void registerModels() {

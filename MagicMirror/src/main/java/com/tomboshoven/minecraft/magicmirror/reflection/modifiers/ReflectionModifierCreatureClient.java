@@ -3,15 +3,15 @@ package com.tomboshoven.minecraft.magicmirror.reflection.modifiers;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers.ReflectionRendererModifierCreature;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A reflection modifier that changes the armor that the entity used to represent the character.
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ReflectionModifierCreatureClient extends ReflectionModifierCreature {

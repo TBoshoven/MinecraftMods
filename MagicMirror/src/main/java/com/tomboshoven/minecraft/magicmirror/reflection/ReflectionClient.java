@@ -6,8 +6,8 @@ import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRend
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ReflectionClient extends Reflection {
     /**
      * The renderer for the reflection.
@@ -138,7 +138,7 @@ public class ReflectionClient extends Reflection {
      * <p>
      * This factory is intended for clients. See Reflection.Factory for the server version.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static class ReflectionFactory extends Reflection.ReflectionFactory {
         @Override
         public Reflection createClient() {
