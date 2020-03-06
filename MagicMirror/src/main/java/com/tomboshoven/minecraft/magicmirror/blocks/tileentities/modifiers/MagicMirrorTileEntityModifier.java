@@ -4,7 +4,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifie
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorBase;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -49,7 +49,7 @@ public abstract class MagicMirrorTileEntityModifier {
      * @param nbt The NBT tag compound to write to.
      * @return The input compound, for chaining.
      */
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+    public CompoundNBT writeToNBT(CompoundNBT nbt) {
         return nbt;
     }
 
@@ -58,7 +58,7 @@ public abstract class MagicMirrorTileEntityModifier {
      *
      * @param nbt The NBT tag compound to read from.
      */
-    public void readFromNBT(NBTTagCompound nbt) {
+    public void readFromNBT(CompoundNBT nbt) {
     }
 
     /**

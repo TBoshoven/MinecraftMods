@@ -7,8 +7,8 @@ import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection.ReflectionFactory;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -147,7 +147,7 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+    public CompoundNBT writeToNBT(CompoundNBT compound) {
         return writeInternal(super.writeToNBT(compound));
     }
 
@@ -157,10 +157,10 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
      * @param compound The NBT compound to write to.
      * @return The nbt parameter, for chaining.
      */
-    private NBTTagCompound writeInternal(NBTTagCompound compound) {
+    private CompoundNBT writeInternal(CompoundNBT compound) {
         NBTTagList modifierList = new NBTTagList();
         for (MagicMirrorTileEntityModifier modifier : modifiers) {
-            NBTTagCompound modifierCompound = new NBTTagCompound();
+            CompoundNBT modifierCompound = new CompoundNBT();
             modifierCompound.setString("name", modifier.getName());
             modifierList.appendTag(modifier.writeToNBT(modifierCompound));
         }
@@ -169,15 +169,15 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
+    public void readFromNBT(CompoundNBT compound) {
         super.readFromNBT(compound);
         NBTTagList modifiers = compound.getTagList("modifiers", 10);
         for (NBTBase modifierCompound : modifiers) {
-            if (modifierCompound instanceof NBTTagCompound) {
-                String name = ((NBTTagCompound) modifierCompound).getString("name");
+            if (modifierCompound instanceof CompoundNBT) {
+                String name = ((CompoundNBT) modifierCompound).getString("name");
                 MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(name);
                 if (modifier != null) {
-                    modifier.apply(this, (NBTTagCompound) modifierCompound);
+                    modifier.apply(this, (CompoundNBT) modifierCompound);
                 }
             }
         }
@@ -216,7 +216,7 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     }
 
     @Override
-    public NBTTagCompound getUpdateTag() {
+    public CompoundNBT getUpdateTag() {
         return writeInternal(super.getUpdateTag());
     }
 

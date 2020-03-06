@@ -5,7 +5,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagic
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -143,7 +143,7 @@ public abstract class MagicMirrorModifier {
      * @param tileEntity The magic mirror tile entity to apply the modifier to.
      * @param nbt        The NBT tag to use for the modifier.
      */
-    public void apply(TileEntityMagicMirrorBase tileEntity, NBTTagCompound nbt) {
+    public void apply(TileEntityMagicMirrorBase tileEntity, CompoundNBT nbt) {
         MagicMirrorTileEntityModifier magicMirrorTileEntityModifier = createTileEntityModifier();
         magicMirrorTileEntityModifier.readFromNBT(nbt);
         tileEntity.addModifier(magicMirrorTileEntityModifier);

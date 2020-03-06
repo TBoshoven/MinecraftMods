@@ -18,7 +18,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
@@ -90,12 +90,12 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+    public CompoundNBT writeToNBT(CompoundNBT nbt) {
         return replacementArmor.writeToNBT(super.writeToNBT(nbt));
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt) {
+    public void readFromNBT(CompoundNBT nbt) {
         super.readFromNBT(nbt);
         replacementArmor.readFromNBT(nbt);
     }
@@ -219,7 +219,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
          * @param nbt The NBT tag compound to write to.
          * @return The input compound, for chaining.
          */
-        NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        CompoundNBT writeToNBT(CompoundNBT nbt) {
             ItemStackHelper.saveAllItems(nbt, replacementInventory, true);
             return nbt;
         }
@@ -229,7 +229,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
          *
          * @param nbt The NBT tag compound to read from.
          */
-        void readFromNBT(NBTTagCompound nbt) {
+        void readFromNBT(CompoundNBT nbt) {
             ItemStackHelper.loadAllItems(nbt, replacementInventory);
         }
 

@@ -6,7 +6,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -29,12 +29,12 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     private ItemMagicDoorknob doorknob;
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+    public CompoundNBT writeToNBT(CompoundNBT compound) {
         return writeInternal(compound);
     }
 
-    private NBTTagCompound writeInternal(NBTTagCompound compound) {
-        NBTTagCompound result = super.writeToNBT(compound);
+    private CompoundNBT writeInternal(CompoundNBT compound) {
+        CompoundNBT result = super.writeToNBT(compound);
         ResourceLocation registryName = baseBlockState.getBlock().getRegistryName();
         if (registryName != null) {
             result.setString("baseBlock", registryName.toString());
@@ -47,7 +47,7 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
+    public void readFromNBT(CompoundNBT compound) {
         super.readFromNBT(compound);
         String registryName = compound.getString("baseBlock");
         Block block = Block.getBlockFromName(registryName);
@@ -60,7 +60,7 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     }
 
     @Override
-    public NBTTagCompound getUpdateTag() {
+    public CompoundNBT getUpdateTag() {
         return writeInternal(super.getUpdateTag());
     }
 
