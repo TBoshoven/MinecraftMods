@@ -21,7 +21,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -154,12 +154,12 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, BlockState state, BlockPos pos, Direction face) {
+    public BlockFaceShape getBlockFaceShape(IEnviromentBlockReader worldIn, BlockState state, BlockPos pos, Direction face) {
         return BlockFaceShape.UNDEFINED;
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IEnviromentBlockReader source, BlockPos pos) {
         // Return one of the pre-defined bounding boxes.
         switch (state.get(HORIZONTAL_FACING)) {
             case NORTH:

@@ -21,7 +21,7 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
@@ -66,7 +66,7 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     }
 
     @Override
-    public int getLightValue(BlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
         // Use the base block's light value.
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
@@ -76,7 +76,7 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     }
 
     @Override
-    public int getLightOpacity(BlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightOpacity(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
         // Use the base block's light opacity.
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
@@ -111,7 +111,7 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     }
 
     @Override
-    public boolean isReplaceable(IBlockAccess worldIn, BlockPos pos) {
+    public boolean isReplaceable(IEnviromentBlockReader worldIn, BlockPos pos) {
         // Since we're basing this block on the "air" material, we have to tell things we can't be replaced when
         // placing blocks
         return false;
@@ -138,7 +138,7 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     }
 
     @Override
-    public BlockState getExtendedState(BlockState state, IBlockAccess world, BlockPos pos) {
+    public BlockState getExtendedState(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
         // The extended blockstate contains texture information from the tile entities.
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {

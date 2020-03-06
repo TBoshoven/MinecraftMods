@@ -22,7 +22,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -58,7 +58,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
      * @param pos   The position to check
      * @return Whether the block can be replaced by a door or doorway
      */
-    private static boolean isEmpty(IBlockAccess world, BlockPos pos) {
+    private static boolean isEmpty(IEnviromentBlockReader world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         if (blockState.getBlock().isAir(blockState, world, pos)) {
             return true;
@@ -179,7 +179,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
      * @param facing The direction the door will be facing
      * @return Whether a door can be placed at the given position.
      */
-    private boolean canPlaceDoor(IBlockAccess world, BlockPos pos, Direction facing) {
+    private boolean canPlaceDoor(IEnviromentBlockReader world, BlockPos pos, Direction facing) {
         if (!isReplaceable(world, pos) || !isReplaceable(world, pos.down())) {
             return false;
         }
@@ -193,7 +193,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
      * @param pos   The position to check
      * @return Whether this doorknob can replace the given block by a door or doorway
      */
-    private boolean isReplaceable(IBlockAccess world, BlockPos pos) {
+    private boolean isReplaceable(IEnviromentBlockReader world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         if (block.hasTileEntity(blockState)) {

@@ -15,7 +15,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -113,7 +113,7 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, BlockState state, BlockPos pos, Direction face) {
+    public BlockFaceShape getBlockFaceShape(IEnviromentBlockReader worldIn, BlockState state, BlockPos pos, Direction face) {
         switch (face) {
             case DOWN:
                 return BlockFaceShape.UNDEFINED;
@@ -161,7 +161,7 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos) {
+    public BlockState getActualState(BlockState state, IEnviromentBlockReader worldIn, BlockPos pos) {
         return super.getActualState(state, worldIn, pos);
     }
 

@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -66,7 +66,7 @@ public abstract class MagicMirrorModifier {
      * @return The tile entity, or null if it does not exist or is not a magic mirror tile entity.
      */
     @Nullable
-    private static TileEntityMagicMirrorBase getMagicMirrorTileEntity(IBlockAccess worldIn, BlockPos pos) {
+    private static TileEntityMagicMirrorBase getMagicMirrorTileEntity(IEnviromentBlockReader worldIn, BlockPos pos) {
         TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicMirrorBase) {
             return (TileEntityMagicMirrorBase) tileEntity;
@@ -82,7 +82,7 @@ public abstract class MagicMirrorModifier {
      * @param modifierType The type of modifier to test for.
      * @return Whether the mirror at the given position has the given modifier.
      */
-    private static boolean hasModifierOfType(IBlockAccess world, BlockPos pos, Class<? extends MagicMirrorModifier> modifierType) {
+    private static boolean hasModifierOfType(IEnviromentBlockReader world, BlockPos pos, Class<? extends MagicMirrorModifier> modifierType) {
         TileEntityMagicMirrorBase magicMirrorTileEntity = getMagicMirrorTileEntity(world, pos);
         if (magicMirrorTileEntity == null) {
             return false;
@@ -116,7 +116,7 @@ public abstract class MagicMirrorModifier {
      * @param pos      The position in the world of the block.
      * @param heldItem The item used on the block.
      */
-    public void apply(IBlockAccess worldIn, BlockPos pos, ItemStack heldItem) {
+    public void apply(IEnviromentBlockReader worldIn, BlockPos pos, ItemStack heldItem) {
         TileEntityMagicMirrorBase magicMirrorTileEntity = getMagicMirrorTileEntity(worldIn, pos);
         if (magicMirrorTileEntity == null) {
             return;
@@ -161,7 +161,7 @@ public abstract class MagicMirrorModifier {
      * @param pos   The position of the mirror block to check.
      * @return Whether the mirror at the given position has the current modifier.
      */
-    boolean hasModifierOfType(IBlockAccess world, BlockPos pos) {
+    boolean hasModifierOfType(IEnviromentBlockReader world, BlockPos pos) {
         return hasModifierOfType(world, pos, getClass());
     }
 }

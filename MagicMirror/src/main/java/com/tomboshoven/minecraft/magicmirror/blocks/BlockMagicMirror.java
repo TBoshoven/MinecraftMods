@@ -33,7 +33,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -172,7 +172,7 @@ public class BlockMagicMirror extends HorizontalBlock {
     }
 
     @Override
-    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, BlockState state, BlockPos pos, Direction face) {
+    public BlockFaceShape getBlockFaceShape(IEnviromentBlockReader worldIn, BlockState state, BlockPos pos, Direction face) {
         // Only the opposite face is default
         return state.get(HORIZONTAL_FACING).getOpposite() == face ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
     }
@@ -188,7 +188,7 @@ public class BlockMagicMirror extends HorizontalBlock {
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IEnviromentBlockReader source, BlockPos pos) {
         return BOUNDING_BOX[state.get(HORIZONTAL_FACING).getHorizontalIndex()];
     }
 
