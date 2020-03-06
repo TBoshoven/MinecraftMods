@@ -10,7 +10,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -28,7 +28,7 @@ import java.util.List;
 @MethodsReturnNonnullByDefault
 public abstract class TileEntityMagicMirrorBase extends TileEntity {
     // Some values copied from the blockstate
-    private EnumFacing facing = EnumFacing.NORTH;
+    private Direction facing = Direction.NORTH;
     private EnumPartType part = EnumPartType.TOP;
     private boolean complete;
 
@@ -117,7 +117,7 @@ public abstract class TileEntityMagicMirrorBase extends TileEntity {
     /**
      * @return Which direction the mirror is facing in.
      */
-    public EnumFacing getFacing() {
+    public Direction getFacing() {
         return facing;
     }
 

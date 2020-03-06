@@ -15,8 +15,8 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -68,16 +68,16 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, Direction direction, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
             // Only sideways doors right now
-            if (facing == EnumFacing.UP || facing == EnumFacing.DOWN) {
+            if (direction == Direction.UP || direction == Direction.DOWN) {
                 return EnumActionResult.FAIL;
             }
 
-            if (canPlaceDoor(worldIn, pos, facing)) {
-                placeDoor(worldIn, pos, facing);
-                placeDoorway(worldIn, pos, facing);
+            if (canPlaceDoor(worldIn, pos, direction)) {
+                placeDoor(worldIn, pos, direction);
+                placeDoorway(worldIn, pos, direction);
                 player.getHeldItem(hand).shrink(1);
                 return EnumActionResult.SUCCESS;
             }
@@ -94,7 +94,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
      * @param pos    The position of the top part of the door
      * @param facing The direction the door should be facing
      */
-    private void placeDoor(World world, BlockPos pos, EnumFacing facing) {
+    private void placeDoor(World world, BlockPos pos, Direction facing) {
         BlockPos doorPos = pos.offset(facing);
         world.setBlockState(
                 doorPos,
@@ -129,9 +129,9 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
      * @param pos    The position of the top part of the starting blocks of the doorway
      * @param facing The direction the door is facing (outward from the doorway)
      */
-    private void placeDoorway(World world, BlockPos pos, EnumFacing facing) {
-        EnumFacing doorwayFacing = facing.getOpposite();
-        boolean isNorthSouth = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH;
+    private void placeDoorway(World world, BlockPos pos, Direction facing) {
+        Direction doorwayFacing = facing.getOpposite();
+        boolean isNorthSouth = facing == Direction.NORTH || facing == Direction.SOUTH;
         float depth = material.getEfficiency();
         for (int i = 0; i < depth; ++i) {
             BlockPos elementPos = pos.offset(doorwayFacing, i);
@@ -179,7 +179,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
      * @param facing The direction the door will be facing
      * @return Whether a door can be placed at the given position.
      */
-    private boolean canPlaceDoor(IBlockAccess world, BlockPos pos, EnumFacing facing) {
+    private boolean canPlaceDoor(IBlockAccess world, BlockPos pos, Direction facing) {
         if (!isReplaceable(world, pos) || !isReplaceable(world, pos.down())) {
             return false;
         }

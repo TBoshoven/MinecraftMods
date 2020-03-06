@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -53,7 +53,7 @@ class TexturedBakedModel implements IBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable EnumFacing side, long rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand) {
         // Return the original quads, with the property sprites replaced by actual ones
         List<BakedQuad> quads = wrappedBakedModel.getQuads(state, side, rand);
         return quads.stream().map(quad -> {

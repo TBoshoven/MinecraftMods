@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -39,7 +39,7 @@ class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<TileEntity
                 Entity reflected = reflection.getReflectedEntity();
                 if (reflected != null) {
                     EnumPartType part = te.getPart();
-                    EnumFacing facing = te.getFacing();
+                    Direction facing = te.getFacing();
 
                     Vec3d reflectedPos = reflected.getPositionVector();
                     double distanceSq = te.getPos().distanceSq(reflectedPos.x, reflectedPos.y, reflectedPos.z);
@@ -63,7 +63,7 @@ class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<TileEntity
      * @param facing       The direction in which the mirror part is facing.
      * @param distanceSq   The squared distance between the mirror and the reflected subject; used for fading.
      */
-    private static void renderReflection(Reflection reflection, double x, double y, double z, float partialTicks, float alpha, EnumPartType part, EnumFacing facing, double distanceSq) {
+    private static void renderReflection(Reflection reflection, double x, double y, double z, float partialTicks, float alpha, EnumPartType part, Direction facing, double distanceSq) {
         // Render the reflection.
         reflection.render(partialTicks);
 

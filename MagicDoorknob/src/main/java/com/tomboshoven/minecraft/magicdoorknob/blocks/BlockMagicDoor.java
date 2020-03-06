@@ -17,7 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -41,7 +41,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     /**
      * Property describing which way the door is facing.
      */
-    public static final EnumProperty<EnumFacing> HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     private static final AxisAlignedBB BOUNDING_BOX_WALL_S = new AxisAlignedBB(0, 0, 0, 1, 1, 0.0625);
     private static final AxisAlignedBB BOUNDING_BOX_WALL_N = new AxisAlignedBB(0, 0, 0.9375, 1, 1, 1);
@@ -117,8 +117,8 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
      * @param pos    The position of the door block
      * @param facing The direction the door is facing in (opposite to doorway)
      */
-    private void breakDoorway(World world, BlockPos pos, EnumFacing facing) {
-        EnumFacing doorwayFacing = facing.getOpposite();
+    private void breakDoorway(World world, BlockPos pos, Direction facing) {
+        Direction doorwayFacing = facing.getOpposite();
 
         ItemMagicDoorknob doorknob = getDoorknob(world, pos);
         // If the doorknob can't be found, just go with some high number (32)
@@ -136,7 +136,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     @Override
     public void addCollisionBoxToList(BlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
         // Collisions for the door consist of a single box (the knob does not cause collisions).
-        EnumFacing facing = state.getValue(HORIZONTAL_FACING);
+        Direction facing = state.getValue(HORIZONTAL_FACING);
         switch (facing) {
             case NORTH:
                 addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_WALL_W);
@@ -154,7 +154,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, BlockState state, BlockPos pos, EnumFacing face) {
+    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, BlockState state, BlockPos pos, Direction face) {
         return BlockFaceShape.UNDEFINED;
     }
 
@@ -196,7 +196,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     public BlockState getStateFromMeta(int meta) {
         return getDefaultState()
                 .withProperty(PART, (meta & 1) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP)
-                .withProperty(HORIZONTAL_FACING, EnumFacing.byHorizontalIndex(meta >> 1));
+                .withProperty(HORIZONTAL_FACING, Direction.byHorizontalIndex(meta >> 1));
     }
 
     @Override
@@ -205,7 +205,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, EntityPlayer playerIn, EnumHand hand, Direction facing, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
             worldIn.setBlockState(pos, net.minecraft.init.Blocks.AIR.getDefaultState());
         }

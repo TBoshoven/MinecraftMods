@@ -25,8 +25,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.Rotation;
@@ -127,10 +127,10 @@ public class BlockMagicMirror extends HorizontalBlock {
         // Try to complete a mirror by looking for an incomplete mirror above or below.
         BlockState blockBelow = worldIn.getBlockState(pos.down());
         BlockState blockAbove = worldIn.getBlockState(pos.up());
-        if (blockBelow.getBlock() == this && !blockBelow.getValue(COMPLETE) && blockBelow.getValue(FACING) == state.getValue(FACING)) {
+        if (blockBelow.getBlock() == this && !blockBelow.getValue(COMPLETE) && blockBelow.getValue(HORIZONTAL_FACING) == state.getValue(HORIZONTAL_FACING)) {
             worldIn.setBlockState(pos.down(), blockBelow.withProperty(COMPLETE, true).withProperty(PART, EnumPartType.BOTTOM));
             worldIn.setBlockState(pos, state.withProperty(COMPLETE, true).withProperty(PART, EnumPartType.TOP));
-        } else if (blockAbove.getBlock() == this && !blockAbove.getValue(COMPLETE) && blockAbove.getValue(FACING) == state.getValue(FACING)) {
+        } else if (blockAbove.getBlock() == this && !blockAbove.getValue(COMPLETE) && blockAbove.getValue(HORIZONTAL_FACING) == state.getValue(HORIZONTAL_FACING)) {
             worldIn.setBlockState(pos.up(), blockAbove.withProperty(COMPLETE, true).withProperty(PART, EnumPartType.TOP));
             worldIn.setBlockState(pos, state.withProperty(COMPLETE, true).withProperty(PART, EnumPartType.BOTTOM));
         }
@@ -153,12 +153,12 @@ public class BlockMagicMirror extends HorizontalBlock {
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FACING, COMPLETE, PART);
+        return new BlockStateContainer(this, HORIZONTAL_FACING, COMPLETE, PART);
     }
 
     @Override
     public int getMetaFromState(BlockState state) {
-        return state.getValue(FACING).getHorizontalIndex()
+        return state.getValue(HORIZONTAL_FACING).getHorizontalIndex()
                 | (state.getValue(COMPLETE) ? 1 : 0) << 2
                 | state.getValue(PART).getValue() << 3;
     }
@@ -166,15 +166,15 @@ public class BlockMagicMirror extends HorizontalBlock {
     @Override
     public BlockState getStateFromMeta(int meta) {
         return getDefaultState()
-                .withProperty(FACING, EnumFacing.byHorizontalIndex(meta & 3))
+                .withProperty(HORIZONTAL_FACING, Direction.byHorizontalIndex(meta & 3))
                 .withProperty(COMPLETE, (meta & 1 << 2) != 0)
                 .withProperty(PART, (meta & 1 << 3) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP);
     }
 
     @Override
-    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, BlockState state, BlockPos pos, EnumFacing face) {
+    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, BlockState state, BlockPos pos, Direction face) {
         // Only the opposite face is default
-        return state.getValue(FACING).getOpposite() == face ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
+        return state.getValue(HORIZONTAL_FACING).getOpposite() == face ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
     }
 
     @Override
@@ -189,7 +189,7 @@ public class BlockMagicMirror extends HorizontalBlock {
 
     @Override
     public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
-        return BOUNDING_BOX[state.getValue(FACING).getHorizontalIndex()];
+        return BOUNDING_BOX[state.getValue(HORIZONTAL_FACING).getHorizontalIndex()];
     }
 
     @Override
@@ -219,19 +219,19 @@ public class BlockMagicMirror extends HorizontalBlock {
 
     @Override
     public BlockState withRotation(BlockState state, Rotation rot) {
-        return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
+        return state.withProperty(HORIZONTAL_FACING, rot.rotate(state.getValue(HORIZONTAL_FACING)));
     }
 
     @Override
-    public BlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+    public BlockState getStateForPlacement(World worldIn, BlockPos pos, Direction facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
         // Make sure the mirror is facing the right way when placed
-        return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+        return getDefaultState().withProperty(HORIZONTAL_FACING, placer.getHorizontalFacing().getOpposite());
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, EntityPlayer playerIn, EnumHand hand, Direction direction, float hitX, float hitY, float hitZ) {
         // The mirror will only do anything if it's used from the front.
-        if (state.getValue(FACING) == facing) {
+        if (state.getValue(HORIZONTAL_FACING) == direction) {
             if (!worldIn.isRemote) {
                 // First, see if we can add a modifier
                 ItemStack heldItem = playerIn.getHeldItem(hand);
