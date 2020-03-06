@@ -4,7 +4,7 @@ import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -24,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     // The block we're basing the appearance of this block on.
-    private IBlockState baseBlockState = Blocks.AIR.getDefaultState();
+    private BlockState baseBlockState = Blocks.AIR.getDefaultState();
     // The doorknob that caused this block to be created.
     private ItemMagicDoorknob doorknob;
 
@@ -79,14 +79,14 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     /**
      * @return The blockstate that the appearance of this block is based on.
      */
-    public IBlockState getBaseBlockState() {
+    public BlockState getBaseBlockState() {
         return baseBlockState;
     }
 
     /**
      * @param baseBlockState The blockstate that the appearance of this block is based on.
      */
-    public void setBaseBlockState(IBlockState baseBlockState) {
+    public void setBaseBlockState(BlockState baseBlockState) {
         this.baseBlockState = baseBlockState;
     }
 

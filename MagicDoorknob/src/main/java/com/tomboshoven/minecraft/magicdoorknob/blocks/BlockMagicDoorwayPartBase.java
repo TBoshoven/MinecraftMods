@@ -9,7 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.MaterialTransparent;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.BlockModelShapes;
@@ -55,18 +55,18 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     }
 
     @Override
-    public SoundType getSoundType(IBlockState state, World world, BlockPos pos, @Nullable Entity entity) {
+    public SoundType getSoundType(BlockState state, World world, BlockPos pos, @Nullable Entity entity) {
         // Use the base block's sound type.
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
-            IBlockState baseBlock = ((TileEntityMagicDoorwayPartBase) tileEntity).getBaseBlockState();
+            BlockState baseBlock = ((TileEntityMagicDoorwayPartBase) tileEntity).getBaseBlockState();
             return baseBlock.getBlock().getSoundType(baseBlock, world, pos, null);
         }
         return super.getSoundType(state, world, pos, entity);
     }
 
     @Override
-    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightValue(BlockState state, IBlockAccess world, BlockPos pos) {
         // Use the base block's light value.
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
@@ -76,7 +76,7 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     }
 
     @Override
-    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightOpacity(BlockState state, IBlockAccess world, BlockPos pos) {
         // Use the base block's light opacity.
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
@@ -86,7 +86,7 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     }
 
     @Override
-    public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {
+    public float getBlockHardness(BlockState blockState, World worldIn, BlockPos pos) {
         // Use the base block's hardness.
         TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
@@ -96,7 +96,7 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     }
 
     @Override
-    public int getHarvestLevel(IBlockState state) {
+    public int getHarvestLevel(BlockState state) {
         // We don't have information about the base block here.
         // Always allow breaking.
         return -1;
@@ -104,7 +104,7 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
 
     @Nullable
     @Override
-    public String getHarvestTool(IBlockState state) {
+    public String getHarvestTool(BlockState state) {
         // We don't have information about the base block here.
         // We allow breaking with any tool.
         return null;
@@ -123,22 +123,22 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     }
 
     @Override
-    public boolean isOpaqueCube(IBlockState state) {
+    public boolean isOpaqueCube(BlockState state) {
         return false;
     }
 
     @Override
-    public boolean isFullCube(IBlockState state) {
+    public boolean isFullCube(BlockState state) {
         return false;
     }
 
     @Override
-    public boolean hasTileEntity(IBlockState state) {
+    public boolean hasTileEntity(BlockState state) {
         return true;
     }
 
     @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+    public BlockState getExtendedState(BlockState state, IBlockAccess world, BlockPos pos) {
         // The extended blockstate contains texture information from the tile entities.
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
@@ -147,7 +147,7 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
             BlockModelShapes blockModelShapes = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes();
 
             // Get the base block texture
-            IBlockState baseBlockState = tileEntityMagicDoorwayPart.getBaseBlockState();
+            BlockState baseBlockState = tileEntityMagicDoorwayPart.getBaseBlockState();
             TextureAtlasSprite blockTexture = blockModelShapes.getTexture(baseBlockState);
             if ("missingno".equals(blockTexture.getIconName())) {
                 // If we can't find the texture, use a transparent one instead, to deal with things like air.

@@ -7,7 +7,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -74,7 +74,7 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
      * @param state The blockstate of the doorway
      * @return A list of all bounding boxes for collision purposes
      */
-    private static List<AxisAlignedBB> getCollisionBoxes(IBlockState state) {
+    private static List<AxisAlignedBB> getCollisionBoxes(BlockState state) {
         boolean openNorthSouth = state.getValue(OPEN_NORTH_SOUTH);
         boolean openEastWest = state.getValue(OPEN_EAST_WEST);
         boolean isTop = state.getValue(PART) == EnumPartType.TOP;
@@ -96,7 +96,7 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+    public void breakBlock(World worldIn, BlockPos pos, BlockState state) {
         // When this block is destroyed (manually or by closing the door), replace it by its base block.
         TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorway) {
@@ -106,14 +106,14 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
+    public void addCollisionBoxToList(BlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
         for (AxisAlignedBB collisionBox : getCollisionBoxes(state)) {
             addCollisionBoxToList(pos, entityBox, collidingBoxes, collisionBox);
         }
     }
 
     @Override
-    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face) {
+    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, BlockState state, BlockPos pos, EnumFacing face) {
         switch (face) {
             case DOWN:
                 return BlockFaceShape.UNDEFINED;
@@ -130,7 +130,7 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public boolean isTopSolid(IBlockState state) {
+    public boolean isTopSolid(BlockState state) {
         return state.getValue(PART) == EnumPartType.TOP;
     }
 
@@ -146,14 +146,14 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
+    public int getMetaFromState(BlockState state) {
         return state.getValue(PART).getValue()
                 | (state.getValue(OPEN_NORTH_SOUTH) ? 1 : 0) << 1
                 | (state.getValue(OPEN_EAST_WEST) ? 1 : 0) << 2;
     }
 
     @Override
-    public IBlockState getStateFromMeta(int meta) {
+    public BlockState getStateFromMeta(int meta) {
         return getDefaultState()
                 .withProperty(PART, (meta & 1) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP)
                 .withProperty(OPEN_NORTH_SOUTH, (meta & (1 << 1)) != 0)
@@ -161,19 +161,19 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+    public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos) {
         return super.getActualState(state, worldIn, pos);
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state) {
+    public TileEntity createTileEntity(World world, BlockState state) {
         return new TileEntityMagicDoorway();
     }
 
     @Override
     @Nullable
-    public RayTraceResult collisionRayTrace(IBlockState blockState, World worldIn, BlockPos pos, Vec3d start, Vec3d end) {
+    public RayTraceResult collisionRayTrace(BlockState blockState, World worldIn, BlockPos pos, Vec3d start, Vec3d end) {
         // Manually override collisions so we can break things from within this block
         List<RayTraceResult> rayTraceResults = Lists.newArrayList();
 

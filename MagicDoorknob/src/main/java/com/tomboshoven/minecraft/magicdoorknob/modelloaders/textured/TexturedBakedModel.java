@@ -2,7 +2,7 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BakedQuadRetextured;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -53,7 +53,7 @@ class TexturedBakedModel implements IBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable EnumFacing side, long rand) {
         // Return the original quads, with the property sprites replaced by actual ones
         List<BakedQuad> quads = wrappedBakedModel.getQuads(state, side, rand);
         return quads.stream().map(quad -> {
@@ -98,7 +98,7 @@ class TexturedBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion(IBlockState state) {
+    public boolean isAmbientOcclusion(BlockState state) {
         return wrappedBakedModel.isAmbientOcclusion();
     }
 

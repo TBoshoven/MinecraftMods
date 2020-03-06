@@ -7,7 +7,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.Magic
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -35,7 +35,7 @@ public abstract class TileEntityMagicMirrorBase extends TileEntity {
     @Override
     public void onLoad() {
         // Synchronize with blockstate; we need to know some of this in order to render the reflection.
-        IBlockState blockState = getWorld().getBlockState(getPos());
+        BlockState blockState = getWorld().getBlockState(getPos());
         if (blockState.getBlock() == Blocks.blockMagicMirror) {
             facing = blockState.getValue(BlockHorizontal.FACING);
             part = blockState.getValue(BlockMagicMirror.PART);

@@ -9,7 +9,7 @@ import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.IItemStackT
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ITextureMapper;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
@@ -60,7 +60,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
      * @return Whether the block can be replaced by a door or doorway
      */
     private static boolean isEmpty(IBlockAccess world, BlockPos pos) {
-        IBlockState blockState = world.getBlockState(pos);
+        BlockState blockState = world.getBlockState(pos);
         if (blockState.getBlock().isAir(blockState, world, pos)) {
             return true;
         }
@@ -159,7 +159,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
      */
     private void placeDoorwayElement(World world, BlockPos pos, boolean isNorthSouth, BlockMagicDoorway.EnumPartType part) {
         if (isReplaceable(world, pos)) {
-            IBlockState state = world.getBlockState(pos);
+            BlockState state = world.getBlockState(pos);
             world.setBlockState(pos, Blocks.blockMagicDoorway.getDefaultState().withProperty(BlockMagicDoorway.OPEN_NORTH_SOUTH, isNorthSouth).withProperty(BlockMagicDoorway.OPEN_EAST_WEST, !isNorthSouth).withProperty(BlockMagicDoorway.PART, part));
 
             TileEntity tileEntity = world.getTileEntity(pos);
@@ -195,7 +195,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
      * @return Whether this doorknob can replace the given block by a door or doorway
      */
     private boolean isReplaceable(IBlockAccess world, BlockPos pos) {
-        IBlockState blockState = world.getBlockState(pos);
+        BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         if (block.hasTileEntity(blockState)) {
             return false;
