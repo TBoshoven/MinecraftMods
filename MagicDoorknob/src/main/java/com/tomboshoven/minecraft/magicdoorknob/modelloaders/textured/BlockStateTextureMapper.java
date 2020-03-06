@@ -23,7 +23,7 @@ class BlockStateTextureMapper implements ITextureMapper {
         if (blockState != null) {
             String name = spriteToMap.getIconName();
             IUnlistedProperty<ResourceLocation> property = new PropertyTexture(name);
-            ResourceLocation spriteLocation = blockState.getValue(property);
+            ResourceLocation spriteLocation = blockState.get(property);
             if (spriteLocation != null) {
                 return spriteLocation;
             }

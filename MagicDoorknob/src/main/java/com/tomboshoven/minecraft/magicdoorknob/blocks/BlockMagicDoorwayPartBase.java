@@ -164,8 +164,8 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
             }
 
             return ((IExtendedBlockState) state)
-                    .withProperty(TEXTURE_MAIN, new ResourceLocation(blockTexture.getIconName()))
-                    .withProperty(TEXTURE_HIGHLIGHT, doorknobTextureLocation);
+                    .with(TEXTURE_MAIN, new ResourceLocation(blockTexture.getIconName()))
+                    .with(TEXTURE_HIGHLIGHT, doorknobTextureLocation);
         }
         return state;
     }

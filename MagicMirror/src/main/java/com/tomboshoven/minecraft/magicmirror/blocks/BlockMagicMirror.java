@@ -94,8 +94,8 @@ public class BlockMagicMirror extends HorizontalBlock {
         // By default, we're the bottom part of a broken mirror
         setDefaultState(
                 blockState.getBaseState()
-                        .withProperty(COMPLETE, Boolean.FALSE)
-                        .withProperty(PART, EnumPartType.BOTTOM)
+                        .with(COMPLETE, Boolean.FALSE)
+                        .with(PART, EnumPartType.BOTTOM)
         );
 
         setHardness(.8f);
@@ -127,12 +127,12 @@ public class BlockMagicMirror extends HorizontalBlock {
         // Try to complete a mirror by looking for an incomplete mirror above or below.
         BlockState blockBelow = worldIn.getBlockState(pos.down());
         BlockState blockAbove = worldIn.getBlockState(pos.up());
-        if (blockBelow.getBlock() == this && !blockBelow.getValue(COMPLETE) && blockBelow.getValue(HORIZONTAL_FACING) == state.getValue(HORIZONTAL_FACING)) {
-            worldIn.setBlockState(pos.down(), blockBelow.withProperty(COMPLETE, true).withProperty(PART, EnumPartType.BOTTOM));
-            worldIn.setBlockState(pos, state.withProperty(COMPLETE, true).withProperty(PART, EnumPartType.TOP));
-        } else if (blockAbove.getBlock() == this && !blockAbove.getValue(COMPLETE) && blockAbove.getValue(HORIZONTAL_FACING) == state.getValue(HORIZONTAL_FACING)) {
-            worldIn.setBlockState(pos.up(), blockAbove.withProperty(COMPLETE, true).withProperty(PART, EnumPartType.TOP));
-            worldIn.setBlockState(pos, state.withProperty(COMPLETE, true).withProperty(PART, EnumPartType.BOTTOM));
+        if (blockBelow.getBlock() == this && !blockBelow.get(COMPLETE) && blockBelow.get(HORIZONTAL_FACING) == state.get(HORIZONTAL_FACING)) {
+            worldIn.setBlockState(pos.down(), blockBelow.with(COMPLETE, true).with(PART, EnumPartType.BOTTOM));
+            worldIn.setBlockState(pos, state.with(COMPLETE, true).with(PART, EnumPartType.TOP));
+        } else if (blockAbove.getBlock() == this && !blockAbove.get(COMPLETE) && blockAbove.get(HORIZONTAL_FACING) == state.get(HORIZONTAL_FACING)) {
+            worldIn.setBlockState(pos.up(), blockAbove.with(COMPLETE, true).with(PART, EnumPartType.TOP));
+            worldIn.setBlockState(pos, state.with(COMPLETE, true).with(PART, EnumPartType.BOTTOM));
         }
     }
 
@@ -141,12 +141,12 @@ public class BlockMagicMirror extends HorizontalBlock {
         super.neighborChanged(state, worldIn, pos, blockIn, fromPos);
 
         // Break the mirror if the other part is broken.
-        if (state.getValue(COMPLETE)) {
+        if (state.get(COMPLETE)) {
             if (
-                    state.getValue(PART) == EnumPartType.TOP && worldIn.getBlockState(pos.down()).getBlock() != this ||
-                            state.getValue(PART) == EnumPartType.BOTTOM && worldIn.getBlockState(pos.up()).getBlock() != this
+                    state.get(PART) == EnumPartType.TOP && worldIn.getBlockState(pos.down()).getBlock() != this ||
+                            state.get(PART) == EnumPartType.BOTTOM && worldIn.getBlockState(pos.up()).getBlock() != this
             ) {
-                worldIn.setBlockState(pos, state.withProperty(COMPLETE, false));
+                worldIn.setBlockState(pos, state.with(COMPLETE, false));
             }
         }
     }
@@ -158,23 +158,23 @@ public class BlockMagicMirror extends HorizontalBlock {
 
     @Override
     public int getMetaFromState(BlockState state) {
-        return state.getValue(HORIZONTAL_FACING).getHorizontalIndex()
-                | (state.getValue(COMPLETE) ? 1 : 0) << 2
-                | state.getValue(PART).getValue() << 3;
+        return state.get(HORIZONTAL_FACING).getHorizontalIndex()
+                | (state.get(COMPLETE) ? 1 : 0) << 2
+                | state.get(PART).get() << 3;
     }
 
     @Override
     public BlockState getStateFromMeta(int meta) {
         return getDefaultState()
-                .withProperty(HORIZONTAL_FACING, Direction.byHorizontalIndex(meta & 3))
-                .withProperty(COMPLETE, (meta & 1 << 2) != 0)
-                .withProperty(PART, (meta & 1 << 3) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP);
+                .with(HORIZONTAL_FACING, Direction.byHorizontalIndex(meta & 3))
+                .with(COMPLETE, (meta & 1 << 2) != 0)
+                .with(PART, (meta & 1 << 3) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP);
     }
 
     @Override
     public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, BlockState state, BlockPos pos, Direction face) {
         // Only the opposite face is default
-        return state.getValue(HORIZONTAL_FACING).getOpposite() == face ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
+        return state.get(HORIZONTAL_FACING).getOpposite() == face ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
     }
 
     @Override
@@ -189,7 +189,7 @@ public class BlockMagicMirror extends HorizontalBlock {
 
     @Override
     public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
-        return BOUNDING_BOX[state.getValue(HORIZONTAL_FACING).getHorizontalIndex()];
+        return BOUNDING_BOX[state.get(HORIZONTAL_FACING).getHorizontalIndex()];
     }
 
     @Override
@@ -204,14 +204,14 @@ public class BlockMagicMirror extends HorizontalBlock {
 
     @Override
     public boolean hasTileEntity(BlockState state) {
-        return state.getValue(COMPLETE);
+        return state.get(COMPLETE);
     }
 
     @Nullable
     @Override
     public TileEntity createTileEntity(World world, BlockState state) {
         // The bottom part is the core of the mirror which has all the logic; the top part just uses the results.
-        if (state.getValue(PART) == EnumPartType.BOTTOM) {
+        if (state.get(PART) == EnumPartType.BOTTOM) {
             return new TileEntityMagicMirrorCore();
         }
         return new TileEntityMagicMirrorPart();
@@ -219,19 +219,19 @@ public class BlockMagicMirror extends HorizontalBlock {
 
     @Override
     public BlockState withRotation(BlockState state, Rotation rot) {
-        return state.withProperty(HORIZONTAL_FACING, rot.rotate(state.getValue(HORIZONTAL_FACING)));
+        return state.with(HORIZONTAL_FACING, rot.rotate(state.get(HORIZONTAL_FACING)));
     }
 
     @Override
     public BlockState getStateForPlacement(World worldIn, BlockPos pos, Direction facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
         // Make sure the mirror is facing the right way when placed
-        return getDefaultState().withProperty(HORIZONTAL_FACING, placer.getHorizontalFacing().getOpposite());
+        return getDefaultState().with(HORIZONTAL_FACING, placer.getHorizontalFacing().getOpposite());
     }
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, EntityPlayer playerIn, EnumHand hand, Direction direction, float hitX, float hitY, float hitZ) {
         // The mirror will only do anything if it's used from the front.
-        if (state.getValue(HORIZONTAL_FACING) == direction) {
+        if (state.get(HORIZONTAL_FACING) == direction) {
             if (!worldIn.isRemote) {
                 // First, see if we can add a modifier
                 ItemStack heldItem = playerIn.getHeldItem(hand);
@@ -260,7 +260,7 @@ public class BlockMagicMirror extends HorizontalBlock {
 
     @Override
     public void breakBlock(World worldIn, BlockPos pos, BlockState state) {
-        if (state.getValue(COMPLETE)) {
+        if (state.get(COMPLETE)) {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMagicMirrorBase) {
                 ((TileEntityMagicMirrorBase) tileEntity).removeModifiers(worldIn, pos);

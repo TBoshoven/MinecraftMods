@@ -64,9 +64,9 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
         // By default, the doorway is not open in any direction
         setDefaultState(
                 blockState.getBaseState()
-                        .withProperty(PART, EnumPartType.BOTTOM)
-                        .withProperty(OPEN_EAST_WEST, Boolean.TRUE)
-                        .withProperty(OPEN_NORTH_SOUTH, Boolean.FALSE)
+                        .with(PART, EnumPartType.BOTTOM)
+                        .with(OPEN_EAST_WEST, Boolean.TRUE)
+                        .with(OPEN_NORTH_SOUTH, Boolean.FALSE)
         );
     }
 
@@ -75,9 +75,9 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
      * @return A list of all bounding boxes for collision purposes
      */
     private static List<AxisAlignedBB> getCollisionBoxes(BlockState state) {
-        boolean openNorthSouth = state.getValue(OPEN_NORTH_SOUTH);
-        boolean openEastWest = state.getValue(OPEN_EAST_WEST);
-        boolean isTop = state.getValue(PART) == EnumPartType.TOP;
+        boolean openNorthSouth = state.get(OPEN_NORTH_SOUTH);
+        boolean openEastWest = state.get(OPEN_EAST_WEST);
+        boolean isTop = state.get(PART) == EnumPartType.TOP;
         List<AxisAlignedBB> result = Lists.newArrayList();
         if (openNorthSouth && openEastWest) {
             Collections.addAll(result, BOUNDING_BOX_PILLAR_NE, BOUNDING_BOX_PILLAR_NW, BOUNDING_BOX_PILLAR_SE, BOUNDING_BOX_PILLAR_SW);
@@ -121,17 +121,17 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
                 return isTopSolid(state) ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
             case NORTH:
             case SOUTH:
-                return state.getValue(OPEN_NORTH_SOUTH) ? BlockFaceShape.UNDEFINED : BlockFaceShape.SOLID;
+                return state.get(OPEN_NORTH_SOUTH) ? BlockFaceShape.UNDEFINED : BlockFaceShape.SOLID;
             case WEST:
             case EAST:
-                return state.getValue(OPEN_EAST_WEST) ? BlockFaceShape.UNDEFINED : BlockFaceShape.SOLID;
+                return state.get(OPEN_EAST_WEST) ? BlockFaceShape.UNDEFINED : BlockFaceShape.SOLID;
         }
         return super.getBlockFaceShape(worldIn, state, pos, face);
     }
 
     @Override
     public boolean isTopSolid(BlockState state) {
-        return state.getValue(PART) == EnumPartType.TOP;
+        return state.get(PART) == EnumPartType.TOP;
     }
 
     @Override
@@ -147,17 +147,17 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
 
     @Override
     public int getMetaFromState(BlockState state) {
-        return state.getValue(PART).getValue()
-                | (state.getValue(OPEN_NORTH_SOUTH) ? 1 : 0) << 1
-                | (state.getValue(OPEN_EAST_WEST) ? 1 : 0) << 2;
+        return state.get(PART).get()
+                | (state.get(OPEN_NORTH_SOUTH) ? 1 : 0) << 1
+                | (state.get(OPEN_EAST_WEST) ? 1 : 0) << 2;
     }
 
     @Override
     public BlockState getStateFromMeta(int meta) {
         return getDefaultState()
-                .withProperty(PART, (meta & 1) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP)
-                .withProperty(OPEN_NORTH_SOUTH, (meta & (1 << 1)) != 0)
-                .withProperty(OPEN_EAST_WEST, (meta & (1 << 2)) != 0);
+                .with(PART, (meta & 1) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP)
+                .with(OPEN_NORTH_SOUTH, (meta & (1 << 1)) != 0)
+                .with(OPEN_EAST_WEST, (meta & (1 << 2)) != 0);
     }
 
     @Override

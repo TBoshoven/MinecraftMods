@@ -72,7 +72,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
         super.neighborChanged(state, worldIn, pos, blockIn, fromPos);
 
-        EnumPartType part = state.getValue(PART);
+        EnumPartType part = state.get(PART);
 
         // Break the door if the other part is broken.
         if (
@@ -106,7 +106,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
 
     @Override
     public void breakBlock(World worldIn, BlockPos pos, BlockState state) {
-        breakDoorway(worldIn, pos, state.getValue(HORIZONTAL_FACING));
+        breakDoorway(worldIn, pos, state.get(HORIZONTAL_FACING));
         super.breakBlock(worldIn, pos, state);
     }
 
@@ -136,7 +136,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     @Override
     public void addCollisionBoxToList(BlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
         // Collisions for the door consist of a single box (the knob does not cause collisions).
-        Direction facing = state.getValue(HORIZONTAL_FACING);
+        Direction facing = state.get(HORIZONTAL_FACING);
         switch (facing) {
             case NORTH:
                 addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_WALL_W);
@@ -161,7 +161,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     @Override
     public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
         // Return one of the pre-defined bounding boxes.
-        switch (state.getValue(HORIZONTAL_FACING)) {
+        switch (state.get(HORIZONTAL_FACING)) {
             case NORTH:
                 return BOUNDING_BOX_WALL_W;
             case EAST:
@@ -189,14 +189,14 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
 
     @Override
     public int getMetaFromState(BlockState state) {
-        return state.getValue(PART).getValue() | (state.getValue(HORIZONTAL_FACING).getHorizontalIndex() << 1);
+        return state.get(PART).get() | (state.get(HORIZONTAL_FACING).getHorizontalIndex() << 1);
     }
 
     @Override
     public BlockState getStateFromMeta(int meta) {
         return getDefaultState()
-                .withProperty(PART, (meta & 1) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP)
-                .withProperty(HORIZONTAL_FACING, Direction.byHorizontalIndex(meta >> 1));
+                .with(PART, (meta & 1) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP)
+                .with(HORIZONTAL_FACING, Direction.byHorizontalIndex(meta >> 1));
     }
 
     @Override

@@ -37,9 +37,9 @@ public abstract class TileEntityMagicMirrorBase extends TileEntity {
         // Synchronize with blockstate; we need to know some of this in order to render the reflection.
         BlockState blockState = getWorld().getBlockState(getPos());
         if (blockState.getBlock() == Blocks.blockMagicMirror) {
-            facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
-            part = blockState.getValue(BlockMagicMirror.PART);
-            complete = blockState.getValue(BlockMagicMirror.COMPLETE);
+            facing = blockState.get(BlockStateProperties.HORIZONTAL_FACING);
+            part = blockState.get(BlockMagicMirror.PART);
+            complete = blockState.get(BlockMagicMirror.COMPLETE);
         }
     }
 
