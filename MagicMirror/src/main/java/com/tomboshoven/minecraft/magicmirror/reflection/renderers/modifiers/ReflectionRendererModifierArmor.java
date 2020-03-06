@@ -4,7 +4,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.Magic
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
@@ -34,8 +34,8 @@ public class ReflectionRendererModifierArmor extends ReflectionRendererModifier 
     public void render(float facing, float partialTicks) {
         NonNullList<ItemStack> inventoryToSwap = null;
         Entity entity = getEntity();
-        if (entity instanceof EntityPlayer) {
-            inventoryToSwap = ((EntityPlayer) entity).inventory.armorInventory;
+        if (entity instanceof PlayerEntity) {
+            inventoryToSwap = ((PlayerEntity) entity).inventory.armorInventory;
         }
 
         // Simply swap out the armor inventory twice

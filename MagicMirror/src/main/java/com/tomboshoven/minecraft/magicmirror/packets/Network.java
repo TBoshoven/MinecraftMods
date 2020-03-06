@@ -7,7 +7,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.Magic
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor.MessageSwapMirror;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor.MessageSwapPlayer;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -15,7 +15,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.api.distmarker.Dist;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -47,7 +46,7 @@ public final class Network {
      * @param message The message to send.
      * @param player  The tracked player.
      */
-    public static void sendToAllTracking(IMessage message, EntityPlayer player) {
+    public static void sendToAllTracking(IMessage message, PlayerEntity player) {
         CHANNEL.sendToAllTracking(message, player);
     }
 

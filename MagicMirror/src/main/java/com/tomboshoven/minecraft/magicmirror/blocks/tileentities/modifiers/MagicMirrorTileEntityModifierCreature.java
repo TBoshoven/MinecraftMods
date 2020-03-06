@@ -6,7 +6,7 @@ import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierCreature;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierCreature.Factory;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
@@ -67,7 +67,7 @@ public class MagicMirrorTileEntityModifierCreature extends MagicMirrorTileEntity
     }
 
     @Override
-    public boolean tryPlayerActivate(TileEntityMagicMirrorBase tileEntity, EntityPlayer playerIn, Hand hand) {
+    public boolean tryPlayerActivate(TileEntityMagicMirrorBase tileEntity, PlayerEntity playerIn, Hand hand) {
         // No behavior right now.
         return false;
     }

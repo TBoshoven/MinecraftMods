@@ -10,7 +10,7 @@ import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ITextureMap
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -68,7 +68,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, Hand hand, Direction direction, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(PlayerEntity player, World worldIn, BlockPos pos, Hand hand, Direction direction, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
             // Only sideways doors right now
             if (direction == Direction.UP || direction == Direction.DOWN) {

@@ -7,7 +7,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.Magic
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -106,7 +106,7 @@ public abstract class TileEntityMagicMirrorBase extends TileEntity {
      * @param hand     The hand used by the player to activate the mirror.
      * @return Whether activation of the modifier was successful.
      */
-    public boolean tryActivate(EntityPlayer playerIn, Hand hand) {
+    public boolean tryActivate(PlayerEntity playerIn, Hand hand) {
         TileEntityMagicMirrorCore core = getCore();
         if (core != null) {
             return core.tryActivate(playerIn, hand);

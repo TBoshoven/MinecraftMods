@@ -11,7 +11,7 @@ import io.netty.buffer.ByteBuf;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -126,7 +126,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
     }
 
     @Override
-    public boolean tryPlayerActivate(TileEntityMagicMirrorBase tileEntity, EntityPlayer playerIn, Hand hand) {
+    public boolean tryPlayerActivate(TileEntityMagicMirrorBase tileEntity, PlayerEntity playerIn, Hand hand) {
         if (coolingDown()) {
             return false;
         }
@@ -201,7 +201,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
          *
          * @param player The player to swap armor with.
          */
-        void swap(EntityPlayer player) {
+        void swap(PlayerEntity player) {
             for (int i = 0; i < 4; ++i) {
                 if (player instanceof EntityPlayerMP) {
                     // Usually the case for EntityPlayerMP, so server-side stuff.
@@ -295,7 +295,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         public MessageSwapMirror() {
         }
 
-        MessageSwapMirror(TileEntityMagicMirrorBase magicMirrorBase, EntityPlayer player) {
+        MessageSwapMirror(TileEntityMagicMirrorBase magicMirrorBase, PlayerEntity player) {
             super(player.getArmorInventoryList());
             mirrorPos = magicMirrorBase.getPos();
         }
@@ -325,7 +325,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         public MessageSwapPlayer() {
         }
 
-        MessageSwapPlayer(MagicMirrorTileEntityModifierArmor armorModifier, EntityPlayer player) {
+        MessageSwapPlayer(MagicMirrorTileEntityModifierArmor armorModifier, PlayerEntity player) {
             super(armorModifier.getReplacementArmor().replacementInventory);
             entityId = player.getEntityId();
         }
@@ -383,8 +383,8 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         public IMessage onMessage(MessageSwapPlayer message, MessageContext ctx) {
             Entity entity = Minecraft.getInstance().world.getEntityByID(message.entityId);
 
-            if (entity instanceof EntityPlayer) {
-                message.armor.swap((EntityPlayer) entity);
+            if (entity instanceof PlayerEntity) {
+                message.armor.swap((PlayerEntity) entity);
 
                 entity.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, .8f, .4f);
                 Random random = new Random();

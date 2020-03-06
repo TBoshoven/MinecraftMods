@@ -3,7 +3,7 @@ package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorBase;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -92,7 +92,7 @@ public abstract class MagicMirrorTileEntityModifier {
      * @param hand       The hand that the player is using to activate the magic mirror.
      * @return Whether it was activated. If true, no other modifiers are evaluated.
      */
-    public abstract boolean tryPlayerActivate(TileEntityMagicMirrorBase tileEntity, EntityPlayer playerIn, Hand hand);
+    public abstract boolean tryPlayerActivate(TileEntityMagicMirrorBase tileEntity, PlayerEntity playerIn, Hand hand);
 
     /**
      * When the modifier is used, this can be used to easily cool down, so it can't be activated all the time.

@@ -6,7 +6,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.Magic
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection.ReflectionFactory;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagList;
@@ -65,10 +65,10 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
      * @param ownPosition The position of the tile entity in the world.
      * @return A list of players that are candidates for reflecting.
      */
-    private static List<EntityPlayer> findReflectablePlayers(World world, BlockPos ownPosition) {
+    private static List<PlayerEntity> findReflectablePlayers(World world, BlockPos ownPosition) {
         // TODO: Add facing limitations
         AxisAlignedBB scanBB = new AxisAlignedBB(ownPosition.add(-10, -4, -10), ownPosition.add(10, 4, 10));
-        List<EntityPlayer> playerEntities = world.getEntitiesWithinAABB(EntityPlayer.class, scanBB);
+        List<PlayerEntity> playerEntities = world.getEntitiesWithinAABB(PlayerEntity.class, scanBB);
         // Only return real players
         return playerEntities.stream().filter(player -> !(player instanceof FakePlayer)).collect(Collectors.toList());
     }
@@ -81,8 +81,8 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
      * @return A player to reflect, or null if there are no valid candidates.
      */
     @Nullable
-    private static EntityPlayer findPlayerToReflect(World world, BlockPos ownPosition) {
-        List<EntityPlayer> players = findReflectablePlayers(world, ownPosition);
+    private static PlayerEntity findPlayerToReflect(World world, BlockPos ownPosition) {
+        List<PlayerEntity> players = findReflectablePlayers(world, ownPosition);
         if (players.isEmpty()) {
             return null;
         }
@@ -110,7 +110,7 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     private void updateReflection() {
         World world = getWorld();
 
-        EntityPlayer playerToReflect = findPlayerToReflect(world, getPos());
+        PlayerEntity playerToReflect = findPlayerToReflect(world, getPos());
 
         if (playerToReflect == null) {
             reflection.stopReflecting();
@@ -195,7 +195,7 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     }
 
     @Override
-    public boolean tryActivate(EntityPlayer playerIn, Hand hand) {
+    public boolean tryActivate(PlayerEntity playerIn, Hand hand) {
         return modifiers.stream().anyMatch(modifier -> modifier.tryPlayerActivate(this, playerIn, hand));
     }
 
