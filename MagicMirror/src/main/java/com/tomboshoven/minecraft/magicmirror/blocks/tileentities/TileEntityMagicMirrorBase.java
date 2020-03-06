@@ -11,7 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -106,7 +106,7 @@ public abstract class TileEntityMagicMirrorBase extends TileEntity {
      * @param hand     The hand used by the player to activate the mirror.
      * @return Whether activation of the modifier was successful.
      */
-    public boolean tryActivate(EntityPlayer playerIn, EnumHand hand) {
+    public boolean tryActivate(EntityPlayer playerIn, Hand hand) {
         TileEntityMagicMirrorCore core = getCore();
         if (core != null) {
             return core.tryActivate(playerIn, hand);

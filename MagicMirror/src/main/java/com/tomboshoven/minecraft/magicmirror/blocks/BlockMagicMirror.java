@@ -27,7 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundCategory;
@@ -229,7 +229,7 @@ public class BlockMagicMirror extends HorizontalBlock {
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, EntityPlayer playerIn, EnumHand hand, Direction direction, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, EntityPlayer playerIn, Hand hand, Direction direction, float hitX, float hitY, float hitZ) {
         // The mirror will only do anything if it's used from the front.
         if (state.get(HORIZONTAL_FACING) == direction) {
             if (!worldIn.isRemote) {
