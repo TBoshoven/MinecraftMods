@@ -3,7 +3,7 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks;
 import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
@@ -37,12 +37,12 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     /**
      * Property describing whether the block forms a doorway between north and south.
      */
-    public static final PropertyBool OPEN_NORTH_SOUTH = PropertyBool.create("open_north_south");
+    public static final BooleanProperty OPEN_NORTH_SOUTH = BooleanProperty.create("open_north_south");
 
     /**
      * Property describing whether the block forms a doorway between east and west.
      */
-    public static final PropertyBool OPEN_EAST_WEST = PropertyBool.create("open_east_west");
+    public static final BooleanProperty OPEN_EAST_WEST = BooleanProperty.create("open_east_west");
 
     private static final AxisAlignedBB BOUNDING_BOX_PILLAR_NW = new AxisAlignedBB(0, 0, 0.9375, 0.0625, 1, 1);
     private static final AxisAlignedBB BOUNDING_BOX_PILLAR_NE = new AxisAlignedBB(0.9375, 0, 0, 1, 1, 0.0625);
