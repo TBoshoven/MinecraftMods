@@ -3,21 +3,21 @@ package com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelBiped.ArmPose;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.renderer.entity.layers.BipedArmorLayer;
+import net.minecraft.client.renderer.entity.layers.HeldItemLayer;
+import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.entity.model.BipedModel.ArmPose;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
-import net.minecraft.client.renderer.entity.layers.LayerCustomHead;
-import net.minecraft.client.renderer.entity.layers.LayerElytra;
-import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
+import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.layers.HeadLayer;
+import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.EnumAction;
+import net.minecraft.item.UseAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -57,24 +57,24 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
      */
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    private static class RenderOffModelPlayer extends RenderLivingBase<AbstractClientPlayer> {
+    private static class RenderOffModelPlayer extends LivingRenderer<AbstractClientPlayerEntity> {
         /**
          * The location of the texture to use.
          */
         private final ResourceLocation textureLocation;
 
-        RenderOffModelPlayer(RenderManager renderManager, ModelBiped model, ResourceLocation textureLocation) {
+        RenderOffModelPlayer(EntityRendererManager renderManager, BipedModel model, ResourceLocation textureLocation) {
             super(renderManager, model, 0);
-            addLayer(new LayerCustomHead(model.bipedHead));
-            addLayer(new LayerElytra(this));
-            addLayer(new LayerHeldItem(this));
-            addLayer(new LayerHeldItem(this));
-            addLayer(new LayerBipedArmor(this));
+            addLayer(new HeadLayer(model.bipedHead));
+            addLayer(new ElytraLayer(this));
+            addLayer(new HeldItemLayer(this));
+            addLayer(new HeldItemLayer(this));
+            addLayer(new BipedArmorLayer(this));
             this.textureLocation = textureLocation;
         }
 
         @Override
-        public void doRender(AbstractClientPlayer entity, double x, double y, double z, float entityYaw, float partialTicks) {
+        public void doRender(AbstractClientPlayerEntity entity, double x, double y, double z, float entityYaw, float partialTicks) {
             setArmPoses(entity);
             super.doRender(entity, x, y, z, entityYaw, partialTicks);
         }
@@ -85,8 +85,8 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
          *
          * @param entity The entity to take the arm poses from.
          */
-        private void setArmPoses(AbstractClientPlayer entity) {
-            ModelBiped model = (ModelBiped) getMainModel();
+        private void setArmPoses(AbstractClientPlayerEntity entity) {
+            BipedModel model = (BipedModel) getMainModel();
             model.isSneak = entity.isSneaking();
 
             ItemStack[] handItems = {entity.getHeldItemMainhand(), entity.getHeldItemOffhand()};
@@ -97,18 +97,18 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
                     armPoses[side] = ArmPose.ITEM;
 
                     if (entity.getItemInUseCount() > 0) {
-                        EnumAction itemUseAction = handItems[side].getItemUseAction();
+                        UseAction itemUseAction = handItems[side].getItemUseAction();
 
-                        if (itemUseAction == EnumAction.BLOCK) {
+                        if (itemUseAction == UseAction.BLOCK) {
                             armPoses[side] = ArmPose.BLOCK;
-                        } else if (itemUseAction == EnumAction.BOW) {
+                        } else if (itemUseAction == UseAction.BOW) {
                             armPoses[side] = ArmPose.BOW_AND_ARROW;
                         }
                     }
                 }
             }
 
-            if (entity.getPrimaryHand() == EnumHandSide.RIGHT) {
+            if (entity.getPrimaryHand() == HandSide.RIGHT) {
                 model.rightArmPose = armPoses[0];
                 model.leftArmPose = armPoses[1];
             } else {
@@ -119,7 +119,7 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
 
         @Nullable
         @Override
-        protected ResourceLocation getEntityTexture(AbstractClientPlayer entity) {
+        protected ResourceLocation getEntityTexture(AbstractClientPlayerEntity entity) {
             return textureLocation;
         }
     }
@@ -130,24 +130,24 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
      */
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    private static class ModelSkeletonPlayer extends ModelBiped {
+    private static class ModelSkeletonPlayer extends BipedModel {
         @SuppressWarnings("AssignmentToSuperclassField")
         ModelSkeletonPlayer() {
             super(0, 0, 64, 32);
 
             // Skeletons have slightly different models, so we just apply the same modifications as the skeleton model
             // does.
-            bipedRightArm = new ModelRenderer(this, 40, 16);
+            bipedRightArm = new RendererModel(this, 40, 16);
             bipedRightArm.addBox(-1.0F, -2.0F, -1.0F, 2, 12, 2, 0);
             bipedRightArm.setRotationPoint(-5.0F, 2.0F, 0.0F);
-            bipedLeftArm = new ModelRenderer(this, 40, 16);
+            bipedLeftArm = new RendererModel(this, 40, 16);
             bipedLeftArm.mirror = true;
             bipedLeftArm.addBox(-1.0F, -2.0F, -1.0F, 2, 12, 2, 0);
             bipedLeftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
-            bipedRightLeg = new ModelRenderer(this, 0, 16);
+            bipedRightLeg = new RendererModel(this, 0, 16);
             bipedRightLeg.addBox(-1.0F, 0.0F, -1.0F, 2, 12, 2, 0);
             bipedRightLeg.setRotationPoint(-2.0F, 12.0F, 0.0F);
-            bipedLeftLeg = new ModelRenderer(this, 0, 16);
+            bipedLeftLeg = new RendererModel(this, 0, 16);
             bipedLeftLeg.mirror = true;
             bipedLeftLeg.addBox(-1.0F, 0.0F, -1.0F, 2, 12, 2, 0);
             bipedLeftLeg.setRotationPoint(2.0F, 12.0F, 0.0F);
