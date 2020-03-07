@@ -26,7 +26,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Mod(ModMagicDoorknob.MOD_ID)
 public class ModMagicDoorknob {
     public static final String MOD_ID = "magic_doorknob";
-    static final String NAME = "Magic Doorknob";
 
     @SuppressWarnings({"PublicField", "StaticNonFinalField", "NonConstantLogger"})
     public static Logger logger;

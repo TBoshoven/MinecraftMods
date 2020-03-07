@@ -26,7 +26,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Mod(ModMagicMirror.MOD_ID)
 public class ModMagicMirror {
     public static final String MOD_ID = "magic_mirror";
-    static final String NAME = "Magic Mirror";
 
     @SuppressWarnings("PublicField")
     public static Logger logger;
