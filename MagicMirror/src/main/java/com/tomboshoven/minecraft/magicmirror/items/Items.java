@@ -5,7 +5,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,7 +22,7 @@ public final class Items {
     /**
      * The item version of the magic mirror block.
      */
-    public static final Item itemBlockMagicMirror = new ItemBlock(Blocks.blockMagicMirror)
+    public static final Item itemBlockMagicMirror = new BlockItem(Blocks.blockMagicMirror)
             .setRegistryName(ModMagicMirror.MOD_ID, "magic_mirror")
             .setCreativeTab(CreativeTabs.MISC);
 
