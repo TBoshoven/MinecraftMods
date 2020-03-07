@@ -29,7 +29,7 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     private ItemMagicDoorknob doorknob;
 
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT compound) {
+    public CompoundNBT write(CompoundNBT compound) {
         return writeInternal(compound);
     }
 

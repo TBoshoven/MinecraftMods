@@ -90,14 +90,14 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
     }
 
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbt) {
-        return replacementArmor.writeToNBT(super.writeToNBT(nbt));
+    public CompoundNBT write(CompoundNBT nbt) {
+        return replacementArmor.write(super.write(nbt));
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbt) {
-        super.readFromNBT(nbt);
-        replacementArmor.readFromNBT(nbt);
+    public void read(CompoundNBT nbt) {
+        super.read(nbt);
+        replacementArmor.read(nbt);
     }
 
     @Override
@@ -219,7 +219,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
          * @param nbt The NBT tag compound to write to.
          * @return The input compound, for chaining.
          */
-        CompoundNBT writeToNBT(CompoundNBT nbt) {
+        CompoundNBT write(CompoundNBT nbt) {
             ItemStackHelper.saveAllItems(nbt, replacementInventory, true);
             return nbt;
         }
@@ -229,7 +229,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
          *
          * @param nbt The NBT tag compound to read from.
          */
-        void readFromNBT(CompoundNBT nbt) {
+        void read(CompoundNBT nbt) {
             ItemStackHelper.loadAllItems(nbt, replacementInventory);
         }
 

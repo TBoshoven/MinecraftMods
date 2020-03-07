@@ -147,8 +147,8 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     }
 
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT compound) {
-        return writeInternal(super.writeToNBT(compound));
+    public CompoundNBT write(CompoundNBT compound) {
+        return writeInternal(super.write(compound));
     }
 
     /**
@@ -162,15 +162,15 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
         for (MagicMirrorTileEntityModifier modifier : modifiers) {
             CompoundNBT modifierCompound = new CompoundNBT();
             modifierCompound.setString("name", modifier.getName());
-            modifierList.appendTag(modifier.writeToNBT(modifierCompound));
+            modifierList.appendTag(modifier.write(modifierCompound));
         }
         compound.setTag("modifiers", modifierList);
         return compound;
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound) {
-        super.readFromNBT(compound);
+    public void read(CompoundNBT compound) {
+        super.read(compound);
         NBTTagList modifiers = compound.getTagList("modifiers", 10);
         for (NBTBase modifierCompound : modifiers) {
             if (modifierCompound instanceof CompoundNBT) {
@@ -229,6 +229,6 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     @OnlyIn(Dist.CLIENT)
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-        readFromNBT(pkt.getNbtCompound());
+        read(pkt.getNbtCompound());
     }
 }

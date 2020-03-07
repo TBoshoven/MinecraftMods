@@ -49,7 +49,7 @@ public abstract class MagicMirrorTileEntityModifier {
      * @param nbt The NBT tag compound to write to.
      * @return The input compound, for chaining.
      */
-    public CompoundNBT writeToNBT(CompoundNBT nbt) {
+    public CompoundNBT write(CompoundNBT nbt) {
         return nbt;
     }
 
@@ -58,7 +58,7 @@ public abstract class MagicMirrorTileEntityModifier {
      *
      * @param nbt The NBT tag compound to read from.
      */
-    public void readFromNBT(CompoundNBT nbt) {
+    public void read(CompoundNBT nbt) {
     }
 
     /**

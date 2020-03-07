@@ -145,7 +145,7 @@ public abstract class MagicMirrorModifier {
      */
     public void apply(TileEntityMagicMirrorBase tileEntity, CompoundNBT nbt) {
         MagicMirrorTileEntityModifier magicMirrorTileEntityModifier = createTileEntityModifier();
-        magicMirrorTileEntityModifier.readFromNBT(nbt);
+        magicMirrorTileEntityModifier.read(nbt);
         tileEntity.addModifier(magicMirrorTileEntityModifier);
     }
 
