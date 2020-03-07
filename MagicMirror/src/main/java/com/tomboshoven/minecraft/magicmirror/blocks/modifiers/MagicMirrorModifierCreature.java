@@ -24,7 +24,7 @@ public class MagicMirrorModifierCreature extends MagicMirrorModifier {
      */
     private static boolean isSupportedSkull(ItemStack item) {
         // Only support skeleton skulls for now
-        return item.getItem() == Items.SKULL && Items.SKULL.getDamage(item) == 0;
+        return item.getItem() == Items.SKELETON_SKULL && Items.SKELETON_SKULL.getDamage(item) == 0;
     }
 
     @Override
