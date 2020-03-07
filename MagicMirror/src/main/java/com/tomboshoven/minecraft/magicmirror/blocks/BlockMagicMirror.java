@@ -364,7 +364,7 @@ public class BlockMagicMirror extends HorizontalBlock {
             if (te instanceof TileEntityMagicMirrorBase) {
                 MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
                 if (modifier == null) {
-                    ModMagicMirror.logger.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
+                    ModMagicMirror.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
                     return null;
                 }
                 attachModifier(world, message.mirrorPos, message.usedItemStack, modifier);

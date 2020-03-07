@@ -147,7 +147,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
 
         // Swap on the server side.
         replacementArmor.swap(playerIn);
-        ModMagicMirror.logger.debug("Swapped inventory of mirror");
+        ModMagicMirror.LOGGER.debug("Swapped inventory of mirror");
 
         setCooldown(COOLDOWN_TICKS);
         tileEntity.markDirty();
@@ -251,7 +251,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         }
 
         void swap(MagicMirrorTileEntityModifierArmor modifier) {
-            ModMagicMirror.logger.info("Swapping with mirror");
+            ModMagicMirror.LOGGER.info("Swapping with mirror");
             swap(modifier.getReplacementArmor().replacementInventory);
         }
     }

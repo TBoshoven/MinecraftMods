@@ -46,7 +46,7 @@ public class Reflection {
      */
     public void stopReflecting() {
         if (reflectedEntity != null) {
-            ModMagicMirror.logger.debug("No longer reflecting {}", reflectedEntity.getName());
+            ModMagicMirror.LOGGER.debug("No longer reflecting {}", reflectedEntity.getName());
             cleanUpFrameBuffer();
             cleanUpRenderer();
             reflectedEntity = null;
@@ -108,7 +108,7 @@ public class Reflection {
      */
     public void setReflectedEntity(Entity reflectedEntity) {
         if (this.reflectedEntity != reflectedEntity) {
-            ModMagicMirror.logger.debug("Reflecting {}", reflectedEntity.getName());
+            ModMagicMirror.LOGGER.debug("Reflecting {}", reflectedEntity.getName());
             if (this.reflectedEntity == null) {
                 buildFrameBuffer();
                 incrementActiveClientReflections();

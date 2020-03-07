@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -28,12 +29,11 @@ public class ModMagicMirror {
     public static final String MOD_ID = "magic_mirror";
 
     @SuppressWarnings("PublicField")
-    public static Logger logger;
+    public static final Logger LOGGER = LogManager.getLogger();
 
     @SuppressWarnings("MethodMayBeStatic")
     @EventHandler
     public void init(FMLPreInitializationEvent event) {
-        logger = event.getModLog();
         MinecraftForge.EVENT_BUS.register(Blocks.class);
         MinecraftForge.EVENT_BUS.register(Items.class);
         MinecraftForge.EVENT_BUS.register(Renderers.class);
