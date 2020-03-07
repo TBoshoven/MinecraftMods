@@ -204,7 +204,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         void swap(PlayerEntity player) {
             for (int i = 0; i < 4; ++i) {
                 if (player instanceof ServerPlayerEntity) {
-                    // Usually the case for EntityPlayerMP, so server-side stuff.
+                    // Make sure to do this on the client side as well.
                     ((ServerPlayerEntity) player).connection.sendPacket(new SPacketSetSlot(-2, i + 36, replacementInventory.get(i)));
                 }
                 ItemStack replacement = replacementInventory.get(i);
