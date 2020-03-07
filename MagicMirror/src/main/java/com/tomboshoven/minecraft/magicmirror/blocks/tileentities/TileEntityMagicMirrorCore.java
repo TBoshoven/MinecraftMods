@@ -12,8 +12,8 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase implements ITickable {
+public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase implements ITickableTileEntity {
     /**
      * Number of ticks between updating who we're reflecting
      */
@@ -120,7 +120,7 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     }
 
     @Override
-    public void update() {
+    public void tick() {
         if (reflectionUpdateCounter++ == REFLECTION_UPDATE_INTERVAL) {
             reflectionUpdateCounter = 0;
             updateReflection();
