@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -127,12 +127,12 @@ class TexturedBakedModel implements IBakedModel {
 
         @Nullable
         @Override
-        public ResourceLocation applyOverride(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
+        public ResourceLocation applyOverride(ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn) {
             return wrappedOverrideList.applyOverride(stack, worldIn, entityIn);
         }
 
         @Override
-        public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, @Nullable World world, @Nullable EntityLivingBase entity) {
+        public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, @Nullable World world, @Nullable LivingEntity entity) {
             // If the item has a texture mapper, use it.
             Item item = stack.getItem();
             if (item instanceof IItemStackTextureMapperProvider) {
