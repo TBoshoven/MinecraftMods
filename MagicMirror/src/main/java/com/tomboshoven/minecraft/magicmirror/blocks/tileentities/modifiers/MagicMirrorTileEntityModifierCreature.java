@@ -7,7 +7,7 @@ import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModi
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierCreature.Factory;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.Items;
+import net.minecraft.item.Items;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;

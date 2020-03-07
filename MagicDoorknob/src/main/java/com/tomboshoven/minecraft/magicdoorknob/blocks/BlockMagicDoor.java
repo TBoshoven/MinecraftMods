@@ -11,7 +11,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -207,7 +207,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, PlayerEntity playerIn, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
-            worldIn.setBlockState(pos, net.minecraft.init.Blocks.AIR.getDefaultState());
+            worldIn.setBlockState(pos, net.minecraft.block.Blocks.AIR.getDefaultState());
         }
         return true;
     }
