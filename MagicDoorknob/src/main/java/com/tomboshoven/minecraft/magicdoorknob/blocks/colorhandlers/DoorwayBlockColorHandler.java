@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 class DoorwayBlockColorHandler implements IBlockColor {
     @Override
-    public int colorMultiplier(BlockState state, @Nullable IEnviromentBlockReader worldIn, @Nullable BlockPos pos, int tintIndex) {
+    public int getColor(BlockState state, @Nullable IEnviromentBlockReader worldIn, @Nullable BlockPos pos, int tintIndex) {
         if (worldIn != null && pos != null) {
             BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 
@@ -31,7 +31,7 @@ class DoorwayBlockColorHandler implements IBlockColor {
             if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
                 BlockState baseBlock = ((TileEntityMagicDoorwayPartBase) tileEntity).getBaseBlockState();
                 // Return whatever the base block would.
-                return blockColors.colorMultiplier(baseBlock, worldIn, pos, tintIndex);
+                return blockColors.getColor(baseBlock, worldIn, pos, tintIndex);
             }
         }
         return -1;
