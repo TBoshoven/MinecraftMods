@@ -8,7 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,7 +34,7 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     }
 
     private CompoundNBT writeInternal(CompoundNBT compound) {
-        CompoundNBT result = super.writeToNBT(compound);
+        CompoundNBT result = super.write(compound);
         ResourceLocation registryName = baseBlockState.getBlock().getRegistryName();
         if (registryName != null) {
             result.putString("baseBlock", registryName.toString());
@@ -47,8 +47,8 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound) {
-        super.readFromNBT(compound);
+    public void read(CompoundNBT compound) {
+        super.read(compound);
         String registryName = compound.getString("baseBlock");
         Block block = Block.getBlockFromName(registryName);
         if (block != null) {
@@ -66,14 +66,14 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
 
     @Nullable
     @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        return new SPacketUpdateTileEntity(getPos(), 1, getUpdateTag());
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(getPos(), 1, getUpdateTag());
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-        readFromNBT(pkt.getNbtCompound());
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        read(pkt.getNbtCompound());
     }
 
     /**
