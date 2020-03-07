@@ -8,7 +8,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.Magic
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor.MessageSwapPlayer;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -56,7 +56,7 @@ public final class Network {
      * @param message The message to send.
      * @param player  The player to send the message to.
      */
-    public static void sendTo(IMessage message, EntityPlayerMP player) {
+    public static void sendTo(IMessage message, ServerPlayerEntity player) {
         CHANNEL.sendTo(message, player);
     }
 

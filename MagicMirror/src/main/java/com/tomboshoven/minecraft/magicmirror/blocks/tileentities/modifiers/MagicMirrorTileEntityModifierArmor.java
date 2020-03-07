@@ -12,7 +12,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.InventoryHelper;
@@ -132,7 +132,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         }
 
         // Can only be done on server side.
-        if (!(playerIn instanceof EntityPlayerMP)) {
+        if (!(playerIn instanceof ServerPlayerEntity)) {
             return false;
         }
 
@@ -142,7 +142,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         IMessage mirrorMessage = new MessageSwapMirror(tileEntity, playerIn);
         Network.sendToAllTracking(mirrorMessage, tileEntity.getWorld(), pos);
         IMessage playerMessage = new MessageSwapPlayer(this, playerIn);
-        Network.sendTo(playerMessage, (EntityPlayerMP) playerIn);
+        Network.sendTo(playerMessage, (ServerPlayerEntity) playerIn);
         Network.sendToAllTracking(playerMessage, playerIn);
 
         // Swap on the server side.
@@ -203,9 +203,9 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
          */
         void swap(PlayerEntity player) {
             for (int i = 0; i < 4; ++i) {
-                if (player instanceof EntityPlayerMP) {
+                if (player instanceof ServerPlayerEntity) {
                     // Usually the case for EntityPlayerMP, so server-side stuff.
-                    ((EntityPlayerMP) player).connection.sendPacket(new SPacketSetSlot(-2, i + 36, replacementInventory.get(i)));
+                    ((ServerPlayerEntity) player).connection.sendPacket(new SPacketSetSlot(-2, i + 36, replacementInventory.get(i)));
                 }
                 ItemStack replacement = replacementInventory.get(i);
                 replacementInventory.set(i, player.inventory.armorInventory.get(i));
