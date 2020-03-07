@@ -37,11 +37,11 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
         CompoundNBT result = super.writeToNBT(compound);
         ResourceLocation registryName = baseBlockState.getBlock().getRegistryName();
         if (registryName != null) {
-            result.setString("baseBlock", registryName.toString());
-            result.setShort("baseBlockData", (short) baseBlockState.getBlock().getMetaFromState(baseBlockState));
+            result.putString("baseBlock", registryName.toString());
+            result.putShort("baseBlockData", (short) baseBlockState.getBlock().getMetaFromState(baseBlockState));
         }
         if (doorknob != null) {
-            result.setString("doorknobType", doorknob.getTypeName());
+            result.putString("doorknobType", doorknob.getTypeName());
         }
         return result;
     }

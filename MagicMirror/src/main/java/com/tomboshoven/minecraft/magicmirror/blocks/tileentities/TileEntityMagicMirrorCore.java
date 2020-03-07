@@ -8,8 +8,8 @@ import com.tomboshoven.minecraft.magicmirror.reflection.Reflection.ReflectionFac
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.Hand;
@@ -158,21 +158,21 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
      * @return The nbt parameter, for chaining.
      */
     private CompoundNBT writeInternal(CompoundNBT compound) {
-        NBTTagList modifierList = new NBTTagList();
+        ListNBT modifierList = new ListNBT();
         for (MagicMirrorTileEntityModifier modifier : modifiers) {
             CompoundNBT modifierCompound = new CompoundNBT();
-            modifierCompound.setString("name", modifier.getName());
-            modifierList.appendTag(modifier.write(modifierCompound));
+            modifierCompound.putString("name", modifier.getName());
+            modifierList.add(modifier.write(modifierCompound));
         }
-        compound.setTag("modifiers", modifierList);
+        compound.put("modifiers", modifierList);
         return compound;
     }
 
     @Override
     public void read(CompoundNBT compound) {
         super.read(compound);
-        NBTTagList modifiers = compound.getTagList("modifiers", 10);
-        for (NBTBase modifierCompound : modifiers) {
+        ListNBT modifiers = compound.getList("modifiers", 10);
+        for (INBT modifierCompound : modifiers) {
             if (modifierCompound instanceof CompoundNBT) {
                 String name = ((CompoundNBT) modifierCompound).getString("name");
                 MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(name);
