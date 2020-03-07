@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@Mod(modid = ModMagicDoorknob.MOD_ID, name = ModMagicDoorknob.NAME, useMetadata = true)
+@Mod(ModMagicDoorknob.MOD_ID)
 public class ModMagicDoorknob {
     public static final String MOD_ID = "magic_doorknob";
     static final String NAME = "Magic Doorknob";

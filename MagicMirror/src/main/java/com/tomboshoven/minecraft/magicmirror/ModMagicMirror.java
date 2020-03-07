@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@Mod(modid = ModMagicMirror.MOD_ID, name = ModMagicMirror.NAME, useMetadata = true)
+@Mod(ModMagicMirror.MOD_ID)
 public class ModMagicMirror {
     public static final String MOD_ID = "magic_mirror";
     static final String NAME = "Magic Mirror";
