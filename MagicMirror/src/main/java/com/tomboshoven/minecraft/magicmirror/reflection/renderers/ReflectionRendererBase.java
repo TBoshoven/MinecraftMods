@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.renderers;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,9 +23,9 @@ public abstract class ReflectionRendererBase {
     /**
      * @return The entity renderer that is used for rendering the entity. This is used for chaining modifiers.
      */
-    public abstract Render<? extends Entity> getRenderer();
+    public abstract EntityRenderer<? extends Entity> getRenderer();
 
-    public abstract void setRenderer(Render<? extends Entity> renderer);
+    public abstract void setRenderer(EntityRenderer<? extends Entity> renderer);
 
     /**
      * Render the reflection.

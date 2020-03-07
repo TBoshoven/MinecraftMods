@@ -7,7 +7,7 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
@@ -34,7 +34,7 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
     /**
      * The renderer to use instead of the default one.
      */
-    private final Render<? extends Entity> replacementRenderer;
+    private final EntityRenderer<? extends Entity> replacementRenderer;
 
     /**
      * @param baseRenderer The renderer that is being proxied.
@@ -46,7 +46,7 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
 
     @Override
     public void render(float facing, float partialTicks) {
-        Render<? extends Entity> originalRenderer = getRenderer();
+        EntityRenderer<? extends Entity> originalRenderer = getRenderer();
         setRenderer(replacementRenderer);
         super.render(facing, partialTicks);
         setRenderer(originalRenderer);

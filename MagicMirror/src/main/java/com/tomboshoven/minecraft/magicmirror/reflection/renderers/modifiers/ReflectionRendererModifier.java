@@ -2,7 +2,7 @@ package com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,12 +32,12 @@ class ReflectionRendererModifier extends ReflectionRendererBase {
     }
 
     @Override
-    public Render<? extends Entity> getRenderer() {
+    public EntityRenderer<? extends Entity> getRenderer() {
         return baseRenderer.getRenderer();
     }
 
     @Override
-    public void setRenderer(Render<? extends Entity> renderer) {
+    public void setRenderer(EntityRenderer<? extends Entity> renderer) {
         baseRenderer.setRenderer(renderer);
     }
 

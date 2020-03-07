@@ -3,7 +3,7 @@ package com.tomboshoven.minecraft.magicmirror.reflection.renderers;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
 import org.lwjgl.util.glu.Project;
 
@@ -23,7 +23,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
     /**
      * The renderer class for the entity that is being rendered.
      */
-    private Render<? extends Entity> entityRenderer;
+    private EntityRenderer<? extends Entity> entityRenderer;
 
     /**
      * @param entity The entity to render.
@@ -39,12 +39,12 @@ public class ReflectionRenderer extends ReflectionRendererBase {
     }
 
     @Override
-    public Render<? extends Entity> getRenderer() {
+    public EntityRenderer<? extends Entity> getRenderer() {
         return entityRenderer;
     }
 
     @Override
-    public void setRenderer(Render<? extends Entity> renderer) {
+    public void setRenderer(EntityRenderer<? extends Entity> renderer) {
         entityRenderer = renderer;
     }
 
@@ -73,7 +73,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
 
         // The typing of these classes works out a little weird, so instead of complicating things too much, let's go
         // with the unchecked cast.
-        ((Render<Entity>) entityRenderer).doRender(entity, 0, -1, 0, 0, partialTicks);
+        ((EntityRenderer<Entity>) entityRenderer).doRender(entity, 0, -1, 0, 0, partialTicks);
 
         GlStateManager.popMatrix();
         // Restore the perspective.
