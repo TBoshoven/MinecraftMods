@@ -10,4 +10,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class TileEntityMagicDoorway extends TileEntityMagicDoorwayPartBase {
+    public TileEntityMagicDoorway() {
+        super(TileEntities.MAGIC_DOORWAY);
+    }
 }

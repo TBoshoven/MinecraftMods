@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,6 +28,10 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     private BlockState baseBlockState = Blocks.AIR.getDefaultState();
     // The doorknob that caused this block to be created.
     private ItemMagicDoorknob doorknob;
+
+    public TileEntityMagicDoorwayPartBase(TileEntityType<? extends TileEntityMagicDoorwayPartBase> tileEntityType) {
+        super(tileEntityType);
+    }
 
     @Override
     public CompoundNBT write(CompoundNBT compound) {

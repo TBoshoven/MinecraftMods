@@ -10,6 +10,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -31,6 +32,10 @@ public abstract class TileEntityMagicMirrorBase extends TileEntity {
     private Direction facing = Direction.NORTH;
     private EnumPartType part = EnumPartType.TOP;
     private boolean complete;
+
+    public TileEntityMagicMirrorBase(TileEntityType<? extends TileEntityMagicMirrorBase> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+    }
 
     @Override
     public void onLoad() {

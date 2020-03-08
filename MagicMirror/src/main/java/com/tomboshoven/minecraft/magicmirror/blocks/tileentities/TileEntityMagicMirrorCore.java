@@ -58,6 +58,10 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     // Start the update counter at its max, so we update on the first tick.
     private int reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
 
+    public TileEntityMagicMirrorCore() {
+        super(TileEntities.MAGIC_MIRROR_CORE);
+    }
+
     /**
      * Find all players that can be reflected.
      *
