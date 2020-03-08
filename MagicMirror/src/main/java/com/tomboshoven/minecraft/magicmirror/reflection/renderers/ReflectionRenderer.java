@@ -1,8 +1,8 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.renderers;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
 import org.lwjgl.util.glu.Project;
@@ -66,10 +66,10 @@ public class ReflectionRenderer extends ReflectionRendererBase {
 
         GlStateManager.loadIdentity();
 
-        GlStateManager.rotate(180, 1, 0, 0);
+        GlStateManager.rotated(180, 1, 0, 0);
 
-        GlStateManager.translate(0, 0, 1.5);
-        GlStateManager.rotate(facing, 0, 1, 0);
+        GlStateManager.translated(0, 0, 1.5);
+        GlStateManager.rotatef(facing, 0, 1, 0);
 
         // The typing of these classes works out a little weird, so instead of complicating things too much, let's go
         // with the unchecked cast.

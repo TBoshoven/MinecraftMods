@@ -1,12 +1,12 @@
 package com.tomboshoven.minecraft.magicmirror.renderers;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror.EnumPartType;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorBase;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -78,13 +78,13 @@ class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<TileEntity
 
         // The further away the subject is, the more faint the reflection
         float reflectionAlpha = Math.min(1f, 1.2f - (float) (distanceSq / (MAX_DISTANCE * MAX_DISTANCE)));
-        GlStateManager.color(1f, 1f, 1f, alpha * reflectionAlpha);
+        GlStateManager.color4f(1f, 1f, 1f, alpha * reflectionAlpha);
 
-        GlStateManager.translate(x + .5, y + .5, z + .5);
+        GlStateManager.translated(x + .5, y + .5, z + .5);
 
         // Draw on top of the model instead of in the center of the block
-        GlStateManager.rotate(facing.getHorizontalAngle(), 0f, -1f, 0f);
-        GlStateManager.translate(0, 0, -.4);
+        GlStateManager.rotatef(facing.getHorizontalAngle(), 0f, -1f, 0f);
+        GlStateManager.translated(0, 0, -.4);
 
         GlStateManager.disableLighting();
 
