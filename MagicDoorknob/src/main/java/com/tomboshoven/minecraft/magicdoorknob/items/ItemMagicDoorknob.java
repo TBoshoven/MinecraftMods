@@ -10,15 +10,14 @@ import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ITextureMap
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -72,22 +71,26 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
     }
 
     @Override
-    public EnumActionResult onItemUse(PlayerEntity player, World worldIn, BlockPos pos, Hand hand, Direction direction, float hitX, float hitY, float hitZ) {
-        if (!worldIn.isRemote) {
+    public ActionResultType onItemUse(ItemUseContext context) {
+        World world = context.getWorld();
+        if (!world.isRemote) {
+            Direction face = context.getFace();
+            BlockPos pos = context.getPos();
+
             // Only sideways doors right now
-            if (direction == Direction.UP || direction == Direction.DOWN) {
-                return EnumActionResult.FAIL;
+            if (face == Direction.UP || face == Direction.DOWN) {
+                return ActionResultType.FAIL;
             }
 
-            if (canPlaceDoor(worldIn, pos, direction)) {
-                placeDoor(worldIn, pos, direction);
-                placeDoorway(worldIn, pos, direction);
-                player.getHeldItem(hand).shrink(1);
-                return EnumActionResult.SUCCESS;
+            if (canPlaceDoor(world, pos, face)) {
+                placeDoor(world, pos, face);
+                placeDoorway(world, pos, face);
+                context.getItem().shrink(1);
+                return ActionResultType.SUCCESS;
             }
-            return EnumActionResult.FAIL;
+            return ActionResultType.FAIL;
         }
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
     /**
