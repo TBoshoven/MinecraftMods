@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import com.tomboshoven.minecraft.magicmirror.reflection.Reflection.ReflectionFactory;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.PlayerEntity;
