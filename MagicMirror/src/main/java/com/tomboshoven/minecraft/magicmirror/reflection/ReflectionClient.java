@@ -12,6 +12,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static net.minecraft.client.Minecraft.IS_RUNNING_ON_MAC;
+
 /**
  * Client-side version of the reflection.
  * This version actually renders a reflection.
@@ -58,7 +60,7 @@ public class ReflectionClient extends Reflection {
     void buildFrameBuffer() {
         super.buildFrameBuffer();
 
-        frameBuffer = new Framebuffer(64, 128, true);
+        frameBuffer = new Framebuffer(64, 128, true, IS_RUNNING_ON_MAC);
         frameBuffer.unbindFramebuffer();
     }
 
