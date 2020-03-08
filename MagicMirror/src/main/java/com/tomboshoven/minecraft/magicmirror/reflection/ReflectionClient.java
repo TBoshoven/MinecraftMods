@@ -132,17 +132,4 @@ public class ReflectionClient extends Reflection {
         }
         frameBuffer.bindFramebufferTexture();
     }
-
-    /**
-     * Factory for the reflection, used for creating the proper objects on server-side and client-side.
-     * <p>
-     * This factory is intended for clients. See Reflection.Factory for the server version.
-     */
-    @OnlyIn(Dist.CLIENT)
-    public static class ReflectionFactory extends Reflection.ReflectionFactory {
-        @Override
-        public Reflection createClient() {
-            return new ReflectionClient();
-        }
-    }
 }

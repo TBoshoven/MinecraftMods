@@ -4,7 +4,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifie
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorBase;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierCreature;
-import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierCreature.Factory;
+import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierCreatureClient;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.DistExecutor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,14 +21,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MagicMirrorTileEntityModifierCreature extends MagicMirrorTileEntityModifier {
-    /**
-     * Factory for creating the reflection modifier.
-     */
-    @SidedProxy(
-            serverSide = "com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierCreature$Factory",
-            clientSide = "com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierCreatureClient$Factory"
-    )
-    private static Factory reflectionModifierFactory;
     /**
      * The object that modifies the reflection in the mirror to show the replacement armor.
      */
@@ -51,9 +43,16 @@ public class MagicMirrorTileEntityModifierCreature extends MagicMirrorTileEntity
     public void activate(TileEntityMagicMirrorBase tileEntity) {
         Reflection reflection = tileEntity.getReflection();
         if (reflection != null) {
-            reflectionModifier = tileEntity.getWorld().isRemote ? reflectionModifierFactory.createClient() : reflectionModifierFactory.createServer();
+            reflectionModifier = createReflectionModifier();
             reflection.addModifier(reflectionModifier);
         }
+    }
+
+    private ReflectionModifierCreature createReflectionModifier() {
+        return DistExecutor.runForDist(
+                () -> ReflectionModifierCreatureClient::new,
+                () -> ReflectionModifierCreature::new
+        );
     }
 
     @Override

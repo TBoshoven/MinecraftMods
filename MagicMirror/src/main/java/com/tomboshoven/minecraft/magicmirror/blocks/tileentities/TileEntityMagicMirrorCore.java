@@ -5,6 +5,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifie
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection.ReflectionFactory;
+import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -18,9 +19,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -40,14 +41,6 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
      */
     private static final int REFLECTION_UPDATE_INTERVAL = 10;
     /**
-     * Factory for reflections; this is a sided proxy so we spawn a renderless reflection on the server side.
-     */
-    @SidedProxy(
-            clientSide = "com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient$ReflectionFactory",
-            serverSide = "com.tomboshoven.minecraft.magicmirror.reflection.Reflection$ReflectionFactory"
-    )
-    private static ReflectionFactory reflectionFactory;
-    /**
      * The list of all modifiers to the mirror.
      */
     private final List<MagicMirrorTileEntityModifier> modifiers = Lists.newArrayList();
@@ -60,6 +53,8 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
 
     public TileEntityMagicMirrorCore() {
         super(TileEntities.MAGIC_MIRROR_CORE);
+
+        reflection = DistExecutor.runForDist(() -> ReflectionClient::new, () -> Reflection::new);
     }
 
     /**
@@ -96,8 +91,6 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     @Override
     public void onLoad() {
         super.onLoad();
-
-        reflection = getWorld().isRemote ? reflectionFactory.createClient() : reflectionFactory.createServer();
 
         reflection.setFacing(getFacing().getHorizontalAngle());
     }

@@ -7,6 +7,7 @@ import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierArmor;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierArmor.Factory;
+import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierArmorClient;
 import io.netty.buffer.ByteBuf;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
@@ -26,6 +27,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -67,14 +69,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
             serverSide = "com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor$MessageHandlerSwapPlayerServer"
     )
     public static IMessageHandler<MessageSwapPlayer, IMessage> messageHandlerSwapPlayer;
-    /**
-     * Factory for creating the reflection modifier.
-     */
-    @SidedProxy(
-            serverSide = "com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierArmor$Factory",
-            clientSide = "com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierArmorClient$Factory"
-    )
-    private static Factory reflectionModifierFactory;
+
     private final ReplacementArmor replacementArmor = new ReplacementArmor();
     /**
      * The object that modifies the reflection in the mirror to show the replacement armor.
@@ -110,9 +105,16 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
     public void activate(TileEntityMagicMirrorBase tileEntity) {
         Reflection reflection = tileEntity.getReflection();
         if (reflection != null) {
-            reflectionModifier = tileEntity.getWorld().isRemote ? reflectionModifierFactory.createClient(replacementArmor) : reflectionModifierFactory.createServer(replacementArmor);
+            reflectionModifier = createReflectionModifier(replacementArmor);
             reflection.addModifier(reflectionModifier);
         }
+    }
+
+    private ReflectionModifierArmor createReflectionModifier(ReplacementArmor replacementArmor) {
+        return DistExecutor.runForDist(
+                () -> () -> new ReflectionModifierArmorClient(replacementArmor),
+                () -> () -> new ReflectionModifierArmor(replacementArmor)
+        );
     }
 
     @Override

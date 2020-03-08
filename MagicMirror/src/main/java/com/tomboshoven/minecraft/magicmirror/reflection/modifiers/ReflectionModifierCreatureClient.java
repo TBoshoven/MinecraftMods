@@ -19,17 +19,4 @@ public class ReflectionModifierCreatureClient extends ReflectionModifierCreature
     public ReflectionRendererBase apply(ReflectionRendererBase reflectionRenderer) {
         return new ReflectionRendererModifierCreature(reflectionRenderer);
     }
-
-    /**
-     * Factory for the modifier, used for creating the proper objects on server-side and client-side.
-     * <p>
-     * This factory is intended for clients only. See ReflectionModifierArmor.Factory for the server version.
-     */
-    @SuppressWarnings("unused")
-    public static class Factory extends ReflectionModifierCreature.Factory {
-        @Override
-        public ReflectionModifierCreature createClient() {
-            return new ReflectionModifierCreatureClient();
-        }
-    }
 }

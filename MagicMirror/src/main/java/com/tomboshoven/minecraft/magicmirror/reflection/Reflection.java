@@ -167,30 +167,4 @@ public class Reflection {
      */
     public void bind() {
     }
-
-    /**
-     * Factory for the reflection, used for creating the proper objects on server-side and client-side.
-     * <p>
-     * This factory is intended for servers. See ReflectionClient.Factory for the client version.
-     */
-    public static class ReflectionFactory {
-        /**
-         * Create a server-side reflection object.
-         *
-         * @return A new Reflection object.
-         */
-        @SuppressWarnings("MethodMayBeStatic")
-        public Reflection createServer() {
-            return new Reflection();
-        }
-
-        /**
-         * Create a client-side reflection object.
-         *
-         * @return A new Reflection object.
-         */
-        public Reflection createClient() {
-            return new Reflection();
-        }
-    }
 }
