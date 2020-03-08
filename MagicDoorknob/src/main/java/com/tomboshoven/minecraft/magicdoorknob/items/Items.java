@@ -4,7 +4,9 @@ import com.google.common.collect.Maps;
 import com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemTier;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -28,11 +30,11 @@ public final class Items {
 
     static {
         // Add all Vanilla tool materials
-        addDoorknob("wood", Item.ToolMaterial.WOOD, "planks_oak");
-        addDoorknob("stone", Item.ToolMaterial.STONE, "stone");
-        addDoorknob("iron", Item.ToolMaterial.IRON, "iron_block");
-        addDoorknob("gold", Item.ToolMaterial.GOLD, "gold_block");
-        addDoorknob("diamond", Item.ToolMaterial.DIAMOND, "diamond_block");
+        addDoorknob("wood", ItemTier.WOOD, "planks_oak");
+        addDoorknob("stone", ItemTier.STONE, "stone");
+        addDoorknob("iron", ItemTier.IRON, "iron_block");
+        addDoorknob("gold", ItemTier.GOLD, "gold_block");
+        addDoorknob("diamond", ItemTier.DIAMOND, "diamond_block");
     }
 
     private Items() {
@@ -44,10 +46,10 @@ public final class Items {
      * Make sure to add a translation key.
      *
      * @param typeName    The type name of the item. Keep this stable, since it is used in NBT data.
-     * @param material    The material this doorknob is made of
+     * @param tier        The material this doorknob is made of
      * @param mainTexture The main texture of the doorknob
      */
-    private static void addDoorknob(String typeName, Item.ToolMaterial material, ResourceLocation mainTexture) {
+    private static void addDoorknob(String typeName, IItemTier tier, ResourceLocation mainTexture) {
         Item i = new ItemMagicDoorknob(typeName, material, mainTexture)
                 .setRegistryName(ModMagicDoorknob.MOD_ID, String.format("magic_doorknob_%s", typeName))
                 .setTranslationKey(String.format("%s.magic_doorknob.%s", ModMagicDoorknob.MOD_ID, typeName))
@@ -59,11 +61,11 @@ public final class Items {
      * Convenience function for doorknobs using Vanilla materials.
      *
      * @param typeName  The type name of the item. Keep this stable, since it is used in NBT data.
-     * @param material  The material this doorknob is made of
+     * @param tier      The material this doorknob is made of
      * @param blockName The name of the block that provides the texture of the doorknob
      */
-    private static void addDoorknob(String typeName, Item.ToolMaterial material, String blockName) {
-        addDoorknob(typeName, material, new ResourceLocation("minecraft", String.format("blocks/%s", blockName)));
+    private static void addDoorknob(String typeName, IItemTier tier, String blockName) {
+        addDoorknob(typeName, tier, new ResourceLocation("minecraft", String.format("blocks/%s", blockName)));
     }
 
     @SuppressWarnings("BoundedWildcard")

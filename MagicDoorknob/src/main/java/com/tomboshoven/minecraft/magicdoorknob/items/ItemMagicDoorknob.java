@@ -11,6 +11,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.IItemTier;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -40,16 +41,16 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
     // The name of the type of item (used in NBT data; do not modify)
     private String typeName;
     // The item material, used for determining doorway generation properties
-    private ToolMaterial material;
+    private IItemTier tier;
 
     /**
      * @param typeName            The main texture of the item
-     * @param material            The item material, used for determining doorway generation properties
+     * @param tier                The item material, used for determining doorway generation properties
      * @param mainTextureLocation The name of the type of item (used in NBT data; do not modify)
      */
-    public ItemMagicDoorknob(String typeName, ToolMaterial material, ResourceLocation mainTextureLocation) {
+    public ItemMagicDoorknob(String typeName, IItemTier tier, ResourceLocation mainTextureLocation) {
         this.typeName = typeName;
-        this.material = material;
+        this.tier = tier;
         this.mainTextureLocation = mainTextureLocation;
     }
 
@@ -132,7 +133,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
     private void placeDoorway(World world, BlockPos pos, Direction facing) {
         Direction doorwayFacing = facing.getOpposite();
         boolean isNorthSouth = facing == Direction.NORTH || facing == Direction.SOUTH;
-        float depth = material.getEfficiency();
+        float depth = tier.getEfficiency();
         for (int i = 0; i < depth; ++i) {
             BlockPos elementPos = pos.offset(doorwayFacing, i);
             if (
@@ -199,7 +200,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         if (block.hasTileEntity(blockState)) {
             return false;
         }
-        return block.getHarvestLevel(blockState) <= material.getHarvestLevel();
+        return block.getHarvestLevel(blockState) <= tier.getHarvestLevel();
     }
 
     @Override
@@ -231,7 +232,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
     /**
      * @return The material that the doorknob is made out of
      */
-    public ToolMaterial getMaterial() {
-        return material;
+    public IItemTier getTier() {
+        return tier;
     }
 }
