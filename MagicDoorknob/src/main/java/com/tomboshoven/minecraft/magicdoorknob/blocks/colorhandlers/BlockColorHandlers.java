@@ -2,12 +2,12 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -17,53 +17,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public final class BlockColorHandlers {
-    @SidedProxy(
-            serverSide = "com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers.BlockColorHandlers$BlockColorHandlerRegistration",
-            clientSide = "com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers.BlockColorHandlers$BlockColorHandlerRegistrationClient"
-    )
-    private static BlockColorHandlerRegistration blockColorHandlerRegistration;
-
     private BlockColorHandlers() {
     }
 
     /**
-     * Register all color handlers if we're running a client.
+     * Register all color handlers.
      */
-    public static void registerColorHandlers() {
-        //noinspection StaticVariableUsedBeforeInitialization
-        blockColorHandlerRegistration.registerBlockColorHandlers();
-    }
-
-    /**
-     * Class for block color handler registration.
-     * This class is intended for servers. See BlockColorHandlerRegistrationClient for the client version.
-     */
-    @SuppressWarnings("WeakerAccess")
-    public static class BlockColorHandlerRegistration {
-        /**
-         * Register all block color handlers.
-         */
-        void registerBlockColorHandlers() {
-            // Do nothing on server side
-        }
-    }
-
-    /**
-     * Class for block color handler registration.
-     * This class is intended for clients. See BlockColorHandlerRegistration for the server version.
-     */
-    @SuppressWarnings("unused")
     @OnlyIn(Dist.CLIENT)
-    public static class BlockColorHandlerRegistrationClient extends BlockColorHandlerRegistration {
-        @Override
-        void registerBlockColorHandlers() {
-            super.registerBlockColorHandlers();
+    @SubscribeEvent
+    public static void registerBlockColorHandlers(ColorHandlerEvent.Block event) {
+        BlockColors blockColors = event.getBlockColors();
 
-            BlockColors blockColors = Minecraft.getInstance().getBlockColors();
-
-            IBlockColor doorwayBlockColorHandler = new DoorwayBlockColorHandler();
-            blockColors.register(doorwayBlockColorHandler, Blocks.blockMagicDoorway);
-            blockColors.register(doorwayBlockColorHandler, Blocks.blockMagicDoor);
-        }
+        IBlockColor doorwayBlockColorHandler = new DoorwayBlockColorHandler();
+        blockColors.register(doorwayBlockColorHandler, Blocks.blockMagicDoorway);
+        blockColors.register(doorwayBlockColorHandler, Blocks.blockMagicDoor);
     }
 }
