@@ -8,8 +8,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class TileEntities {
-    static TileEntityType<TileEntityMagicMirrorCore> MAGIC_MIRROR_CORE = TileEntityType.Builder.create(TileEntityMagicMirrorCore::new, Blocks.blockMagicMirror).build(null);
-    static TileEntityType<TileEntityMagicMirrorPart> MAGIC_MIRROR_PART = TileEntityType.Builder.create(TileEntityMagicMirrorPart::new, Blocks.blockMagicMirror).build(null);
+    static TileEntityType<TileEntityMagicMirrorCore> MAGIC_MIRROR_CORE = TileEntityType.Builder.create(TileEntityMagicMirrorCore::new, Blocks.MAGIC_MIRROR).build(null);
+    static TileEntityType<TileEntityMagicMirrorPart> MAGIC_MIRROR_PART = TileEntityType.Builder.create(TileEntityMagicMirrorPart::new, Blocks.MAGIC_MIRROR).build(null);
 
     @SubscribeEvent
     public static void registerTileEntities(Register<TileEntityType<?>> evt) {

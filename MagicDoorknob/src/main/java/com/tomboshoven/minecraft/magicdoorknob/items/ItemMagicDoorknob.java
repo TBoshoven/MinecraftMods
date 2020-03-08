@@ -98,7 +98,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         BlockPos doorPos = pos.offset(facing);
         world.setBlockState(
                 doorPos,
-                Blocks.blockMagicDoor.getDefaultState()
+                Blocks.MAGIC_DOOR.getDefaultState()
                         .with(BlockMagicDoor.HORIZONTAL_FACING, facing)
                         .with(BlockMagicDoor.PART, BlockMagicDoor.EnumPartType.TOP)
         );
@@ -109,7 +109,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
         }
         world.setBlockState(
                 doorPos.down(),
-                Blocks.blockMagicDoor.getDefaultState()
+                Blocks.MAGIC_DOOR.getDefaultState()
                         .with(BlockMagicDoor.HORIZONTAL_FACING, facing)
                         .with(BlockMagicDoor.PART, BlockMagicDoor.EnumPartType.BOTTOM)
         );
@@ -159,7 +159,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
     private void placeDoorwayElement(World world, BlockPos pos, boolean isNorthSouth, BlockMagicDoorway.EnumPartType part) {
         if (isReplaceable(world, pos)) {
             BlockState state = world.getBlockState(pos);
-            world.setBlockState(pos, Blocks.blockMagicDoorway.getDefaultState().with(BlockMagicDoorway.OPEN_NORTH_SOUTH, isNorthSouth).with(BlockMagicDoorway.OPEN_EAST_WEST, !isNorthSouth).with(BlockMagicDoorway.PART, part));
+            world.setBlockState(pos, Blocks.MAGIC_DOORWAY.getDefaultState().with(BlockMagicDoorway.OPEN_NORTH_SOUTH, isNorthSouth).with(BlockMagicDoorway.OPEN_EAST_WEST, !isNorthSouth).with(BlockMagicDoorway.PART, part));
 
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMagicDoorway) {

@@ -127,7 +127,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
         for (int i = 1; i <= depth; ++i) {
             BlockPos blockPos = pos.offset(doorwayFacing, i);
             BlockState state = world.getBlockState(blockPos);
-            if (state.getBlock() == Blocks.blockMagicDoorway) {
+            if (state.getBlock() == Blocks.MAGIC_DOORWAY) {
                 world.destroyBlock(blockPos, false);
             }
         }

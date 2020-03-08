@@ -29,7 +29,7 @@ public final class BlockColorHandlers {
         BlockColors blockColors = event.getBlockColors();
 
         IBlockColor doorwayBlockColorHandler = new DoorwayBlockColorHandler();
-        blockColors.register(doorwayBlockColorHandler, Blocks.blockMagicDoorway);
-        blockColors.register(doorwayBlockColorHandler, Blocks.blockMagicDoor);
+        blockColors.register(doorwayBlockColorHandler, Blocks.MAGIC_DOORWAY);
+        blockColors.register(doorwayBlockColorHandler, Blocks.MAGIC_DOOR);
     }
 }

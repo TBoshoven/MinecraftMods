@@ -22,7 +22,7 @@ public final class Items {
     /**
      * The item version of the magic mirror block.
      */
-    public static final Item itemBlockMagicMirror = new BlockItem(Blocks.blockMagicMirror)
+    public static final Item itemBlockMagicMirror = new BlockItem(Blocks.MAGIC_MIRROR)
             .setRegistryName(ModMagicMirror.MOD_ID, "magic_mirror")
             .setCreativeTab(CreativeTabs.MISC);
 

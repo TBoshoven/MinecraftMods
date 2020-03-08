@@ -8,8 +8,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class TileEntities {
-    static TileEntityType<TileEntityMagicDoor> MAGIC_DOOR = TileEntityType.Builder.create(TileEntityMagicDoor::new, Blocks.blockMagicDoor).build(null);
-    static TileEntityType<TileEntityMagicDoorway> MAGIC_DOORWAY = TileEntityType.Builder.create(TileEntityMagicDoorway::new, Blocks.blockMagicDoorway).build(null);
+    static TileEntityType<TileEntityMagicDoor> MAGIC_DOOR = TileEntityType.Builder.create(TileEntityMagicDoor::new, Blocks.MAGIC_DOOR).build(null);
+    static TileEntityType<TileEntityMagicDoorway> MAGIC_DOORWAY = TileEntityType.Builder.create(TileEntityMagicDoorway::new, Blocks.MAGIC_DOORWAY).build(null);
 
     @SubscribeEvent
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> evt) {
