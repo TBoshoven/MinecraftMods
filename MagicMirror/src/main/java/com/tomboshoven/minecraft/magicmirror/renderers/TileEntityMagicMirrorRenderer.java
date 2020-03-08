@@ -8,7 +8,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<TileEntityMagicMirrorBase> {
+class TileEntityMagicMirrorRenderer extends TileEntityRenderer<TileEntityMagicMirrorBase> {
     /**
      * Maximum distance for an entity to be rendered.
      * Used for fading the mirror image.
@@ -29,8 +29,8 @@ class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<TileEntity
     private static final double MAX_DISTANCE = 8;
 
     @Override
-    public void render(TileEntityMagicMirrorBase te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-        super.render(te, x, y, z, partialTicks, destroyStage, alpha);
+    public void render(TileEntityMagicMirrorBase te, double x, double y, double z, float partialTicks, int destroyStage) {
+        super.render(te, x, y, z, partialTicks, destroyStage);
 
         if (te.isComplete()) {
             Reflection reflection = te.getReflection();
@@ -44,7 +44,7 @@ class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<TileEntity
                     Vec3d reflectedPos = reflected.getPositionVector();
                     double distanceSq = te.getPos().distanceSq(reflectedPos.x, reflectedPos.y, reflectedPos.z);
 
-                    renderReflection(reflection, x, y, z, partialTicks, alpha, part, facing, distanceSq);
+                    renderReflection(reflection, x, y, z, partialTicks, part, facing, distanceSq);
                 }
             }
         }
@@ -58,12 +58,11 @@ class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<TileEntity
      * @param y            The Y coordinate of the tile entity.
      * @param z            The Z coordinate of the tile entity.
      * @param partialTicks The partial ticks, used for smooth animations.
-     * @param alpha        The alpha value to render with.
      * @param part         The part of the mirror to render.
      * @param facing       The direction in which the mirror part is facing.
      * @param distanceSq   The squared distance between the mirror and the reflected subject; used for fading.
      */
-    private static void renderReflection(Reflection reflection, double x, double y, double z, float partialTicks, float alpha, EnumPartType part, Direction facing, double distanceSq) {
+    private static void renderReflection(Reflection reflection, double x, double y, double z, float partialTicks, EnumPartType part, Direction facing, double distanceSq) {
         // Render the reflection.
         reflection.render(partialTicks);
 
@@ -78,7 +77,7 @@ class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<TileEntity
 
         // The further away the subject is, the more faint the reflection
         float reflectionAlpha = Math.min(1f, 1.2f - (float) (distanceSq / (MAX_DISTANCE * MAX_DISTANCE)));
-        GlStateManager.color4f(1f, 1f, 1f, alpha * reflectionAlpha);
+        GlStateManager.color4f(1f, 1f, 1f, reflectionAlpha);
 
         GlStateManager.translated(x + .5, y + .5, z + .5);
 
