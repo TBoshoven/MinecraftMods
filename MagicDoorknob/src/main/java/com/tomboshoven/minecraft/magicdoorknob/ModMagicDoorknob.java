@@ -30,7 +30,6 @@ public class ModMagicDoorknob {
         modEventBus.register(Blocks.class);
         modEventBus.register(Items.class);
         modEventBus.register(ModelLoaders.class);
-        modEventBus.register(Models.class);
         modEventBus.register(TileEntities.class);
     }
 }
