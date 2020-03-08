@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
 
+import com.mojang.datafixers.Dynamic;
 import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import mcp.MethodsReturnNonnullByDefault;
@@ -7,6 +8,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.NBTDynamicOps;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
@@ -42,8 +45,7 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
         CompoundNBT result = super.write(compound);
         ResourceLocation registryName = baseBlockState.getBlock().getRegistryName();
         if (registryName != null) {
-            result.putString("baseBlock", registryName.toString());
-            result.putShort("baseBlockData", (short) baseBlockState.getBlock().getMetaFromState(baseBlockState));
+            compound.put("baseBlock", BlockState.serialize(NBTDynamicOps.INSTANCE, baseBlockState).getValue());
         }
         if (doorknob != null) {
             result.putString("doorknobType", doorknob.getTypeName());
@@ -54,12 +56,7 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     @Override
     public void read(CompoundNBT compound) {
         super.read(compound);
-        String registryName = compound.getString("baseBlock");
-        Block block = Block.getBlockFromName(registryName);
-        if (block != null) {
-            short blockMeta = compound.getShort("baseBlockData");
-            baseBlockState = block.getStateFromMeta(blockMeta);
-        }
+        baseBlockState = BlockState.deserialize(new Dynamic<>(NBTDynamicOps.INSTANCE, compound.get("baseBlock")));
         String doorknobType = compound.getString("doorknobType");
         doorknob = Items.itemDoorknobs.get(doorknobType);
     }
