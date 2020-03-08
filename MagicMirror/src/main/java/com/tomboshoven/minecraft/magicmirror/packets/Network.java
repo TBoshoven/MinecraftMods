@@ -37,8 +37,8 @@ public final class Network {
     @SuppressWarnings("UnusedAssignment")
     public static void registerMessages() {
         int id = 0;
-        CHANNEL.registerMessage(MagicMirrorTileEntityModifierArmor.messageHandlerSwapMirror, MessageSwapMirror.class, id++, Side.CLIENT);
-        CHANNEL.registerMessage(MagicMirrorTileEntityModifierArmor.messageHandlerSwapPlayer, MessageSwapPlayer.class, id++, Side.CLIENT);
-        CHANNEL.registerMessage(BlockMagicMirror.messageHandlerAttachModifier, MessageAttachModifier.class, id++, Side.CLIENT);
+        CHANNEL.registerMessage(id++, MessageSwapMirror.class, MessageSwapMirror::encode, MessageSwapMirror::decode, MagicMirrorTileEntityModifierArmor::onMessageSwapMirror);
+        CHANNEL.registerMessage(id++, MessageSwapPlayer.class, MessageSwapPlayer::encode, MessageSwapPlayer::decode, MagicMirrorTileEntityModifierArmor::onMessageSwapPlayer);
+        CHANNEL.registerMessage(id++, MessageAttachModifier.class, MessageAttachModifier::encode, MessageAttachModifier::decode, BlockMagicMirror::onMessageAttachModifier);
     }
 }

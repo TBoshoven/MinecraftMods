@@ -6,13 +6,14 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagic
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorCore;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorPart;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
-import io.netty.buffer.ByteBuf;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.EnumProperty;
@@ -20,7 +21,6 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -35,16 +35,12 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.function.Supplier;
 
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
@@ -73,16 +69,6 @@ public class BlockMagicMirror extends HorizontalBlock {
             // East
             new AxisAlignedBB(0, 0, 0, 0.125, 1, 1),
     };
-
-    /**
-     * Handler for messages describing modifiers being attached to mirrors.
-     */
-    @SuppressWarnings("PublicField")
-    @SidedProxy(
-            clientSide = "com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror$MessageHandlerAttachModifierClient",
-            serverSide = "com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror$MessageHandlerAttachModifierServer"
-    )
-    public static IMessageHandler<MessageAttachModifier, IMessage> messageHandlerAttachModifier;
 
     /**
      * Create a new Magic Mirror block.
@@ -331,54 +317,46 @@ public class BlockMagicMirror extends HorizontalBlock {
             modifierName = modifier.getName();
         }
 
-        @Override
-        public void fromBytes(ByteBuf buf) {
-            mirrorPos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-            usedItemStack = ByteBufUtils.readItemStack(buf);
-            modifierName = ByteBufUtils.readUTF8String(buf);
+        /**
+         * Decode a packet into an instance of the message.
+         *
+         * @param buf The buffer to read from.
+         *
+         * @return The created message instance.
+         */
+        public static MessageAttachModifier decode(PacketBuffer buf) {
+            MessageAttachModifier result = new MessageAttachModifier();
+            result.mirrorPos = buf.readBlockPos();
+            result.usedItemStack = buf.readItemStack();
+            result.modifierName = buf.readString();
+            return result;
         }
 
-        @Override
-        public void toBytes(ByteBuf buf) {
-            buf.writeInt(mirrorPos.getX());
-            buf.writeInt(mirrorPos.getY());
-            buf.writeInt(mirrorPos.getZ());
-            ByteBufUtils.writeItemStack(buf, usedItemStack);
-            ByteBufUtils.writeUTF8String(buf, modifierName);
+
+        /**
+         * Encode the message into a packet buffer.
+         *
+         * @param buf The buffer to write to.
+         */
+        public void encode(PacketBuffer buf) {
+            buf.writeBlockPos(mirrorPos);
+            buf.writeItemStack(usedItemStack);
+            buf.writeString(modifierName);
         }
     }
 
     /**
-     * Handler for messages describing modifiers being attached to mirrors (client side).
+     * Handler for messages describing modifiers being attached to mirrors.
      */
-    @OnlyIn(Dist.CLIENT)
-    public static class MessageHandlerAttachModifierClient implements IMessageHandler<MessageAttachModifier, IMessage> {
-        @Nullable
-        @Override
-        public IMessage onMessage(MessageAttachModifier message, MessageContext ctx) {
-            WorldClient world = Minecraft.getInstance().world;
-            TileEntity te = world.getTileEntity(message.mirrorPos);
-            if (te instanceof TileEntityMagicMirrorBase) {
-                MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
-                if (modifier == null) {
-                    ModMagicMirror.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
-                    return null;
-                }
-                attachModifier(world, message.mirrorPos, message.usedItemStack, modifier);
+    public static void onMessageAttachModifier(MessageAttachModifier message, Supplier<NetworkEvent.Context> contextSupplier) {
+        ClientWorld world = Minecraft.getInstance().world;
+        TileEntity te = world.getTileEntity(message.mirrorPos);
+        if (te instanceof TileEntityMagicMirrorBase) {
+            MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
+            if (modifier == null) {
+                ModMagicMirror.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
             }
-            return null;
-        }
-    }
-
-    /**
-     * Handler for messages describing modifiers being attached to mirrors (server side).
-     */
-    @SideOnly(Side.SERVER)
-    public static class MessageHandlerAttachModifierServer implements IMessageHandler<MessageAttachModifier, IMessage> {
-        @Nullable
-        @Override
-        public IMessage onMessage(MessageAttachModifier message, MessageContext ctx) {
-            return null;
+            attachModifier(world, message.mirrorPos, message.usedItemStack, modifier);
         }
     }
 }
