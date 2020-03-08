@@ -366,7 +366,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         if (entity instanceof PlayerEntity) {
             message.armor.swap((PlayerEntity) entity);
 
-            entity.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, .8f, .4f);
+            entity.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, .8f, .4f);
             Random random = new Random();
             for (int i = 0; i < SWAP_PARTICLE_COUNT; ++i) {
                 entity.getEntityWorld().spawnParticle(
