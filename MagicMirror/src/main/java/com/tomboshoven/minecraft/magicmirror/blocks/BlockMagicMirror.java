@@ -37,7 +37,6 @@ import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.api.distmarker.Dist;
@@ -111,7 +110,7 @@ public class BlockMagicMirror extends HorizontalBlock {
         if (worldIn.isRemote) {
             worldIn.playSound(pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);
         } else {
-            IMessage mirrorMessage = new MessageAttachModifier(pos, heldItem, modifier);
+            MessageAttachModifier mirrorMessage = new MessageAttachModifier(pos, heldItem, modifier);
             Network.sendToAllTracking(mirrorMessage, worldIn, pos);
         }
     }
@@ -301,7 +300,7 @@ public class BlockMagicMirror extends HorizontalBlock {
     /**
      * Message describing the action of attaching a new modifier to a mirror.
      */
-    public static class MessageAttachModifier implements IMessage {
+    public static class MessageAttachModifier {
         /**
          * The position of the mirror in the world.
          */

@@ -30,7 +30,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.api.distmarker.Dist;
@@ -141,9 +140,9 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         // Send two individual messages, to cover the situation where a player is tracked but the mirror isn't and vice
         // versa.
         BlockPos pos = tileEntity.getPos();
-        IMessage mirrorMessage = new MessageSwapMirror(tileEntity, playerIn);
+        MessageSwapMirror mirrorMessage = new MessageSwapMirror(tileEntity, playerIn);
         Network.sendToAllTracking(mirrorMessage, tileEntity.getWorld(), pos);
-        IMessage playerMessage = new MessageSwapPlayer(this, playerIn);
+        MessageSwapPlayer playerMessage = new MessageSwapPlayer(this, playerIn);
         Network.sendTo(playerMessage, (ServerPlayerEntity) playerIn);
         Network.sendToAllTracking(playerMessage, playerIn);
 
@@ -261,7 +260,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
     /**
      * Base class for messages describing players swapping armor with the mirror.
      */
-    static class MessageSwap implements IMessage {
+    static class MessageSwap {
         final ReplacementArmor armor;
 
         MessageSwap() {
