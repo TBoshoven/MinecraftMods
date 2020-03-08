@@ -34,6 +34,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -141,10 +142,11 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         // versa.
         BlockPos pos = tileEntity.getPos();
         MessageSwapMirror mirrorMessage = new MessageSwapMirror(tileEntity, playerIn);
-        Network.sendToAllTracking(mirrorMessage, tileEntity.getWorld(), pos);
+        PacketDistributor.PacketTarget mirrorTarget = PacketDistributor.TRACKING_CHUNK.with(() -> tileEntity.getWorld().getChunkAt(pos));
+        Network.CHANNEL.send(mirrorTarget, mirrorMessage);
         MessageSwapPlayer playerMessage = new MessageSwapPlayer(this, playerIn);
-        Network.sendTo(playerMessage, (ServerPlayerEntity) playerIn);
-        Network.sendToAllTracking(playerMessage, playerIn);
+        PacketDistributor.PacketTarget playerTarget = PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> playerIn);
+        Network.CHANNEL.send(playerTarget, playerMessage);
 
         // Swap on the server side.
         replacementArmor.swap(playerIn);

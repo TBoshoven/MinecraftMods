@@ -41,6 +41,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -110,8 +111,9 @@ public class BlockMagicMirror extends HorizontalBlock {
         if (worldIn.isRemote) {
             worldIn.playSound(pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);
         } else {
-            MessageAttachModifier mirrorMessage = new MessageAttachModifier(pos, heldItem, modifier);
-            Network.sendToAllTracking(mirrorMessage, worldIn, pos);
+            MessageAttachModifier message = new MessageAttachModifier(pos, heldItem, modifier);
+            PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_CHUNK.with(() -> worldIn.getChunkAt(pos));
+            Network.CHANNEL.send(target, message);
         }
     }
 
