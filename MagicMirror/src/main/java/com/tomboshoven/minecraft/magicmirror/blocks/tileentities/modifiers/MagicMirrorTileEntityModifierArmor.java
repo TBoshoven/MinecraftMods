@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ItemStackHelper;
@@ -22,7 +23,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -369,8 +369,8 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
             entity.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, .8f, .4f);
             Random random = new Random();
             for (int i = 0; i < SWAP_PARTICLE_COUNT; ++i) {
-                entity.getEntityWorld().spawnParticle(
-                        EnumParticleTypes.PORTAL,
+                entity.getEntityWorld().addParticle(
+                        ParticleTypes.PORTAL,
                         entity.posX + random.nextGaussian() / 4,
                         entity.posY + 2 * random.nextDouble(),
                         entity.posZ + random.nextGaussian() / 4,
