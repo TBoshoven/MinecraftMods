@@ -12,11 +12,10 @@ import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,12 +30,11 @@ public class ModMagicMirror {
     @SuppressWarnings("PublicField")
     public static final Logger LOGGER = LogManager.getLogger();
 
-    @SuppressWarnings("MethodMayBeStatic")
-    @EventHandler
-    public void init(FMLPreInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(Blocks.class);
-        MinecraftForge.EVENT_BUS.register(Items.class);
-        MinecraftForge.EVENT_BUS.register(Renderers.class);
+    public ModMagicMirror() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.register(Blocks.class);
+        modEventBus.register(Items.class);
+        modEventBus.register(Renderers.class);
 
         // Register packets
         Network.registerMessages();
