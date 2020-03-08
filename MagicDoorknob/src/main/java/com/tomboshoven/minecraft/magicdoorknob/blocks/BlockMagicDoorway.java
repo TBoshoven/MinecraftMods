@@ -3,6 +3,7 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks;
 import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.block.Block;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.block.state.BlockFaceShape;
@@ -58,12 +59,13 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
 
     /**
      * Create a new Magic Doorway block.
-     * This is typically not necessary. Use Blocks.blockMagicDoorway instead.
      */
-    BlockMagicDoorway() {
+    BlockMagicDoorway(Block.Properties properties) {
+        super(properties);
+
         // By default, the doorway is not open in any direction
         setDefaultState(
-                blockState.getBaseState()
+                stateContainer.getBaseState()
                         .with(PART, EnumPartType.BOTTOM)
                         .with(OPEN_EAST_WEST, Boolean.TRUE)
                         .with(OPEN_NORTH_SOUTH, Boolean.FALSE)

@@ -48,6 +48,10 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     private static final AxisAlignedBB BOUNDING_BOX_WALL_E = new AxisAlignedBB(0, 0, 0, 0.0625, 1, 1);
     private static final AxisAlignedBB BOUNDING_BOX_WALL_W = new AxisAlignedBB(0.9375, 0, 0, 1, 1, 1);
 
+    BlockMagicDoor(Properties properties) {
+        super(properties);
+    }
+
     @Override
     public SoundType getSoundType(BlockState state, World world, BlockPos pos, @Nullable Entity entity) {
         // Return the sound type of the base block, except that placing and removing it are door open and close sounds.

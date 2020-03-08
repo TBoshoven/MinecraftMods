@@ -86,20 +86,16 @@ public class BlockMagicMirror extends HorizontalBlock {
 
     /**
      * Create a new Magic Mirror block.
-     * This is typically not necessary. Use Blocks.blockMagicMirror instead.
      */
-    BlockMagicMirror() {
-        super(new Material(MapColor.GRAY));
+    BlockMagicMirror(Block.Properties properties) {
+        super(properties);
 
         // By default, we're the bottom part of a broken mirror
         setDefaultState(
-                blockState.getBaseState()
+                stateContainer.getBaseState()
                         .with(COMPLETE, Boolean.FALSE)
                         .with(PART, EnumPartType.BOTTOM)
         );
-
-        setHardness(.8f);
-        setSoundType(SoundType.GLASS);
     }
 
     /**

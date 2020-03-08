@@ -44,8 +44,8 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
      */
     protected static final PropertyTexture TEXTURE_HIGHLIGHT = new PropertyTexture("texture_highlight");
 
-    BlockMagicDoorwayPartBase() {
-        super(new MaterialTransparent(MapColor.AIR));
+    BlockMagicDoorwayPartBase(Block.Properties properties) {
+        super(properties);
     }
 
     @Override
