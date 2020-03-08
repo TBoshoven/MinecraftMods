@@ -30,7 +30,7 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        return writeInternal(super.writeToNBT(compound));
+        return writeInternal(compound);
     }
 
     private NBTTagCompound writeInternal(NBTTagCompound compound) {
