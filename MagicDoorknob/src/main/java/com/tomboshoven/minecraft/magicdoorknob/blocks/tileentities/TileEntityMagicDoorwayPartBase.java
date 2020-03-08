@@ -4,11 +4,9 @@ import com.mojang.datafixers.Dynamic;
 import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.NBTDynamicOps;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -58,7 +56,7 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
         super.read(compound);
         baseBlockState = BlockState.deserialize(new Dynamic<>(NBTDynamicOps.INSTANCE, compound.get("baseBlock")));
         String doorknobType = compound.getString("doorknobType");
-        doorknob = Items.itemDoorknobs.get(doorknobType);
+        doorknob = Items.DOORKNOBS.get(doorknobType);
     }
 
     @Override

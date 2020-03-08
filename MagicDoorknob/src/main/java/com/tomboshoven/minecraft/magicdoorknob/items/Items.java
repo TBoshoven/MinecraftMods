@@ -3,9 +3,9 @@ package com.tomboshoven.minecraft.magicdoorknob.items;
 import com.google.common.collect.Maps;
 import com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemTier;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent.Register;
@@ -26,7 +26,7 @@ public final class Items {
     /**
      * The magic doorknob items by type name.
      */
-    public static final Map<String, ItemMagicDoorknob> itemDoorknobs = Maps.newHashMap();
+    public static final Map<String, ItemMagicDoorknob> DOORKNOBS = Maps.newHashMap();
 
     static {
         // Add all Vanilla tool materials
@@ -50,11 +50,9 @@ public final class Items {
      * @param mainTexture The main texture of the doorknob
      */
     private static void addDoorknob(String typeName, IItemTier tier, ResourceLocation mainTexture) {
-        Item i = new ItemMagicDoorknob(typeName, material, mainTexture)
-                .setRegistryName(ModMagicDoorknob.MOD_ID, String.format("magic_doorknob_%s", typeName))
-                .setTranslationKey(String.format("%s.magic_doorknob.%s", ModMagicDoorknob.MOD_ID, typeName))
-                .setCreativeTab(CreativeTabs.MISC);
-        itemDoorknobs.put(typeName, (ItemMagicDoorknob) i);
+        Item i = new ItemMagicDoorknob(new Item.Properties().group(ItemGroup.TOOLS), typeName, tier, mainTexture)
+                .setRegistryName(ModMagicDoorknob.MOD_ID, String.format("magic_doorknob_%s", typeName));
+        DOORKNOBS.put(typeName, (ItemMagicDoorknob) i);
     }
 
     /**
@@ -72,6 +70,6 @@ public final class Items {
     @SubscribeEvent
     public static void registerItems(Register<Item> event) {
         IForgeRegistry<Item> registry = event.getRegistry();
-        itemDoorknobs.values().forEach(registry::register);
+        DOORKNOBS.values().forEach(registry::register);
     }
 }

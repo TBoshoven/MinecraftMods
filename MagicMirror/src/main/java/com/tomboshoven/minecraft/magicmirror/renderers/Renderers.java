@@ -70,7 +70,7 @@ public final class Renderers {
             ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMagicMirrorPart.class, renderer);
 
             ModelLoader.setCustomModelResourceLocation(
-                    Items.itemBlockMagicMirror,
+                    Items.MAGIC_MIRROR,
                     0,
                     new ModelResourceLocation(
                             new ResourceLocation(ModMagicMirror.MOD_ID, "magic_mirror"),

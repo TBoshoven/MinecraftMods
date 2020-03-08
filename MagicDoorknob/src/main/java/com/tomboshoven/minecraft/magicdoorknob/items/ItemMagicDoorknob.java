@@ -44,11 +44,14 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
     private IItemTier tier;
 
     /**
+     * @param properties          The item properties
      * @param typeName            The main texture of the item
      * @param tier                The item material, used for determining doorway generation properties
      * @param mainTextureLocation The name of the type of item (used in NBT data; do not modify)
      */
-    public ItemMagicDoorknob(String typeName, IItemTier tier, ResourceLocation mainTextureLocation) {
+    public ItemMagicDoorknob(Item.Properties properties, String typeName, IItemTier tier, ResourceLocation mainTextureLocation) {
+        super(properties);
+
         this.typeName = typeName;
         this.tier = tier;
         this.mainTextureLocation = mainTextureLocation;
