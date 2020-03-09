@@ -14,13 +14,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
@@ -185,7 +185,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
             for (int i = 0; i < 4; ++i) {
                 if (player instanceof ServerPlayerEntity) {
                     // Make sure to do this on the client side as well.
-                    ((ServerPlayerEntity) player).connection.sendPacket(new SPacketSetSlot(-2, i + 36, replacementInventory.get(i)));
+                    ((ServerPlayerEntity) player).connection.sendPacket(new SSetSlotPacket(-2, i + 36, replacementInventory.get(i)));
                 }
                 ItemStack replacement = replacementInventory.get(i);
                 replacementInventory.set(i, player.inventory.armorInventory.get(i));
