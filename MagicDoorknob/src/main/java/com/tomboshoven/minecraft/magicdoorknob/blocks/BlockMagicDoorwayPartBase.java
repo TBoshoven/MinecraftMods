@@ -23,6 +23,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import javax.annotation.Nullable;
@@ -104,7 +105,7 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
 
     @Nullable
     @Override
-    public String getHarvestTool(BlockState state) {
+    public ToolType getHarvestTool(BlockState state) {
         // We don't have information about the base block here.
         // We allow breaking with any tool.
         return null;
