@@ -5,7 +5,6 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers.BlockColorHa
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntities;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.ModelLoaders;
-import com.tomboshoven.minecraft.magicdoorknob.models.Models;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
