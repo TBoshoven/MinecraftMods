@@ -21,6 +21,7 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
@@ -87,13 +88,13 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     }
 
     @Override
-    public float getBlockHardness(BlockState blockState, World worldIn, BlockPos pos) {
+    public float getBlockHardness(BlockState blockState, IBlockReader world, BlockPos pos) {
         // Use the base block's hardness.
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
-            return ((TileEntityMagicDoorwayPartBase) tileEntity).getBaseBlockState().getBlockHardness(worldIn, pos);
+            return ((TileEntityMagicDoorwayPartBase) tileEntity).getBaseBlockState().getBlockHardness(world, pos);
         }
-        return super.getBlockHardness(blockState, worldIn, pos);
+        return super.getBlockHardness(blockState, world, pos);
     }
 
     @Override
