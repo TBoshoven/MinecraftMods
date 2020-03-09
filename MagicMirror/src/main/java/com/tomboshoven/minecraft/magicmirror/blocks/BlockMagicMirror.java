@@ -137,21 +137,6 @@ public class BlockMagicMirror extends HorizontalBlock {
     }
 
     @Override
-    public int getMetaFromState(BlockState state) {
-        return state.get(HORIZONTAL_FACING).getHorizontalIndex()
-                | (state.get(COMPLETE) ? 1 : 0) << 2
-                | state.get(PART).get() << 3;
-    }
-
-    @Override
-    public BlockState getStateFromMeta(int meta) {
-        return getDefaultState()
-                .with(HORIZONTAL_FACING, Direction.byHorizontalIndex(meta & 3))
-                .with(COMPLETE, (meta & 1 << 2) != 0)
-                .with(PART, (meta & 1 << 3) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP);
-    }
-
-    @Override
     public BlockFaceShape getBlockFaceShape(IEnviromentBlockReader worldIn, BlockState state, BlockPos pos, Direction face) {
         // Only the opposite face is default
         return state.get(HORIZONTAL_FACING).getOpposite() == face ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;

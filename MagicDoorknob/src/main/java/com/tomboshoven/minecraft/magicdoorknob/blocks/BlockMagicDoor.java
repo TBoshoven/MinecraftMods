@@ -193,18 +193,6 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public int getMetaFromState(BlockState state) {
-        return state.get(PART).get() | (state.get(HORIZONTAL_FACING).getHorizontalIndex() << 1);
-    }
-
-    @Override
-    public BlockState getStateFromMeta(int meta) {
-        return getDefaultState()
-                .with(PART, (meta & 1) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP)
-                .with(HORIZONTAL_FACING, Direction.byHorizontalIndex(meta >> 1));
-    }
-
-    @Override
     public TileEntity createTileEntity(World world, BlockState state) {
         return new TileEntityMagicDoor();
     }

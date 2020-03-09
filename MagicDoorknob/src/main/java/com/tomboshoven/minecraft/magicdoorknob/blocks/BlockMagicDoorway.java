@@ -148,21 +148,6 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public int getMetaFromState(BlockState state) {
-        return state.get(PART).get()
-                | (state.get(OPEN_NORTH_SOUTH) ? 1 : 0) << 1
-                | (state.get(OPEN_EAST_WEST) ? 1 : 0) << 2;
-    }
-
-    @Override
-    public BlockState getStateFromMeta(int meta) {
-        return getDefaultState()
-                .with(PART, (meta & 1) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP)
-                .with(OPEN_NORTH_SOUTH, (meta & (1 << 1)) != 0)
-                .with(OPEN_EAST_WEST, (meta & (1 << 2)) != 0);
-    }
-
-    @Override
     public BlockState getActualState(BlockState state, IEnviromentBlockReader worldIn, BlockPos pos) {
         return super.getActualState(state, worldIn, pos);
     }
