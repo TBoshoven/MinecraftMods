@@ -133,8 +133,8 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     }
 
     @Override
-    public void invalidate() {
-        super.invalidate();
+    public void remove() {
+        super.remove();
         // Stop reflecting, but prepare to restart the next tick, in case we get validated again
         // We need to make sure that we stop reflecting when the tile entity is destroyed, so we don't leak any frame
         // buffers and textures
