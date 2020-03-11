@@ -10,6 +10,7 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -138,14 +139,8 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer.Builder(this)
-                .add(PART)
-                .add(OPEN_NORTH_SOUTH)
-                .add(OPEN_EAST_WEST)
-                .add(TEXTURE_MAIN)
-                .add(TEXTURE_HIGHLIGHT)
-                .build();
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(PART, OPEN_NORTH_SOUTH, OPEN_EAST_WEST, TEXTURE_MAIN, TEXTURE_HIGHLIGHT);
     }
 
     @Override

@@ -11,6 +11,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
@@ -179,13 +180,8 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer.Builder(this)
-                .add(PART)
-                .add(HORIZONTAL_FACING)
-                .add(TEXTURE_MAIN)
-                .add(TEXTURE_HIGHLIGHT)
-                .build();
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(PART, HORIZONTAL_FACING, TEXTURE_MAIN, TEXTURE_HIGHLIGHT);
     }
 
     @Override
