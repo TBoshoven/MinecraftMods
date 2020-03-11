@@ -185,7 +185,7 @@ public class BlockMagicMirror extends HorizontalBlock {
     }
 
     @Override
-    public BlockState withRotation(BlockState state, Rotation rot) {
+    public BlockState rotate(BlockState state, Rotation rot) {
         return state.with(HORIZONTAL_FACING, rot.rotate(state.get(HORIZONTAL_FACING)));
     }
 
