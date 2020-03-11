@@ -1,18 +1,13 @@
 package com.tomboshoven.minecraft.magicmirror.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.command.CommandSource;
+import net.minecraft.util.text.TranslationTextComponent;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Commands related to the mod.
@@ -20,36 +15,32 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MagicMirrorCommand extends CommandBase {
-
-    @Override
-    public String getName() {
-        return "magic_mirror";
+public class MagicMirrorCommand {
+    /**
+     * Reply with some debugging information.
+     *
+     * @param context The command context.
+     *
+     * @return Currently, the number of active reflections.
+     */
+    private static int debug(CommandContext<CommandSource> context) {
+        int reflectionCount = Reflection.getActiveReflectionsClient();
+        context.getSource().sendFeedback(new TranslationTextComponent("commands.magic_mirror.debug.reflections", reflectionCount), true);
+        return reflectionCount;
     }
 
-    @Override
-    public String getUsage(ICommandSender sender) {
-        return "commands.magic_mirror.usage";
-    }
-
-    @Override
-    public int getRequiredPermissionLevel() {
-        return 0;
-    }
-
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws WrongUsageException {
-        if (args.length != 1 || !"debug".equals(args[0])) {
-            throw new WrongUsageException("commands.magic_mirror.usage");
-        }
-        sender.sendMessage(new TextComponentTranslation("commands.magic_mirror.debug.reflections", Reflection.getActiveReflectionsClient()));
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        if (args.length == 1) {
-            return getListOfStringsMatchingLastWord(new String[]{"debug"});
-        }
-        return Collections.emptyList();
+    /**
+     * Register the command.
+     *
+     * @param dispatcher The command dispatcher to register the command to.
+     */
+    public void register(CommandDispatcher<CommandSource> dispatcher) {
+        dispatcher.register(
+                net.minecraft.command.Commands.literal("magic_mirror").then(
+                        net.minecraft.command.Commands.literal("debug").executes(
+                                MagicMirrorCommand::debug
+                        )
+                )
+        );
     }
 }

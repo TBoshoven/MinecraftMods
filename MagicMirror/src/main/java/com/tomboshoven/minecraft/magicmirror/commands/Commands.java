@@ -1,10 +1,10 @@
 package com.tomboshoven.minecraft.magicmirror.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.ICommand;
-import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -14,17 +14,22 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public final class Commands {
-    private static final ICommand commandMagicMirror = new MagicMirrorCommand();
+    static MagicMirrorCommand MAGIC_MIRROR = new MagicMirrorCommand();
 
     private Commands() {
     }
 
     /**
      * Register all commands.
+     *
+     * @param dispatcher The command dispatcher to register our commands to.
      */
-    public static void registerCommands() {
-        if(FMLCommonHandler.instance().getSide() == Side.CLIENT) {
-            ClientCommandHandler.instance.registerCommand(commandMagicMirror);
-        }
+    public static void registerCommands(CommandDispatcher<CommandSource> dispatcher) {
+        MAGIC_MIRROR.register(dispatcher);
+    }
+
+    @SubscribeEvent
+    public static void serverStarting(FMLServerStartingEvent event) {
+        registerCommands(event.getCommandDispatcher());
     }
 }
