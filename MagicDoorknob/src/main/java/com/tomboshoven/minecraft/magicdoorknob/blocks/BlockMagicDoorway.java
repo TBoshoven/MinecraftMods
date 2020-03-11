@@ -16,6 +16,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 
@@ -154,7 +155,7 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(World world, BlockState state) {
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new TileEntityMagicDoorway();
     }
 

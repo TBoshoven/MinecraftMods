@@ -30,6 +30,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -174,7 +175,7 @@ public class BlockMagicMirror extends HorizontalBlock {
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(World world, BlockState state) {
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         // The bottom part is the core of the mirror which has all the logic; the top part just uses the results.
         if (state.get(PART) == EnumPartType.BOTTOM) {
             return new TileEntityMagicMirrorCore();

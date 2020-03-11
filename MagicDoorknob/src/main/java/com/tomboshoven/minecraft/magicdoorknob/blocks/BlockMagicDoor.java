@@ -21,6 +21,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -192,8 +193,9 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
         return false;
     }
 
+    @Nullable
     @Override
-    public TileEntity createTileEntity(World world, BlockState state) {
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new TileEntityMagicDoor();
     }
 
