@@ -184,11 +184,6 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
         builder.add(PART, HORIZONTAL_FACING, TEXTURE_MAIN, TEXTURE_HIGHLIGHT);
     }
 
-    @Override
-    public boolean isTopSolid(BlockState state) {
-        return false;
-    }
-
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {

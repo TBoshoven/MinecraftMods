@@ -134,11 +134,6 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public boolean isTopSolid(BlockState state) {
-        return state.get(PART) == EnumPartType.TOP;
-    }
-
-    @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(PART, OPEN_NORTH_SOUTH, OPEN_EAST_WEST, TEXTURE_MAIN, TEXTURE_HIGHLIGHT);
     }
