@@ -10,16 +10,17 @@ import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ITextureMap
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.IItemTier;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -57,17 +58,18 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
     }
 
     /**
-     * @param world The world to check
-     * @param pos   The position to check
+     * @param world      The world to check
+     * @param pos        The position to check
+     * @param useContext The context for the interaction that triggered this check.
      * @return Whether the block can be replaced by a door or doorway
      */
-    private static boolean isEmpty(IEnviromentBlockReader world, BlockPos pos) {
+    private static boolean isEmpty(IEnviromentBlockReader world, BlockPos pos, BlockItemUseContext useContext) {
         BlockState blockState = world.getBlockState(pos);
         if (blockState.getBlock().isAir(blockState, world, pos)) {
             return true;
         }
 
-        return blockState.getBlock().isReplaceable(world, pos);
+        return blockState.isReplaceable(useContext);
     }
 
     @Override
@@ -82,9 +84,10 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
                 return ActionResultType.FAIL;
             }
 
-            if (canPlaceDoor(world, pos, face)) {
+            BlockItemUseContext useContext = new BlockItemUseContext(context);
+            if (canPlaceDoor(world, pos, face, useContext)) {
                 placeDoor(world, pos, face);
-                placeDoorway(world, pos, face);
+                placeDoorway(world, pos, face, useContext);
                 context.getItem().shrink(1);
                 return ActionResultType.SUCCESS;
             }
@@ -132,19 +135,20 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
      * Place a doorway that starts at the given position.
      * This does not do any checks to see whether it's allowed.
      *
-     * @param world  The world to place the doorway in
-     * @param pos    The position of the top part of the starting blocks of the doorway
-     * @param facing The direction the door is facing (outward from the doorway)
+     * @param world      The world to place the doorway in
+     * @param pos        The position of the top part of the starting blocks of the doorway
+     * @param facing     The direction the door is facing (outward from the doorway)
+     * @param useContext The context for the interaction that triggered this check.
      */
-    private void placeDoorway(World world, BlockPos pos, Direction facing) {
+    private void placeDoorway(World world, BlockPos pos, Direction facing, BlockItemUseContext useContext) {
         Direction doorwayFacing = facing.getOpposite();
         boolean isNorthSouth = facing == Direction.NORTH || facing == Direction.SOUTH;
         float depth = tier.getEfficiency();
         for (int i = 0; i < depth; ++i) {
             BlockPos elementPos = pos.offset(doorwayFacing, i);
             if (
-                    (isReplaceable(world, elementPos) && !isEmpty(world, elementPos)) ||
-                            (isReplaceable(world, elementPos.down()) && !isEmpty(world, elementPos.down()))
+                    (isReplaceable(world, elementPos) && !isEmpty(world, elementPos, useContext)) ||
+                            (isReplaceable(world, elementPos.down()) && !isEmpty(world, elementPos.down(), useContext))
             ) {
                 placeDoorwayElement(world, elementPos, isNorthSouth, BlockMagicDoorway.EnumPartType.TOP);
                 placeDoorwayElement(world, elementPos.down(), isNorthSouth, BlockMagicDoorway.EnumPartType.BOTTOM);
@@ -181,16 +185,17 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
     /**
      * Verify whether a door can be placed at the given position.
      *
-     * @param world  The world to analyze
-     * @param pos    The position in the world of the block that will be turned into a door
-     * @param facing The direction the door will be facing
+     * @param world      The world to analyze
+     * @param pos        The position in the world of the block that will be turned into a door
+     * @param facing     The direction the door will be facing
+     * @param useContext The context for the interaction that triggered this check.
      * @return Whether a door can be placed at the given position.
      */
-    private boolean canPlaceDoor(IEnviromentBlockReader world, BlockPos pos, Direction facing) {
+    private boolean canPlaceDoor(IEnviromentBlockReader world, BlockPos pos, Direction facing, BlockItemUseContext useContext) {
         if (!isReplaceable(world, pos) || !isReplaceable(world, pos.down())) {
             return false;
         }
-        return isEmpty(world, pos.offset(facing)) && isEmpty(world, pos.offset(facing).down());
+        return isEmpty(world, pos.offset(facing), useContext) && isEmpty(world, pos.offset(facing).down(), useContext);
     }
 
     /**
