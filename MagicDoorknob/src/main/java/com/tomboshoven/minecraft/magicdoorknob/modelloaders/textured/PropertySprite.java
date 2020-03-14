@@ -3,6 +3,7 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -17,12 +18,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @OnlyIn(Dist.CLIENT)
 public class PropertySprite extends TextureAtlasSprite {
     /**
-     * @param name The name of the property
+     * @param name The location of the property
      */
-    PropertySprite(String name) {
-        super(name);
-        width = 16;
-        height = 16;
-        initSprite(16, 16, 0, 0, false);
+    PropertySprite(ResourceLocation name) {
+        super(name, 16, 16);
     }
 }
