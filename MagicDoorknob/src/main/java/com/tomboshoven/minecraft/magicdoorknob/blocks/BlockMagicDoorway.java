@@ -1,26 +1,22 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
-import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Part of a magic doorway.
@@ -43,17 +39,17 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
      */
     public static final BooleanProperty OPEN_EAST_WEST = BooleanProperty.create("open_east_west");
 
-    private static final AxisAlignedBB BOUNDING_BOX_PILLAR_NW = new AxisAlignedBB(0, 0, 0.9375, 0.0625, 1, 1);
-    private static final AxisAlignedBB BOUNDING_BOX_PILLAR_NE = new AxisAlignedBB(0.9375, 0, 0, 1, 1, 0.0625);
-    private static final AxisAlignedBB BOUNDING_BOX_PILLAR_SW = new AxisAlignedBB(0, 0, 0, 0.0625, 1, 0.0625);
-    private static final AxisAlignedBB BOUNDING_BOX_PILLAR_SE = new AxisAlignedBB(0.9375, 0, 0.9375, 1, 1, 1);
+    private static final VoxelShape BOUNDING_BOX_PILLAR_NW = makeCuboidShape(0, 0, 0.9375, 0.0625, 1, 1);
+    private static final VoxelShape BOUNDING_BOX_PILLAR_NE = makeCuboidShape(0.9375, 0, 0, 1, 1, 0.0625);
+    private static final VoxelShape BOUNDING_BOX_PILLAR_SW = makeCuboidShape(0, 0, 0, 0.0625, 1, 0.0625);
+    private static final VoxelShape BOUNDING_BOX_PILLAR_SE = makeCuboidShape(0.9375, 0, 0.9375, 1, 1, 1);
 
-    private static final AxisAlignedBB BOUNDING_BOX_WALL_S = new AxisAlignedBB(0, 0, 0, 1, 1, 0.0625);
-    private static final AxisAlignedBB BOUNDING_BOX_WALL_N = new AxisAlignedBB(0, 0, 0.9375, 1, 1, 1);
-    private static final AxisAlignedBB BOUNDING_BOX_WALL_E = new AxisAlignedBB(0, 0, 0, 0.0625, 1, 1);
-    private static final AxisAlignedBB BOUNDING_BOX_WALL_W = new AxisAlignedBB(0.9375, 0, 0, 1, 1, 1);
+    private static final VoxelShape BOUNDING_BOX_WALL_S = makeCuboidShape(0, 0, 0, 1, 1, 0.0625);
+    private static final VoxelShape BOUNDING_BOX_WALL_N = makeCuboidShape(0, 0, 0.9375, 1, 1, 1);
+    private static final VoxelShape BOUNDING_BOX_WALL_E = makeCuboidShape(0, 0, 0, 0.0625, 1, 1);
+    private static final VoxelShape BOUNDING_BOX_WALL_W = makeCuboidShape(0.9375, 0, 0, 1, 1, 1);
 
-    private static final AxisAlignedBB BOUNDING_BOX_TOP = new AxisAlignedBB(0, 0.9375, 0, 1, 1, 1);
+    private static final VoxelShape BOUNDING_BOX_TOP = makeCuboidShape(0, 0.9375, 0, 1, 1, 1);
 
     /**
      * Create a new Magic Doorway block.
@@ -70,27 +66,24 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
         );
     }
 
-    /**
-     * @param state The blockstate of the doorway
-     * @return A list of all bounding boxes for collision purposes
-     */
-    private static List<AxisAlignedBB> getCollisionBoxes(BlockState state) {
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         boolean openNorthSouth = state.get(OPEN_NORTH_SOUTH);
         boolean openEastWest = state.get(OPEN_EAST_WEST);
         boolean isTop = state.get(PART) == EnumPartType.TOP;
-        List<AxisAlignedBB> result = Lists.newArrayList();
+        VoxelShape result = VoxelShapes.empty();
         if (openNorthSouth && openEastWest) {
-            Collections.addAll(result, BOUNDING_BOX_PILLAR_NE, BOUNDING_BOX_PILLAR_NW, BOUNDING_BOX_PILLAR_SE, BOUNDING_BOX_PILLAR_SW);
+            result = VoxelShapes.or(result, BOUNDING_BOX_PILLAR_NE, BOUNDING_BOX_PILLAR_NW, BOUNDING_BOX_PILLAR_SE, BOUNDING_BOX_PILLAR_SW);
         } else {
             if (!openNorthSouth) {
-                Collections.addAll(result, BOUNDING_BOX_WALL_N, BOUNDING_BOX_WALL_S);
+                result = VoxelShapes.or(result, BOUNDING_BOX_WALL_N, BOUNDING_BOX_WALL_S);
             }
             if (!openEastWest) {
-                Collections.addAll(result, BOUNDING_BOX_WALL_E, BOUNDING_BOX_WALL_W);
+                result = VoxelShapes.or(result, BOUNDING_BOX_WALL_E, BOUNDING_BOX_WALL_W);
             }
         }
         if (isTop) {
-            result.add(BOUNDING_BOX_TOP);
+            result = VoxelShapes.or(result, BOUNDING_BOX_TOP);
         }
         return result;
     }
@@ -106,13 +99,6 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public void addCollisionBoxToList(BlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
-        for (AxisAlignedBB collisionBox : getCollisionBoxes(state)) {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, collisionBox);
-        }
-    }
-
-    @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(PART, OPEN_NORTH_SOUTH, OPEN_EAST_WEST);
     }
@@ -121,32 +107,5 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new TileEntityMagicDoorway();
-    }
-
-    @Override
-    @Nullable
-    public RayTraceResult collisionRayTrace(BlockState blockState, World worldIn, BlockPos pos, Vec3d start, Vec3d end) {
-        // Manually override collisions so we can break things from within this block
-        List<RayTraceResult> rayTraceResults = Lists.newArrayList();
-
-        for (AxisAlignedBB collisionBox : getCollisionBoxes(blockState)) {
-            rayTraceResults.add(rayTrace(pos, start, end, collisionBox));
-        }
-
-        RayTraceResult result = null;
-        double longest = 0.0D;
-
-        for (RayTraceResult rayTraceResult : rayTraceResults) {
-            if (rayTraceResult != null) {
-                double distance = rayTraceResult.hitVec.squareDistanceTo(end);
-
-                if (distance > longest) {
-                    result = rayTraceResult;
-                    longest = distance;
-                }
-            }
-        }
-
-        return result;
     }
 }
