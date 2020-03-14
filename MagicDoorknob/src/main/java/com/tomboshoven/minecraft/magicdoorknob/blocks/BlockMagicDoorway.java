@@ -39,18 +39,17 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
      */
     public static final BooleanProperty OPEN_EAST_WEST = BooleanProperty.create("open_east_west");
 
-    private static final VoxelShape BOUNDING_BOX_PILLAR_NW = makeCuboidShape(0, 0, 0.9375, 0.0625, 1, 1);
-    private static final VoxelShape BOUNDING_BOX_PILLAR_NE = makeCuboidShape(0.9375, 0, 0, 1, 1, 0.0625);
-    private static final VoxelShape BOUNDING_BOX_PILLAR_SW = makeCuboidShape(0, 0, 0, 0.0625, 1, 0.0625);
-    private static final VoxelShape BOUNDING_BOX_PILLAR_SE = makeCuboidShape(0.9375, 0, 0.9375, 1, 1, 1);
+    private static final VoxelShape BOUNDING_BOX_PILLAR_NW = makeCuboidShape(0, 0, 15, 1, 16, 16);
+    private static final VoxelShape BOUNDING_BOX_PILLAR_NE = makeCuboidShape(15, 0, 0, 16, 16, 15);
+    private static final VoxelShape BOUNDING_BOX_PILLAR_SW = makeCuboidShape(0, 0, 0, 1, 16, 1);
+    private static final VoxelShape BOUNDING_BOX_PILLAR_SE = makeCuboidShape(15, 0, 15, 16, 16, 16);
 
-    private static final VoxelShape BOUNDING_BOX_WALL_S = makeCuboidShape(0, 0, 0, 1, 1, 0.0625);
-    private static final VoxelShape BOUNDING_BOX_WALL_N = makeCuboidShape(0, 0, 0.9375, 1, 1, 1);
-    private static final VoxelShape BOUNDING_BOX_WALL_E = makeCuboidShape(0, 0, 0, 0.0625, 1, 1);
-    private static final VoxelShape BOUNDING_BOX_WALL_W = makeCuboidShape(0.9375, 0, 0, 1, 1, 1);
+    private static final VoxelShape BOUNDING_BOX_WALL_S = makeCuboidShape(0, 0, 0, 16, 16, 1);
+    private static final VoxelShape BOUNDING_BOX_WALL_N = makeCuboidShape(0, 0, 15, 16, 16, 16);
+    private static final VoxelShape BOUNDING_BOX_WALL_E = makeCuboidShape(0, 0, 0, 1, 16, 16);
+    private static final VoxelShape BOUNDING_BOX_WALL_W = makeCuboidShape(15, 0, 0, 16, 16, 16);
 
-    private static final VoxelShape BOUNDING_BOX_TOP = makeCuboidShape(0, 0.9375, 0, 1, 1, 1);
-
+    private static final VoxelShape BOUNDING_BOX_TOP = makeCuboidShape(0, 15, 0, 16, 16, 16);
     /**
      * Create a new Magic Doorway block.
      */

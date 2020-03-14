@@ -44,10 +44,10 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
      */
     public static final EnumProperty<Direction> HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    private static final VoxelShape SHAPE_SOUTH = Block.makeCuboidShape(0, 0, 0, 1, 1, 0.0625);
-    private static final VoxelShape SHAPE_WEST = Block.makeCuboidShape(0, 0, 0.9375, 1, 1, 1);
-    private static final VoxelShape SHAPE_NORTH = Block.makeCuboidShape(0, 0, 0, 0.0625, 1, 1);
-    private static final VoxelShape SHAPE_EAST = Block.makeCuboidShape(0.9375, 0, 0, 1, 1, 1);
+    private static final VoxelShape SHAPE_SOUTH = Block.makeCuboidShape(0, 0, 0, 16, 16, 1);
+    private static final VoxelShape SHAPE_WEST = Block.makeCuboidShape(0, 0, 15, 16, 16, 16);
+    private static final VoxelShape SHAPE_NORTH = Block.makeCuboidShape(0, 0, 0, 1, 16, 16);
+    private static final VoxelShape SHAPE_EAST = Block.makeCuboidShape(15, 0, 0, 16, 16, 16);
 
     BlockMagicDoor(Properties properties) {
         super(properties);

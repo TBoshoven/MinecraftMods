@@ -58,15 +58,15 @@ public class BlockMagicMirror extends HorizontalBlock {
     /**
      * The bounding boxes of the various orientations of this block; should be indexed by facing.horizontalIndex()
      */
-    private static final VoxelShape[] BOUNDING_BOX = {
+    private static final VoxelShape[] SHAPES = {
             // South
-            makeCuboidShape(0, 0, 0, 1, 1, 0.125),
+            makeCuboidShape(0, 0, 0, 16, 16, 2),
             // West
-            makeCuboidShape(0.875, 0, 0, 1, 1, 1),
+            makeCuboidShape(14, 0, 0, 16, 16, 16),
             // North
-            makeCuboidShape(0, 0, 0.875, 1, 1, 1),
+            makeCuboidShape(0, 0, 14, 16, 16, 16),
             // East
-            makeCuboidShape(0, 0, 0, 0.125, 1, 1),
+            makeCuboidShape(0, 0, 0, 2, 16, 16),
     };
 
     /**
@@ -140,7 +140,7 @@ public class BlockMagicMirror extends HorizontalBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return BOUNDING_BOX[state.get(HORIZONTAL_FACING).getHorizontalIndex()];
+        return SHAPES[state.get(HORIZONTAL_FACING).getHorizontalIndex()];
     }
 
     @Override
