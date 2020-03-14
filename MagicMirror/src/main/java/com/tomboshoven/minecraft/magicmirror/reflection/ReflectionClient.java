@@ -109,7 +109,7 @@ public class ReflectionClient extends Reflection {
         lastRenderPartialTicks = partialTicks;
 
         if (frameBuffer != null && reflectionRenderer != null) {
-            frameBuffer.framebufferClear();
+            frameBuffer.framebufferClear(IS_RUNNING_ON_MAC);
             frameBuffer.bindFramebuffer(true);
 
             reflectionRenderer.render(facing, partialTicks);
