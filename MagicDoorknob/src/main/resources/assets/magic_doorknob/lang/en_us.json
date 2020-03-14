@@ -1,9 +1,9 @@
 {
-  "item.magic_doorknob.magic_doorknob.diamond": "Diamond Magic Doorknob",
-  "item.magic_doorknob.magic_doorknob.gold": "Golden Magic Doorknob",
-  "item.magic_doorknob.magic_doorknob.iron": "Iron Magic Doorknob",
-  "item.magic_doorknob.magic_doorknob.stone": "Stone Magic Doorknob",
-  "item.magic_doorknob.magic_doorknob.wood": "Wooden Magic Doorknob",
+  "item.magic_doorknob.magic_doorknob_diamond": "Diamond Magic Doorknob",
+  "item.magic_doorknob.magic_doorknob_gold": "Golden Magic Doorknob",
+  "item.magic_doorknob.magic_doorknob_iron": "Iron Magic Doorknob",
+  "item.magic_doorknob.magic_doorknob_stone": "Stone Magic Doorknob",
+  "item.magic_doorknob.magic_doorknob_wood": "Wooden Magic Doorknob",
   "block.magic_doorknob.magic_doorway": "Magic Doorway",
   "block.magic_doorknob.magic_door": "Magic Door"
 }
