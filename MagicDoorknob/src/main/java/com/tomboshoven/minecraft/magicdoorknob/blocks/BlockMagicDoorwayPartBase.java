@@ -60,13 +60,13 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     }
 
     @Override
-    public int getLightOpacity(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
+    public int getOpacity(BlockState state, IBlockReader world, BlockPos pos) {
         // Use the base block's light opacity.
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
-            return ((TileEntityMagicDoorwayPartBase) tileEntity).getBaseBlockState().getLightOpacity(world, pos);
+            return ((TileEntityMagicDoorwayPartBase) tileEntity).getBaseBlockState().getOpacity(world, pos);
         }
-        return super.getLightOpacity(state, world, pos);
+        return super.getOpacity(state, world, pos);
     }
 
     @Override
