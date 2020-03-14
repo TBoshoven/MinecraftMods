@@ -217,9 +217,8 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
     @Override
     @OnlyIn(Dist.CLIENT)
     public ITextureMapper getTextureMapper(ItemStack stack) {
-        return (spriteToMap, blockState) -> {
-            String name = spriteToMap.getIconName();
-            if ("texture_main".equals(name)) {
+        return (spriteToMap, blockState, modelData) -> {
+            if ("texture_main".equals(spriteToMap.getName().getPath())) {
                 return mainTextureLocation;
             }
             return new ResourceLocation("missingno");
