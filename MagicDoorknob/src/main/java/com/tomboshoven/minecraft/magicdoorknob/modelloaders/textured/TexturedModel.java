@@ -5,10 +5,10 @@ import com.google.common.collect.Sets;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBlock;
+import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.animation.IClip;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,20 +27,20 @@ import java.util.stream.Collectors;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
-class TexturedModel implements IModel {
+class TexturedModel implements IUnbakedModel {
     // The namespace of the properties; used in model definitions
     private static final String PROPERTY_NAMESPACE = "property";
     // The extra textures to include with this model; used to enable textures that are not already present in the game
     private final Set<ResourceLocation> extraTextures;
     // The original model
-    private IModel wrappedModel;
+    private IUnbakedModel wrappedModel;
 
     /**
      * @param wrappedModel  The original model
      * @param extraTextures The extra textures to include with this model; used to enable textures that are not already
      *                      present in the game
      */
-    TexturedModel(IModel wrappedModel, Set<ResourceLocation> extraTextures) {
+    TexturedModel(IUnbakedModel wrappedModel, Set<ResourceLocation> extraTextures) {
         this.wrappedModel = wrappedModel;
         this.extraTextures = extraTextures;
     }
@@ -82,27 +82,27 @@ class TexturedModel implements IModel {
     }
 
     @Override
-    public IModel process(ImmutableMap<String, String> customData) {
+    public IUnbakedModel process(ImmutableMap<String, String> customData) {
         return new TexturedModel(wrappedModel.process(customData), extraTextures);
     }
 
     @Override
-    public IModel smoothLighting(boolean value) {
+    public IUnbakedModel smoothLighting(boolean value) {
         return new TexturedModel(wrappedModel.smoothLighting(value), extraTextures);
     }
 
     @Override
-    public IModel gui3d(boolean value) {
+    public IUnbakedModel gui3d(boolean value) {
         return new TexturedModel(wrappedModel.gui3d(value), extraTextures);
     }
 
     @Override
-    public IModel uvlock(boolean value) {
+    public IUnbakedModel uvlock(boolean value) {
         return new TexturedModel(wrappedModel.uvlock(value), extraTextures);
     }
 
     @Override
-    public IModel retexture(ImmutableMap<String, String> textures) {
+    public IUnbakedModel retexture(ImmutableMap<String, String> textures) {
         return new TexturedModel(wrappedModel.retexture(textures), extraTextures);
     }
 
