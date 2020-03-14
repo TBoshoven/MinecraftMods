@@ -3,9 +3,9 @@ package com.tomboshoven.minecraft.magicmirror.reflection.renderers;
 import com.mojang.blaze3d.platform.GlStateManager;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
-import org.lwjgl.util.glu.Project;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -59,7 +59,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         GlStateManager.pushMatrix();
         GlStateManager.loadIdentity();
         // Aspect is .5 to compensate for the rectangular mirror
-        Project.gluPerspective(90f, .5f, .05f, 50f);
+        GlStateManager.multMatrix(Matrix4f.perspective(90f, .5f, .05f, 50f));
         GlStateManager.matrixMode(5888);
 
         GlStateManager.pushMatrix();
