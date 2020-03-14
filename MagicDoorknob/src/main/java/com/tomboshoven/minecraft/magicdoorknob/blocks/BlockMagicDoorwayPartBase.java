@@ -108,16 +108,6 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     }
 
     @Override
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Override
     public boolean hasTileEntity(BlockState state) {
         return true;
     }
