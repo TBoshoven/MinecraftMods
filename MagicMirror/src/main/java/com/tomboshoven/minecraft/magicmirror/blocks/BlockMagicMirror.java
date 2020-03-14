@@ -226,14 +226,14 @@ public class BlockMagicMirror extends HorizontalBlock {
     }
 
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, BlockState state) {
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.get(COMPLETE)) {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMagicMirrorBase) {
                 ((TileEntityMagicMirrorBase) tileEntity).removeModifiers(worldIn, pos);
             }
         }
-        super.breakBlock(worldIn, pos, state);
+        super.onReplaced(state, worldIn, pos, newState, isMoving);
     }
 
     /**
