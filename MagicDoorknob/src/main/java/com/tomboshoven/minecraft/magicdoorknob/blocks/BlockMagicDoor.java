@@ -76,8 +76,8 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
-        super.neighborChanged(state, worldIn, pos, blockIn, fromPos);
+    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+        super.neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
 
         EnumPartType part = state.get(PART);
 
@@ -89,7 +89,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
             // Spawn the doorknob before breaking the block.
             Item doorknob = getDoorknob(worldIn, pos);
             if (doorknob != null) {
-                InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(doorknob, 1, 0));
+                InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(doorknob, 1));
             }
             worldIn.destroyBlock(pos, false);
         }
