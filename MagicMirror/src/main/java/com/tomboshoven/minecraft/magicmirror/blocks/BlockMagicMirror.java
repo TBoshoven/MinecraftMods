@@ -8,6 +8,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagic
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.BlockItemUseContext;
@@ -25,7 +26,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.Rotation;
@@ -162,8 +162,8 @@ public class BlockMagicMirror extends HorizontalBlock {
     }
 
     @Override
-    public EnumBlockRenderType getRenderType(BlockState state) {
-        return EnumBlockRenderType.MODEL;
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
     }
 
     @Override
