@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
@@ -61,7 +62,7 @@ public class TexturedModelLoader implements ICustomModelLoader {
     }
 
     @Override
-    public IModel loadModel(ResourceLocation modelLocation) throws Exception {
+    public IUnbakedModel loadModel(ResourceLocation modelLocation) throws Exception {
         ModelResourceLocation modelResourceLocation = (ModelResourceLocation) modelLocation;
         ResourceLocation baseResourceLocation = new ResourceLocation(modelLocation.getNamespace(), modelLocation.getPath());
         ResourceLocation baseModelLocation = baseModels.getOrDefault(baseResourceLocation, ModelBakery.MODEL_MISSING);
