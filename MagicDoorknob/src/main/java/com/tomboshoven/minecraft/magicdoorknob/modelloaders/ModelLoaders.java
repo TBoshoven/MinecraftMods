@@ -13,29 +13,29 @@ import static com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob.MOD_ID;
 /**
  * Collection of custom model loaders.
  */
+@OnlyIn(Dist.CLIENT)
 public final class ModelLoaders {
     private ModelLoaders() {
     }
 
-    @OnlyIn(Dist.CLIENT)
+    private static String[] TEXTURED_MODELS = new String[] {
+            "magic_door", "magic_door_knob", "magic_doorknob", "magic_doorway_pillar", "magic_doorway_pillar_short",
+            "magic_doorway_top", "magic_doorway_wall", "magic_doorway_wall_narrow", "magic_doorway_wall_narrow_short",
+            "magic_doorway_wall_short",
+    };
+
     @SubscribeEvent
     public static void registerModelLoaders(ModelRegistryEvent event) {
         // Initialize textured model loader
         TexturedModelLoader modelLoader = new TexturedModelLoader();
         // Register all textured models with the model loader
-        modelLoader.register(
-                new ResourceLocation(MOD_ID, "magic_doorway"),
-                new ResourceLocation(MOD_ID, "textured/magic_doorway")
-        );
-        modelLoader.register(
-                new ResourceLocation(MOD_ID, "magic_door"),
-                new ResourceLocation(MOD_ID, "textured/magic_door")
-        );
-        modelLoader.register(
-                new ResourceLocation(MOD_ID, "magic_doorknob"),
-                new ResourceLocation(MOD_ID, "textured/magic_doorknob")
-        );
-        modelLoader.registerTexture(new ResourceLocation("magic_doorknob", "blocks/empty"));
+        for (String name : TEXTURED_MODELS) {
+            modelLoader.register(
+                    new ResourceLocation(MOD_ID, "block/" + name),
+                    new ResourceLocation(MOD_ID, "block/textured/" + name)
+            );
+        }
+        modelLoader.registerTexture(new ResourceLocation("magic_doorknob", "block/empty"));
         ModelLoaderRegistry.registerLoader(modelLoader);
     }
 }

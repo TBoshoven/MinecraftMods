@@ -48,7 +48,8 @@ public class TexturedModelLoader implements ICustomModelLoader {
      * @param baseModelLocation The location of the model to base it on
      */
     public void register(ResourceLocation modelLocation, ResourceLocation baseModelLocation) {
-        baseModels.put(modelLocation, baseModelLocation);
+        ResourceLocation actualLocation = ModelLoaderRegistry.getActualLocation(modelLocation);
+        baseModels.put(actualLocation, baseModelLocation);
     }
 
     /**
