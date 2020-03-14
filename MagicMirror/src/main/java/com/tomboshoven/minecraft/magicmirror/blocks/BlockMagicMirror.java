@@ -148,16 +148,6 @@ public class BlockMagicMirror extends HorizontalBlock {
     }
 
     @Override
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
-    @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return BOUNDING_BOX[state.get(HORIZONTAL_FACING).getHorizontalIndex()];
     }
