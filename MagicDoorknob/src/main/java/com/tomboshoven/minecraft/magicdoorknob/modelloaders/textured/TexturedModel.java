@@ -97,17 +97,7 @@ class TexturedModel implements IUnbakedModel {
     }
 
     @Override
-    public IUnbakedModel uvlock(boolean value) {
-        return new TexturedModel(wrappedModel.uvlock(value), extraTextures);
-    }
-
-    @Override
     public IUnbakedModel retexture(ImmutableMap<String, String> textures) {
         return new TexturedModel(wrappedModel.retexture(textures), extraTextures);
-    }
-
-    @Override
-    public Optional<ModelBlock> asVanillaModel() {
-        return wrappedModel.asVanillaModel();
     }
 }
