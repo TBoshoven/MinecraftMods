@@ -9,6 +9,7 @@ import net.minecraft.block.material.MaterialTransparent;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.IStringSerializable;
@@ -95,7 +96,7 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     }
 
     @Override
-    public boolean isReplaceable(IEnviromentBlockReader worldIn, BlockPos pos) {
+    public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
         // Since we're basing this block on the "air" material, we have to tell things we can't be replaced when
         // placing blocks
         return false;
