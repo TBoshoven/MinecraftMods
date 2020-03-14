@@ -161,11 +161,6 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public BlockFaceShape getBlockFaceShape(IEnviromentBlockReader worldIn, BlockState state, BlockPos pos, Direction face) {
-        return BlockFaceShape.UNDEFINED;
-    }
-
-    @Override
     public AxisAlignedBB getBoundingBox(BlockState state, IEnviromentBlockReader source, BlockPos pos) {
         // Return one of the pre-defined bounding boxes.
         switch (state.get(HORIZONTAL_FACING)) {
