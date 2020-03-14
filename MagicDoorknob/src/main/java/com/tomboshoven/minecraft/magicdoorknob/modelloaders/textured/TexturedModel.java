@@ -3,9 +3,10 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelBlock;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
@@ -60,15 +61,15 @@ class TexturedModel implements IUnbakedModel {
     }
 
     @Override
-    public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+    public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format) {
         // Use a custom texture getter and baked model
-        Function<ResourceLocation, TextureAtlasSprite> augmentedTextureGetter = resourceLocation -> {
+        Function<ResourceLocation, TextureAtlasSprite> augmentedSpriteGetter = resourceLocation -> {
             if (PROPERTY_NAMESPACE.equals(resourceLocation.getNamespace())) {
                 return new PropertySprite(resourceLocation.getPath());
             }
-            return bakedTextureGetter.apply(resourceLocation);
+            return spriteGetter.apply(resourceLocation);
         };
-        return new TexturedBakedModel(wrappedModel.bake(state, format, augmentedTextureGetter), bakedTextureGetter, new BlockStateTextureMapper());
+        return new TexturedBakedModel(wrappedModel.bake(bakery, augmentedSpriteGetter, sprite, format), spriteGetter, new BlockStateTextureMapper());
     }
 
     @Override
