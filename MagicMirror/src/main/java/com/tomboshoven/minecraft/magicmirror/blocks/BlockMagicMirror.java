@@ -10,6 +10,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.entity.player.PlayerEntity;
@@ -190,9 +191,16 @@ public class BlockMagicMirror extends HorizontalBlock {
     }
 
     @Override
-    public BlockState getStateForPlacement(World worldIn, BlockPos pos, Direction facing, float hitX, float hitY, float hitZ, int meta, LivingEntity placer) {
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
         // Make sure the mirror is facing the right way when placed
-        return getDefaultState().with(HORIZONTAL_FACING, placer.getHorizontalFacing().getOpposite());
+        Direction horizontalDirection = Direction.NORTH;
+        for (Direction direction : context.getNearestLookingDirections()) {
+            if (direction.getAxis().isHorizontal()) {
+                horizontalDirection = direction;
+                break;
+            }
+        }
+        return getDefaultState().with(HORIZONTAL_FACING, horizontalDirection.getOpposite());
     }
 
     @Override
