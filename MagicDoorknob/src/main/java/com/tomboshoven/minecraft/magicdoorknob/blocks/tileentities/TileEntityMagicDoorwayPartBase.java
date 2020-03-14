@@ -10,6 +10,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
+import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTDynamicOps;
@@ -103,7 +104,7 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
         // Get the base block texture
         BlockState baseBlockState = getBaseBlockState();
         TextureAtlasSprite blockTexture = blockModelShapes.getTexture(baseBlockState);
-        if ("missingno".equals(blockTexture.getName())) {
+        if (blockTexture instanceof MissingTextureSprite) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.
             blockTexture = blockModelShapes.getModelManager().getTextureMap().getAtlasSprite(ModMagicDoorknob.MOD_ID + ":blocks/empty");
         }
@@ -114,7 +115,7 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
         if (doorknob != null) {
             doorknobTextureLocation = doorknob.getMainTextureLocation();
         } else {
-            doorknobTextureLocation = TextureMap.LOCATION_MISSING_TEXTURE;
+            doorknobTextureLocation = MissingTextureSprite.getLocation();
         }
 
         return new ModelDataMap.Builder()
