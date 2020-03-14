@@ -51,9 +51,9 @@ class TexturedModel implements IUnbakedModel {
     }
 
     @Override
-    public Collection<ResourceLocation> getTextures() {
+    public Collection<ResourceLocation> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors) {
         // Filter out the property textures since they don't get filled in until runtime
-        Set<ResourceLocation> textures = wrappedModel.getTextures().stream()
+        Set<ResourceLocation> textures = wrappedModel.getTextures(modelGetter, missingTextureErrors).stream()
                 .filter(location -> !PROPERTY_NAMESPACE.equals(location.getNamespace()))
                 .collect(Collectors.toSet());
         return Sets.union(textures, extraTextures);
