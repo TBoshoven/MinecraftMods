@@ -1,13 +1,14 @@
 package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BakedQuadRetextured;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.BakedQuadRetextured;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverride;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
@@ -24,6 +25,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.vecmath.Matrix4f;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -53,7 +55,7 @@ class TexturedBakedModel implements IBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
         // Return the original quads, with the property sprites replaced by actual ones
         List<BakedQuad> quads = wrappedBakedModel.getQuads(state, side, rand);
         return quads.stream().map(quad -> {
@@ -121,24 +123,22 @@ class TexturedBakedModel implements IBakedModel {
          * @param wrappedOverrideList The original baked model's override list
          */
         public TexturedOverrideList(ItemOverrideList wrappedOverrideList) {
-            super(Lists.newArrayList());
             this.wrappedOverrideList = wrappedOverrideList;
         }
 
-        @Nullable
         @Override
-        public ResourceLocation applyOverride(ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn) {
-            return wrappedOverrideList.applyOverride(stack, worldIn, entityIn);
+        public ImmutableList<ItemOverride> getOverrides() {
+            return wrappedOverrideList.getOverrides();
         }
 
         @Override
-        public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, @Nullable World world, @Nullable LivingEntity entity) {
+        public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, @Nullable World world, @Nullable LivingEntity entity) {
             // If the item has a texture mapper, use it.
             Item item = stack.getItem();
             if (item instanceof IItemStackTextureMapperProvider) {
                 return new TexturedBakedModel(wrappedBakedModel, bakedTextureGetter, ((IItemStackTextureMapperProvider) item).getTextureMapper(stack));
             }
-            return wrappedOverrideList.handleItemState(originalModel, stack, world, entity);
+            return wrappedOverrideList.getModelWithOverrides(originalModel, stack, world, entity);
         }
     }
 }
