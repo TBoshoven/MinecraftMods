@@ -65,7 +65,7 @@ class TexturedModel implements IUnbakedModel {
         // Use a custom texture getter and baked model
         Function<ResourceLocation, TextureAtlasSprite> augmentedSpriteGetter = resourceLocation -> {
             if (PROPERTY_NAMESPACE.equals(resourceLocation.getNamespace())) {
-                return new PropertySprite(resourceLocation.getPath());
+                return new PropertySprite(resourceLocation);
             }
             return spriteGetter.apply(resourceLocation);
         };
