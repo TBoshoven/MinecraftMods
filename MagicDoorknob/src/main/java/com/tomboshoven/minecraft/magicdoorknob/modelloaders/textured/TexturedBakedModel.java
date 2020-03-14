@@ -16,7 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
@@ -55,18 +56,23 @@ class TexturedBakedModel implements IBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand, IModelData extraData) {
         // Return the original quads, with the property sprites replaced by actual ones
-        List<BakedQuad> quads = wrappedBakedModel.getQuads(state, side, rand);
+        List<BakedQuad> quads = wrappedBakedModel.getQuads(state, side, rand, extraData);
         return quads.stream().map(quad -> {
             TextureAtlasSprite sprite = quad.getSprite();
             if (sprite instanceof PropertySprite) {
-                ResourceLocation spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, (IExtendedBlockState) state);
+                ResourceLocation spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
                 TextureAtlasSprite actualSprite = bakedTextureGetter.apply(spriteLocation);
                 return new BakedQuadRetextured(quad, actualSprite);
             }
             return quad;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+        return getQuads(state, side, rand, EmptyModelData.INSTANCE);
     }
 
     @Override
