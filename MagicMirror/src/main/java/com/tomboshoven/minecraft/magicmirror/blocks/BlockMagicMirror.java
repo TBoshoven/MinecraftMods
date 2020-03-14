@@ -30,9 +30,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
@@ -60,15 +61,15 @@ public class BlockMagicMirror extends HorizontalBlock {
     /**
      * The bounding boxes of the various orientations of this block; should be indexed by facing.horizontalIndex()
      */
-    private static final AxisAlignedBB[] BOUNDING_BOX = {
+    private static final VoxelShape[] BOUNDING_BOX = {
             // South
-            new AxisAlignedBB(0, 0, 0, 1, 1, 0.125),
+            makeCuboidShape(0, 0, 0, 1, 1, 0.125),
             // West
-            new AxisAlignedBB(0.875, 0, 0, 1, 1, 1),
+            makeCuboidShape(0.875, 0, 0, 1, 1, 1),
             // North
-            new AxisAlignedBB(0, 0, 0.875, 1, 1, 1),
+            makeCuboidShape(0, 0, 0.875, 1, 1, 1),
             // East
-            new AxisAlignedBB(0, 0, 0, 0.125, 1, 1),
+            makeCuboidShape(0, 0, 0, 0.125, 1, 1),
     };
 
     /**
@@ -157,7 +158,7 @@ public class BlockMagicMirror extends HorizontalBlock {
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(BlockState state, IEnviromentBlockReader source, BlockPos pos) {
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return BOUNDING_BOX[state.get(HORIZONTAL_FACING).getHorizontalIndex()];
     }
 
