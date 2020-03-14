@@ -63,7 +63,7 @@ public final class Items {
      * @param blockName The name of the block that provides the texture of the doorknob
      */
     private static void addDoorknob(String typeName, IItemTier tier, String blockName) {
-        addDoorknob(typeName, tier, new ResourceLocation("minecraft", String.format("blocks/%s", blockName)));
+        addDoorknob(typeName, tier, new ResourceLocation("minecraft", String.format("block/%s", blockName)));
     }
 
     @SuppressWarnings("BoundedWildcard")
