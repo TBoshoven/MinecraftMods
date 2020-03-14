@@ -28,24 +28,8 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class TileEntityMagicMirrorBase extends TileEntity {
-    // Some values copied from the blockstate
-    private Direction facing = Direction.NORTH;
-    private EnumPartType part = EnumPartType.TOP;
-    private boolean complete;
-
     public TileEntityMagicMirrorBase(TileEntityType<? extends TileEntityMagicMirrorBase> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-    }
-
-    @Override
-    public void onLoad() {
-        // Synchronize with blockstate; we need to know some of this in order to render the reflection.
-        BlockState blockState = getWorld().getBlockState(getPos());
-        if (blockState.getBlock() == Blocks.MAGIC_MIRROR) {
-            facing = blockState.get(BlockStateProperties.HORIZONTAL_FACING);
-            part = blockState.get(BlockMagicMirror.PART);
-            complete = blockState.get(BlockMagicMirror.COMPLETE);
-        }
     }
 
     /**
@@ -123,20 +107,20 @@ public abstract class TileEntityMagicMirrorBase extends TileEntity {
      * @return Which direction the mirror is facing in.
      */
     public Direction getFacing() {
-        return facing;
+        return getBlockState().get(BlockMagicMirror.HORIZONTAL_FACING);
     }
 
     /**
      * @return Which part of the mirror this tile entity belongs to.
      */
     public EnumPartType getPart() {
-        return part;
+        return getBlockState().get(BlockMagicMirror.PART);
     }
 
     /**
      * @return Whether the mirror is completely constructed.
      */
     public boolean isComplete() {
-        return complete;
+        return getBlockState().get(BlockMagicMirror.COMPLETE);
     }
 }
