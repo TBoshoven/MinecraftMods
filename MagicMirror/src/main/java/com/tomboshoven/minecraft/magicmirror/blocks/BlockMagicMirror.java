@@ -32,6 +32,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
@@ -204,12 +205,12 @@ public class BlockMagicMirror extends HorizontalBlock {
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, PlayerEntity playerIn, Hand hand, Direction direction, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         // The mirror will only do anything if it's used from the front.
-        if (state.get(HORIZONTAL_FACING) == direction) {
+        if (state.get(HORIZONTAL_FACING) == hit.getFace()) {
             if (!worldIn.isRemote) {
                 // First, see if we can add a modifier
-                ItemStack heldItem = playerIn.getHeldItem(hand);
+                ItemStack heldItem = player.getHeldItem(hand);
                 if (!heldItem.isEmpty()) {
                     for (MagicMirrorModifier modifier : MagicMirrorModifier.getModifiers()) {
                         if (modifier.canModify(worldIn, pos, heldItem)) {
@@ -222,7 +223,7 @@ public class BlockMagicMirror extends HorizontalBlock {
                 // Then, see if any existing modifier can do something.
                 TileEntity tileEntity = worldIn.getTileEntity(pos);
                 if (tileEntity instanceof TileEntityMagicMirrorBase) {
-                    if (((TileEntityMagicMirrorBase) tileEntity).tryActivate(playerIn, hand)) {
+                    if (((TileEntityMagicMirrorBase) tileEntity).tryActivate(player, hand)) {
                         return true;
                     }
                 }
