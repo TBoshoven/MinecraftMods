@@ -64,7 +64,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<TileEntityMagicMi
      */
     private static void renderReflection(Reflection reflection, double x, double y, double z, float partialTicks, EnumPartType part, Direction facing, double distanceSq) {
         // Render the reflection.
-        reflection.render(partialTicks);
+        reflection.render(facing, partialTicks);
 
         // Rebind original frame buffer.
         // This could be done in a nicer way, but I don't think a frame buffer stacking mechanism is available.

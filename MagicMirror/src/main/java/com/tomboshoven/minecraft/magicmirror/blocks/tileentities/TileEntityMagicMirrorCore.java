@@ -87,13 +87,6 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
         return Collections.min(players, Comparator.comparingDouble(player -> player.getPosition().distanceSq(ownPosition)));
     }
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
-
-        reflection.setFacing(getFacing().getHorizontalAngle());
-    }
-
     @Nullable
     @Override
     protected TileEntityMagicMirrorCore getCore() {

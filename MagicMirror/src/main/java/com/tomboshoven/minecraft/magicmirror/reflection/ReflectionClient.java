@@ -6,6 +6,7 @@ import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRend
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -27,11 +28,6 @@ public class ReflectionClient extends Reflection {
      */
     @Nullable
     private ReflectionRendererBase reflectionRenderer;
-
-    /**
-     * The angle (in degrees) of the reflected object.
-     */
-    private float facing;
 
     /**
      * The frame buffer which is used for rendering the reflection to and subsequently rendering it into the world.
@@ -93,13 +89,8 @@ public class ReflectionClient extends Reflection {
     }
 
     @Override
-    public void setFacing(float facing) {
-        this.facing = facing;
-    }
-
-    @Override
-    public void render(float partialTicks) {
-        super.render(partialTicks);
+    public void render(Direction facing, float partialTicks) {
+        super.render(facing, partialTicks);
 
         // Don't render twice per partial tick; this is a simple hack for multiblock optimization.
         // This requires that forceRerender() is called each tick.
@@ -112,7 +103,7 @@ public class ReflectionClient extends Reflection {
             frameBuffer.framebufferClear(IS_RUNNING_ON_MAC);
             frameBuffer.bindFramebuffer(true);
 
-            reflectionRenderer.render(facing, partialTicks);
+            reflectionRenderer.render(facing.getHorizontalAngle(), partialTicks);
 
             frameBuffer.unbindFramebuffer();
         }

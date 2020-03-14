@@ -5,6 +5,7 @@ import com.tomboshoven.minecraft.magicmirror.ModMagicMirror;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Direction;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -139,18 +140,14 @@ public class Reflection {
     }
 
     /**
-     * @param facing The way the reflection is facing; used for determining which side of the subject to show.
-     */
-    public void setFacing(float facing) {
-    }
-
-    /**
      * Render the reflection of the entity to the texture.
      * This operation unbinds the frame buffer, so rebinding may be required afterward.
      *
+     * @param facing       The direction the mirror is facing in; used for determining which side of the reflection to
+     *                     draw.
      * @param partialTicks The partial ticks, used for rendering smooth animations.
      */
-    public void render(float partialTicks) {
+    public void render(Direction facing, float partialTicks) {
     }
 
     /**
