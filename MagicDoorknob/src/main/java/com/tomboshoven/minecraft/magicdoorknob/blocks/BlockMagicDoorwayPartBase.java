@@ -4,8 +4,6 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMag
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.material.MaterialTransparent;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
