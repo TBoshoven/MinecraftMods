@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.renderers;
 
+import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
@@ -71,6 +72,10 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         GlStateManager.translated(0, 0, 1.5);
         GlStateManager.rotatef(facing, 0, 1, 0);
 
+        GlStateManager.activeTexture(GLX.GL_TEXTURE1);
+        GlStateManager.disableTexture();
+        GlStateManager.activeTexture(GLX.GL_TEXTURE0);
+
         // The typing of these classes works out a little weird, so instead of complicating things too much, let's go
         // with the unchecked cast.
         ((EntityRenderer<Entity>) entityRenderer).doRender(entity, 0, -1, 0, 0, partialTicks);
@@ -80,5 +85,9 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         GlStateManager.matrixMode(5889);
         GlStateManager.popMatrix();
         GlStateManager.matrixMode(5888);
+
+        GlStateManager.activeTexture(GLX.GL_TEXTURE1);
+        GlStateManager.disableTexture();
+        GlStateManager.activeTexture(GLX.GL_TEXTURE0);
     }
 }
