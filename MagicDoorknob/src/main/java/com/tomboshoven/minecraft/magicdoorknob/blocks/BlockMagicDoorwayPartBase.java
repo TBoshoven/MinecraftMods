@@ -32,7 +32,7 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     }
 
     @Override
-    public boolean addDestroyEffects(World world, BlockPos pos, ParticleManager manager) {
+    public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager manager) {
         // Skip all block breaking textures
         return true;
     }
