@@ -1,32 +1,23 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
-import com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorwayPartBase;
-import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
-import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.MaterialTransparent;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.common.property.IExtendedBlockState;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -37,16 +28,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class BlockMagicDoorwayPartBase extends Block {
-    /**
-     * The main texture of the doorway (based on base block).
-     */
-    protected static final PropertyTexture TEXTURE_MAIN = new PropertyTexture("texture_main");
-
-    /**
-     * The highlight texture of the doorway (based on doorknob).
-     */
-    protected static final PropertyTexture TEXTURE_HIGHLIGHT = new PropertyTexture("texture_highlight");
-
     BlockMagicDoorwayPartBase(Block.Properties properties) {
         super(properties);
     }
@@ -138,39 +119,6 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     @Override
     public boolean hasTileEntity(BlockState state) {
         return true;
-    }
-
-    @Override
-    public BlockState getExtendedState(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
-        // The extended blockstate contains texture information from the tile entities.
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
-            TileEntityMagicDoorwayPartBase tileEntityMagicDoorwayPart = (TileEntityMagicDoorwayPartBase) tileEntity;
-
-            BlockModelShapes blockModelShapes = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes();
-
-            // Get the base block texture
-            BlockState baseBlockState = tileEntityMagicDoorwayPart.getBaseBlockState();
-            TextureAtlasSprite blockTexture = blockModelShapes.getTexture(baseBlockState);
-            if ("missingno".equals(blockTexture.getIconName())) {
-                // If we can't find the texture, use a transparent one instead, to deal with things like air.
-                blockTexture = blockModelShapes.getModelManager().getTextureMap().getAtlasSprite(ModMagicDoorknob.MOD_ID + ":blocks/empty");
-            }
-
-            // Get the highlight texture
-            ItemMagicDoorknob doorknob = tileEntityMagicDoorwayPart.getDoorknob();
-            ResourceLocation doorknobTextureLocation;
-            if (doorknob != null) {
-                doorknobTextureLocation = doorknob.getMainTextureLocation();
-            } else {
-                doorknobTextureLocation = TextureMap.LOCATION_MISSING_TEXTURE;
-            }
-
-            return ((IExtendedBlockState) state)
-                    .with(TEXTURE_MAIN, new ResourceLocation(blockTexture.getIconName()))
-                    .with(TEXTURE_HIGHLIGHT, doorknobTextureLocation);
-        }
-        return state;
     }
 
     /**

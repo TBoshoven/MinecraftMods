@@ -135,12 +135,7 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(PART, OPEN_NORTH_SOUTH, OPEN_EAST_WEST, TEXTURE_MAIN, TEXTURE_HIGHLIGHT);
-    }
-
-    @Override
-    public BlockState getActualState(BlockState state, IEnviromentBlockReader worldIn, BlockPos pos) {
-        return super.getActualState(state, worldIn, pos);
+        builder.add(PART, OPEN_NORTH_SOUTH, OPEN_EAST_WEST);
     }
 
     @Nullable

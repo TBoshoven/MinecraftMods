@@ -181,7 +181,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(PART, HORIZONTAL_FACING, TEXTURE_MAIN, TEXTURE_HIGHLIGHT);
+        builder.add(PART, HORIZONTAL_FACING);
     }
 
     @Nullable
