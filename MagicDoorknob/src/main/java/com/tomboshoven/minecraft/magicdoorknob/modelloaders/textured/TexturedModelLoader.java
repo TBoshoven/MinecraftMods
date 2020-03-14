@@ -26,6 +26,8 @@ import java.util.Set;
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public class TexturedModelLoader implements ICustomModelLoader {
+    // The namespace of the properties; used in model definitions
+    public static final String PROPERTY_NAMESPACE = "property";
     // A mapping from configured textured models to the models they're based on
     private Map<ResourceLocation, ResourceLocation> baseModels = Maps.newHashMap();
     // All extra textures that were requested.

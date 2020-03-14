@@ -22,6 +22,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedModelLoader.PROPERTY_NAMESPACE;
+
 /**
  * A model that has dynamic properties that are used to determine textures at runtime.
  */
@@ -29,8 +31,6 @@ import java.util.stream.Collectors;
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 class TexturedModel implements IUnbakedModel {
-    // The namespace of the properties; used in model definitions
-    private static final String PROPERTY_NAMESPACE = "property";
     // The extra textures to include with this model; used to enable textures that are not already present in the game
     private final Set<ResourceLocation> extraTextures;
     // The original model

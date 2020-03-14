@@ -5,7 +5,6 @@ import com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ModelTextureProperty;
-import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedModel;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -27,6 +26,8 @@ import net.minecraftforge.client.model.data.ModelDataMap;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedModelLoader.PROPERTY_NAMESPACE;
+
 /**
  * Base class for tile entities that make up magic doorways.
  */
@@ -36,12 +37,12 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     /**
      * The main texture of the doorway (based on base block).
      */
-    private static final ModelTextureProperty TEXTURE_MAIN = new ModelTextureProperty(new ResourceLocation(TexturedModel.PROPERTY_NAMESPACE, "texture_main"));
+    private static final ModelTextureProperty TEXTURE_MAIN = new ModelTextureProperty(new ResourceLocation(PROPERTY_NAMESPACE, "texture_main"));
 
     /**
      * The highlight texture of the doorway (based on doorknob).
      */
-    private static final ModelTextureProperty TEXTURE_HIGHLIGHT = new ModelTextureProperty(new ResourceLocation(TexturedModel.PROPERTY_NAMESPACE, "texture_highlight"));
+    private static final ModelTextureProperty TEXTURE_HIGHLIGHT = new ModelTextureProperty(new ResourceLocation(PROPERTY_NAMESPACE, "texture_highlight"));
 
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.getDefaultState();
