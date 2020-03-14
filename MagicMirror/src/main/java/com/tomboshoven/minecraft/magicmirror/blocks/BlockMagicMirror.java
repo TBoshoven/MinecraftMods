@@ -142,12 +142,6 @@ public class BlockMagicMirror extends HorizontalBlock {
     }
 
     @Override
-    public BlockFaceShape getBlockFaceShape(IEnviromentBlockReader worldIn, BlockState state, BlockPos pos, Direction face) {
-        // Only the opposite face is default
-        return state.get(HORIZONTAL_FACING).getOpposite() == face ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
-    }
-
-    @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return BOUNDING_BOX[state.get(HORIZONTAL_FACING).getHorizontalIndex()];
     }
