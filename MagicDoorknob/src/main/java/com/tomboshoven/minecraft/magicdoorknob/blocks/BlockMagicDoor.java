@@ -112,9 +112,9 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, BlockState state) {
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         breakDoorway(worldIn, pos, state.get(HORIZONTAL_FACING));
-        super.breakBlock(worldIn, pos, state);
+        super.onReplaced(state, worldIn, pos, newState, isMoving);
     }
 
     /**
