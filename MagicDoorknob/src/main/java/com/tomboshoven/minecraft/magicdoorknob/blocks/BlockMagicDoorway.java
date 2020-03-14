@@ -89,13 +89,16 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, BlockState state) {
-        // When this block is destroyed (manually or by closing the door), replace it by its base block.
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoorway) {
-            worldIn.setBlockState(pos, ((TileEntityMagicDoorway) tileEntity).getBaseBlockState());
+    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (newState.isAir(world, pos)) {
+            // When this block is destroyed (manually or by closing the door), replace it by its base block.
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity instanceof TileEntityMagicDoorway) {
+                world.setBlockState(pos, ((TileEntityMagicDoorway) tileEntity).getBaseBlockState());
+            }
         }
-        super.breakBlock(worldIn, pos, state);
+
+        super.onReplaced(state, world, pos, newState, isMoving);
     }
 
     @Override
