@@ -1,7 +1,7 @@
 {
   "variants": {
     "normal": {
-      "model": "magic_doorknob:magic_doorknob"
+      "model": "magic_doorknob:block/magic_doorknob"
     }
   }
 }

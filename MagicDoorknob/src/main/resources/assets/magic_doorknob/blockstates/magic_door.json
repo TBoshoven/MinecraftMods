@@ -9,63 +9,63 @@
     "facing=north,part=top": [{
       "submodel": {
         "door": {
-          "model": "magic_doorknob:magic_door",
+          "model": "magic_doorknob:block/magic_door",
           "y": 90
         },
         "knob": {
-          "model": "magic_doorknob:magic_door_knob",
+          "model": "magic_doorknob:block/magic_door_knob",
           "y": 90
         }
       }
     }],
     "facing=north,part=bottom": [{
-      "model": "magic_doorknob:magic_door",
+      "model": "magic_doorknob:block/magic_door",
       "y": 90
     }],
     "facing=east,part=top": [{
       "submodel": {
         "door": {
-          "model": "magic_doorknob:magic_door",
+          "model": "magic_doorknob:block/magic_door",
           "y": 180
         },
         "knob": {
-          "model": "magic_doorknob:magic_door_knob",
+          "model": "magic_doorknob:block/magic_door_knob",
           "y": 180
         }
       }
     }],
     "facing=east,part=bottom": [{
-      "model": "magic_doorknob:magic_door",
+      "model": "magic_doorknob:block/magic_door",
       "y": 180
     }],
     "facing=south,part=top": [{
       "submodel": {
         "door": {
-          "model": "magic_doorknob:magic_door",
+          "model": "magic_doorknob:block/magic_door",
           "y": 270
         },
         "knob": {
-          "model": "magic_doorknob:magic_door_knob",
+          "model": "magic_doorknob:block/magic_door_knob",
           "y": 270
         }
       }
     }],
     "facing=south,part=bottom": [{
-      "model": "magic_doorknob:magic_door",
+      "model": "magic_doorknob:block/magic_door",
       "y": 270
     }],
     "facing=west,part=top": [{
       "submodel": {
         "door": {
-          "model": "magic_doorknob:magic_door"
+          "model": "magic_doorknob:block/magic_door"
         },
         "knob": {
-          "model": "magic_doorknob:magic_door_knob"
+          "model": "magic_doorknob:block/magic_door_knob"
         }
       }
     }],
     "facing=west,part=bottom": [{
-      "model": "magic_doorknob:magic_door"
+      "model": "magic_doorknob:block/magic_door"
     }]
   }
 }

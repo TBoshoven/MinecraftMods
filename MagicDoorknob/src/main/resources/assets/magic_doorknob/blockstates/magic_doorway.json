@@ -9,18 +9,18 @@
     "open_east_west=false,open_north_south=false,part=bottom": [{
       "submodel": {
         "wall_east": {
-          "model": "magic_doorknob:magic_doorway_wall_narrow",
+          "model": "magic_doorknob:block/magic_doorway_wall_narrow",
           "y": 270
         },
         "wall_north": {
-          "model": "magic_doorknob:magic_doorway_wall"
+          "model": "magic_doorknob:block/magic_doorway_wall"
         },
         "wall_south": {
-          "model": "magic_doorknob:magic_doorway_wall",
+          "model": "magic_doorknob:block/magic_doorway_wall",
           "y": 180
         },
         "wall_west": {
-          "model": "magic_doorknob:magic_doorway_wall_narrow",
+          "model": "magic_doorknob:block/magic_doorway_wall_narrow",
           "y": 90
         }
       }
@@ -28,21 +28,21 @@
     "open_east_west=false,open_north_south=false,part=top": [{
       "submodel": {
         "top": {
-          "model": "magic_doorknob:magic_doorway_top"
+          "model": "magic_doorknob:block/magic_doorway_top"
         },
         "wall_east": {
-          "model": "magic_doorknob:magic_doorway_wall_narrow_short",
+          "model": "magic_doorknob:block/magic_doorway_wall_narrow_short",
           "y": 270
         },
         "wall_north": {
-          "model": "magic_doorknob:magic_doorway_wall_short"
+          "model": "magic_doorknob:block/magic_doorway_wall_short"
         },
         "wall_south": {
-          "model": "magic_doorknob:magic_doorway_wall_short",
+          "model": "magic_doorknob:block/magic_doorway_wall_short",
           "y": 180
         },
         "wall_west": {
-          "model": "magic_doorknob:magic_doorway_wall_narrow_short",
+          "model": "magic_doorknob:block/magic_doorway_wall_narrow_short",
           "y": 90
         }
       }
@@ -50,11 +50,11 @@
     "open_east_west=false,open_north_south=true,part=bottom": [{
       "submodel": {
         "wall_east": {
-          "model": "magic_doorknob:magic_doorway_wall",
+          "model": "magic_doorknob:block/magic_doorway_wall",
           "y": 270
         },
         "wall_west": {
-          "model": "magic_doorknob:magic_doorway_wall",
+          "model": "magic_doorknob:block/magic_doorway_wall",
           "y": 90
         }
       }
@@ -62,14 +62,14 @@
     "open_east_west=false,open_north_south=true,part=top": [{
       "submodel": {
         "top": {
-          "model": "magic_doorknob:magic_doorway_top"
+          "model": "magic_doorknob:block/magic_doorway_top"
         },
         "wall_east": {
-          "model": "magic_doorknob:magic_doorway_wall_short",
+          "model": "magic_doorknob:block/magic_doorway_wall_short",
           "y": 270
         },
         "wall_west": {
-          "model": "magic_doorknob:magic_doorway_wall_short",
+          "model": "magic_doorknob:block/magic_doorway_wall_short",
           "y": 90
         }
       }
@@ -77,10 +77,10 @@
     "open_east_west=true,open_north_south=false,part=bottom": [{
       "submodel": {
         "wall_north": {
-          "model": "magic_doorknob:magic_doorway_wall"
+          "model": "magic_doorknob:block/magic_doorway_wall"
         },
         "wall_south": {
-          "model": "magic_doorknob:magic_doorway_wall",
+          "model": "magic_doorknob:block/magic_doorway_wall",
           "y": 180
         }
       }
@@ -88,13 +88,13 @@
     "open_east_west=true,open_north_south=false,part=top": [{
       "submodel": {
         "top": {
-          "model": "magic_doorknob:magic_doorway_top"
+          "model": "magic_doorknob:block/magic_doorway_top"
         },
         "wall_north": {
-          "model": "magic_doorknob:magic_doorway_wall_short"
+          "model": "magic_doorknob:block/magic_doorway_wall_short"
         },
         "wall_south": {
-          "model": "magic_doorknob:magic_doorway_wall_short",
+          "model": "magic_doorknob:block/magic_doorway_wall_short",
           "y": 180
         }
       }
@@ -102,18 +102,18 @@
     "open_east_west=true,open_north_south=true,part=bottom": [{
       "submodel": {
         "pillar_northeast": {
-          "model": "magic_doorknob:magic_doorway_pillar",
+          "model": "magic_doorknob:block/magic_doorway_pillar",
           "y": 90
         },
         "pillar_northwest": {
-          "model": "magic_doorknob:magic_doorway_pillar"
+          "model": "magic_doorknob:block/magic_doorway_pillar"
         },
         "pillar_southeast": {
-          "model": "magic_doorknob:magic_doorway_pillar",
+          "model": "magic_doorknob:block/magic_doorway_pillar",
           "y": 180
         },
         "pillar_southwest": {
-          "model": "magic_doorknob:magic_doorway_pillar",
+          "model": "magic_doorknob:block/magic_doorway_pillar",
           "y": 270
         }
       }
@@ -121,21 +121,21 @@
     "open_east_west=true,open_north_south=true,part=top": [{
       "submodel": {
         "top": {
-          "model": "magic_doorknob:magic_doorway_top"
+          "model": "magic_doorknob:block/magic_doorway_top"
         },
         "pillar_northeast": {
-          "model": "magic_doorknob:magic_doorway_pillar_short",
+          "model": "magic_doorknob:block/magic_doorway_pillar_short",
           "y": 90
         },
         "pillar_northwest": {
-          "model": "magic_doorknob:magic_doorway_pillar_short"
+          "model": "magic_doorknob:block/magic_doorway_pillar_short"
         },
         "pillar_southeast": {
-          "model": "magic_doorknob:magic_doorway_pillar_short",
+          "model": "magic_doorknob:block/magic_doorway_pillar_short",
           "y": 180
         },
         "pillar_southwest": {
-          "model": "magic_doorknob:magic_doorway_pillar_short",
+          "model": "magic_doorknob:block/magic_doorway_pillar_short",
           "y": 270
         }
       }
