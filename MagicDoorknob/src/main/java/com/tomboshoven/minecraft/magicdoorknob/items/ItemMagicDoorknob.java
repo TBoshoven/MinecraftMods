@@ -22,7 +22,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -177,8 +176,6 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
                 ((TileEntityMagicDoorway) tileEntity).setBaseBlockState(state);
                 ((TileEntityMagicDoorway) tileEntity).setDoorknob(this);
             }
-
-            world.checkLightFor(EnumSkyBlock.BLOCK, pos);
         }
     }
 
