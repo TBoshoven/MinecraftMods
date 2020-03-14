@@ -6,8 +6,6 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,8 +20,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
@@ -46,10 +45,10 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
      */
     public static final EnumProperty<Direction> HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    private static final AxisAlignedBB BOUNDING_BOX_WALL_S = new AxisAlignedBB(0, 0, 0, 1, 1, 0.0625);
-    private static final AxisAlignedBB BOUNDING_BOX_WALL_N = new AxisAlignedBB(0, 0, 0.9375, 1, 1, 1);
-    private static final AxisAlignedBB BOUNDING_BOX_WALL_E = new AxisAlignedBB(0, 0, 0, 0.0625, 1, 1);
-    private static final AxisAlignedBB BOUNDING_BOX_WALL_W = new AxisAlignedBB(0.9375, 0, 0, 1, 1, 1);
+    private static final VoxelShape SHAPE_SOUTH = Block.makeCuboidShape(0, 0, 0, 1, 1, 0.0625);
+    private static final VoxelShape SHAPE_WEST = Block.makeCuboidShape(0, 0, 0.9375, 1, 1, 1);
+    private static final VoxelShape SHAPE_NORTH = Block.makeCuboidShape(0, 0, 0, 0.0625, 1, 1);
+    private static final VoxelShape SHAPE_EAST = Block.makeCuboidShape(0.9375, 0, 0, 1, 1, 1);
 
     BlockMagicDoor(Properties properties) {
         super(properties);
@@ -161,17 +160,18 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(BlockState state, IEnviromentBlockReader source, BlockPos pos) {
-        // Return one of the pre-defined bounding boxes.
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext) {
         switch (state.get(HORIZONTAL_FACING)) {
-            case NORTH:
-                return BOUNDING_BOX_WALL_W;
-            case EAST:
-                return BOUNDING_BOX_WALL_N;
             case SOUTH:
-                return BOUNDING_BOX_WALL_E;
+                return SHAPE_SOUTH;
+            case NORTH:
+                return SHAPE_NORTH;
+            case WEST:
+                return SHAPE_WEST;
+            case EAST:
+                return SHAPE_EAST;
         }
-        return BOUNDING_BOX_WALL_S;
+        return super.getShape(state, world, pos, selectionContext);
     }
 
     @Override
