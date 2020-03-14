@@ -6,19 +6,15 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -114,23 +110,6 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
         for (AxisAlignedBB collisionBox : getCollisionBoxes(state)) {
             addCollisionBoxToList(pos, entityBox, collidingBoxes, collisionBox);
         }
-    }
-
-    @Override
-    public BlockFaceShape getBlockFaceShape(IEnviromentBlockReader worldIn, BlockState state, BlockPos pos, Direction face) {
-        switch (face) {
-            case DOWN:
-                return BlockFaceShape.UNDEFINED;
-            case UP:
-                return isTopSolid(state) ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
-            case NORTH:
-            case SOUTH:
-                return state.get(OPEN_NORTH_SOUTH) ? BlockFaceShape.UNDEFINED : BlockFaceShape.SOLID;
-            case WEST:
-            case EAST:
-                return state.get(OPEN_EAST_WEST) ? BlockFaceShape.UNDEFINED : BlockFaceShape.SOLID;
-        }
-        return super.getBlockFaceShape(worldIn, state, pos, face);
     }
 
     @Override
