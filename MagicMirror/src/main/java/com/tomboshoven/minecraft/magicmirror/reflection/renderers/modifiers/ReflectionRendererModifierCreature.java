@@ -3,11 +3,14 @@ package com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.renderer.entity.layers.ArrowLayer;
 import net.minecraft.client.renderer.entity.layers.BipedArmorLayer;
 import net.minecraft.client.renderer.entity.layers.HeldItemLayer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.BipedModel.ArmPose;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.IHasArm;
+import net.minecraft.client.renderer.entity.model.IHasHead;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
@@ -15,6 +18,7 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.layers.HeadLayer;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.UseAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
@@ -41,7 +45,7 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
      */
     public ReflectionRendererModifierCreature(ReflectionRendererBase baseRenderer) {
         super(baseRenderer);
-        replacementRenderer = new RenderOffModelPlayer(Minecraft.getInstance().getRenderManager(), new ModelSkeletonPlayer(), new ResourceLocation("textures/entity/skeleton/skeleton.png"));
+        replacementRenderer = new RenderOffModelPlayer<>(Minecraft.getInstance().getRenderManager(), new ModelSkeletonPlayer<>(), new ResourceLocation("textures/entity/skeleton/skeleton.png"));
     }
 
     @Override
@@ -57,24 +61,34 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
      */
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    private static class RenderOffModelPlayer extends LivingRenderer<AbstractClientPlayerEntity> {
+    private static class RenderOffModelPlayer<T extends LivingEntity, M extends EntityModel<T>> extends LivingRenderer<T, M> {
         /**
          * The location of the texture to use.
          */
         private final ResourceLocation textureLocation;
 
-        RenderOffModelPlayer(EntityRendererManager renderManager, BipedModel model, ResourceLocation textureLocation) {
+        RenderOffModelPlayer(EntityRendererManager renderManager, M model, ResourceLocation textureLocation) {
             super(renderManager, model, 0);
-            addLayer(new HeadLayer(model.bipedHead));
-            addLayer(new ElytraLayer(this));
-            addLayer(new HeldItemLayer(this));
-            addLayer(new HeldItemLayer(this));
-            addLayer(new BipedArmorLayer(this));
+
+            // Can't use explicit types here because there is no way to check whether the type M implements these
+            // interfaces or subclasses these classes due to type erasure and I don't want to work with too many
+            // subclasses.
+            if (model instanceof IHasHead) {
+                addLayer(new HeadLayer(this));
+            }
+            addLayer(new ElytraLayer<>(this));
+            addLayer(new ArrowLayer<>(this));
+            if (model instanceof IHasArm) {
+                addLayer(new HeldItemLayer(this));
+            }
+            if(model instanceof BipedModel) {
+                addLayer(new BipedArmorLayer(this, new BipedModel<>(0.5F), new BipedModel<>(1.0F)));
+            }
             this.textureLocation = textureLocation;
         }
 
         @Override
-        public void doRender(AbstractClientPlayerEntity entity, double x, double y, double z, float entityYaw, float partialTicks) {
+        public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks) {
             setArmPoses(entity);
             super.doRender(entity, x, y, z, entityYaw, partialTicks);
         }
@@ -85,9 +99,8 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
          *
          * @param entity The entity to take the arm poses from.
          */
-        private void setArmPoses(AbstractClientPlayerEntity entity) {
-            BipedModel model = (BipedModel) getMainModel();
-            model.isSneak = entity.isSneaking();
+        private void setArmPoses(T entity) {
+            M model = getEntityModel();
 
             ItemStack[] handItems = {entity.getHeldItemMainhand(), entity.getHeldItemOffhand()};
             ArmPose[] armPoses = {ArmPose.EMPTY, ArmPose.EMPTY};
@@ -97,7 +110,7 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
                     armPoses[side] = ArmPose.ITEM;
 
                     if (entity.getItemInUseCount() > 0) {
-                        UseAction itemUseAction = handItems[side].getItemUseAction();
+                        UseAction itemUseAction = handItems[side].getUseAction();
 
                         if (itemUseAction == UseAction.BLOCK) {
                             armPoses[side] = ArmPose.BLOCK;
@@ -108,29 +121,33 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
                 }
             }
 
-            if (entity.getPrimaryHand() == HandSide.RIGHT) {
-                model.rightArmPose = armPoses[0];
-                model.leftArmPose = armPoses[1];
-            } else {
-                model.rightArmPose = armPoses[1];
-                model.leftArmPose = armPoses[0];
+            if (model instanceof BipedModel) {
+                BipedModel<?> bipedModel = (BipedModel<?>) model;
+                bipedModel.isSneak = entity.isSneaking();
+                if (entity.getPrimaryHand() == HandSide.RIGHT) {
+                    bipedModel.rightArmPose = armPoses[0];
+                    bipedModel.leftArmPose = armPoses[1];
+                } else {
+                    bipedModel.rightArmPose = armPoses[1];
+                    bipedModel.leftArmPose = armPoses[0];
+                }
             }
         }
 
         @Nullable
         @Override
-        protected ResourceLocation getEntityTexture(AbstractClientPlayerEntity entity) {
+        protected ResourceLocation getEntityTexture(T entity) {
             return textureLocation;
         }
     }
 
     /**
      * A player model that renders a skeleton.
-     * Skeletons don't use the default biped model, but the actual skeleton model requires a skeleton entity.
+     * Skeletons don't use the default biped model, but the actual skeleton model requires a mob entity.
      */
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    private static class ModelSkeletonPlayer extends BipedModel {
+    private static class ModelSkeletonPlayer<T extends LivingEntity> extends BipedModel<T> {
         @SuppressWarnings("AssignmentToSuperclassField")
         ModelSkeletonPlayer() {
             super(0, 0, 64, 32);
