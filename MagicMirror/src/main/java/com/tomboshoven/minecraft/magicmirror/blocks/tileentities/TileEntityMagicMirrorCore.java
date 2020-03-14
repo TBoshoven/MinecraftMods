@@ -127,7 +127,7 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     }
 
     @Override
-    public void onChunkUnload() {
+    public void onChunkUnloaded() {
         // Stop reflecting to unload the textures and frame buffer
         reflection.stopReflecting();
     }
