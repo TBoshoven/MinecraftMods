@@ -99,14 +99,15 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     @Override
     @OnlyIn(Dist.CLIENT)
     public IModelData getModelData() {
-        BlockModelShapes blockModelShapes = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes();
+        Minecraft minecraft = Minecraft.getInstance();
+        BlockModelShapes blockModelShapes = minecraft.getBlockRendererDispatcher().getBlockModelShapes();
 
         // Get the base block texture
         BlockState baseBlockState = getBaseBlockState();
         TextureAtlasSprite blockTexture = blockModelShapes.getTexture(baseBlockState);
         if (blockTexture instanceof MissingTextureSprite) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.
-            blockTexture = blockModelShapes.getModelManager().getTextureMap().getAtlasSprite(ModMagicDoorknob.MOD_ID + ":blocks/empty");
+            blockTexture = minecraft.getTextureMap().getAtlasSprite(ModMagicDoorknob.MOD_ID + ":block/empty");
         }
 
         // Get the highlight texture
