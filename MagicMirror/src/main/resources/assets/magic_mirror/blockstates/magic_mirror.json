@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "magic_mirror:magic_mirror",
+    "model": "magic_mirror:block/magic_mirror",
     "uvlock": false
   },
   "variants": {
