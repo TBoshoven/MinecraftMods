@@ -2,7 +2,9 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import com.tomboshoven.minecraft.magicdoorknob.properties.PropertyTexture;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,13 +19,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
-class BlockStateTextureMapper implements ITextureMapper {
+class ModelDataTextureMapper implements ITextureMapper {
     @Override
-    public ResourceLocation mapSprite(PropertySprite spriteToMap, @Nullable IExtendedBlockState blockState) {
-        if (blockState != null) {
-            String name = spriteToMap.getIconName();
+    public ResourceLocation mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable IModelData modelData) {
+        if (modelData != null) {
+            ResourceLocation name = spriteToMap.getName();
             IUnlistedProperty<ResourceLocation> property = new PropertyTexture(name);
-            ResourceLocation spriteLocation = blockState.get(property);
+            ResourceLocation spriteLocation = modelData.getData(property);
             if (spriteLocation != null) {
                 return spriteLocation;
             }

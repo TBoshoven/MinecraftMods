@@ -69,7 +69,7 @@ class TexturedModel implements IUnbakedModel {
             }
             return spriteGetter.apply(resourceLocation);
         };
-        return new TexturedBakedModel(wrappedModel.bake(bakery, augmentedSpriteGetter, sprite, format), spriteGetter, new BlockStateTextureMapper());
+        return new TexturedBakedModel(wrappedModel.bake(bakery, augmentedSpriteGetter, sprite, format), spriteGetter, new ModelDataTextureMapper());
     }
 
     @Override
