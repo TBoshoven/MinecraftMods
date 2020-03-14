@@ -18,7 +18,6 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -28,7 +27,6 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
 
 /**
  * Top or bottom part of a magic door.
@@ -136,26 +134,6 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
             if (state.getBlock() == Blocks.MAGIC_DOORWAY) {
                 world.destroyBlock(blockPos, false);
             }
-        }
-    }
-
-    @Override
-    public void addCollisionBoxToList(BlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
-        // Collisions for the door consist of a single box (the knob does not cause collisions).
-        Direction facing = state.get(HORIZONTAL_FACING);
-        switch (facing) {
-            case NORTH:
-                addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_WALL_W);
-                break;
-            case EAST:
-                addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_WALL_N);
-                break;
-            case SOUTH:
-                addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_WALL_E);
-                break;
-            case WEST:
-                addCollisionBoxToList(pos, entityBox, collidingBoxes, BOUNDING_BOX_WALL_S);
-                break;
         }
     }
 
