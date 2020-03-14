@@ -1,0 +1,14 @@
+modLoader="javafml"
+loaderVersion="[28,)"
+issueTrackerURL="https://github.com/TBoshoven/MinecraftMods/issues"
+
+[[mods]]
+modId="magic_doorknob"
+version="${file.jarVersion}"
+displayName="Magic Doorknob"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/the-magic-doorknob"
+logoFile="logo.png"
+authors="Tom Boshoven"
+description='''
+A doorknob that does not require a door.
+'''

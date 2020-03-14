@@ -1,0 +1,15 @@
+modLoader="javafml"
+loaderVersion="[28,)"
+issueTrackerURL="https://github.com/TBoshoven/MinecraftMods/issues"
+
+[[mods]]
+modId="magic_mirror"
+version="${file.jarVersion}"
+displayName="Magic Mirror"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/the-magic-mirror"
+logoFile="logo.png"
+authors="Tom Boshoven"
+description='''
+A mirror that has magic properties.
+It can be made to look like a skeleton, or you could even give it some armor and use it as a fancy armor stand.
+'''
