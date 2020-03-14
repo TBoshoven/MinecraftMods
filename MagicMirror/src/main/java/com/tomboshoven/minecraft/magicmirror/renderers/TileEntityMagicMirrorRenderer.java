@@ -42,7 +42,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<TileEntityMagicMi
                     Direction facing = te.getFacing();
 
                     Vec3d reflectedPos = reflected.getPositionVector();
-                    double distanceSq = te.getPos().distanceSq(reflectedPos.x, reflectedPos.y, reflectedPos.z);
+                    double distanceSq = te.getPos().distanceSq(reflectedPos.x, reflectedPos.y, reflectedPos.z, true);
 
                     renderReflection(reflection, x, y, z, partialTicks, part, facing, distanceSq);
                 }
