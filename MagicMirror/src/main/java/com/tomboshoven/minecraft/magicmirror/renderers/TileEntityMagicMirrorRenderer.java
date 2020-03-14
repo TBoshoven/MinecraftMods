@@ -72,7 +72,6 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<TileEntityMagicMi
 
         GlStateManager.pushMatrix();
 
-        GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
 
         // The further away the subject is, the more faint the reflection
