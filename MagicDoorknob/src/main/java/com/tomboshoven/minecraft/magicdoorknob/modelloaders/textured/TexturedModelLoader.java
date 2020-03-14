@@ -3,13 +3,11 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.block.model.ModelBakery;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -65,12 +63,9 @@ public class TexturedModelLoader implements ICustomModelLoader {
 
     @Override
     public IUnbakedModel loadModel(ResourceLocation modelLocation) throws Exception {
-        ModelResourceLocation modelResourceLocation = (ModelResourceLocation) modelLocation;
-        ResourceLocation baseResourceLocation = new ResourceLocation(modelLocation.getNamespace(), modelLocation.getPath());
-        ResourceLocation baseModelLocation = baseModels.getOrDefault(baseResourceLocation, ModelBakery.MODEL_MISSING);
-        ResourceLocation augmentedBaseModelLocation = new ModelResourceLocation(baseModelLocation, modelResourceLocation.getVariant());
+        ResourceLocation baseModelLocation = baseModels.getOrDefault(modelLocation, ModelBakery.MODEL_MISSING);
         // FIXME: This causes the untextured model to be cached and dummy textures to be requested
-        IModel baseModel = ModelLoaderRegistry.getModel(augmentedBaseModelLocation);
+        IUnbakedModel baseModel = ModelLoaderRegistry.getModel(baseModelLocation);
         return new TexturedModel(baseModel, Collections.unmodifiableSet(extraTextures));
     }
 }
