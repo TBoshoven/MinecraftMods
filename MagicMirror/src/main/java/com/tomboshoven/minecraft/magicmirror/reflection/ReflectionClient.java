@@ -92,6 +92,14 @@ public class ReflectionClient extends Reflection {
     public void render(Direction facing, float partialTicks) {
         super.render(facing, partialTicks);
 
+        // Create or destroy the framebuffer if needed
+        if (reflectedEntity != null && frameBuffer == null) {
+            buildFrameBuffer();
+        }
+        else if (reflectedEntity == null && frameBuffer != null) {
+            cleanUpFrameBuffer();
+        }
+
         // Don't render twice per partial tick; this is a simple hack for multiblock optimization.
         // This requires that forceRerender() is called each tick.
         if (lastRenderPartialTicks >= partialTicks) {

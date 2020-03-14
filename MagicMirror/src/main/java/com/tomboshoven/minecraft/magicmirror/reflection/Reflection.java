@@ -32,7 +32,7 @@ public class Reflection {
      * The entity that is currently being reflected, if any.
      */
     @Nullable
-    private Entity reflectedEntity;
+    Entity reflectedEntity;
 
     /**
      * Get the total number of active reflections in this instance's client thread; used for debugging leaks.
@@ -48,7 +48,6 @@ public class Reflection {
     public void stopReflecting() {
         if (reflectedEntity != null) {
             ModMagicMirror.LOGGER.debug("No longer reflecting {}", reflectedEntity.getName());
-            cleanUpFrameBuffer();
             cleanUpRenderer();
             reflectedEntity = null;
             decrementActiveReflections();
@@ -111,7 +110,6 @@ public class Reflection {
         if (this.reflectedEntity != reflectedEntity) {
             ModMagicMirror.LOGGER.debug("Reflecting {}", reflectedEntity.getName());
             if (this.reflectedEntity == null) {
-                buildFrameBuffer();
                 incrementActiveClientReflections();
             }
             this.reflectedEntity = reflectedEntity;
