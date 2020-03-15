@@ -1,8 +1,5 @@
 {
   "parent": "block/block",
-  "textures": {
-    "main": "property:texture_main"
-  },
   "elements": [
     {
       "name": "Base",

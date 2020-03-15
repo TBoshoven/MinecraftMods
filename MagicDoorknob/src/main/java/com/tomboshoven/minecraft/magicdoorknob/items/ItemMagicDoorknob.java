@@ -5,15 +5,12 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.BlockMagicDoorway;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
-import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.IItemStackTextureMapperProvider;
-import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ITextureMapper;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -24,8 +21,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -34,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperProvider {
+public class ItemMagicDoorknob extends Item {
     // The main texture of the item
     private final ResourceLocation mainTextureLocation;
     // The name of the type of item (used in NBT data; do not modify)
@@ -209,17 +204,6 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
             return false;
         }
         return block.getHarvestLevel(blockState) <= tier.getHarvestLevel();
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public ITextureMapper getTextureMapper(ItemStack stack) {
-        return (spriteToMap, blockState, modelData) -> {
-            if ("texture_main".equals(spriteToMap.getName().getPath())) {
-                return mainTextureLocation;
-            }
-            return new ResourceLocation("missingno");
-        };
     }
 
     /**

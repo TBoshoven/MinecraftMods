@@ -1,0 +1,6 @@
+{
+  "parent": "magic_doorknob:item/magic_doorknob",
+  "textures": {
+    "main": "minecraft:block/diamond_block"
+  }
+}

@@ -30,7 +30,7 @@ public final class Items {
 
     static {
         // Add all Vanilla tool materials
-        addDoorknob("wood", ItemTier.WOOD, "planks_oak");
+        addDoorknob("wood", ItemTier.WOOD, "oak_planks");
         addDoorknob("stone", ItemTier.STONE, "stone");
         addDoorknob("iron", ItemTier.IRON, "iron_block");
         addDoorknob("gold", ItemTier.GOLD, "gold_block");
