@@ -21,6 +21,10 @@ public class PropertySprite extends TextureAtlasSprite {
      * @param name The location of the property
      */
     PropertySprite(ResourceLocation name) {
-        super(name, 16, 16);
+        super(name, 1, 1);
+        // Set the UV values, to make sure they're not both 0.
+        // Something is very wonky in the logic for "makeBakedQuad" but these values seem to work when used with
+        // BakedQuadRetextured.
+        func_217789_a(Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 0);
     }
 }
