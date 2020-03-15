@@ -19,8 +19,8 @@ public final class ModelLoaders {
     }
 
     private static String[] TEXTURED_MODELS = new String[] {
-            "magic_door", "magic_door_knob", "magic_doorknob", "magic_doorway_pillar", "magic_doorway_pillar_short",
-            "magic_doorway_top", "magic_doorway_wall", "magic_doorway_wall_narrow", "magic_doorway_wall_narrow_short",
+            "magic_door", "magic_door_knob", "magic_doorway_pillar", "magic_doorway_pillar_short", "magic_doorway_top",
+            "magic_doorway_wall", "magic_doorway_wall_narrow", "magic_doorway_wall_narrow_short",
             "magic_doorway_wall_short",
     };
 
