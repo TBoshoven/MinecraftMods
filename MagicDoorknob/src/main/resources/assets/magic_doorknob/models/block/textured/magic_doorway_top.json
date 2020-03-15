@@ -1,7 +1,7 @@
 {
   "textures": {
-    "particle": "minecraft:blocks/obsidian",
-    "main": "property:texture_main",
+    "particle": "minecraft:block/obsidian",
+    "main": "minecraft:block/obsidian",
     "highlight": "property:texture_highlight"
   },
   "display": {
