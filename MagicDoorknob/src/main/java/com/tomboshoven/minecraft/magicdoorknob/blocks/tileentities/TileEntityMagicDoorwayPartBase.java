@@ -38,12 +38,12 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     /**
      * The main texture of the doorway (based on base block).
      */
-    private static final ModelTextureProperty TEXTURE_MAIN = new ModelTextureProperty(new ResourceLocation(PROPERTY_NAMESPACE, "texture_main"));
+    private static final ModelTextureProperty TEXTURE_MAIN = ModelTextureProperty.get(new ResourceLocation(PROPERTY_NAMESPACE, "texture_main"));
 
     /**
      * The highlight texture of the doorway (based on doorknob).
      */
-    private static final ModelTextureProperty TEXTURE_HIGHLIGHT = new ModelTextureProperty(new ResourceLocation(PROPERTY_NAMESPACE, "texture_highlight"));
+    private static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(new ResourceLocation(PROPERTY_NAMESPACE, "texture_highlight"));
 
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.getDefaultState();
