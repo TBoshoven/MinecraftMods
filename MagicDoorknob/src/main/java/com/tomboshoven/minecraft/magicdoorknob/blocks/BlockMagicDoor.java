@@ -76,26 +76,6 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
         return super.getSoundType(state, world, pos, entity);
     }
 
-    @Override
-    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        super.neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
-
-        EnumPartType part = state.get(PART);
-
-        // Break the door if the other part is broken.
-        if (
-                part == EnumPartType.TOP && worldIn.getBlockState(pos.down()).getBlock() != this ||
-                        part == EnumPartType.BOTTOM && worldIn.getBlockState(pos.up()).getBlock() != this
-        ) {
-            // Spawn the doorknob before breaking the block.
-            Item doorknob = getDoorknob(worldIn, pos);
-            if (doorknob != null) {
-                InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(doorknob, 1));
-            }
-            worldIn.destroyBlock(pos, false);
-        }
-    }
-
     /**
      * Get the doorknob that opened this door.
      *
@@ -115,6 +95,22 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     @Override
     public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         breakDoorway(worldIn, pos, state.get(HORIZONTAL_FACING));
+
+        if (state.get(PART) == EnumPartType.TOP) {
+            // Spawn the doorknob
+            Item doorknob = getDoorknob(worldIn, pos);
+            if (doorknob != null) {
+                InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(doorknob, 1));
+            }
+
+            // Break the bottom part
+            worldIn.destroyBlock(pos.down(), false);
+        }
+        else {
+            // Break the top part
+            worldIn.destroyBlock(pos.up(), false);
+        }
+
         super.onReplaced(state, worldIn, pos, newState, isMoving);
     }
 
@@ -159,7 +155,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     @Override
     public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, BlockRayTraceResult rayTraceResult) {
         if (!worldIn.isRemote) {
-            worldIn.setBlockState(pos, net.minecraft.block.Blocks.AIR.getDefaultState());
+            worldIn.destroyBlock(pos, false);
         }
         return true;
     }
