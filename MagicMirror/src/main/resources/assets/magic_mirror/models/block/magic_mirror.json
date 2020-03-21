@@ -1,8 +1,8 @@
 {
   "textures": {
-    "particle": "magic_mirror:blocks/mirror",
-    "front": "magic_mirror:blocks/mirror",
-    "back": "magic_mirror:blocks/mirror_back"
+    "particle": "magic_mirror:block/mirror",
+    "front": "magic_mirror:block/mirror",
+    "back": "magic_mirror:block/mirror_back"
   },
   "display": {
     "firstperson_lefthand": {
