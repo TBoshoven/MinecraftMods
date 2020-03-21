@@ -86,7 +86,8 @@ public class BlockMagicMirror extends HorizontalBlock {
     }
 
     /**
-     * Attach a modifier to the mirror at the specified position.
+     * Attach a modifier to the mirror at the specified position (server version).
+     * This sends a message to clients as well.
      *
      * @param worldIn  The world containing the mirror.
      * @param pos      The position of the mirror in the world.
@@ -95,13 +96,9 @@ public class BlockMagicMirror extends HorizontalBlock {
      */
     private static void attachModifier(World worldIn, BlockPos pos, ItemStack heldItem, MagicMirrorModifier modifier) {
         modifier.apply(worldIn, pos, heldItem);
-        if (worldIn.isRemote) {
-            worldIn.playSound(pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);
-        } else {
-            MessageAttachModifier message = new MessageAttachModifier(pos, heldItem, modifier);
-            PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_CHUNK.with(() -> worldIn.getChunkAt(pos));
-            Network.CHANNEL.send(target, message);
-        }
+        MessageAttachModifier message = new MessageAttachModifier(pos, heldItem, modifier);
+        PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_CHUNK.with(() -> worldIn.getChunkAt(pos));
+        Network.CHANNEL.send(target, message);
     }
 
     @Override
@@ -335,7 +332,8 @@ public class BlockMagicMirror extends HorizontalBlock {
                 if (modifier == null) {
                     ModMagicMirror.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
                 }
-                attachModifier(world, message.mirrorPos, message.usedItemStack, modifier);
+                modifier.apply(world, message.mirrorPos, message.usedItemStack);
+                world.playSound(message.mirrorPos, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);
             }
         }));
         ctx.setPacketHandled(true);
