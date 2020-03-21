@@ -12,20 +12,21 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Items;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SSetSlotPacket;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.SSetSlotPacket;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -349,36 +350,44 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
      * Handler for messages describing players swapping armor with the mirror.
      */
     public static void onMessageSwapMirror(MessageSwapMirror message, Supplier<NetworkEvent.Context> contextSupplier) {
-        TileEntity te = Minecraft.getInstance().world.getTileEntity(message.mirrorPos);
-        if (te instanceof TileEntityMagicMirrorBase) {
-            ((TileEntityMagicMirrorBase) te).getModifiers().stream()
-                    .filter(modifier -> modifier instanceof MagicMirrorTileEntityModifierArmor).findFirst()
-                    .ifPresent(modifier -> message.armor.swap((MagicMirrorTileEntityModifierArmor) modifier));
-        }
+        NetworkEvent.Context ctx = contextSupplier.get();
+        ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+            TileEntity te = Minecraft.getInstance().world.getTileEntity(message.mirrorPos);
+            if (te instanceof TileEntityMagicMirrorBase) {
+                ((TileEntityMagicMirrorBase) te).getModifiers().stream()
+                        .filter(modifier -> modifier instanceof MagicMirrorTileEntityModifierArmor).findFirst()
+                        .ifPresent(modifier -> message.armor.swap((MagicMirrorTileEntityModifierArmor) modifier));
+            }
+        }));
+        ctx.setPacketHandled(true);
     }
 
     /**
      * Handler for messages describing players swapping armor with the mirror.
      */
     public static void onMessageSwapPlayer(MessageSwapPlayer message, Supplier<NetworkEvent.Context> contextSupplier) {
-        Entity entity = Minecraft.getInstance().world.getEntityByID(message.entityId);
+        NetworkEvent.Context ctx = contextSupplier.get();
+        ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+            Entity entity = Minecraft.getInstance().world.getEntityByID(message.entityId);
 
-        if (entity instanceof PlayerEntity) {
-            message.armor.swap((PlayerEntity) entity);
+            if (entity instanceof PlayerEntity) {
+                message.armor.swap((PlayerEntity) entity);
 
-            entity.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, .8f, .4f);
-            Random random = new Random();
-            for (int i = 0; i < SWAP_PARTICLE_COUNT; ++i) {
-                entity.getEntityWorld().addParticle(
-                        ParticleTypes.PORTAL,
-                        entity.posX + random.nextGaussian() / 4,
-                        entity.posY + 2 * random.nextDouble(),
-                        entity.posZ + random.nextGaussian() / 4,
-                        random.nextGaussian() / 2,
-                        random.nextDouble(),
-                        random.nextGaussian() / 2
-                );
+                entity.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, .8f, .4f);
+                Random random = new Random();
+                for (int i = 0; i < SWAP_PARTICLE_COUNT; ++i) {
+                    entity.getEntityWorld().addParticle(
+                            ParticleTypes.PORTAL,
+                            entity.posX + random.nextGaussian() / 4,
+                            entity.posY + 2 * random.nextDouble(),
+                            entity.posZ + random.nextGaussian() / 4,
+                            random.nextGaussian() / 2,
+                            random.nextDouble(),
+                            random.nextGaussian() / 2
+                    );
+                }
             }
-        }
+        }));
+        ctx.setPacketHandled(true);
     }
 }

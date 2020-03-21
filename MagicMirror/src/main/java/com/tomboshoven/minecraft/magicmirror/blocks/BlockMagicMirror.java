@@ -9,31 +9,33 @@ import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalBlock;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.BooleanProperty;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -324,14 +326,18 @@ public class BlockMagicMirror extends HorizontalBlock {
      * Handler for messages describing modifiers being attached to mirrors.
      */
     public static void onMessageAttachModifier(MessageAttachModifier message, Supplier<NetworkEvent.Context> contextSupplier) {
-        ClientWorld world = Minecraft.getInstance().world;
-        TileEntity te = world.getTileEntity(message.mirrorPos);
-        if (te instanceof TileEntityMagicMirrorBase) {
-            MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
-            if (modifier == null) {
-                ModMagicMirror.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
+        NetworkEvent.Context ctx = contextSupplier.get();
+        ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+            ClientWorld world = Minecraft.getInstance().world;
+            TileEntity te = world.getTileEntity(message.mirrorPos);
+            if (te instanceof TileEntityMagicMirrorBase) {
+                MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
+                if (modifier == null) {
+                    ModMagicMirror.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
+                }
+                attachModifier(world, message.mirrorPos, message.usedItemStack, modifier);
             }
-            attachModifier(world, message.mirrorPos, message.usedItemStack, modifier);
-        }
+        }));
+        ctx.setPacketHandled(true);
     }
 }
