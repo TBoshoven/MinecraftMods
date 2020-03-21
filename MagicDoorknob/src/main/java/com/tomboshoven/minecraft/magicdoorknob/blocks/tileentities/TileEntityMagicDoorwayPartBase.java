@@ -137,6 +137,7 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
      */
     public void setBaseBlockState(BlockState baseBlockState) {
         this.baseBlockState = baseBlockState;
+        requestModelDataUpdate();
     }
 
     /**
@@ -152,5 +153,6 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
      */
     public void setDoorknob(ItemMagicDoorknob doorknob) {
         this.doorknob = doorknob;
+        requestModelDataUpdate();
     }
 }
