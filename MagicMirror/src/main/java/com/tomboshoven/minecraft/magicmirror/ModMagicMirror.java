@@ -10,8 +10,10 @@ import com.tomboshoven.minecraft.magicmirror.items.Items;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +35,7 @@ public class ModMagicMirror {
         modEventBus.register(Blocks.class);
         modEventBus.register(Items.class);
         modEventBus.register(TileEntities.class);
-        modEventBus.register(Renderers.class);
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.register(Renderers.class));
 
         // Register packets
         Network.registerMessages();
