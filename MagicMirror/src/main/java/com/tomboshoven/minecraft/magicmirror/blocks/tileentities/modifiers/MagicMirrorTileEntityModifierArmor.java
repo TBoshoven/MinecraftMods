@@ -82,12 +82,12 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
     public void activate(TileEntityMagicMirrorBase tileEntity) {
         Reflection reflection = tileEntity.getReflection();
         if (reflection != null) {
-            reflectionModifier = createReflectionModifier(replacementArmor);
+            reflectionModifier = createReflectionModifier();
             reflection.addModifier(reflectionModifier);
         }
     }
 
-    private ReflectionModifierArmor createReflectionModifier(ReplacementArmor replacementArmor) {
+    private ReflectionModifierArmor createReflectionModifier() {
         return DistExecutor.runForDist(
                 () -> () -> new ReflectionModifierArmorClient(replacementArmor),
                 () -> () -> new ReflectionModifierArmor(replacementArmor)
