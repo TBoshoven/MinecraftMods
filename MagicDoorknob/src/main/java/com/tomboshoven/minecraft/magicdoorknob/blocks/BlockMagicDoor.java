@@ -44,10 +44,13 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
      */
     public static final EnumProperty<Direction> HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    private static final VoxelShape SHAPE_SOUTH = Block.makeCuboidShape(0, 0, 0, 16, 16, 1);
-    private static final VoxelShape SHAPE_WEST = Block.makeCuboidShape(0, 0, 15, 16, 16, 16);
-    private static final VoxelShape SHAPE_NORTH = Block.makeCuboidShape(0, 0, 0, 1, 16, 16);
-    private static final VoxelShape SHAPE_EAST = Block.makeCuboidShape(15, 0, 0, 16, 16, 16);
+    // Indexed by horizontal index
+    private static final VoxelShape[] SHAPES = new VoxelShape[]{
+            Block.makeCuboidShape(0, 0, 0, 1, 16, 16),
+            Block.makeCuboidShape(0, 0, 0, 16, 16, 1),
+            Block.makeCuboidShape(15, 0, 0, 16, 16, 16),
+            Block.makeCuboidShape(0, 0, 15, 16, 16, 16),
+    };
 
     BlockMagicDoor(Properties properties) {
         super(properties);
@@ -140,17 +143,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext) {
-        switch (state.get(HORIZONTAL_FACING)) {
-            case SOUTH:
-                return SHAPE_SOUTH;
-            case NORTH:
-                return SHAPE_NORTH;
-            case WEST:
-                return SHAPE_WEST;
-            case EAST:
-                return SHAPE_EAST;
-        }
-        return super.getShape(state, world, pos, selectionContext);
+        return SHAPES[state.get(HORIZONTAL_FACING).getHorizontalIndex()];
     }
 
     @Override
