@@ -1,0 +1,17 @@
+{
+  "loader": "forge:composite",
+  "parts": {
+    "top": {
+      "parent": "magic_doorknob:block/part/magic_doorway_top"
+    },
+    "wall1": {
+      "parent": "magic_doorknob:block/part/magic_doorway_wall_short"
+    },
+    "wall2": {
+      "parent": "magic_doorknob:block/part/magic_doorway_wall_short",
+      "transform": {
+        "rotation": [{"y": 180}]
+      }
+    }
+  }
+}

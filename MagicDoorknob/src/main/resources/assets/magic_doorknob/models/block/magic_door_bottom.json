@@ -1,0 +1,8 @@
+{
+  "loader": "forge:composite",
+  "parts": {
+    "door": {
+      "parent": "magic_doorknob:block/part/magic_door"
+    }
+  }
+}

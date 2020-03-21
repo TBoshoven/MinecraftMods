@@ -1,4 +1,6 @@
 {
+  "loader": "magic_doorknob:textured",
+  "base_loader": "minecraft:elements",
   "textures": {
     "particle": "minecraft:block/obsidian",
     "main": "property:texture_main",
@@ -19,34 +21,28 @@
   "elements": [
     {
       "name": "Top",
-      "from": [0, 10, 0],
-      "to": [1, 16, 1],
+      "from": [1, 10, 0],
+      "to": [15, 15, 1],
       "faces": {
         "east": {
           "texture": "#main",
-          "uv": [15, 0, 16, 6],
+          "uv": [15, 1, 16, 6],
           "tintindex": 1
         },
         "north": {
           "texture": "#main",
-          "uv": [15, 0, 16, 6],
+          "uv": [1, 1, 15, 6],
           "tintindex": 1,
           "cullface": "north"
         },
         "south": {
           "texture": "#main",
-          "uv": [0, 0, 1, 6],
+          "uv": [1, 1, 15, 6],
           "tintindex": 1
-        },
-        "up": {
-          "texture": "#main",
-          "uv": [0, 0, 1, 1],
-          "tintindex": 1,
-          "cullface": "up"
         },
         "west": {
           "texture": "#main",
-          "uv": [0, 0, 1, 6],
+          "uv": [0, 1, 1, 6],
           "tintindex": 1,
           "cullface": "west"
         }
@@ -54,8 +50,8 @@
     },
     {
       "name": "TopHighlight",
-      "from": [0, 9, 0],
-      "to": [1, 10, 1],
+      "from": [1, 9, 0],
+      "to": [15, 10, 1],
       "faces": {
         "east": {
           "texture": "#highlight",
@@ -63,12 +59,12 @@
         },
         "north": {
           "texture": "#highlight",
-          "uv": [15, 6, 16, 7],
+          "uv": [1, 6, 15, 7],
           "cullface": "north"
         },
         "south": {
           "texture": "#highlight",
-          "uv": [0, 6, 1, 7]
+          "uv": [1, 6, 15, 7]
         },
         "west": {
           "texture": "#highlight",
@@ -79,8 +75,8 @@
     },
     {
       "name": "Middle",
-      "from": [0, 8, 0],
-      "to": [1, 9, 1],
+      "from": [1, 8, 0],
+      "to": [15, 9, 1],
       "faces": {
         "east": {
           "texture": "#main",
@@ -89,13 +85,13 @@
         },
         "north": {
           "texture": "#main",
-          "uv": [15, 7, 16, 8],
+          "uv": [1, 7, 15, 8],
           "tintindex": 1,
           "cullface": "north"
         },
         "south": {
           "texture": "#main",
-          "uv": [0, 7, 1, 8],
+          "uv": [1, 7, 15, 8],
           "tintindex": 1
         },
         "west": {
@@ -108,8 +104,8 @@
     },
     {
       "name": "BottomHighlight",
-      "from": [0, 7, 0],
-      "to": [1, 8, 1],
+      "from": [1, 7, 0],
+      "to": [15, 8, 1],
       "faces": {
         "east": {
           "texture": "#highlight",
@@ -117,12 +113,12 @@
         },
         "north": {
           "texture": "#highlight",
-          "uv": [15, 8, 16, 9],
+          "uv": [1, 8, 15, 9],
           "cullface": "north"
         },
         "south": {
           "texture": "#highlight",
-          "uv": [0, 8, 1, 9]
+          "uv": [1, 8, 15, 9]
         },
         "west": {
           "texture": "#highlight",
@@ -133,12 +129,12 @@
     },
     {
       "name": "Bottom",
-      "from": [0, 0, 0],
-      "to": [1, 7, 1],
+      "from": [1, 0, 0],
+      "to": [15, 7, 1],
       "faces": {
         "down": {
           "texture": "#main",
-          "uv": [15, 15, 16, 16],
+          "uv": [1, 15, 15, 16],
           "tintindex": 1,
           "cullface": "down"
         },
@@ -149,13 +145,13 @@
         },
         "north": {
           "texture": "#main",
-          "uv": [15, 9, 16, 16],
+          "uv": [1, 9, 15, 16],
           "tintindex": 1,
           "cullface": "north"
         },
         "south": {
           "texture": "#main",
-          "uv": [0, 9, 1, 16],
+          "uv": [1, 9, 15, 16],
           "tintindex": 1
         },
         "west": {

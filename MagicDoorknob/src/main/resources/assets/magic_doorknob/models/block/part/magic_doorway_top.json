@@ -1,7 +1,9 @@
 {
+  "loader": "magic_doorknob:textured",
+  "base_loader": "minecraft:elements",
   "textures": {
     "particle": "minecraft:block/obsidian",
-    "main": "minecraft:block/obsidian",
+    "main": "property:texture_main",
     "highlight": "property:texture_highlight"
   },
   "display": {

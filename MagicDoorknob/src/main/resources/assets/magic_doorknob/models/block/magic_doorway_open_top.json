@@ -1,0 +1,29 @@
+{
+  "loader": "forge:composite",
+  "parts": {
+    "top": {
+      "parent": "magic_doorknob:block/part/magic_doorway_top"
+    },
+    "pillar1": {
+      "parent": "magic_doorknob:block/part/magic_doorway_pillar_short"
+    },
+    "pillar2": {
+      "parent": "magic_doorknob:block/part/magic_doorway_pillar_short",
+      "transform": {
+        "rotation": [{"y": 90}]
+      }
+    },
+    "pillar3": {
+      "parent": "magic_doorknob:block/part/magic_doorway_pillar_short",
+      "transform": {
+        "rotation": [{"y": 180}]
+      }
+    },
+    "pillar4": {
+      "parent": "magic_doorknob:block/part/magic_doorway_pillar_short",
+      "transform": {
+        "rotation": [{"y": 270}]
+      }
+    }
+  }
+}
