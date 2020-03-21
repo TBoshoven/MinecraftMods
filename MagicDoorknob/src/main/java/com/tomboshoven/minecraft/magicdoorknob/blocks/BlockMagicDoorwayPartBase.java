@@ -114,32 +114,22 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
      * The doorway has two parts: top and bottom.
      */
     public enum EnumPartType implements IStringSerializable {
-        TOP("top", 0),
-        BOTTOM("bottom", 1),
+        TOP("top"),
+        BOTTOM("bottom"),
         ;
 
         private final String name;
-        private final int value;
 
         /**
          * @param name  The name of the part.
-         * @param value The integer value of the part; used for setting block metadata.
          */
-        EnumPartType(String name, int value) {
+        EnumPartType(String name) {
             this.name = name;
-            this.value = value;
         }
 
         @Override
         public String getName() {
             return name;
-        }
-
-        /**
-         * @return The integer value of the part; used for setting block metadata.
-         */
-        int getValue() {
-            return value;
         }
     }
 }
