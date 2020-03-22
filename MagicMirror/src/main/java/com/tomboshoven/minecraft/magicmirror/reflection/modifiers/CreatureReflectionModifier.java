@@ -10,7 +10,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ReflectionModifierCreature extends ReflectionModifier {
+public class CreatureReflectionModifier extends ReflectionModifier {
     @Override
     public ReflectionRendererBase apply(ReflectionRendererBase reflectionRenderer) {
         // Nothing to do on the server side

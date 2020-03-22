@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers;
 
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorwayPartBase;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -28,8 +28,8 @@ class DoorwayBlockColorHandler implements IBlockColor {
             BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 
             TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
-                BlockState baseBlock = ((TileEntityMagicDoorwayPartBase) tileEntity).getBaseBlockState();
+            if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
+                BlockState baseBlock = ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState();
                 // Return whatever the base block would.
                 return blockColors.getColor(baseBlock, worldIn, pos, tintIndex);
             }

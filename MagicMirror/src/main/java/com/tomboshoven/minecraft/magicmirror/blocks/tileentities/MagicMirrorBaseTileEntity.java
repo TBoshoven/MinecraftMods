@@ -1,14 +1,11 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror;
-import com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror.EnumPartType;
-import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
+import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock;
+import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartType;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -27,8 +24,8 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class TileEntityMagicMirrorBase extends TileEntity {
-    public TileEntityMagicMirrorBase(TileEntityType<? extends TileEntityMagicMirrorBase> tileEntityTypeIn) {
+public abstract class MagicMirrorBaseTileEntity extends TileEntity {
+    public MagicMirrorBaseTileEntity(TileEntityType<? extends MagicMirrorBaseTileEntity> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -36,14 +33,14 @@ public abstract class TileEntityMagicMirrorBase extends TileEntity {
      * @return The core block, if it exists.
      */
     @Nullable
-    protected abstract TileEntityMagicMirrorCore getCore();
+    protected abstract MagicMirrorCoreTileEntity getCore();
 
     /**
      * @return The reflection in the mirror.
      */
     @Nullable
     public Reflection getReflection() {
-        TileEntityMagicMirrorCore core = getCore();
+        MagicMirrorCoreTileEntity core = getCore();
         if (core != null) {
             return core.getReflection();
         }
@@ -54,7 +51,7 @@ public abstract class TileEntityMagicMirrorBase extends TileEntity {
      * @return A list of all the current modifiers of the mirror.
      */
     public List<MagicMirrorTileEntityModifier> getModifiers() {
-        TileEntityMagicMirrorCore core = getCore();
+        MagicMirrorCoreTileEntity core = getCore();
         if (core != null) {
             return core.getModifiers();
         }
@@ -67,7 +64,7 @@ public abstract class TileEntityMagicMirrorBase extends TileEntity {
      * @param modifier The modifier to add. Must be verified to be applicable.
      */
     public void addModifier(MagicMirrorTileEntityModifier modifier) {
-        TileEntityMagicMirrorCore core = getCore();
+        MagicMirrorCoreTileEntity core = getCore();
         if (core != null) {
             core.addModifier(modifier);
         }
@@ -82,7 +79,7 @@ public abstract class TileEntityMagicMirrorBase extends TileEntity {
      * @param pos     The position of the block that was removed.
      */
     public void removeModifiers(World worldIn, BlockPos pos) {
-        TileEntityMagicMirrorCore core = getCore();
+        MagicMirrorCoreTileEntity core = getCore();
         if (core != null) {
             core.removeModifiers(worldIn, pos);
         }
@@ -96,7 +93,7 @@ public abstract class TileEntityMagicMirrorBase extends TileEntity {
      * @return Whether activation of the modifier was successful.
      */
     public boolean tryActivate(PlayerEntity playerIn, Hand hand) {
-        TileEntityMagicMirrorCore core = getCore();
+        MagicMirrorCoreTileEntity core = getCore();
         if (core != null) {
             return core.tryActivate(playerIn, hand);
         }
@@ -107,20 +104,20 @@ public abstract class TileEntityMagicMirrorBase extends TileEntity {
      * @return Which direction the mirror is facing in.
      */
     public Direction getFacing() {
-        return getBlockState().get(BlockMagicMirror.HORIZONTAL_FACING);
+        return getBlockState().get(MagicMirrorBlock.HORIZONTAL_FACING);
     }
 
     /**
      * @return Which part of the mirror this tile entity belongs to.
      */
     public EnumPartType getPart() {
-        return getBlockState().get(BlockMagicMirror.PART);
+        return getBlockState().get(MagicMirrorBlock.PART);
     }
 
     /**
      * @return Whether the mirror is completely constructed.
      */
     public boolean isComplete() {
-        return getBlockState().get(BlockMagicMirror.COMPLETE);
+        return getBlockState().get(MagicMirrorBlock.COMPLETE);
     }
 }

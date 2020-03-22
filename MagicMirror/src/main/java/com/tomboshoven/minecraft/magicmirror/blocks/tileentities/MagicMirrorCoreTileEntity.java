@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase implements ITickableTileEntity {
+public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity implements ITickableTileEntity {
     /**
      * Number of ticks between updating who we're reflecting
      */
@@ -50,7 +50,7 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
     // Start the update counter at its max, so we update on the first tick.
     private int reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
 
-    public TileEntityMagicMirrorCore() {
+    public MagicMirrorCoreTileEntity() {
         super(TileEntities.MAGIC_MIRROR_CORE);
 
         reflection = DistExecutor.runForDist(() -> ReflectionClient::new, () -> Reflection::new);
@@ -89,7 +89,7 @@ public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase impleme
 
     @Nullable
     @Override
-    protected TileEntityMagicMirrorCore getCore() {
+    protected MagicMirrorCoreTileEntity getCore() {
         return this;
     }
 

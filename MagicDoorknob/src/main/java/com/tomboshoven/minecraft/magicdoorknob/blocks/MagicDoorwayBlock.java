@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorway;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayTileEntity;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.state.BooleanProperty;
@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
+public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
     /**
      * Property describing which part of the doorway is being represented by this block.
      */
@@ -53,7 +53,7 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     /**
      * Create a new Magic Doorway block.
      */
-    BlockMagicDoorway(Block.Properties properties) {
+    MagicDoorwayBlock(Block.Properties properties) {
         super(properties);
 
         // By default, the doorway is not open in any direction
@@ -92,8 +92,8 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
         if (newState.isAir(world, pos)) {
             // When this block is destroyed (manually or by closing the door), replace it by its base block.
             TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityMagicDoorway) {
-                world.setBlockState(pos, ((TileEntityMagicDoorway) tileEntity).getBaseBlockState());
+            if (tileEntity instanceof MagicDoorwayTileEntity) {
+                world.setBlockState(pos, ((MagicDoorwayTileEntity) tileEntity).getBaseBlockState());
             }
         }
 
@@ -108,6 +108,6 @@ public class BlockMagicDoorway extends BlockMagicDoorwayPartBase {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TileEntityMagicDoorway();
+        return new MagicDoorwayTileEntity();
     }
 }

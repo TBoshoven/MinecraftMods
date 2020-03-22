@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoor;
-import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorTileEntity;
+import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -34,7 +34,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
+public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
     /**
      * Property describing which part of the door is being represented by this block.
      */
@@ -52,7 +52,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
             Block.makeCuboidShape(0, 0, 15, 16, 16, 16),
     };
 
-    BlockMagicDoor(Properties properties) {
+    MagicDoorBlock(Properties properties) {
         super(properties);
     }
 
@@ -60,8 +60,8 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     public SoundType getSoundType(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity entity) {
         // Return the sound type of the base block, except that placing and removing it are door open and close sounds.
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoor) {
-            BlockState textureBlock = ((TileEntityMagicDoor) tileEntity).getBaseBlockState();
+        if (tileEntity instanceof MagicDoorTileEntity) {
+            BlockState textureBlock = ((MagicDoorTileEntity) tileEntity).getBaseBlockState();
             SoundType actualSoundType = textureBlock.getBlock().getSoundType(textureBlock, world, pos, null);
             return new SoundType(
                     actualSoundType.volume,
@@ -84,10 +84,10 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
      * @return The doorknob if it can be found
      */
     @Nullable
-    private ItemMagicDoorknob getDoorknob(World world, BlockPos pos) {
+    private MagicDoorknobItem getDoorknob(World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoor) {
-            return ((TileEntityMagicDoor) tileEntity).getDoorknob();
+        if (tileEntity instanceof MagicDoorTileEntity) {
+            return ((MagicDoorTileEntity) tileEntity).getDoorknob();
         }
         return null;
     }
@@ -124,7 +124,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     private void breakDoorway(World world, BlockPos pos, Direction facing) {
         Direction doorwayFacing = facing.getOpposite();
 
-        ItemMagicDoorknob doorknob = getDoorknob(world, pos);
+        MagicDoorknobItem doorknob = getDoorknob(world, pos);
         // If the doorknob can't be found, just go with some high number (32)
         float depth = doorknob == null ? 32 : doorknob.getTier().getEfficiency();
 
@@ -149,7 +149,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
 
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TileEntityMagicDoor();
+        return new MagicDoorTileEntity();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MagicMirrorModifierArmor extends MagicMirrorModifier {
+public class ArmorMagicMirrorModifier extends MagicMirrorModifier {
     @Override
     public String getName() {
         return "armor";
@@ -34,6 +34,6 @@ public class MagicMirrorModifierArmor extends MagicMirrorModifier {
 
     @Override
     MagicMirrorTileEntityModifier createTileEntityModifier() {
-        return new MagicMirrorTileEntityModifierArmor(this);
+        return new ArmorMagicMirrorTileEntityModifier(this);
     }
 }

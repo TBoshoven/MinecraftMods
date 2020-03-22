@@ -2,8 +2,8 @@ package com.tomboshoven.minecraft.magicmirror;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifierArmor;
-import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifierCreature;
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.ArmorMagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntities;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
@@ -23,14 +23,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@Mod(ModMagicMirror.MOD_ID)
-public class ModMagicMirror {
+@Mod(MagicMirrorMod.MOD_ID)
+public class MagicMirrorMod {
     public static final String MOD_ID = "magic_mirror";
 
     @SuppressWarnings("PublicField")
     public static final Logger LOGGER = LogManager.getLogger();
 
-    public ModMagicMirror() {
+    public MagicMirrorMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.register(Blocks.class);
         modEventBus.register(Items.class);
@@ -43,7 +43,7 @@ public class ModMagicMirror {
         MinecraftForge.EVENT_BUS.register(Commands.class);
 
         // Register modifiers
-        MagicMirrorModifier.register(new MagicMirrorModifierArmor());
-        MagicMirrorModifier.register(new MagicMirrorModifierCreature());
+        MagicMirrorModifier.register(new ArmorMagicMirrorModifier());
+        MagicMirrorModifier.register(new CreatureMagicMirrorModifier());
     }
 }

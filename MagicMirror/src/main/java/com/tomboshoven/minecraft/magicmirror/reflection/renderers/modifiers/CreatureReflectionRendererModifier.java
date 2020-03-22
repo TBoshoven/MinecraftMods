@@ -34,7 +34,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ReflectionRendererModifierCreature extends ReflectionRendererModifier {
+public class CreatureReflectionRendererModifier extends ReflectionRendererModifier {
     /**
      * The renderer to use instead of the default one.
      */
@@ -43,7 +43,7 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
     /**
      * @param baseRenderer The renderer that is being proxied.
      */
-    public ReflectionRendererModifierCreature(ReflectionRendererBase baseRenderer) {
+    public CreatureReflectionRendererModifier(ReflectionRendererBase baseRenderer) {
         super(baseRenderer);
         replacementRenderer = new RenderOffModelPlayer<>(Minecraft.getInstance().getRenderManager(), new ModelSkeletonPlayer<>(), new ResourceLocation("textures/entity/skeleton/skeleton.png"));
     }

@@ -9,8 +9,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class TileEntityMagicDoor extends TileEntityMagicDoorwayPartBase {
-    public TileEntityMagicDoor() {
+public class MagicDoorTileEntity extends MagicDoorwayPartBaseTileEntity {
+    public MagicDoorTileEntity() {
         super(TileEntities.MAGIC_DOOR);
     }
 }

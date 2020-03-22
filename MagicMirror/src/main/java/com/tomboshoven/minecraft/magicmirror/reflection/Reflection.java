@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.reflection;
 
 import com.google.common.collect.Lists;
-import com.tomboshoven.minecraft.magicmirror.ModMagicMirror;
+import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.Entity;
@@ -47,7 +47,7 @@ public class Reflection {
      */
     public void stopReflecting() {
         if (reflectedEntity != null) {
-            ModMagicMirror.LOGGER.debug("No longer reflecting {}", reflectedEntity.getName());
+            MagicMirrorMod.LOGGER.debug("No longer reflecting {}", reflectedEntity.getName());
             cleanUpRenderer();
             reflectedEntity = null;
             decrementActiveReflections();
@@ -108,7 +108,7 @@ public class Reflection {
      */
     public void setReflectedEntity(Entity reflectedEntity) {
         if (this.reflectedEntity != reflectedEntity) {
-            ModMagicMirror.LOGGER.debug("Reflecting {}", reflectedEntity.getName());
+            MagicMirrorMod.LOGGER.debug("Reflecting {}", reflectedEntity.getName());
             if (this.reflectedEntity == null) {
                 incrementActiveClientReflections();
             }

@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.items;
 
-import com.tomboshoven.minecraft.magicmirror.ModMagicMirror;
+import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.Item;
@@ -25,7 +25,7 @@ public final class Items {
     public static final Item MAGIC_MIRROR = new BlockItem(
             Blocks.MAGIC_MIRROR,
             new Item.Properties().group(ItemGroup.DECORATIONS)
-    ).setRegistryName(ModMagicMirror.MOD_ID, "magic_mirror");
+    ).setRegistryName(MagicMirrorMod.MOD_ID, "magic_mirror");
 
     private Items() {
     }

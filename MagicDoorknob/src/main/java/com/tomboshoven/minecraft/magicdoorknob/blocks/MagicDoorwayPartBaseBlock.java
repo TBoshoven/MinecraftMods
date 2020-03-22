@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMagicDoorwayPartBase;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -25,8 +25,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class BlockMagicDoorwayPartBase extends Block {
-    BlockMagicDoorwayPartBase(Block.Properties properties) {
+public abstract class MagicDoorwayPartBaseBlock extends Block {
+    MagicDoorwayPartBaseBlock(Block.Properties properties) {
         super(properties);
     }
 
@@ -40,8 +40,8 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     public SoundType getSoundType(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity entity) {
         // Use the base block's sound type.
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
-            BlockState baseBlock = ((TileEntityMagicDoorwayPartBase) tileEntity).getBaseBlockState();
+        if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
+            BlockState baseBlock = ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState();
             return baseBlock.getBlock().getSoundType(baseBlock, world, pos, null);
         }
         return super.getSoundType(state, world, pos, entity);
@@ -51,8 +51,8 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
         // Use the base block's light value.
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
-            return ((TileEntityMagicDoorwayPartBase) tileEntity).getBaseBlockState().getLightValue(world, pos);
+        if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
+            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getLightValue(world, pos);
         }
         return super.getLightValue(state, world, pos);
     }
@@ -61,8 +61,8 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     public int getOpacity(BlockState state, IBlockReader world, BlockPos pos) {
         // Use the base block's light opacity.
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
-            return ((TileEntityMagicDoorwayPartBase) tileEntity).getBaseBlockState().getOpacity(world, pos);
+        if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
+            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getOpacity(world, pos);
         }
         return super.getOpacity(state, world, pos);
     }
@@ -71,8 +71,8 @@ public abstract class BlockMagicDoorwayPartBase extends Block {
     public float getBlockHardness(BlockState blockState, IBlockReader world, BlockPos pos) {
         // Use the base block's hardness.
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityMagicDoorwayPartBase) {
-            return ((TileEntityMagicDoorwayPartBase) tileEntity).getBaseBlockState().getBlockHardness(world, pos);
+        if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
+            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getBlockHardness(world, pos);
         }
         return super.getBlockHardness(blockState, world, pos);
     }

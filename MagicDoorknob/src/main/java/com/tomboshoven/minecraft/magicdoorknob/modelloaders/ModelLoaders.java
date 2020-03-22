@@ -8,7 +8,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import static com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob.MOD_ID;
+import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
 
 /**
  * Collection of custom model loaders.

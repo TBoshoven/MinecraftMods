@@ -1,8 +1,8 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor.ReplacementArmor;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier.ReplacementArmor;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
-import com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers.ReflectionRendererModifierArmor;
+import com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers.ArmorReflectionRendererModifier;
 import mcp.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -12,16 +12,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public final class ReflectionModifierArmorClient extends ReflectionModifierArmor {
+public final class ArmorReflectionModifierClient extends ArmorReflectionModifier {
     /**
      * @param replacementArmor : The armor to show instead of the actual armor.
      */
-    public ReflectionModifierArmorClient(ReplacementArmor replacementArmor) {
+    public ArmorReflectionModifierClient(ReplacementArmor replacementArmor) {
         super(replacementArmor);
     }
 
     @Override
     public ReflectionRendererBase apply(ReflectionRendererBase reflectionRenderer) {
-        return new ReflectionRendererModifierArmor(reflectionRenderer, replacementArmor);
+        return new ArmorReflectionRendererModifier(reflectionRenderer, replacementArmor);
     }
 }

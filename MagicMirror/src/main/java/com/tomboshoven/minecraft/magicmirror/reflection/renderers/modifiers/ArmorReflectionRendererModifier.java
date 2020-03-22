@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor.ReplacementArmor;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier.ReplacementArmor;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.Entity;
@@ -15,7 +15,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ReflectionRendererModifierArmor extends ReflectionRendererModifier {
+public class ArmorReflectionRendererModifier extends ReflectionRendererModifier {
     /**
      * The armor to show instead of the actual armor.
      */
@@ -25,7 +25,7 @@ public class ReflectionRendererModifierArmor extends ReflectionRendererModifier 
      * @param baseRenderer     The renderer that is being proxied.
      * @param replacementArmor The armor to show instead of the actual armor.
      */
-    public ReflectionRendererModifierArmor(ReflectionRendererBase baseRenderer, ReplacementArmor replacementArmor) {
+    public ArmorReflectionRendererModifier(ReflectionRendererBase baseRenderer, ReplacementArmor replacementArmor) {
         super(baseRenderer);
         this.replacementArmor = replacementArmor;
     }

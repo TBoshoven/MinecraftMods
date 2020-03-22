@@ -18,14 +18,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@Mod(ModMagicDoorknob.MOD_ID)
-public class ModMagicDoorknob {
+@Mod(MagicDoorknobMod.MOD_ID)
+public class MagicDoorknobMod {
     public static final String MOD_ID = "magic_doorknob";
 
     @SuppressWarnings({"PublicField", "StaticNonFinalField", "NonConstantLogger"})
     public static final Logger LOGGER = LogManager.getLogger();
 
-    public ModMagicDoorknob() {
+    public MagicDoorknobMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.register(BlockColorHandlers.class);
         modEventBus.register(Blocks.class);

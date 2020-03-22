@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierCreature;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.CreatureMagicMirrorTileEntityModifier;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MagicMirrorModifierCreature extends MagicMirrorModifier {
+public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
     /**
      * Return whether the given item is a skull that can be used to apply this modifier.
      *
@@ -39,6 +39,6 @@ public class MagicMirrorModifierCreature extends MagicMirrorModifier {
 
     @Override
     MagicMirrorTileEntityModifier createTileEntityModifier() {
-        return new MagicMirrorTileEntityModifierCreature(this);
+        return new CreatureMagicMirrorTileEntityModifier(this);
     }
 }

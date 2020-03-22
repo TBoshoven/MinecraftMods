@@ -1,10 +1,10 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
-import com.tomboshoven.minecraft.magicmirror.ModMagicMirror;
+import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorBase;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorCore;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorPart;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorPartTileEntity;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
@@ -46,7 +46,7 @@ import java.util.function.Supplier;
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BlockMagicMirror extends HorizontalBlock {
+public class MagicMirrorBlock extends HorizontalBlock {
     /**
      * Property describing whether the mirror is completely constructed.
      */
@@ -74,7 +74,7 @@ public class BlockMagicMirror extends HorizontalBlock {
     /**
      * Create a new Magic Mirror block.
      */
-    BlockMagicMirror(Block.Properties properties) {
+    MagicMirrorBlock(Block.Properties properties) {
         super(properties);
 
         // By default, we're the bottom part of a broken mirror
@@ -162,9 +162,9 @@ public class BlockMagicMirror extends HorizontalBlock {
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         // The bottom part is the core of the mirror which has all the logic; the top part just uses the results.
         if (state.get(PART) == EnumPartType.BOTTOM) {
-            return new TileEntityMagicMirrorCore();
+            return new MagicMirrorCoreTileEntity();
         }
-        return new TileEntityMagicMirrorPart();
+        return new MagicMirrorPartTileEntity();
     }
 
     @Override
@@ -203,8 +203,8 @@ public class BlockMagicMirror extends HorizontalBlock {
 
                 // Then, see if any existing modifier can do something.
                 TileEntity tileEntity = worldIn.getTileEntity(pos);
-                if (tileEntity instanceof TileEntityMagicMirrorBase) {
-                    if (((TileEntityMagicMirrorBase) tileEntity).tryActivate(player, hand)) {
+                if (tileEntity instanceof MagicMirrorBaseTileEntity) {
+                    if (((MagicMirrorBaseTileEntity) tileEntity).tryActivate(player, hand)) {
                         return true;
                     }
                 }
@@ -219,8 +219,8 @@ public class BlockMagicMirror extends HorizontalBlock {
     public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.get(COMPLETE)) {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityMagicMirrorBase) {
-                ((TileEntityMagicMirrorBase) tileEntity).removeModifiers(worldIn, pos);
+            if (tileEntity instanceof MagicMirrorBaseTileEntity) {
+                ((MagicMirrorBaseTileEntity) tileEntity).removeModifiers(worldIn, pos);
             }
         }
         super.onReplaced(state, worldIn, pos, newState, isMoving);
@@ -327,10 +327,10 @@ public class BlockMagicMirror extends HorizontalBlock {
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ClientWorld world = Minecraft.getInstance().world;
             TileEntity te = world.getTileEntity(message.mirrorPos);
-            if (te instanceof TileEntityMagicMirrorBase) {
+            if (te instanceof MagicMirrorBaseTileEntity) {
                 MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
                 if (modifier == null) {
-                    ModMagicMirror.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
+                    MagicMirrorMod.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
                 }
                 modifier.apply(world, message.mirrorPos, message.usedItemStack);
                 world.playSound(message.mirrorPos, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);

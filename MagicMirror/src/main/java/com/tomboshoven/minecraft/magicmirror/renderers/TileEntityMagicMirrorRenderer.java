@@ -1,8 +1,8 @@
 package com.tomboshoven.minecraft.magicmirror.renderers;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror.EnumPartType;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorBase;
+import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartType;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
@@ -24,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-class TileEntityMagicMirrorRenderer extends TileEntityRenderer<TileEntityMagicMirrorBase> {
+class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTileEntity> {
     /**
      * Maximum distance for an entity to be rendered.
      * Used for fading the mirror image.
@@ -32,7 +32,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<TileEntityMagicMi
     private static final double MAX_DISTANCE = 8;
 
     @Override
-    public void render(TileEntityMagicMirrorBase te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(MagicMirrorBaseTileEntity te, double x, double y, double z, float partialTicks, int destroyStage) {
         super.render(te, x, y, z, partialTicks, destroyStage);
 
         if (te.isComplete()) {

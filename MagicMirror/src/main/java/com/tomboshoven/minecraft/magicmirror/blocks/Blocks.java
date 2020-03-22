@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
-import com.tomboshoven.minecraft.magicmirror.ModMagicMirror;
+import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -22,12 +22,12 @@ public final class Blocks {
     /**
      * A magic mirror block. Shows you your reflection, and more!
      */
-    public static final Block MAGIC_MIRROR = new BlockMagicMirror(
+    public static final Block MAGIC_MIRROR = new MagicMirrorBlock(
             Block.Properties.create(
                     new Material.Builder(MaterialColor.GRAY).build())
                     .hardnessAndResistance(.8f)
                     .sound(SoundType.GLASS)
-    ).setRegistryName(ModMagicMirror.MOD_ID, "magic_mirror");
+    ).setRegistryName(MagicMirrorMod.MOD_ID, "magic_mirror");
 
     private Blocks() {
     }

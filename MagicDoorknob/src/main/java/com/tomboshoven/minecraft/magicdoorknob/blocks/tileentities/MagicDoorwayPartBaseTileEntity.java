@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
 
 import com.mojang.datafixers.Dynamic;
-import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
+import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ModelTextureProperty;
 import mcp.MethodsReturnNonnullByDefault;
@@ -26,7 +26,7 @@ import net.minecraftforge.client.model.data.ModelDataMap;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob.MOD_ID;
+import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
 import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedModelLoader.PROPERTY_NAMESPACE;
 
 /**
@@ -34,7 +34,7 @@ import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.Text
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
+public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     /**
      * The main texture of the doorway (based on base block).
      */
@@ -48,9 +48,9 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.getDefaultState();
     // The doorknob that caused this block to be created.
-    private ItemMagicDoorknob doorknob;
+    private MagicDoorknobItem doorknob;
 
-    public TileEntityMagicDoorwayPartBase(TileEntityType<? extends TileEntityMagicDoorwayPartBase> tileEntityType) {
+    public MagicDoorwayPartBaseTileEntity(TileEntityType<? extends MagicDoorwayPartBaseTileEntity> tileEntityType) {
         super(tileEntityType);
     }
 
@@ -112,7 +112,7 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
         }
 
         // Get the highlight texture
-        ItemMagicDoorknob doorknob = getDoorknob();
+        MagicDoorknobItem doorknob = getDoorknob();
         ResourceLocation doorknobTextureLocation;
         if (doorknob != null) {
             doorknobTextureLocation = doorknob.getMainTextureLocation();
@@ -146,14 +146,14 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
      * @return The doorknob that was used to create this block.
      */
     @Nullable
-    public ItemMagicDoorknob getDoorknob() {
+    public MagicDoorknobItem getDoorknob() {
         return doorknob;
     }
 
     /**
      * @param doorknob The doorknob that was used to create this block.
      */
-    public void setDoorknob(ItemMagicDoorknob doorknob) {
+    public void setDoorknob(MagicDoorknobItem doorknob) {
         this.doorknob = doorknob;
     }
 }

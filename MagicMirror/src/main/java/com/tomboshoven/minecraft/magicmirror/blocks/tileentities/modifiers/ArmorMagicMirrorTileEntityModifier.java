@@ -1,12 +1,12 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.ModMagicMirror;
+import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorBase;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierArmor;
-import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierArmorClient;
+import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifier;
+import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifierClient;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -38,7 +38,7 @@ import java.util.function.Supplier;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityModifier {
+public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityModifier {
     /**
      * The number of ticks this modifier needs to cool down.
      */
@@ -53,12 +53,12 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
      * The object that modifies the reflection in the mirror to show the replacement armor.
      */
     @Nullable
-    private ReflectionModifierArmor reflectionModifier;
+    private ArmorReflectionModifier reflectionModifier;
 
     /**
      * @param modifier The modifier that applied this object to the tile entity.
      */
-    public MagicMirrorTileEntityModifierArmor(MagicMirrorModifier modifier) {
+    public ArmorMagicMirrorTileEntityModifier(MagicMirrorModifier modifier) {
         super(modifier);
     }
 
@@ -80,7 +80,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
     }
 
     @Override
-    public void activate(TileEntityMagicMirrorBase tileEntity) {
+    public void activate(MagicMirrorBaseTileEntity tileEntity) {
         Reflection reflection = tileEntity.getReflection();
         if (reflection != null) {
             reflectionModifier = createReflectionModifier();
@@ -88,15 +88,15 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         }
     }
 
-    private ReflectionModifierArmor createReflectionModifier() {
+    private ArmorReflectionModifier createReflectionModifier() {
         return DistExecutor.runForDist(
-                () -> () -> new ReflectionModifierArmorClient(replacementArmor),
-                () -> () -> new ReflectionModifierArmor(replacementArmor)
+                () -> () -> new ArmorReflectionModifierClient(replacementArmor),
+                () -> () -> new ArmorReflectionModifier(replacementArmor)
         );
     }
 
     @Override
-    public void deactivate(TileEntityMagicMirrorBase tileEntity) {
+    public void deactivate(MagicMirrorBaseTileEntity tileEntity) {
         if (reflectionModifier != null) {
             Reflection reflection = tileEntity.getReflection();
             if (reflection != null) {
@@ -106,7 +106,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
     }
 
     @Override
-    public boolean tryPlayerActivate(TileEntityMagicMirrorBase tileEntity, PlayerEntity playerIn, Hand hand) {
+    public boolean tryPlayerActivate(MagicMirrorBaseTileEntity tileEntity, PlayerEntity playerIn, Hand hand) {
         if (coolingDown()) {
             return false;
         }
@@ -128,7 +128,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
 
         // Swap on the server side.
         replacementArmor.swap(playerIn);
-        ModMagicMirror.LOGGER.debug("Swapped inventory of mirror");
+        MagicMirrorMod.LOGGER.debug("Swapped inventory of mirror");
 
         setCooldown(COOLDOWN_TICKS);
         tileEntity.markDirty();
@@ -231,8 +231,8 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
             }
         }
 
-        void swap(MagicMirrorTileEntityModifierArmor modifier) {
-            ModMagicMirror.LOGGER.info("Swapping with mirror");
+        void swap(ArmorMagicMirrorTileEntityModifier modifier) {
+            MagicMirrorMod.LOGGER.info("Swapping with mirror");
             swap(modifier.getReplacementArmor().replacementInventory);
         }
     }
@@ -274,7 +274,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         public MessageSwapMirror() {
         }
 
-        MessageSwapMirror(TileEntityMagicMirrorBase magicMirrorBase, PlayerEntity player) {
+        MessageSwapMirror(MagicMirrorBaseTileEntity magicMirrorBase, PlayerEntity player) {
             super(player.getArmorInventoryList());
             mirrorPos = magicMirrorBase.getPos();
         }
@@ -316,7 +316,7 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         public MessageSwapPlayer() {
         }
 
-        MessageSwapPlayer(MagicMirrorTileEntityModifierArmor armorModifier, PlayerEntity player) {
+        MessageSwapPlayer(ArmorMagicMirrorTileEntityModifier armorModifier, PlayerEntity player) {
             super(armorModifier.getReplacementArmor().replacementInventory);
             entityId = player.getEntityId();
         }
@@ -353,10 +353,10 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
         NetworkEvent.Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             TileEntity te = Minecraft.getInstance().world.getTileEntity(message.mirrorPos);
-            if (te instanceof TileEntityMagicMirrorBase) {
-                ((TileEntityMagicMirrorBase) te).getModifiers().stream()
-                        .filter(modifier -> modifier instanceof MagicMirrorTileEntityModifierArmor).findFirst()
-                        .ifPresent(modifier -> message.armor.swap((MagicMirrorTileEntityModifierArmor) modifier));
+            if (te instanceof MagicMirrorBaseTileEntity) {
+                ((MagicMirrorBaseTileEntity) te).getModifiers().stream()
+                        .filter(modifier -> modifier instanceof ArmorMagicMirrorTileEntityModifier).findFirst()
+                        .ifPresent(modifier -> message.armor.swap((ArmorMagicMirrorTileEntityModifier) modifier));
             }
         }));
         ctx.setPacketHandled(true);

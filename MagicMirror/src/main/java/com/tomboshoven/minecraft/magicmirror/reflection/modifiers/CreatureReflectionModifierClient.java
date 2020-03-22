@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
-import com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers.ReflectionRendererModifierCreature;
+import com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers.CreatureReflectionRendererModifier;
 import mcp.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -11,9 +11,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ReflectionModifierCreatureClient extends ReflectionModifierCreature {
+public class CreatureReflectionModifierClient extends CreatureReflectionModifier {
     @Override
     public ReflectionRendererBase apply(ReflectionRendererBase reflectionRenderer) {
-        return new ReflectionRendererModifierCreature(reflectionRenderer);
+        return new CreatureReflectionRendererModifier(reflectionRenderer);
     }
 }

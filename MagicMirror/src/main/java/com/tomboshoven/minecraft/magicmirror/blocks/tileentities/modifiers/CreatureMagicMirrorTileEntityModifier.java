@@ -1,10 +1,10 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorBase;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierCreature;
-import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierCreatureClient;
+import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.CreatureReflectionModifier;
+import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.CreatureReflectionModifierClient;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
@@ -20,17 +20,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MagicMirrorTileEntityModifierCreature extends MagicMirrorTileEntityModifier {
+public class CreatureMagicMirrorTileEntityModifier extends MagicMirrorTileEntityModifier {
     /**
      * The object that modifies the reflection in the mirror to show the replacement armor.
      */
     @Nullable
-    private ReflectionModifierCreature reflectionModifier;
+    private CreatureReflectionModifier reflectionModifier;
 
     /**
      * @param modifier The modifier that applied this object to the tile entity.
      */
-    public MagicMirrorTileEntityModifierCreature(MagicMirrorModifier modifier) {
+    public CreatureMagicMirrorTileEntityModifier(MagicMirrorModifier modifier) {
         super(modifier);
     }
 
@@ -40,7 +40,7 @@ public class MagicMirrorTileEntityModifierCreature extends MagicMirrorTileEntity
     }
 
     @Override
-    public void activate(TileEntityMagicMirrorBase tileEntity) {
+    public void activate(MagicMirrorBaseTileEntity tileEntity) {
         Reflection reflection = tileEntity.getReflection();
         if (reflection != null) {
             reflectionModifier = createReflectionModifier();
@@ -48,15 +48,15 @@ public class MagicMirrorTileEntityModifierCreature extends MagicMirrorTileEntity
         }
     }
 
-    private ReflectionModifierCreature createReflectionModifier() {
+    private CreatureReflectionModifier createReflectionModifier() {
         return DistExecutor.runForDist(
-                () -> ReflectionModifierCreatureClient::new,
-                () -> ReflectionModifierCreature::new
+                () -> CreatureReflectionModifierClient::new,
+                () -> CreatureReflectionModifier::new
         );
     }
 
     @Override
-    public void deactivate(TileEntityMagicMirrorBase tileEntity) {
+    public void deactivate(MagicMirrorBaseTileEntity tileEntity) {
         if (reflectionModifier != null) {
             Reflection reflection = tileEntity.getReflection();
             if (reflection != null) {
@@ -66,7 +66,7 @@ public class MagicMirrorTileEntityModifierCreature extends MagicMirrorTileEntity
     }
 
     @Override
-    public boolean tryPlayerActivate(TileEntityMagicMirrorBase tileEntity, PlayerEntity playerIn, Hand hand) {
+    public boolean tryPlayerActivate(MagicMirrorBaseTileEntity tileEntity, PlayerEntity playerIn, Hand hand) {
         // No behavior right now.
         return false;
     }
