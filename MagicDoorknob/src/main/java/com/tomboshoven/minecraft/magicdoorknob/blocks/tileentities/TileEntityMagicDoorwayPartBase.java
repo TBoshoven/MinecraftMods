@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
 
 import com.mojang.datafixers.Dynamic;
-import com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ModelTextureProperty;
@@ -27,6 +26,7 @@ import net.minecraftforge.client.model.data.ModelDataMap;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob.MOD_ID;
 import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedModelLoader.PROPERTY_NAMESPACE;
 
 /**
@@ -94,6 +94,7 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         read(pkt.getNbtCompound());
+        requestModelDataUpdate();
     }
 
     @Override
@@ -107,7 +108,7 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
         TextureAtlasSprite blockTexture = blockModelShapes.getTexture(baseBlockState);
         if (blockTexture instanceof MissingTextureSprite) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.
-            blockTexture = minecraft.getTextureMap().getAtlasSprite(ModMagicDoorknob.MOD_ID + ":block/empty");
+            blockTexture = minecraft.getTextureMap().getAtlasSprite(MOD_ID + ":block/empty");
         }
 
         // Get the highlight texture
@@ -116,7 +117,9 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
         if (doorknob != null) {
             doorknobTextureLocation = doorknob.getMainTextureLocation();
         } else {
-            doorknobTextureLocation = MissingTextureSprite.getLocation();
+            // This can happen when we draw a frame before receiving the tile entity data from the server.
+            // In that case, we just want to draw the outline to make it less conspicuous.
+            doorknobTextureLocation = blockTexture.getName();
         }
 
         return new ModelDataMap.Builder()
@@ -137,7 +140,6 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
      */
     public void setBaseBlockState(BlockState baseBlockState) {
         this.baseBlockState = baseBlockState;
-        requestModelDataUpdate();
     }
 
     /**
@@ -153,6 +155,5 @@ public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
      */
     public void setDoorknob(ItemMagicDoorknob doorknob) {
         this.doorknob = doorknob;
-        requestModelDataUpdate();
     }
 }
