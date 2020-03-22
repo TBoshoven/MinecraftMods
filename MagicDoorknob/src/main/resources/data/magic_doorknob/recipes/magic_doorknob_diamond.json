@@ -7,12 +7,10 @@
   ],
   "key": {
     "#": {
-      "type": "forge:ore_dict",
-      "ore": "gemDiamond"
+      "tag": "forge:gems/diamond"
     },
     "@": {
-      "type": "forge:ore_dict",
-      "ore": "enderpearl"
+      "tag": "forge:ender_pearls"
     }
   },
   "result": {

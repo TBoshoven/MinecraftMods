@@ -10,7 +10,7 @@
       "item": "minecraft:stick"
     },
     "#": {
-      "item": "minecraft:glass_pane"
+      "tag": "forge:glass_panes"
     },
     "e": {
       "item": "minecraft:ender_eye"

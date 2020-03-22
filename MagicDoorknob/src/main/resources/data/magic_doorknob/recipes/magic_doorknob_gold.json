@@ -7,12 +7,10 @@
   ],
   "key": {
     "#": {
-      "type": "forge:ore_dict",
-      "ore": "ingotGold"
+      "tag": "forge:ingots/gold"
     },
     "@": {
-      "type": "forge:ore_dict",
-      "ore": "enderpearl"
+      "tag": "forge:ender_pearls"
     }
   },
   "result": {

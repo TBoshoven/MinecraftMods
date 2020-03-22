@@ -7,15 +7,13 @@
   ],
   "key": {
     "#": {
-      "type": "forge:ore_dict",
-      "ore": "stone"
+      "tag": "minecraft:planks"
     },
     "@": {
-      "type": "forge:ore_dict",
-      "ore": "enderpearl"
+      "tag": "forge:ender_pearls"
     }
   },
   "result": {
-    "item": "magic_doorknob:magic_doorknob_stone"
+    "item": "magic_doorknob:magic_doorknob_wood"
   }
 }
