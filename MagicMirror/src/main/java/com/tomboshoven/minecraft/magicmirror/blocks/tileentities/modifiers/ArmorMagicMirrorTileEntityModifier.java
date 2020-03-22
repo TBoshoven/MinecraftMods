@@ -119,9 +119,12 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
         // Send two individual messages, to cover the situation where a player is tracked but the mirror isn't and vice
         // versa.
         BlockPos pos = tileEntity.getPos();
-        MessageSwapMirror mirrorMessage = new MessageSwapMirror(tileEntity, playerIn);
-        PacketDistributor.PacketTarget mirrorTarget = PacketDistributor.TRACKING_CHUNK.with(() -> tileEntity.getWorld().getChunkAt(pos));
-        Network.CHANNEL.send(mirrorTarget, mirrorMessage);
+        World world = tileEntity.getWorld();
+        if (world != null) {
+            MessageSwapMirror mirrorMessage = new MessageSwapMirror(tileEntity, playerIn);
+            PacketDistributor.PacketTarget mirrorTarget = PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos));
+            Network.CHANNEL.send(mirrorTarget, mirrorMessage);
+        }
         MessageSwapPlayer playerMessage = new MessageSwapPlayer(this, playerIn);
         PacketDistributor.PacketTarget playerTarget = PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> playerIn);
         Network.CHANNEL.send(playerTarget, playerMessage);
@@ -168,12 +171,10 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          * @param inventory The inventory to swap with.
          */
         public void swap(NonNullList<ItemStack> inventory) {
-            if (inventory != null) {
-                for (int i = 0; i < 4; ++i) {
-                    ItemStack replacement = replacementInventory.get(i);
-                    replacementInventory.set(i, inventory.get(i));
-                    inventory.set(i, replacement);
-                }
+            for (int i = 0; i < 4; ++i) {
+                ItemStack replacement = replacementInventory.get(i);
+                replacementInventory.set(i, inventory.get(i));
+                inventory.set(i, replacement);
             }
         }
 

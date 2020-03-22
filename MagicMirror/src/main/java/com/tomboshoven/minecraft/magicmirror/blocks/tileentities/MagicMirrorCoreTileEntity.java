@@ -99,12 +99,14 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     private void updateReflection() {
         World world = getWorld();
 
-        PlayerEntity playerToReflect = findPlayerToReflect(world, getPos());
+        if (world != null) {
+            PlayerEntity playerToReflect = findPlayerToReflect(world, getPos());
 
-        if (playerToReflect == null) {
-            reflection.stopReflecting();
-        } else {
-            reflection.setReflectedEntity(playerToReflect);
+            if (playerToReflect == null) {
+                reflection.stopReflecting();
+            } else {
+                reflection.setReflectedEntity(playerToReflect);
+            }
         }
     }
 

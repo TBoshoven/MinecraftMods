@@ -57,6 +57,7 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
         return super.getLightValue(state, world, pos);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public int getOpacity(BlockState state, IBlockReader world, BlockPos pos) {
         // Use the base block's light opacity.
@@ -67,6 +68,7 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
         return super.getOpacity(state, world, pos);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public float getBlockHardness(BlockState blockState, IBlockReader world, BlockPos pos) {
         // Use the base block's hardness.

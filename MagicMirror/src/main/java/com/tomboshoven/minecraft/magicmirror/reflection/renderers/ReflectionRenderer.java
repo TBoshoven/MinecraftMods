@@ -78,6 +78,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
 
         // The typing of these classes works out a little weird, so instead of complicating things too much, let's go
         // with the unchecked cast.
+        //noinspection unchecked
         ((EntityRenderer<Entity>) entityRenderer).doRender(entity, 0, -1, 0, 0, partialTicks);
 
         GlStateManager.popMatrix();

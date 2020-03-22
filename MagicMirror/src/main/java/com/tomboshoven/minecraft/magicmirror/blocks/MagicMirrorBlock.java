@@ -102,7 +102,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 
         // Try to complete a mirror by looking for an incomplete mirror above or below.
@@ -230,32 +230,22 @@ public class MagicMirrorBlock extends HorizontalBlock {
      * The mirror has two parts: top and bottom.
      */
     public enum EnumPartType implements IStringSerializable {
-        TOP("top", 0),
-        BOTTOM("bottom", 1),
+        TOP("top"),
+        BOTTOM("bottom"),
         ;
 
         private final String name;
-        private final int value;
 
         /**
          * @param name  The name of the part.
-         * @param value The integer value of the part; used for setting block metadata.
          */
-        EnumPartType(String name, int value) {
+        EnumPartType(String name) {
             this.name = name;
-            this.value = value;
         }
 
         @Override
         public String getName() {
             return name;
-        }
-
-        /**
-         * @return The integer value of the part; used for setting block metadata.
-         */
-        int getValue() {
-            return value;
         }
     }
 
@@ -331,6 +321,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
                 MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
                 if (modifier == null) {
                     MagicMirrorMod.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
+                    return;
                 }
                 modifier.apply(world, message.mirrorPos, message.usedItemStack);
                 world.playSound(message.mirrorPos, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);

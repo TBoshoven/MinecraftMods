@@ -11,8 +11,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -21,9 +19,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Mod(MagicDoorknobMod.MOD_ID)
 public class MagicDoorknobMod {
     public static final String MOD_ID = "magic_doorknob";
-
-    @SuppressWarnings({"PublicField", "StaticNonFinalField", "NonConstantLogger"})
-    public static final Logger LOGGER = LogManager.getLogger();
 
     public MagicDoorknobMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

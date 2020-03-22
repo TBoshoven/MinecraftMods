@@ -92,6 +92,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         breakDoorway(worldIn, pos, state.get(HORIZONTAL_FACING));
@@ -137,6 +138,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext) {
         return SHAPES[state.get(HORIZONTAL_FACING).getHorizontalIndex()];
@@ -152,6 +154,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
         return new MagicDoorTileEntity();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, BlockRayTraceResult rayTraceResult) {
         if (!worldIn.isRemote) {

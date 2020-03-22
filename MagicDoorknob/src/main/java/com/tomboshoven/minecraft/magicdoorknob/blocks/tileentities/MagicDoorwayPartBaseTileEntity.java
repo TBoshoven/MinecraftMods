@@ -18,6 +18,7 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
@@ -104,8 +105,9 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
         BlockModelShapes blockModelShapes = minecraft.getBlockRendererDispatcher().getBlockModelShapes();
 
         // Get the base block texture
+        World world = getWorld();
         BlockState baseBlockState = getBaseBlockState();
-        TextureAtlasSprite blockTexture = blockModelShapes.getTexture(baseBlockState);
+        TextureAtlasSprite blockTexture = world == null ? MissingTextureSprite.func_217790_a() : blockModelShapes.getTexture(baseBlockState, world, getPos());
         if (blockTexture instanceof MissingTextureSprite) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.
             blockTexture = minecraft.getTextureMap().getAtlasSprite(MOD_ID + ":block/empty");

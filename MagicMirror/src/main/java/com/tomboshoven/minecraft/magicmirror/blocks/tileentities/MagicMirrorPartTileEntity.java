@@ -2,6 +2,7 @@ package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -13,6 +14,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MagicMirrorPartTileEntity extends MagicMirrorBaseTileEntity {
+    @Nullable
+    private MagicMirrorCoreTileEntity core;
+
     public MagicMirrorPartTileEntity() {
         super(TileEntities.MAGIC_MIRROR_PART);
     }
@@ -23,10 +27,15 @@ public class MagicMirrorPartTileEntity extends MagicMirrorBaseTileEntity {
         if (!isComplete()) {
             return null;
         }
-        TileEntity teBelow = getWorld().getTileEntity(getPos().down());
-        if (teBelow instanceof MagicMirrorCoreTileEntity) {
-            return (MagicMirrorCoreTileEntity) teBelow;
+        if (core == null) {
+            World world = getWorld();
+            if (world != null) {
+                TileEntity teBelow = world.getTileEntity(getPos().down());
+                if (teBelow instanceof MagicMirrorCoreTileEntity) {
+                    core = (MagicMirrorCoreTileEntity) teBelow;
+                }
+            }
         }
-        return null;
+        return core;
     }
 }

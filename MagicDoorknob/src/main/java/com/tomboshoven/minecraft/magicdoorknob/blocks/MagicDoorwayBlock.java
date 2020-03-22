@@ -65,6 +65,7 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
         );
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         boolean openNorthSouth = state.get(OPEN_NORTH_SOUTH);
@@ -87,6 +88,7 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
         return result;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.isAir(world, pos)) {

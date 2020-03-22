@@ -74,14 +74,17 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
             // interfaces or subclasses these classes due to type erasure and I don't want to work with too many
             // subclasses.
             if (model instanceof IHasHead) {
+                //noinspection unchecked,rawtypes
                 addLayer(new HeadLayer(this));
             }
             addLayer(new ElytraLayer<>(this));
             addLayer(new ArrowLayer<>(this));
             if (model instanceof IHasArm) {
+                //noinspection unchecked,rawtypes
                 addLayer(new HeldItemLayer(this));
             }
             if(model instanceof BipedModel) {
+                //noinspection unchecked,rawtypes
                 addLayer(new BipedArmorLayer(this, new BipedModel<>(0.5F), new BipedModel<>(1.0F)));
             }
             this.textureLocation = textureLocation;
