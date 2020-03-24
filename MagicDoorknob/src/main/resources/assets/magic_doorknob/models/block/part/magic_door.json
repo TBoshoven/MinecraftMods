@@ -36,7 +36,7 @@
         },
         "up": {
           "texture": "#main",
-          "uv": [16, 0, 15, 0],
+          "uv": [16, 0, 15, 1],
           "tintindex": 1,
           "cullface": "up"
         },
@@ -64,7 +64,7 @@
         },
         "up": {
           "texture": "#highlight",
-          "uv": [15, 0, 14, 0],
+          "uv": [15, 0, 14, 1],
           "cullface": "up"
         }
       }
@@ -87,7 +87,7 @@
         },
         "up": {
           "texture": "#main",
-          "uv": [14, 0, 13, 0],
+          "uv": [14, 0, 13, 1],
           "tintindex": 1,
           "cullface": "up"
         }
@@ -109,7 +109,7 @@
         },
         "up": {
           "texture": "#highlight",
-          "uv": [13, 0, 12, 0],
+          "uv": [13, 0, 12, 1],
           "cullface": "up"
         }
       }
@@ -137,7 +137,7 @@
         },
         "up": {
           "texture": "#main",
-          "uv": [12, 0, 0, 0],
+          "uv": [12, 0, 0, 1],
           "tintindex": 1,
           "cullface": "up"
         }
@@ -308,7 +308,7 @@
         },
         "down": {
           "texture": "#main",
-          "uv": [16, 16, 15, 16],
+          "uv": [16, 16, 15, 15],
           "tintindex": 1,
           "cullface": "up"
         },
@@ -336,7 +336,7 @@
         },
         "down": {
           "texture": "#highlight",
-          "uv": [15, 16, 14, 16],
+          "uv": [15, 16, 14, 15],
           "cullface": "up"
         }
       }
@@ -359,7 +359,7 @@
         },
         "down": {
           "texture": "#main",
-          "uv": [2, 16, 3, 16],
+          "uv": [2, 16, 3, 15],
           "tintindex": 1,
           "cullface": "up"
         }
@@ -381,7 +381,7 @@
         },
         "down": {
           "texture": "#highlight",
-          "uv": [13, 16, 12, 16],
+          "uv": [13, 16, 12, 15],
           "cullface": "up"
         }
       }
@@ -409,7 +409,7 @@
         },
         "down": {
           "texture": "#main",
-          "uv": [12, 16, 0, 16],
+          "uv": [12, 16, 0, 15],
           "tintindex": 1,
           "cullface": "up"
         }
