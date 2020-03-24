@@ -284,7 +284,6 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          * Decode a packet into an instance of the message.
          *
          * @param buf The buffer to read from.
-         *
          * @return The created message instance.
          */
         public static MessageSwapMirror decode(PacketBuffer buf) {
@@ -326,7 +325,6 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          * Decode a packet into an instance of the message.
          *
          * @param buf The buffer to read from.
-         *
          * @return The created message instance.
          */
         public static MessageSwapPlayer decode(PacketBuffer buf) {

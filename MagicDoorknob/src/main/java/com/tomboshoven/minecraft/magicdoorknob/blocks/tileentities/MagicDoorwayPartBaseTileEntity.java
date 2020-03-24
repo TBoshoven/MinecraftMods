@@ -1,8 +1,8 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
 
 import com.mojang.datafixers.Dynamic;
-import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
+import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ModelTextureProperty;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;

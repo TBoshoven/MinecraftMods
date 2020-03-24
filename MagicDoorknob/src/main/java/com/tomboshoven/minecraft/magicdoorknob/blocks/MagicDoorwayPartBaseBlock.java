@@ -3,8 +3,8 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -115,7 +115,7 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
         private final String name;
 
         /**
-         * @param name  The name of the part.
+         * @param name The name of the part.
          */
         EnumPartType(String name) {
             this.name = name;
