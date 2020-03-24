@@ -20,7 +20,7 @@ public interface ITextureMapper {
     /**
      * @param spriteToMap The property to get the texture location for
      * @param blockState  The block state as provided to getQuads; this is null for items
-     * @param extraData Extra model data if available
+     * @param extraData   Extra model data if available
      * @return The location of the appropriate texture
      */
     ResourceLocation mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable IModelData extraData);

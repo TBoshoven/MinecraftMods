@@ -33,7 +33,6 @@ public class ModelTextureProperty extends ModelProperty<ResourceLocation> {
      * It will be created if it hasn't been requested before.
      *
      * @param name The name of the property to get.
-     *
      * @return The requested property.
      */
     public static ModelTextureProperty get(ResourceLocation name) {

@@ -20,7 +20,6 @@ public class MagicMirrorCommand {
      * Reply with some debugging information.
      *
      * @param context The command context.
-     *
      * @return Currently, the number of active reflections.
      */
     private static int debug(CommandContext<CommandSource> context) {

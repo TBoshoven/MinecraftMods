@@ -3,9 +3,9 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayTileEntity;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.block.BlockState;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -50,6 +50,7 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
     private static final VoxelShape BOUNDING_BOX_WALL_W = makeCuboidShape(15, 0, 0, 16, 16, 16);
 
     private static final VoxelShape BOUNDING_BOX_TOP = makeCuboidShape(0, 15, 0, 16, 16, 16);
+
     /**
      * Create a new Magic Doorway block.
      */

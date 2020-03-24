@@ -237,7 +237,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
         private final String name;
 
         /**
-         * @param name  The name of the part.
+         * @param name The name of the part.
          */
         EnumPartType(String name) {
             this.name = name;
@@ -285,7 +285,6 @@ public class MagicMirrorBlock extends HorizontalBlock {
          * Decode a packet into an instance of the message.
          *
          * @param buf The buffer to read from.
-         *
          * @return The created message instance.
          */
         public static MessageAttachModifier decode(PacketBuffer buf) {

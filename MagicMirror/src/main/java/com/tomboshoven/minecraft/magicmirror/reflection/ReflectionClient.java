@@ -95,8 +95,7 @@ public class ReflectionClient extends Reflection {
         // Create or destroy the framebuffer if needed
         if (reflectedEntity != null && frameBuffer == null) {
             buildFrameBuffer();
-        }
-        else if (reflectedEntity == null && frameBuffer != null) {
+        } else if (reflectedEntity == null && frameBuffer != null) {
             cleanUpFrameBuffer();
         }
 
