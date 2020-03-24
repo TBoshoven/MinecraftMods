@@ -54,24 +54,11 @@ subprojects {
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
 
-    /*
-    processResources {
-        // This will ensure that this task is redone when the versions change.
-        inputs.property "version", project.version
-        inputs.property "mc_version", project.minecraft.version
-
-        // Replace stuff in mcmod.info, nothing else
-        from(sourceSets.main.resources.srcDirs) {
-            include 'mcmod.info'
-
-            // Replace version and mcversion
-            expand 'version': project.version, 'mc_version': project.minecraft.version
-        }
-
-        // Copy everything else that's not the mcmod.info
-        from(sourceSets.main.resources.srcDirs) {
-            exclude 'mcmod.info'
+    jar {
+        manifest {
+            attributes([
+                "Implementation-Version": "${version}",
+            ])
         }
     }
-    */
 }
