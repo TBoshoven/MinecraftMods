@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.entity.model.BipedModel.ArmPose;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.IHasArm;
 import net.minecraft.client.renderer.entity.model.IHasHead;
-import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -157,17 +156,17 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
 
             // Skeletons have slightly different models, so we just apply the same modifications as the skeleton model
             // does.
-            bipedRightArm = new RendererModel(this, 40, 16);
+            bipedRightArm = new ModelRenderer(this, 40, 16);
             bipedRightArm.addBox(-1.0F, -2.0F, -1.0F, 2, 12, 2, 0);
             bipedRightArm.setRotationPoint(-5.0F, 2.0F, 0.0F);
-            bipedLeftArm = new RendererModel(this, 40, 16);
+            bipedLeftArm = new ModelRenderer(this, 40, 16);
             bipedLeftArm.mirror = true;
             bipedLeftArm.addBox(-1.0F, -2.0F, -1.0F, 2, 12, 2, 0);
             bipedLeftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
-            bipedRightLeg = new RendererModel(this, 0, 16);
+            bipedRightLeg = new ModelRenderer(this, 0, 16);
             bipedRightLeg.addBox(-1.0F, 0.0F, -1.0F, 2, 12, 2, 0);
             bipedRightLeg.setRotationPoint(-2.0F, 12.0F, 0.0F);
-            bipedLeftLeg = new RendererModel(this, 0, 16);
+            bipedLeftLeg = new ModelRenderer(this, 0, 16);
             bipedLeftLeg.mirror = true;
             bipedLeftLeg.addBox(-1.0F, 0.0F, -1.0F, 2, 12, 2, 0);
             bipedLeftLeg.setRotationPoint(2.0F, 12.0F, 0.0F);
