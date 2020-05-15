@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry2;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -45,7 +45,7 @@ public class TexturedModelLoader implements IModelLoader<TexturedModelGeometry> 
     public TexturedModelGeometry read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
         // Load the original model through its configured base loader
         ResourceLocation baseLoader = new ResourceLocation(modelContents.get("base_loader").getAsString());
-        IModelGeometry<?> modelGeometry = ModelLoaderRegistry2.getModel(baseLoader, deserializationContext, modelContents);
+        IModelGeometry<?> modelGeometry = ModelLoaderRegistry.getModel(baseLoader, deserializationContext, modelContents);
         return new TexturedModelGeometry(modelGeometry, extraTextures);
     }
 }
