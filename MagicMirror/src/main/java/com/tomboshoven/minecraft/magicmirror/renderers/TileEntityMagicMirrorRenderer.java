@@ -38,20 +38,18 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
     public void render(MagicMirrorBaseTileEntity te, double x, double y, double z, float partialTicks, int destroyStage) {
         super.render(te, x, y, z, partialTicks, destroyStage);
 
-        if (te.isComplete()) {
-            Reflection reflection = te.getReflection();
+        Reflection reflection = te.getReflection();
 
-            if (reflection != null) {
-                Entity reflected = reflection.getReflectedEntity();
-                if (reflected != null) {
-                    EnumPartType part = te.getPart();
-                    Direction facing = te.getFacing();
+        if (reflection != null) {
+            Entity reflected = reflection.getReflectedEntity();
+            if (reflected != null) {
+                EnumPartType part = te.getPart();
+                Direction facing = te.getFacing();
 
-                    Vec3d reflectedPos = reflected.getPositionVector();
-                    double distanceSq = te.getPos().distanceSq(reflectedPos.x, reflectedPos.y, reflectedPos.z, true);
+                Vec3d reflectedPos = reflected.getPositionVector();
+                double distanceSq = te.getPos().distanceSq(reflectedPos.x, reflectedPos.y, reflectedPos.z, true);
 
-                    renderReflection(reflection, x, y, z, partialTicks, part, facing, distanceSq);
-                }
+                renderReflection(reflection, x, y, z, partialTicks, part, facing, distanceSq);
             }
         }
     }
