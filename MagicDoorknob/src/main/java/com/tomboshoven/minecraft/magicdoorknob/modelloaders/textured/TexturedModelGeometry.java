@@ -3,10 +3,11 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 import com.google.common.collect.Sets;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
@@ -55,14 +56,14 @@ class TexturedModelGeometry implements IModelGeometry<TexturedModelGeometry> {
     }
 
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format, ItemOverrideList overrides) {
+    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
         // Use a custom texture getter and baked model
-        Function<ResourceLocation, TextureAtlasSprite> augmentedSpriteGetter = resourceLocation -> {
-            if (PROPERTY_NAMESPACE.equals(resourceLocation.getNamespace())) {
-                return new PropertySprite(resourceLocation);
+        Function<Material, TextureAtlasSprite> augmentedSpriteGetter = material -> {
+            if (PROPERTY_NAMESPACE.equals(material.getTextureLocation().getNamespace())) {
+                return new PropertySprite(material.getTextureLocation());
             }
-            return spriteGetter.apply(resourceLocation);
+            return spriteGetter.apply(material);
         };
-        return new TexturedBakedModel<>(originalModelGeometry.bake(owner, bakery, augmentedSpriteGetter, sprite, format, overrides), spriteGetter, new ModelDataTextureMapper());
+        return new TexturedBakedModel<>(originalModelGeometry.bake(owner, bakery, augmentedSpriteGetter, modelTransform, overrides, modelLocation), spriteGetter, new ModelDataTextureMapper());
     }
 }
