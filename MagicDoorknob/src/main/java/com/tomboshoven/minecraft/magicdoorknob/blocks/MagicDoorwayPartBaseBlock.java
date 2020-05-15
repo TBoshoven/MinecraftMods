@@ -8,7 +8,6 @@ import net.minecraft.block.SoundType;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -92,11 +91,6 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
         // We don't have information about the base block here.
         // We allow breaking with any tool.
         return null;
-    }
-
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT_MIPPED;
     }
 
     @Override
