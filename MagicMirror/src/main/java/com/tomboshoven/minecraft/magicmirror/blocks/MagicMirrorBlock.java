@@ -22,6 +22,7 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
@@ -171,7 +172,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         // The mirror will only do anything if it's used from the front.
         if (state.get(HORIZONTAL_FACING) == hit.getFace()) {
             if (!worldIn.isRemote) {
@@ -181,7 +182,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
                     for (MagicMirrorModifier modifier : MagicMirrorModifier.getModifiers()) {
                         if (modifier.canModify(worldIn, pos, heldItem)) {
                             attachModifier(worldIn, pos, heldItem, modifier);
-                            return true;
+                            return ActionResultType.SUCCESS;
                         }
                     }
                 }
@@ -190,14 +191,14 @@ public class MagicMirrorBlock extends HorizontalBlock {
                 TileEntity tileEntity = worldIn.getTileEntity(pos);
                 if (tileEntity instanceof MagicMirrorBaseTileEntity) {
                     if (((MagicMirrorBaseTileEntity) tileEntity).tryActivate(player, hand)) {
-                        return true;
+                        return ActionResultType.SUCCESS;
                     }
                 }
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
-        return false;
+        return ActionResultType.PASS;
     }
 
     @Override
