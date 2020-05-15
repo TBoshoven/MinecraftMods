@@ -377,9 +377,9 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
                 for (int i = 0; i < SWAP_PARTICLE_COUNT; ++i) {
                     entity.getEntityWorld().addParticle(
                             ParticleTypes.PORTAL,
-                            entity.posX + random.nextGaussian() / 4,
-                            entity.posY + 2 * random.nextDouble(),
-                            entity.posZ + random.nextGaussian() / 4,
+                            entity.getPosX() + random.nextGaussian() / 4,
+                            entity.getPosY() + 2 * random.nextDouble(),
+                            entity.getPosZ() + random.nextGaussian() / 4,
                             random.nextGaussian() / 2,
                             random.nextDouble(),
                             random.nextGaussian() / 2
