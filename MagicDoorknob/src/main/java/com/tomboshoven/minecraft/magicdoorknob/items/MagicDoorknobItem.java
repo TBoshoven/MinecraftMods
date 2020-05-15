@@ -19,7 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IEnviromentBlockReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -57,7 +57,7 @@ public class MagicDoorknobItem extends Item {
      * @param useContext The context for the interaction that triggered this check.
      * @return Whether the block can be replaced by a door or doorway
      */
-    private static boolean isEmpty(IEnviromentBlockReader world, BlockPos pos, BlockItemUseContext useContext) {
+    private static boolean isEmpty(IBlockReader world, BlockPos pos, BlockItemUseContext useContext) {
         BlockState blockState = world.getBlockState(pos);
         if (blockState.getBlock().isAir(blockState, world, pos)) {
             return true;
@@ -183,7 +183,7 @@ public class MagicDoorknobItem extends Item {
      * @param useContext The context for the interaction that triggered this check.
      * @return Whether a door can be placed at the given position.
      */
-    private boolean canPlaceDoor(IEnviromentBlockReader world, BlockPos pos, Direction facing, BlockItemUseContext useContext) {
+    private boolean canPlaceDoor(IBlockReader world, BlockPos pos, Direction facing, BlockItemUseContext useContext) {
         if (!isReplaceable(world, pos) || !isReplaceable(world, pos.down())) {
             return false;
         }
@@ -197,7 +197,7 @@ public class MagicDoorknobItem extends Item {
      * @param pos   The position to check
      * @return Whether this doorknob can replace the given block by a door or doorway
      */
-    private boolean isReplaceable(IEnviromentBlockReader world, BlockPos pos) {
+    private boolean isReplaceable(IBlockReader world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         if (block.hasTileEntity(blockState)) {
