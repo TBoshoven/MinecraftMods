@@ -113,11 +113,4 @@ public abstract class MagicMirrorBaseTileEntity extends TileEntity {
     public EnumPartType getPart() {
         return getBlockState().get(MagicMirrorBlock.PART);
     }
-
-    /**
-     * @return Whether the mirror is completely constructed.
-     */
-    public boolean isComplete() {
-        return getBlockState().get(MagicMirrorBlock.COMPLETE);
-    }
 }

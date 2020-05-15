@@ -24,9 +24,6 @@ public class MagicMirrorPartTileEntity extends MagicMirrorBaseTileEntity {
     @Nullable
     @Override
     protected MagicMirrorCoreTileEntity getCore() {
-        if (!isComplete()) {
-            return null;
-        }
         if (core == null) {
             World world = getWorld();
             if (world != null) {

@@ -118,21 +118,6 @@ public class MagicMirrorBlock extends HorizontalBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        super.neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
-
-        // Break the mirror if the other part is broken.
-        if (state.get(COMPLETE)) {
-            if (
-                    state.get(PART) == EnumPartType.TOP && worldIn.getBlockState(pos.down()).getBlock() != this ||
-                            state.get(PART) == EnumPartType.BOTTOM && worldIn.getBlockState(pos.up()).getBlock() != this
-            ) {
-                worldIn.setBlockState(pos, state.with(COMPLETE, false));
-            }
-        }
-    }
-
-    @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(HORIZONTAL_FACING, COMPLETE, PART);
     }
@@ -221,6 +206,13 @@ public class MagicMirrorBlock extends HorizontalBlock {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
             if (tileEntity instanceof MagicMirrorBaseTileEntity) {
                 ((MagicMirrorBaseTileEntity) tileEntity).removeModifiers(worldIn, pos);
+            }
+
+            // Change the other part to incomplete
+            BlockPos otherPos = state.get(PART) == EnumPartType.TOP ? pos.down() : pos.up();
+            BlockState otherState = worldIn.getBlockState(otherPos);
+            if (otherState.getBlock() == this) {
+                worldIn.setBlockState(otherPos, otherState.with(COMPLETE, false));
             }
         }
         super.onReplaced(state, worldIn, pos, newState, isMoving);
