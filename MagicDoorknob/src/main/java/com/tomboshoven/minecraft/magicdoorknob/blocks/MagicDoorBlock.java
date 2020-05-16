@@ -15,6 +15,7 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
@@ -155,10 +156,10 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, BlockRayTraceResult rayTraceResult) {
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, BlockRayTraceResult rayTraceResult) {
         if (!worldIn.isRemote) {
             worldIn.destroyBlock(pos, false);
         }
-        return true;
+        return ActionResultType.SUCCESS;
     }
 }
