@@ -8,12 +8,12 @@ import net.minecraft.client.renderer.model.BakedQuadRetextured;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverride;
 import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 @OnlyIn(Dist.CLIENT)
 class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
     // The baked texture getter
-    private Function<? super ResourceLocation, ? extends TextureAtlasSprite> bakedTextureGetter;
+    private Function<? super Material, ? extends TextureAtlasSprite> bakedTextureGetter;
     // The mapper that replaces property textures by their values
     private ITextureMapper textureMapper;
 
@@ -45,7 +45,7 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
      * @param bakedTextureGetter The baked texture getter
      * @param textureMapper      The mapper that replaces property textures by their values
      */
-    TexturedBakedModel(T originalModel, Function<? super ResourceLocation, ? extends TextureAtlasSprite> bakedTextureGetter, ITextureMapper textureMapper) {
+    TexturedBakedModel(T originalModel, Function<? super Material, ? extends TextureAtlasSprite> bakedTextureGetter, ITextureMapper textureMapper) {
         super(originalModel);
         this.bakedTextureGetter = bakedTextureGetter;
         this.textureMapper = textureMapper;
@@ -58,8 +58,8 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
         return quads.stream().map(quad -> {
             TextureAtlasSprite sprite = quad.getSprite();
             if (sprite instanceof PropertySprite) {
-                ResourceLocation spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
-                TextureAtlasSprite actualSprite = bakedTextureGetter.apply(spriteLocation);
+                Material material = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
+                TextureAtlasSprite actualSprite = bakedTextureGetter.apply(material);
                 return new BakedQuadRetextured(quad, actualSprite);
             }
             return quad;
