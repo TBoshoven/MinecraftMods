@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.renderers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorPartTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntities;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,8 +22,7 @@ public final class Renderers {
 
     @SubscribeEvent
     public static void registerRenders(ModelRegistryEvent event) {
-        TileEntityMagicMirrorRenderer renderer = new TileEntityMagicMirrorRenderer();
-        ClientRegistry.bindTileEntitySpecialRenderer(MagicMirrorCoreTileEntity.class, renderer);
-        ClientRegistry.bindTileEntitySpecialRenderer(MagicMirrorPartTileEntity.class, renderer);
+        ClientRegistry.bindTileEntityRenderer(TileEntities.MAGIC_MIRROR_CORE, TileEntityMagicMirrorRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(TileEntities.MAGIC_MIRROR_PART, TileEntityMagicMirrorRenderer::new);
     }
 }
