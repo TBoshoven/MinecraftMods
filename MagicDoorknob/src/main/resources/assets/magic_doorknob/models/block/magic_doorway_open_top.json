@@ -13,19 +13,22 @@
     "pillar2": {
       "parent": "magic_doorknob:block/part/magic_doorway_pillar_short",
       "transform": {
-        "rotation": [{"y": 90}]
+        "rotation": [{"y": 90}],
+        "origin": "center"
       }
     },
     "pillar3": {
       "parent": "magic_doorknob:block/part/magic_doorway_pillar_short",
       "transform": {
-        "rotation": [{"y": 180}]
+        "rotation": [{"y": 180}],
+        "origin": "center"
       }
     },
     "pillar4": {
       "parent": "magic_doorknob:block/part/magic_doorway_pillar_short",
       "transform": {
-        "rotation": [{"y": 270}]
+        "rotation": [{"y": 270}],
+        "origin": "center"
       }
     }
   }

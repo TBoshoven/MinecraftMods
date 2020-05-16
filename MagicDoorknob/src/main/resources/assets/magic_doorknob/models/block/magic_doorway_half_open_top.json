@@ -13,7 +13,8 @@
     "wall2": {
       "parent": "magic_doorknob:block/part/magic_doorway_wall_short",
       "transform": {
-        "rotation": [{"y": 180}]
+        "rotation": [{"y": 180}],
+        "origin": "center"
       }
     }
   }
