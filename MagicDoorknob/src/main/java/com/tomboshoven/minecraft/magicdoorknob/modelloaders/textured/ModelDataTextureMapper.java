@@ -2,6 +2,9 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.texture.MissingTextureSprite;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -19,15 +22,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @OnlyIn(Dist.CLIENT)
 class ModelDataTextureMapper implements ITextureMapper {
     @Override
-    public ResourceLocation mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable IModelData modelData) {
+    public Material mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable IModelData modelData) {
         if (modelData != null) {
             ResourceLocation name = spriteToMap.getName();
-            ModelProperty<ResourceLocation> modelProperty = ModelTextureProperty.get(name);
-            ResourceLocation spriteLocation = modelData.getData(modelProperty);
-            if (spriteLocation != null) {
-                return spriteLocation;
+            ModelProperty<Material> modelProperty = ModelTextureProperty.get(name);
+            Material material = modelData.getData(modelProperty);
+            if (material != null) {
+                return material;
             }
         }
-        return new ResourceLocation("missingno");
+        return new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, MissingTextureSprite.getLocation());
     }
 }
