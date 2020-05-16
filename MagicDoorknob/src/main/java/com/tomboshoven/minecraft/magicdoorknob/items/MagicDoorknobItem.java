@@ -8,6 +8,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayT
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.model.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
@@ -15,7 +16,6 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -30,8 +30,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MagicDoorknobItem extends Item {
-    // The main texture of the item
-    private final ResourceLocation mainTextureLocation;
+    // The main material for rendering the item
+    private final Material mainMaterial;
     // The name of the type of item (used in NBT data; do not modify)
     private String typeName;
     // The item material, used for determining doorway generation properties
@@ -41,14 +41,14 @@ public class MagicDoorknobItem extends Item {
      * @param properties          The item properties
      * @param typeName            The main texture of the item
      * @param tier                The item material, used for determining doorway generation properties
-     * @param mainTextureLocation The name of the type of item (used in NBT data; do not modify)
+     * @param mainMaterial The main material for rendering the block
      */
-    public MagicDoorknobItem(Item.Properties properties, String typeName, IItemTier tier, ResourceLocation mainTextureLocation) {
+    public MagicDoorknobItem(Item.Properties properties, String typeName, IItemTier tier, Material mainMaterial) {
         super(properties);
 
         this.typeName = typeName;
         this.tier = tier;
-        this.mainTextureLocation = mainTextureLocation;
+        this.mainMaterial = mainMaterial;
     }
 
     /**
@@ -209,8 +209,8 @@ public class MagicDoorknobItem extends Item {
     /**
      * @return The location of the main texture of the doorknob
      */
-    public ResourceLocation getMainTextureLocation() {
-        return mainTextureLocation;
+    public Material getMainMaterial() {
+        return mainMaterial;
     }
 
     /**

@@ -9,8 +9,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
+import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTDynamicOps;
 import net.minecraft.network.NetworkManager;
@@ -107,26 +109,30 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
         // Get the base block texture
         World world = getWorld();
         BlockState baseBlockState = getBaseBlockState();
-        TextureAtlasSprite blockTexture = world == null ? MissingTextureSprite.func_217790_a() : blockModelShapes.getTexture(baseBlockState, world, getPos());
-        if (blockTexture instanceof MissingTextureSprite) {
+        TextureAtlasSprite blockTexture = world == null ? null : blockModelShapes.getTexture(baseBlockState, world, getPos());
+        Material blockMaterial;
+        if (blockTexture == null || blockTexture instanceof MissingTextureSprite) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.
-            blockTexture = minecraft.getTextureMap().getAtlasSprite(MOD_ID + ":block/empty");
+            blockMaterial = new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(MOD_ID, "blocks/empty"));
+        }
+        else {
+            blockMaterial = new Material(blockTexture.getAtlasTexture().getTextureLocation(), blockTexture.getName());
         }
 
         // Get the highlight texture
         MagicDoorknobItem doorknob = getDoorknob();
-        ResourceLocation doorknobTextureLocation;
+        Material doorknobMaterial;
         if (doorknob != null) {
-            doorknobTextureLocation = doorknob.getMainTextureLocation();
+            doorknobMaterial = doorknob.getMainMaterial();
         } else {
             // This can happen when we draw a frame before receiving the tile entity data from the server.
             // In that case, we just want to draw the outline to make it less conspicuous.
-            doorknobTextureLocation = blockTexture.getName();
+            doorknobMaterial = blockMaterial;
         }
 
         return new ModelDataMap.Builder()
-                .withInitial(TEXTURE_MAIN, blockTexture.getName())
-                .withInitial(TEXTURE_HIGHLIGHT, doorknobTextureLocation)
+                .withInitial(TEXTURE_MAIN, blockMaterial)
+                .withInitial(TEXTURE_HIGHLIGHT, doorknobMaterial)
                 .build();
     }
 
