@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.client.renderer.model.Material;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,7 +26,7 @@ public class TexturedModelLoader implements IModelLoader<TexturedModelGeometry> 
     // The namespace of the properties; used in model definitions
     public static final String PROPERTY_NAMESPACE = "property";
     // All extra textures that were requested.
-    private Set<ResourceLocation> extraTextures = Sets.newHashSet();
+    private Set<Material> extraTextures = Sets.newHashSet();
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
@@ -35,10 +36,10 @@ public class TexturedModelLoader implements IModelLoader<TexturedModelGeometry> 
      * Register an additional texture to load with the models.
      * This makes the texture available for use in properties.
      *
-     * @param textureLocation The location of the texture to include
+     * @param material The material to include
      */
-    public void registerTexture(ResourceLocation textureLocation) {
-        extraTextures.add(textureLocation);
+    public void registerTexture(Material material) {
+        extraTextures.add(material);
     }
 
     @Override

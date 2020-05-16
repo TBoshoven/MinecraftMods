@@ -1,6 +1,8 @@
 package com.tomboshoven.minecraft.magicdoorknob.modelloaders;
 
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedModelLoader;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -22,7 +24,7 @@ public final class ModelLoaders {
     public static void registerModelLoaders(ModelRegistryEvent event) {
         // Initialize textured model loader
         TexturedModelLoader modelLoader = new TexturedModelLoader();
-        modelLoader.registerTexture(new ResourceLocation(MOD_ID, "block/empty"));
+        modelLoader.registerTexture(new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(MOD_ID, "block/empty")));
         ModelLoaderRegistry.registerLoader(new ResourceLocation(MOD_ID, "textured"), modelLoader);
     }
 }
