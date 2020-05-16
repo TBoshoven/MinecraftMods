@@ -4,12 +4,14 @@ import com.google.common.collect.ImmutableList;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.BakedQuadRetextured;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverride;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,7 +40,30 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
     // The baked texture getter
     private Function<? super Material, ? extends TextureAtlasSprite> bakedTextureGetter;
     // The mapper that replaces property textures by their values
-    private ITextureMapper textureMapper;
+    private final ITextureMapper textureMapper;
+
+    // The vertex format of the model. At the moment, only "block" is supported.
+    private static final VertexFormat VERTEX_FORMAT = DefaultVertexFormats.BLOCK;
+    // The vertex format element containing the first texture UV coordinates
+    private static final VertexFormatElement VERTEX_FORMAT_ELEMENT_UV;
+    // The offset of the UV coordinates in the vertex format
+    private static final int VERTEX_FORMAT_ELEMENT_UV_OFFSET;
+
+    static {
+        // Find the UV index and offset in the vertex format.
+        int index;
+        VertexFormatElement element = null;
+        ImmutableList<VertexFormatElement> elements = VERTEX_FORMAT.getElements();
+        for (index = 0; index < elements.size(); ++index) {
+            VertexFormatElement el = VERTEX_FORMAT.getElements().get(index);
+            if (el.getUsage() == VertexFormatElement.Usage.UV && el.getIndex() == 0) {
+                element = el;
+                break;
+            }
+        }
+        VERTEX_FORMAT_ELEMENT_UV = element;
+        VERTEX_FORMAT_ELEMENT_UV_OFFSET = VERTEX_FORMAT.getOffset(index);
+    }
 
     /**
      * @param originalModel      The original baked model
@@ -56,14 +81,73 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
         // Return the original quads, with the property sprites replaced by actual ones
         List<BakedQuad> quads = originalModel.getQuads(state, side, rand, extraData);
         return quads.stream().map(quad -> {
-            TextureAtlasSprite sprite = quad.getSprite();
+            TextureAtlasSprite sprite = quad.func_187508_a();
             if (sprite instanceof PropertySprite) {
                 Material material = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
                 TextureAtlasSprite actualSprite = bakedTextureGetter.apply(material);
-                return new BakedQuadRetextured(quad, actualSprite);
+                return retexture(quad, actualSprite);
             }
             return quad;
         }).collect(Collectors.toList());
+    }
+
+    private static BakedQuad retexture(BakedQuad quad, TextureAtlasSprite sprite) {
+        int[] vertexData = quad.getVertexData().clone();
+
+        // Offset between vertices
+        int stride = VERTEX_FORMAT.getSize();
+        // Offset for a single U/V
+        int eltOffset = VERTEX_FORMAT_ELEMENT_UV.getType().getSize();
+
+        float minU = sprite.getMinU();
+        float maxU = sprite.getMaxU();
+        float uDiff = maxU - minU;
+        float minV = sprite.getMinV();
+        float maxV = sprite.getMaxV();
+        float vDiff = maxV - minV;
+
+        int idx = VERTEX_FORMAT_ELEMENT_UV_OFFSET;
+        // Iterate over all 4 vertices
+        for (int vertex = 0; vertex < 4; ++vertex) {
+            float vertexU = Float.intBitsToFloat(getAtByteOffset(vertexData, idx));
+            float vertexV = Float.intBitsToFloat(getAtByteOffset(vertexData, idx + eltOffset));
+            putAtByteOffset(vertexData, idx, Float.floatToRawIntBits(minU + uDiff * vertexU));
+            putAtByteOffset(vertexData, idx + eltOffset, Float.floatToRawIntBits(minV + vDiff * vertexV));
+            idx += stride;
+        }
+
+        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting());
+    }
+
+    private static int getAtByteOffset(int[] inData, int offset) {
+        // Borrowed from QuadTransformer code
+        int index = offset / 4;
+        int lsb = inData[index];
+
+        int shift = (offset % 4) * 8;
+        if (shift == 0)
+            return inData[index];
+
+        int msb = inData[index + 1];
+
+        return (lsb >>> shift) | (msb << (32 - shift));
+    }
+
+    private static void putAtByteOffset(int[] outData, int offset, int value) {
+        // Borrowed from QuadTransformer code
+        int index = offset / 4;
+        int shift = (offset % 4) * 8;
+
+        if (shift == 0) {
+            outData[index] = value;
+            return;
+        }
+
+        int lsbMask = 0xFFFFFFFF >>> (32 - shift);
+        int msbMask = 0xFFFFFFFF << shift;
+
+        outData[index] = (outData[index] & lsbMask) | (value << shift);
+        outData[index + 1] = (outData[index + 1] & msbMask) | (value >>> (32 - shift));
     }
 
     @Override
