@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.renderers;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartType;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
@@ -7,8 +8,10 @@ import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
@@ -34,22 +37,24 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
      */
     private static final double MAX_DISTANCE = 8;
 
-    @Override
-    public void render(MagicMirrorBaseTileEntity te, double x, double y, double z, float partialTicks, int destroyStage) {
-        super.render(te, x, y, z, partialTicks, destroyStage);
+    public TileEntityMagicMirrorRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
+    }
 
-        Reflection reflection = te.getReflection();
+    @Override
+    public void render(MagicMirrorBaseTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+        Reflection reflection = tileEntityIn.getReflection();
 
         if (reflection != null) {
             Entity reflected = reflection.getReflectedEntity();
             if (reflected != null) {
-                EnumPartType part = te.getPart();
-                Direction facing = te.getFacing();
+                EnumPartType part = tileEntityIn.getPart();
+                Direction facing = tileEntityIn.getFacing();
 
                 Vec3d reflectedPos = reflected.getPositionVector();
-                double distanceSq = te.getPos().distanceSq(reflectedPos.x, reflectedPos.y, reflectedPos.z, true);
+                double distanceSq = tileEntityIn.getPos().distanceSq(reflectedPos.x, reflectedPos.y, reflectedPos.z, true);
 
-                renderReflection(reflection, x, y, z, partialTicks, part, facing, distanceSq);
+                renderReflection(reflection, partialTicks, part, facing, distanceSq);
             }
         }
     }
@@ -58,15 +63,12 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
      * Render the reflection of an entity.
      *
      * @param reflection   The reflection to render.
-     * @param x            The X coordinate of the tile entity.
-     * @param y            The Y coordinate of the tile entity.
-     * @param z            The Z coordinate of the tile entity.
      * @param partialTicks The partial ticks, used for smooth animations.
      * @param part         The part of the mirror to render.
      * @param facing       The direction in which the mirror part is facing.
      * @param distanceSq   The squared distance between the mirror and the reflected subject; used for fading.
      */
-    private static void renderReflection(Reflection reflection, double x, double y, double z, float partialTicks, EnumPartType part, Direction facing, double distanceSq) {
+    private static void renderReflection(Reflection reflection, float partialTicks, EnumPartType part, Direction facing, double distanceSq) {
         // Render the reflection.
         reflection.render(facing, partialTicks);
 
