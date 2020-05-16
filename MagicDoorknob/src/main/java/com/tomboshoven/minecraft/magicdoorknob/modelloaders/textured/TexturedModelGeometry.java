@@ -60,7 +60,7 @@ class TexturedModelGeometry implements IModelGeometry<TexturedModelGeometry> {
         // Use a custom texture getter and baked model
         Function<Material, TextureAtlasSprite> augmentedSpriteGetter = material -> {
             if (PROPERTY_NAMESPACE.equals(material.getTextureLocation().getNamespace())) {
-                return new PropertySprite(material.getSprite().getAtlasTexture(), material.getTextureLocation());
+                return new PropertySprite(material.getTextureLocation());
             }
             return spriteGetter.apply(material);
         };

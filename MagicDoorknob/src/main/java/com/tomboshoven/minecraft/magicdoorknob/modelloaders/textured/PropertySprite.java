@@ -1,6 +1,8 @@
 package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 
+import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorBlock;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
@@ -22,13 +24,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class PropertySprite extends TextureAtlasSprite {
     private final ResourceLocation name;
 
+    private static final AtlasTexture ATLAS_TEXTURE = new AtlasTexture(new ResourceLocation(MagicDoorknobMod.MOD_ID, "property_texture_atlas"));
     private static final NativeImage NATIVE_IMAGE = new NativeImage(0, 0, false);
 
     /**
      * @param name The location of the property
      */
-    PropertySprite(AtlasTexture atlasTexture, ResourceLocation name) {
-        super(atlasTexture, new Info(name, Integer.MAX_VALUE, Integer.MAX_VALUE, AnimationMetadataSection.EMPTY), 0, Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 0, NATIVE_IMAGE);
+    PropertySprite(ResourceLocation name) {
+        super(ATLAS_TEXTURE, new Info(name, Integer.MAX_VALUE, Integer.MAX_VALUE, AnimationMetadataSection.EMPTY), 0, Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 0, NATIVE_IMAGE);
         this.name = name;
     }
 
