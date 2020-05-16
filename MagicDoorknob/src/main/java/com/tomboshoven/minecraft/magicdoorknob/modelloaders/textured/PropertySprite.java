@@ -2,7 +2,10 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.data.AnimationMetadataSection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -17,14 +20,24 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public class PropertySprite extends TextureAtlasSprite {
+    private final ResourceLocation name;
+
+    private static final NativeImage NATIVE_IMAGE = new NativeImage(0, 0, false);
+
     /**
      * @param name The location of the property
      */
-    PropertySprite(ResourceLocation name) {
-        super(name, 1, 1);
-        // Set the UV values, to make sure they're not both 0.
-        // Something is very wonky in the logic for "makeBakedQuad" but these values seem to work when used with
-        // BakedQuadRetextured.
-        func_217789_a(Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 0);
+    PropertySprite(AtlasTexture atlasTexture, ResourceLocation name) {
+        super(atlasTexture, new Info(name, Integer.MAX_VALUE, Integer.MAX_VALUE, AnimationMetadataSection.EMPTY), 0, Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 0, NATIVE_IMAGE);
+        this.name = name;
+    }
+
+    @Override
+    public ResourceLocation getName() {
+        return name;
+    }
+
+    public String toString() {
+        return "PropertySprite{name='" + name + "'}";
     }
 }
