@@ -1,6 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.renderers;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -33,5 +34,5 @@ public abstract class ReflectionRendererBase {
      * @param facing       The rotation (in degrees) for the entity that is being rendered.
      * @param partialTicks The partial ticks, for smooth rendering.
      */
-    public abstract void render(float facing, float partialTicks);
+    public abstract void render(float facing, float partialTicks, IRenderTypeBuffer renderTypeBuffer);
 }

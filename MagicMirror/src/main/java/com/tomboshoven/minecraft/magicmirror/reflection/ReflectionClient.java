@@ -4,6 +4,8 @@ import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModi
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRenderer;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
@@ -110,7 +112,11 @@ public class ReflectionClient extends Reflection {
             frameBuffer.framebufferClear(IS_RUNNING_ON_MAC);
             frameBuffer.bindFramebuffer(true);
 
-            reflectionRenderer.render(facing.getHorizontalAngle(), partialTicks);
+            IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+
+            reflectionRenderer.render(facing.getHorizontalAngle(), partialTicks, renderTypeBuffer);
+
+            renderTypeBuffer.finish();
 
             frameBuffer.unbindFramebuffer();
         }

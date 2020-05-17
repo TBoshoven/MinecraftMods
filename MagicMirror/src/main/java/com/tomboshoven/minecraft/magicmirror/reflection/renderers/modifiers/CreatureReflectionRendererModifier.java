@@ -3,6 +3,7 @@ package com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
@@ -48,10 +49,10 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
     }
 
     @Override
-    public void render(float facing, float partialTicks) {
+    public void render(float facing, float partialTicks, IRenderTypeBuffer renderTypeBuffer) {
         EntityRenderer<? extends Entity> originalRenderer = getRenderer();
         setRenderer(replacementRenderer);
-        super.render(facing, partialTicks);
+        super.render(facing, partialTicks, renderTypeBuffer);
         setRenderer(originalRenderer);
     }
 
