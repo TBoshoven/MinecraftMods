@@ -6,6 +6,7 @@ import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRend
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
@@ -38,11 +39,22 @@ public class ReflectionClient extends Reflection {
     private Framebuffer frameBuffer;
 
     /**
+     * Render type for rendering this reflection to the screen.
+     * Each reflection has its own texture, and therefore its own render type.
+     */
+
+    private final RenderType renderType;
+
+    /**
      * The previous value of partialTicks.
      * Because this value is monotonically increasing between ticks, we can use it to prevent re-rendering the
      * reflection when multiple blocks request it.
      */
     private float lastRenderPartialTicks = -1f;
+
+    public ReflectionClient() {
+        renderType = new ReflectionRenderType(this);
+    }
 
     @Override
     void incrementActiveClientReflections() {
@@ -127,6 +139,10 @@ public class ReflectionClient extends Reflection {
         super.forceRerender();
 
         lastRenderPartialTicks = -1f;
+    }
+
+    public RenderType getRenderType() {
+        return renderType;
     }
 
     @Override
