@@ -49,20 +49,20 @@ public class ReflectionRenderType extends RenderType {
             FogRenderer.applyFog();
             RenderSystem.enableFog();
         }, () -> {
-            // Transparency
-            RenderSystem.disableBlend();
-
-            // Shade model
-            RenderSystem.shadeModel(7424);
-
-            // Depth test
-            RenderSystem.disableDepthTest();
+            // Fog
+            RenderSystem.disableFog();
 
             // Culling
             RenderSystem.disableCull();
 
-            // Fog
-            RenderSystem.disableFog();
+            // Depth test
+            RenderSystem.disableDepthTest();
+
+            // Shade model
+            RenderSystem.shadeModel(7424);
+
+            // Transparency
+            RenderSystem.disableBlend();
         });
     }
 }
