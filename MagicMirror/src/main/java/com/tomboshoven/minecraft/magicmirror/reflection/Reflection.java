@@ -154,12 +154,4 @@ public class Reflection {
      */
     public void forceRerender() {
     }
-
-    /**
-     * Bind the reflection texture.
-     * Before calling this, make sure there is an active reflection, and render() has been called at least once since it
-     * became active.
-     */
-    public void bind() {
-    }
 }
