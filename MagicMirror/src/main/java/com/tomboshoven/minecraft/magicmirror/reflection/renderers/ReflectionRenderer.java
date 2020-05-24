@@ -85,7 +85,6 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         //noinspection unchecked
         ((EntityRenderer<Entity>) entityRenderer).render(entity, 0, partialTicks, reflectionMatrixStack, renderTypeBuffer, 0x00f000f0);
 
-        GlStateManager.popMatrix();
         // Restore the perspective.
         RenderSystem.matrixMode(GL_PROJECTION);
         RenderSystem.popMatrix();

@@ -8,6 +8,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntities;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
+import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClientUpdater;
 import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,7 +36,10 @@ public class MagicMirrorMod {
         modEventBus.register(Blocks.class);
         modEventBus.register(Items.class);
         modEventBus.register(TileEntities.class);
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.register(Renderers.class));
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+            modEventBus.register(Renderers.class);
+            MinecraftForge.EVENT_BUS.register(ReflectionClientUpdater.class);
+        });
 
         // Register packets
         Network.registerMessages();

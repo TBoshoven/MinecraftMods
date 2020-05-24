@@ -6,8 +6,8 @@ import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartTyp
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
+import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClientUpdater;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Vector3f;
@@ -51,7 +51,9 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
                 Vec3d reflectedPos = reflected.getPositionVector();
                 double distanceSq = tileEntityIn.getPos().distanceSq(reflectedPos.x, reflectedPos.y, reflectedPos.z, true);
 
-                renderReflection((ReflectionClient) reflection, partialTicks, matrixStackIn, bufferIn, part, facing, distanceSq);
+                ReflectionClientUpdater.markViewed((ReflectionClient) reflection);
+
+                renderReflection((ReflectionClient) reflection, matrixStackIn, bufferIn, part, facing, distanceSq);
             }
         }
     }
@@ -59,22 +61,16 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
     /**
      * Render the reflection of an entity.
      *
-     * @param reflection   The reflection to render.
-     * @param partialTicks The partial ticks, used for smooth animations.
-     * @param part         The part of the mirror to render.
-     * @param facing       The direction in which the mirror part is facing.
-     * @param distanceSq   The squared distance between the mirror and the reflected subject; used for fading.
+     * @param reflection       The reflection to render.
+     * @param matrixStack      The matrix stack to use for rendering.
+     * @param renderTypeBuffer The buffer to render to.
+     * @param part             The part of the mirror to render.
+     * @param facing           The direction in which the mirror part is facing.
+     * @param distanceSq       The squared distance between the mirror and the reflected subject; used for fading.
      */
-    private static void renderReflection(ReflectionClient reflection, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, EnumPartType part, Direction facing, double distanceSq) {
-        // Render the reflection.
-        reflection.render(facing, partialTicks);
-
-        // Rebind original frame buffer.
-        // This could be done in a nicer way, but I don't think a frame buffer stacking mechanism is available.
-        Minecraft.getInstance().getFramebuffer().bindFramebuffer(true);
-
+    private static void renderReflection(ReflectionClient reflection, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, EnumPartType part, Direction facing, double distanceSq) {
         // The further away the subject is, the more faint the reflection
-        float reflectionAlpha = Math.min(1f, 1.2f - (float) (distanceSq / (MAX_DISTANCE * MAX_DISTANCE)));
+        float reflectionAlpha = Math.max(0, Math.min(1f, 1.2f - (float) (distanceSq / (MAX_DISTANCE * MAX_DISTANCE))));
 
         matrixStack.translate(.5, .5, .5);
 

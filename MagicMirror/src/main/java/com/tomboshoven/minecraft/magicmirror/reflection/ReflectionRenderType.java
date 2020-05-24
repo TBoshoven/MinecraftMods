@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.reflection;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.FogRenderer;
@@ -26,11 +27,17 @@ public class ReflectionRenderType extends RenderType {
         super("reflection", POSITION_COLOR_TEX, GL_QUADS, 64, true, true, () -> {
             // Texture
             RenderSystem.enableTexture();
-            reflection.bind();
 
             // Transparency
             RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
+
+            if(reflection.bind()) {
+                RenderSystem.defaultBlendFunc();
+            }
+            else {
+                // If we couldn't bind the texture, just render nothing
+                RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
+            }
 
             // Shade model (TODO: do we need this?)
             RenderSystem.shadeModel(GL_SMOOTH);

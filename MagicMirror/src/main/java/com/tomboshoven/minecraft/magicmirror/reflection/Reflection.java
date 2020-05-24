@@ -35,6 +35,11 @@ public class Reflection {
     Entity reflectedEntity;
 
     /**
+     * The angle in degrees over the Y axis that the reflection should be rotated.
+     */
+    protected float angle;
+
+    /**
      * Get the total number of active reflections in this instance's client thread; used for debugging leaks.
      */
     public static int getActiveReflectionsClient() {
@@ -141,11 +146,9 @@ public class Reflection {
      * Render the reflection of the entity to the texture.
      * This operation unbinds the frame buffer, so rebinding may be required afterward.
      *
-     * @param facing       The direction the mirror is facing in; used for determining which side of the reflection to
-     *                     draw.
      * @param partialTicks The partial ticks, used for rendering smooth animations.
      */
-    public void render(Direction facing, float partialTicks) {
+    public void render(float partialTicks) {
     }
 
     /**
@@ -153,5 +156,14 @@ public class Reflection {
      * Because of partialTick optimization, this should be called each tick, before starting to render.
      */
     public void forceRerender() {
+    }
+
+    /**
+     * Change the angle of the reflection.
+     *
+     * @param angle The angle in degrees over the Y axis that the reflection should be rotated.
+     */
+    public void setAngle(float angle) {
+        this.angle = angle;
     }
 }

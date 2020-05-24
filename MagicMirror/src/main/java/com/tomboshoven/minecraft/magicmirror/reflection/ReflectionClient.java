@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.reflection;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRenderer;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
@@ -103,8 +104,8 @@ public class ReflectionClient extends Reflection {
     }
 
     @Override
-    public void render(Direction facing, float partialTicks) {
-        super.render(facing, partialTicks);
+    public void render(float partialTicks) {
+        super.render(partialTicks);
 
         // Create or destroy the framebuffer if needed
         if (reflectedEntity != null && frameBuffer == null) {
@@ -126,7 +127,7 @@ public class ReflectionClient extends Reflection {
 
             IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
 
-            reflectionRenderer.render(facing.getHorizontalAngle(), partialTicks, renderTypeBuffer);
+            reflectionRenderer.render(angle, partialTicks, renderTypeBuffer);
 
             renderTypeBuffer.finish();
 
@@ -146,14 +147,18 @@ public class ReflectionClient extends Reflection {
     }
 
     /**
-     * Bind the reflection texture.
-     * Before calling this, make sure there is an active reflection, and render() has been called at least once since it
-     * became active.
+     * Bind the reflection texture, if it's there.
+     *
+     * @return Whether the texture was successfully bound.
      */
-    void bind() {
-        if (frameBuffer == null) {
-            throw new RuntimeException("No active reflection");
+    boolean bind() {
+        if (frameBuffer != null) {
+            frameBuffer.bindFramebufferTexture();
+            return true;
         }
-        frameBuffer.bindFramebufferTexture();
+        else {
+            RenderSystem.bindTexture(0);
+            return false;
+        }
     }
 }
