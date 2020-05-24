@@ -1,6 +1,9 @@
 package com.tomboshoven.minecraft.magicdoorknob.modelloaders;
 
+import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedModelLoader;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
@@ -26,5 +29,9 @@ public final class ModelLoaders {
         TexturedModelLoader modelLoader = new TexturedModelLoader();
         modelLoader.registerTexture(new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(MOD_ID, "block/empty")));
         ModelLoaderRegistry.registerLoader(new ResourceLocation(MOD_ID, "textured"), modelLoader);
+
+        // Translucent has the best results across block types
+        RenderTypeLookup.setRenderLayer(Blocks.MAGIC_DOOR, RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(Blocks.MAGIC_DOORWAY, RenderType.getTranslucent());
     }
 }
