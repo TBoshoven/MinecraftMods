@@ -120,7 +120,7 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
         Material blockMaterial;
         if (blockTexture == null || blockTexture instanceof MissingTextureSprite) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.
-            blockMaterial = new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(MOD_ID, "blocks/empty"));
+            blockMaterial = new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(MOD_ID, "block/empty"));
         }
         else {
             blockMaterial = new Material(blockTexture.getAtlasTexture().getTextureLocation(), blockTexture.getName());
