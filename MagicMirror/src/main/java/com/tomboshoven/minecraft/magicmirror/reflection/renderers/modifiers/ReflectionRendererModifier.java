@@ -43,6 +43,16 @@ class ReflectionRendererModifier extends ReflectionRendererBase {
     }
 
     @Override
+    public void setupPerspective() {
+        baseRenderer.setupPerspective();
+    }
+
+    @Override
+    public void tearDownPerspective() {
+        baseRenderer.tearDownPerspective();
+    }
+
+    @Override
     public void render(float facing, float partialTicks, IRenderTypeBuffer renderTypeBuffer) {
         baseRenderer.render(facing, partialTicks, renderTypeBuffer);
     }

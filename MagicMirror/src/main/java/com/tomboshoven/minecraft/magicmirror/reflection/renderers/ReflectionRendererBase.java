@@ -29,6 +29,18 @@ public abstract class ReflectionRendererBase {
     public abstract void setRenderer(EntityRenderer<? extends Entity> renderer);
 
     /**
+     * Set up the rendering perspective.
+     * Always call tearDownPerspective after rendering.
+     */
+    public abstract void setupPerspective();
+
+    /**
+     * Tear down the rendering perspective.
+     * Always call setupPerspective before this.
+     */
+    public abstract void tearDownPerspective();
+
+    /**
      * Render the reflection.
      *
      * @param facing       The rotation (in degrees) for the entity that is being rendered.

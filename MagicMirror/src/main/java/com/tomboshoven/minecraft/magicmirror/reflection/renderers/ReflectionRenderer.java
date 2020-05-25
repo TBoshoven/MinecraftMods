@@ -56,22 +56,31 @@ public class ReflectionRenderer extends ReflectionRendererBase {
     }
 
     @Override
-    public void render(float facing, float partialTicks, IRenderTypeBuffer renderTypeBuffer) {
-        if (entityRenderer == null) {
-            return;
-        }
-
-        MatrixStack reflectionMatrixStack = new MatrixStack();
-
-        // Prepare matrices
-
-        // Set the perspective to prevent FoV impacting things.
+    public void setupPerspective() {
+        // Re-initialize the projection matrix to keep full control over the perspective
         RenderSystem.matrixMode(GL_PROJECTION);
         RenderSystem.pushMatrix();
         RenderSystem.loadIdentity();
         // Aspect is .5 to compensate for the rectangular mirror
         RenderSystem.multMatrix(Matrix4f.perspective(90f, .5f, .05f, 50f));
         RenderSystem.matrixMode(GL_MODELVIEW);
+    }
+
+    @Override
+    public void tearDownPerspective() {
+        // Simply pop the projection matrix
+        RenderSystem.matrixMode(GL_PROJECTION);
+        RenderSystem.popMatrix();
+        RenderSystem.matrixMode(GL_MODELVIEW);
+    }
+
+    @Override
+    public void render(float facing, float partialTicks, IRenderTypeBuffer renderTypeBuffer) {
+        if (entityRenderer == null) {
+            return;
+        }
+
+        MatrixStack reflectionMatrixStack = new MatrixStack();
 
         // Head's up
         reflectionMatrixStack.rotate(Vector3f.XP.rotationDegrees(180));
@@ -84,10 +93,5 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         // with the unchecked cast.
         //noinspection unchecked
         ((EntityRenderer<Entity>) entityRenderer).render(entity, 0, partialTicks, reflectionMatrixStack, renderTypeBuffer, 0x00f000f0);
-
-        // Restore the perspective.
-        RenderSystem.matrixMode(GL_PROJECTION);
-        RenderSystem.popMatrix();
-        RenderSystem.matrixMode(GL_MODELVIEW);
     }
 }

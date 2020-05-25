@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -122,14 +121,18 @@ public class ReflectionClient extends Reflection {
         lastRenderPartialTicks = partialTicks;
 
         if (frameBuffer != null && reflectionRenderer != null) {
+            IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+
             frameBuffer.framebufferClear(IS_RUNNING_ON_MAC);
             frameBuffer.bindFramebuffer(true);
 
-            IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+            reflectionRenderer.setupPerspective();
 
             reflectionRenderer.render(angle, partialTicks, renderTypeBuffer);
 
             renderTypeBuffer.finish();
+
+            reflectionRenderer.tearDownPerspective();
 
             frameBuffer.unbindFramebuffer();
         }
