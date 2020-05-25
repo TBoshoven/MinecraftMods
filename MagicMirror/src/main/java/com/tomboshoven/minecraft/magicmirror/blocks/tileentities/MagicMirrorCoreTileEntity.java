@@ -124,8 +124,6 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
             reflectionUpdateCounter = 0;
             updateReflection();
         }
-        // Make sure we re-render each full tick, to make the partialTick optimization work
-        reflection.forceRerender();
         modifiers.forEach(MagicMirrorTileEntityModifier::coolDown);
     }
 

@@ -1,11 +1,11 @@
 package com.tomboshoven.minecraft.magicmirror.reflection;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Class overseeing which reflections need to be re-rendered.
@@ -15,7 +15,7 @@ import java.util.List;
  * Downside of this is that we're always one frame late, but that should not be very noticeable.
  */
 public class ReflectionClientUpdater {
-    private static List<ReflectionClient> toRerender = Lists.newArrayList();
+    private static Set<ReflectionClient> toRerender = Sets.newConcurrentHashSet();
 
     public static void markViewed(ReflectionClient reflection) {
         toRerender.add(reflection);

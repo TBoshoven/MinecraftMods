@@ -152,13 +152,6 @@ public class Reflection {
     }
 
     /**
-     * Force the next render operation to re-render the texture.
-     * Because of partialTick optimization, this should be called each tick, before starting to render.
-     */
-    public void forceRerender() {
-    }
-
-    /**
      * Change the angle of the reflection.
      *
      * @param angle The angle in degrees over the Y axis that the reflection should be rotated.

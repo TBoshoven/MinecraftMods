@@ -45,13 +45,6 @@ public class ReflectionClient extends Reflection {
 
     private final RenderType renderType;
 
-    /**
-     * The previous value of partialTicks.
-     * Because this value is monotonically increasing between ticks, we can use it to prevent re-rendering the
-     * reflection when multiple blocks request it.
-     */
-    private float lastRenderPartialTicks = -1f;
-
     public ReflectionClient() {
         renderType = new ReflectionRenderType(this);
     }
@@ -113,12 +106,6 @@ public class ReflectionClient extends Reflection {
             cleanUpFrameBuffer();
         }
 
-        // Don't render twice per partial tick; this is a simple hack for multiblock optimization.
-        // This requires that forceRerender() is called each tick.
-        if (lastRenderPartialTicks >= partialTicks) {
-            return;
-        }
-        lastRenderPartialTicks = partialTicks;
 
         if (frameBuffer != null && reflectionRenderer != null) {
             IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
@@ -136,13 +123,6 @@ public class ReflectionClient extends Reflection {
 
             frameBuffer.unbindFramebuffer();
         }
-    }
-
-    @Override
-    public void forceRerender() {
-        super.forceRerender();
-
-        lastRenderPartialTicks = -1f;
     }
 
     public RenderType getRenderType() {
