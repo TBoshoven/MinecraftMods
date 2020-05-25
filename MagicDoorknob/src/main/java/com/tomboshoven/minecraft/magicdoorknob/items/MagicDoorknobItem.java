@@ -203,11 +203,14 @@ public class MagicDoorknobItem extends Item {
      */
     private boolean isReplaceable(IBlockReader world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
-        Block block = blockState.getBlock();
-        if (block.hasTileEntity(blockState)) {
+        if (blockState.hasTileEntity()) {
             return false;
         }
-        return block.getHarvestLevel(blockState) <= tier.getHarvestLevel();
+        // Blocks like bedrock use this to prevent interactions
+        if (blockState.getBlockHardness(world, pos) < 0) {
+            return false;
+        }
+        return blockState.getHarvestLevel() <= tier.getHarvestLevel();
     }
 
     /**
