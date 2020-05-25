@@ -22,7 +22,7 @@ subprojects {
     apply plugin: 'net.minecraftforge.gradle'
     apply plugin: 'idea'
 
-    version = "1.14.4-DEV.0"
+    version = "1.15.2-DEV.0"
     group = "com.tomboshoven.minecraft.magicmirror"
     archivesBaseName = project.projectDir.name
 
