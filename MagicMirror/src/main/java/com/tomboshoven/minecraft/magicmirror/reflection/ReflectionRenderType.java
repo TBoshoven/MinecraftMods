@@ -24,7 +24,7 @@ import static org.lwjgl.opengl.GL11.GL_SMOOTH;
 public class ReflectionRenderType extends RenderType {
     public ReflectionRenderType(ReflectionClient reflection) {
         // Builtin RenderType builders are incredibly annoying to use due to how they're set up, so we just roll our own
-        super("reflection", POSITION_COLOR_TEX, GL_QUADS, 64, true, true, () -> {
+        super(String.format("reflection[%d]", reflection.hashCode()), POSITION_COLOR_TEX, GL_QUADS, 64, true, true, () -> {
             // Texture
             RenderSystem.enableTexture();
 
