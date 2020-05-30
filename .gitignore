@@ -12,3 +12,6 @@ scratch
 *.iml
 *.ipr
 *.iws
+
+# Generated mod resources
+/*/src/generated

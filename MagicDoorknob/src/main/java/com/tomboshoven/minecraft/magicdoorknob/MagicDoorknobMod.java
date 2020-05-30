@@ -3,6 +3,7 @@ package com.tomboshoven.minecraft.magicdoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers.BlockColorHandlers;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntities;
+import com.tomboshoven.minecraft.magicdoorknob.data.DataGenerators;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.ModelLoaders;
 import mcp.MethodsReturnNonnullByDefault;
@@ -24,6 +25,7 @@ public class MagicDoorknobMod {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.register(BlockColorHandlers.class);
         modEventBus.register(Blocks.class);
+        modEventBus.register(DataGenerators.class);
         modEventBus.register(Items.class);
         modEventBus.register(TileEntities.class);
 

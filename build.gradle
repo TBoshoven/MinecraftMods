@@ -22,8 +22,10 @@ subprojects {
     apply plugin: 'net.minecraftforge.gradle'
     apply plugin: 'idea'
 
+    String mod_name = project.getName().replaceAll(/([a-z])([A-Z])/, /$1_$2/).toLowerCase()
+
     version = "1.14.4-DEV.0"
-    group = "com.tomboshoven.minecraft.magicmirror"
+    group = "com.tomboshoven.minecraft." + project.getName().toLowerCase()
     archivesBaseName = project.projectDir.name
 
     sourceCompatibility = 1.8
@@ -42,6 +44,13 @@ subprojects {
             server = {
                 properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
                 properties 'forge.logging.console.level': 'debug'
+                workingDirectory project.file('run').canonicalPath
+                source sourceSets.main
+            }
+            data = {
+                properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+                properties 'forge.logging.console.level': 'debug'
+                args '--mod', mod_name, '--all', '--output', file('src/generated/resources/')
                 workingDirectory project.file('run').canonicalPath
                 source sourceSets.main
             }
