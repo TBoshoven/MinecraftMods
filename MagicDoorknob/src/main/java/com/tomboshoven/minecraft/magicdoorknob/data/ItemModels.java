@@ -34,6 +34,6 @@ public class ItemModels extends ItemModelProvider {
 
     @Override
     public String getName() {
-        return MagicDoorknobMod.MOD_ID;
+        return String.format("%s Item Models", MagicDoorknobMod.MOD_ID);
     }
 }
