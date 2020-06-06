@@ -22,7 +22,7 @@ subprojects {
     apply plugin: 'net.minecraftforge.gradle'
     apply plugin: 'idea'
 
-    String mod_name = project.getName().replaceAll(/([a-z])([A-Z])/, /$1_$2/).toLowerCase()
+    String modName = project.getName().replaceAll(/([a-z])([A-Z])/, /$1_$2/).toLowerCase()
 
     version = "1.14.4-DEV.0"
     group = "com.tomboshoven.minecraft." + project.getName().toLowerCase()
@@ -35,23 +35,23 @@ subprojects {
         mappings channel: 'snapshot', version: '20190719-1.14.3'
 
         runs {
-            client = {
+            client {
                 properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
                 properties 'forge.logging.console.level': 'debug'
-                workingDirectory project.file('run').canonicalPath
+                workingDirectory project.file('run')
                 source sourceSets.main
             }
-            server = {
+            server {
                 properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
                 properties 'forge.logging.console.level': 'debug'
-                workingDirectory project.file('run').canonicalPath
+                workingDirectory project.file('run')
                 source sourceSets.main
             }
-            data = {
+            data {
                 properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
                 properties 'forge.logging.console.level': 'debug'
-                args '--mod', mod_name, '--all', '--output', file('src/generated/resources/')
-                workingDirectory project.file('run').canonicalPath
+                args '--mod', modName, '--all', '--output', file('src/generated/resources/')
+                workingDirectory project.file('run')
                 source sourceSets.main
             }
         }

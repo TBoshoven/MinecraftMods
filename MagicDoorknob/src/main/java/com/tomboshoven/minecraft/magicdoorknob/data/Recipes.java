@@ -23,8 +23,6 @@ public class Recipes extends RecipeProvider {
 
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
-        super.registerRecipes(consumer);
-
         Items.DOORKNOBS.values().forEach(
                 doorknob -> ShapedRecipeBuilder.shapedRecipe(doorknob)
                         .patternLine(" # ")
