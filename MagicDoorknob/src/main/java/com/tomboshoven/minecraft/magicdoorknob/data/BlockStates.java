@@ -30,18 +30,18 @@ public class BlockStates extends BlockStateProvider {
     }
 
     private void registerDoor() {
-        ModelFile doorBottom = new ModelFile.UncheckedModelFile(modLoc("block/magic_door_bottom"));
-        ModelFile doorTop = new ModelFile.UncheckedModelFile(modLoc("block/magic_door_top"));
+        ModelFile doorBottom = new ModelFile.ExistingModelFile(modLoc("block/magic_door_bottom"), existingFileHelper);
+        ModelFile doorTop = new ModelFile.ExistingModelFile(modLoc("block/magic_door_top"), existingFileHelper);
         horizontalBlock(Blocks.MAGIC_DOOR, blockState -> blockState.get(MagicDoorBlock.PART) == TOP ? doorTop : doorBottom, 270);
     }
 
     private void registerDoorway() {
-        ModelFile doorwayClosedBottom = new ModelFile.UncheckedModelFile(modLoc("block/magic_doorway_closed_bottom"));
-        ModelFile doorwayClosedTop = new ModelFile.UncheckedModelFile(modLoc("block/magic_doorway_closed_top"));
-        ModelFile doorwayHalfOpenBottom = new ModelFile.UncheckedModelFile(modLoc("block/magic_doorway_half_open_bottom"));
-        ModelFile doorwayHalfOpenTop = new ModelFile.UncheckedModelFile(modLoc("block/magic_doorway_half_open_top"));
-        ModelFile doorwayOpenBottom = new ModelFile.UncheckedModelFile(modLoc("block/magic_doorway_open_bottom"));
-        ModelFile doorwayOpenTop = new ModelFile.UncheckedModelFile(modLoc("block/magic_doorway_open_top"));
+        ModelFile doorwayClosedBottom = new ModelFile.ExistingModelFile(modLoc("block/magic_doorway_closed_bottom"), existingFileHelper);
+        ModelFile doorwayClosedTop = new ModelFile.ExistingModelFile(modLoc("block/magic_doorway_closed_top"), existingFileHelper);
+        ModelFile doorwayHalfOpenBottom = new ModelFile.ExistingModelFile(modLoc("block/magic_doorway_half_open_bottom"), existingFileHelper);
+        ModelFile doorwayHalfOpenTop = new ModelFile.ExistingModelFile(modLoc("block/magic_doorway_half_open_top"), existingFileHelper);
+        ModelFile doorwayOpenBottom = new ModelFile.ExistingModelFile(modLoc("block/magic_doorway_open_bottom"), existingFileHelper);
+        ModelFile doorwayOpenTop = new ModelFile.ExistingModelFile(modLoc("block/magic_doorway_open_top"), existingFileHelper);
 
         getVariantBuilder(Blocks.MAGIC_DOORWAY).forAllStates(
                 blockState -> {

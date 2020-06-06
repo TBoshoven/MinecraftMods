@@ -25,7 +25,7 @@ public class ItemModels extends ItemModelProvider {
                     ResourceLocation registryName = doorknob.getRegistryName();
                     if (registryName != null) {
                         getBuilder(registryName.getPath())
-                                .parent(new ModelFile.UncheckedModelFile(modLoc("item/magic_doorknob")))
+                                .parent(new ModelFile.ExistingModelFile(modLoc("item/magic_doorknob"), existingFileHelper))
                                 .texture("main", doorknob.getMainTextureLocation());
                     }
                 }
