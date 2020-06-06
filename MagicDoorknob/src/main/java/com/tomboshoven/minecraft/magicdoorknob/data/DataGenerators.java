@@ -18,6 +18,7 @@ public class DataGenerators {
 
         if (event.includeServer()) {
             generator.addProvider(new BlockStates(generator, existingFileHelper));
+            generator.addProvider(new Language(generator));
             generator.addProvider(new Recipes(generator));
         }
         if (event.includeClient()) {
