@@ -12,6 +12,7 @@ import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ModelFile;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayPartBaseBlock.EnumPartType.TOP;
@@ -68,5 +69,11 @@ public class BlockStates extends BlockStateProvider {
                     return builder.build();
                 }
         );
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return String.format("%s %s", MagicDoorknobMod.MOD_ID, super.getName());
     }
 }

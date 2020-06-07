@@ -26,8 +26,11 @@ jobs:
           # The runData command tends to stop the daemon unexpectedly, which causes error code 1
           # We verify that the command ran by making sure at least one of the caches is present
           command: |
-            _JAVA_OPTIONS='-Xmx1G -Xms1G' ./gradlew runData || true
-            ls */src/generated/resources/.cache
+            for SUBPROJECT_BUILD in */build.gradle; do
+              SUBPROJECT=$(dirname "$SUBPROJECT_BUILD")
+              _JAVA_OPTIONS='-Xmx1G -Xms1G' ./gradlew "$SUBPROJECT":runData || true
+              ls "$SUBPROJECT/src/generated/resources/.cache"
+            done
       - run:
           name: Building
           command: |
