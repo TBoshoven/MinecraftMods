@@ -14,6 +14,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -40,19 +41,23 @@ public class MagicDoorknobItem extends Item {
     private String typeName;
     // The item material, used for determining doorway generation properties
     private IItemTier tier;
+    // The item tag to use in recipes
+    private Tag<Item> recipeTag;
 
     /**
      * @param properties          The item properties
      * @param typeName            The main texture of the item
      * @param tier                The item material, used for determining doorway generation properties
      * @param mainTextureLocation The main material for rendering the block
+     * @param recipeTag           The item tag to use in recipes
      */
-    public MagicDoorknobItem(Item.Properties properties, String typeName, IItemTier tier, ResourceLocation mainTextureLocation) {
+    public MagicDoorknobItem(Item.Properties properties, String typeName, IItemTier tier, ResourceLocation mainTextureLocation, Tag<Item> recipeTag) {
         super(properties);
 
         this.typeName = typeName;
         this.tier = tier;
         this.mainTextureLocation = mainTextureLocation;
+        this.recipeTag = recipeTag;
     }
 
     /**
@@ -230,5 +235,12 @@ public class MagicDoorknobItem extends Item {
      */
     public IItemTier getTier() {
         return tier;
+    }
+
+    /**
+     * @return The item tag for use in recipes
+     */
+    public Tag<Item> getRecipeTag() {
+        return recipeTag;
     }
 }

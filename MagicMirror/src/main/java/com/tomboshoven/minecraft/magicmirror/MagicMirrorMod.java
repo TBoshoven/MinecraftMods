@@ -6,6 +6,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirro
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntities;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
+import com.tomboshoven.minecraft.magicmirror.data.DataGenerators;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClientUpdater;
@@ -34,6 +35,7 @@ public class MagicMirrorMod {
     public MagicMirrorMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.register(Blocks.class);
+        modEventBus.register(DataGenerators.class);
         modEventBus.register(Items.class);
         modEventBus.register(TileEntities.class);
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {

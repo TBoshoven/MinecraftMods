@@ -240,6 +240,11 @@ public class MagicMirrorBlock extends HorizontalBlock {
         public String getName() {
             return name;
         }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
     /**
