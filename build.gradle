@@ -50,6 +50,7 @@ subprojects {
             data {
                 properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
                 properties 'forge.logging.console.level': 'debug'
+                properties 'fml.earlyprogresswindow': 'false'
                 args '--mod', modName, '--all',
                         '--existing', file('src/main/resources/'),
                         '--existing', file('src/generated/resources/'),
