@@ -22,8 +22,10 @@ subprojects {
     apply plugin: 'net.minecraftforge.gradle'
     apply plugin: 'idea'
 
+    String modName = project.getName().replaceAll(/([a-z])([A-Z])/, /$1_$2/).toLowerCase()
+
     version = "1.14.4-DEV.0"
-    group = "com.tomboshoven.minecraft.magicmirror"
+    group = "com.tomboshoven.minecraft." + project.getName().toLowerCase()
     archivesBaseName = project.projectDir.name
 
     sourceCompatibility = 1.8
@@ -33,23 +35,39 @@ subprojects {
         mappings channel: 'snapshot', version: '20190719-1.14.3'
 
         runs {
-            client = {
+            client {
                 properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
                 properties 'forge.logging.console.level': 'debug'
-                workingDirectory project.file('run').canonicalPath
+                workingDirectory project.file('run')
                 source sourceSets.main
             }
-            server = {
+            server {
                 properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
                 properties 'forge.logging.console.level': 'debug'
-                workingDirectory project.file('run').canonicalPath
+                workingDirectory project.file('run')
+                source sourceSets.main
+            }
+            data {
+                properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+                properties 'forge.logging.console.level': 'debug'
+                args '--mod', modName, '--all',
+                        '--existing', file('src/main/resources/'),
+                        '--existing', file('src/generated/resources/'),
+                        '--output', file('src/generated/resources/')
+                workingDirectory project.file('run')
                 source sourceSets.main
             }
         }
     }
 
+    // Add generated resources
+    sourceSets.main.resources {
+        srcDir 'src/generated/resources'
+        include 'assets/**', 'data/**', 'META-INF/**', 'pack.mcmeta'
+    }
+
     dependencies {
-        minecraft "net.minecraftforge:forge:1.14.4-28.2.16"
+        minecraft "net.minecraftforge:forge:1.14.4-28.2.17"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
