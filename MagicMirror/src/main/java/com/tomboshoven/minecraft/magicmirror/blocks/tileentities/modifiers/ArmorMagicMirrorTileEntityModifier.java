@@ -9,6 +9,7 @@ import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectio
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifierClient;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -444,13 +445,15 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     public static void onMessageEquip(MessageEquip message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            TileEntity te = Minecraft.getInstance().world.getTileEntity(message.mirrorPos);
+            ClientWorld world = Minecraft.getInstance().world;
+            TileEntity te = world.getTileEntity(message.mirrorPos);
             if (te instanceof MagicMirrorBaseTileEntity) {
                 ((MagicMirrorBaseTileEntity) te).getModifiers().stream()
                         .filter(modifier -> modifier instanceof ArmorMagicMirrorTileEntityModifier).findFirst()
                         .map(ArmorMagicMirrorTileEntityModifier.class::cast)
                         .ifPresent(modifier -> modifier.replacementArmor.set(message.slotIdx, message.armor));
-                Minecraft.getInstance().world.playSound(message.mirrorPos, ((ArmorItem)message.armor.getItem()).getArmorMaterial().getSoundEvent(), SoundCategory.BLOCKS, 1, 1, false);
+                ArmorItem item = (ArmorItem)message.armor.getItem();
+                world.playSound(message.mirrorPos, item.getArmorMaterial().getSoundEvent(), SoundCategory.BLOCKS, 1, 1, false);
             }
         }));
         ctx.setPacketHandled(true);
