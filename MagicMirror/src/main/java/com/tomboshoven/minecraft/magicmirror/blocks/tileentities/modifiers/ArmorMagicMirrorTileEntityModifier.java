@@ -9,11 +9,15 @@ import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectio
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifierClient;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -23,6 +27,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -116,6 +121,58 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
             return false;
         }
 
+        // First try to equip the held armor item. If that didn't work, swap armor.
+        if (!tryEquipArmor(tileEntity, playerIn, hand)) {
+            swapArmor(tileEntity, playerIn);
+        }
+
+        return true;
+    }
+
+    /**
+     * Attempt to equip the mirror with the held item as armor.
+     * This should be called on the server side.
+     *
+     * @param tileEntity The mirror tile entity.
+     * @param playerIn The player entity holding the armor.
+     * @param hand Which hand the player is holding the item in.
+     *
+     * @return Whether the held item was successfully equipped as armor.
+     */
+    private boolean tryEquipArmor(MagicMirrorBaseTileEntity tileEntity, PlayerEntity playerIn, Hand hand) {
+        ItemStack heldItem = playerIn.getHeldItem(hand);
+        if (heldItem.getItem() instanceof ArmorItem) {
+            EquipmentSlotType equipmentSlotType = MobEntity.getSlotForItemStack(heldItem);
+            if (equipmentSlotType.getSlotType() == EquipmentSlotType.Group.ARMOR) {
+                int slotIndex = equipmentSlotType.getIndex();
+                if (replacementArmor.isEmpty(slotIndex)) {
+                    BlockPos pos = tileEntity.getPos();
+                    World world = tileEntity.getWorld();
+                    if (world != null) {
+                        MessageEquip message = new MessageEquip(pos, slotIndex, heldItem);
+                        PacketDistributor.PacketTarget mirrorTarget = PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos));
+                        Network.CHANNEL.send(mirrorTarget, message);
+                    }
+
+                    // Server side
+                    replacementArmor.set(slotIndex, heldItem.copy());
+                    heldItem.setCount(0);
+                    tileEntity.markDirty();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Swap armor with the player.
+     * This should be called on the server side.
+     *
+     * @param tileEntity The mirror tile entity.
+     * @param playerIn The player entity to swap armor with.
+     */
+    private void swapArmor(MagicMirrorBaseTileEntity tileEntity, PlayerEntity playerIn) {
         // Send two individual messages, to cover the situation where a player is tracked but the mirror isn't and vice
         // versa.
         BlockPos pos = tileEntity.getPos();
@@ -135,7 +192,6 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
 
         setCooldown(COOLDOWN_TICKS);
         tileEntity.markDirty();
-        return true;
     }
 
     /**
@@ -158,6 +214,10 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
         ReplacementArmor(Iterable<ItemStack> armor) {
             replacementInventory = NonNullList.create();
             armor.forEach(replacementInventory::add);
+        }
+
+        boolean isEmpty(int i) {
+            return i >= 0 && i < replacementInventory.size() && replacementInventory.get(i).isEmpty();
         }
 
         void set(int i, ItemStack stack) {
@@ -239,6 +299,42 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     }
 
     /**
+     * Message describing players equipping the mirror with armor.
+     */
+    public static class MessageEquip {
+        final int slotIdx;
+        final ItemStack armor;
+        BlockPos mirrorPos;
+
+        MessageEquip(BlockPos mirrorPos, int slotIdx, ItemStack armor) {
+            this.mirrorPos = mirrorPos;
+            this.slotIdx = slotIdx;
+            this.armor = armor.copy();
+        }
+
+        /**
+         * Decode a packet into an instance of the message.
+         *
+         * @param buf The buffer to read from.
+         * @return The created message instance.
+         */
+        public static MessageEquip decode(PacketBuffer buf) {
+            return new MessageEquip(buf.readBlockPos(), buf.readInt(), buf.readItemStack());
+        }
+
+        /**
+         * Encode the message into a packet buffer.
+         *
+         * @param buf The buffer to write to.
+         */
+        public void encode(PacketBuffer buf) {
+            buf.writeBlockPos(mirrorPos);
+            buf.writeInt(slotIdx);
+            buf.writeItemStack(armor);
+        }
+    }
+
+    /**
      * Base class for messages describing players swapping armor with the mirror.
      */
     static class MessageSwap {
@@ -289,7 +385,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
         public static MessageSwapMirror decode(PacketBuffer buf) {
             MessageSwapMirror result = new MessageSwapMirror();
             result.decodeArmor(buf);
-            result.mirrorPos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+            result.mirrorPos = buf.readBlockPos();
             return result;
         }
 
@@ -300,9 +396,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          */
         public void encode(PacketBuffer buf) {
             encodeArmor(buf);
-            buf.writeInt(mirrorPos.getX());
-            buf.writeInt(mirrorPos.getY());
-            buf.writeInt(mirrorPos.getZ());
+            buf.writeBlockPos(mirrorPos);
         }
     }
 
@@ -343,6 +437,26 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
             encodeArmor(buf);
             buf.writeInt(entityId);
         }
+    }
+
+    /**
+     * Handler for messages describing players equipping the mirror with armor.
+     */
+    public static void onMessageEquip(MessageEquip message, Supplier<NetworkEvent.Context> contextSupplier) {
+        NetworkEvent.Context ctx = contextSupplier.get();
+        ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+            ClientWorld world = Minecraft.getInstance().world;
+            TileEntity te = world.getTileEntity(message.mirrorPos);
+            if (te instanceof MagicMirrorBaseTileEntity) {
+                ((MagicMirrorBaseTileEntity) te).getModifiers().stream()
+                        .filter(modifier -> modifier instanceof ArmorMagicMirrorTileEntityModifier).findFirst()
+                        .map(ArmorMagicMirrorTileEntityModifier.class::cast)
+                        .ifPresent(modifier -> modifier.replacementArmor.set(message.slotIdx, message.armor));
+                ArmorItem item = (ArmorItem)message.armor.getItem();
+                world.playSound(message.mirrorPos, item.getArmorMaterial().getSoundEvent(), SoundCategory.BLOCKS, 1, 1, false);
+            }
+        }));
+        ctx.setPacketHandled(true);
     }
 
     /**
