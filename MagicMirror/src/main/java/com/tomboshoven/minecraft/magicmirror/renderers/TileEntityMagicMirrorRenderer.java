@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -32,7 +33,8 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
      * Maximum distance for an entity to be rendered.
      * Used for fading the mirror image.
      */
-    private static final double MAX_DISTANCE = 8;
+    private static final double MAX_HORIZONTAL_DISTANCE_SQ = 8 * 8;
+    private static final double MAX_VERTICAL_DISTANCE_SQ = 3 * 3;
 
     public TileEntityMagicMirrorRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
@@ -48,12 +50,14 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
                 EnumPartType part = tileEntityIn.getPart();
                 Direction facing = tileEntityIn.getFacing();
 
-                Vec3d reflectedPos = reflected.getPositionVector();
-                double distanceSq = tileEntityIn.getPos().distanceSq(reflectedPos.x, reflectedPos.y, reflectedPos.z, true);
+                BlockPos tePos = tileEntityIn.getPos();
+
+                Vec3d reflectedPos = reflected.getPositionVector().add(.5, .5, .5);
+                Vec3d distanceVector = reflectedPos.subtract(tePos.getX(), tePos.getY(), tePos.getZ());
 
                 ReflectionClientUpdater.markViewed((ReflectionClient) reflection);
 
-                renderReflection((ReflectionClient) reflection, matrixStackIn, bufferIn, part, facing, distanceSq);
+                renderReflection((ReflectionClient) reflection, matrixStackIn, bufferIn, part, facing, distanceVector);
             }
         }
     }
@@ -66,11 +70,13 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
      * @param renderTypeBuffer The buffer to render to.
      * @param part             The part of the mirror to render.
      * @param facing           The direction in which the mirror part is facing.
-     * @param distanceSq       The squared distance between the mirror and the reflected subject; used for fading.
+     * @param distance         The distance between the mirror and the reflected subject; used for fading.
      */
-    private static void renderReflection(ReflectionClient reflection, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, EnumPartType part, Direction facing, double distanceSq) {
+    private static void renderReflection(ReflectionClient reflection, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, EnumPartType part, Direction facing, Vec3d distance) {
         // The further away the subject is, the more faint the reflection
-        float reflectionAlpha = Math.max(0, Math.min(1f, 1.2f - (float) (distanceSq / (MAX_DISTANCE * MAX_DISTANCE))));
+        double horizontalDistanceSq = distance.x * distance.x + distance.z * distance.z;
+        double verticalDistanceSq = distance.y * distance.y;
+        float reflectionAlpha = Math.max(0, Math.min(1f, 1.2f - (float) (horizontalDistanceSq / MAX_HORIZONTAL_DISTANCE_SQ) - (float) (verticalDistanceSq / MAX_VERTICAL_DISTANCE_SQ)));
 
         matrixStack.translate(.5, .5, .5);
 
