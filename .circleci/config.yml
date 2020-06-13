@@ -74,13 +74,16 @@ jobs:
     docker:
       - image: gableroux/github-release:v1.0.2
     steps:
+      - run:
+          name: Install requirements
+          # Need curl for the API request and GNU sed for \U support
+          command: apk add curl git sed
+      - checkout
       - attach_workspace:
           at: /tmp/workspace
       - run:
           name: Upload assets to CurseForge
           command: |
-            # Need curl for the API request and GNU sed for \U support
-            apk add curl sed
             # Get release description
             DESCRIPTION="$(github-release info -u "$CIRCLE_PROJECT_USERNAME" -r "$CIRCLE_PROJECT_REPONAME" -t "$CIRCLE_TAG" -j | jq -r .Releases[0].body)"
 
