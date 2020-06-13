@@ -93,7 +93,7 @@ jobs:
             PROJECT_ID="$(jq -r .projectId $TAG_BUILD/curseforge.json)"
             METADATA="$(jq -n '{"releaseType": "alpha", "changelog": $ARGS.positional[0], "displayName": $ARGS.positional[1], "gameVersions": [7469, 7498, 4458]}' --args "$DESCRIPTION" "v$TAG_VERSION.$CIRCLE_BUILD_NUM")"
             FILE="$(ls /tmp/workspace/libs/*.jar | head -n 1)"
-            curl -XPOST "https://minecraft.curseforge.com/api/projects/$PROJECT_ID/upload-file' -F "file=@$FILE" -F "metadata=$METADATA" -H "X-Api-Token: $CURSEFORGE_TOKEN"
+            curl -XPOST "https://minecraft.curseforge.com/api/projects/$PROJECT_ID/upload-file" -F "file=@$FILE" -F "metadata=$METADATA" -H "X-Api-Token: $CURSEFORGE_TOKEN"
 workflows:
   version: 2
   build:
