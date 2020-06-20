@@ -3,24 +3,51 @@ package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.block.BannerBlock;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityModifier {
+    private DyeColor baseColor = DyeColor.BLACK;
+    @Nullable
+    private CompoundNBT bannerNBT;
+    @Nullable
+    private ITextComponent name;
+
     public BannerMagicMirrorTileEntityModifier(MagicMirrorModifier modifier) {
         super(modifier);
     }
 
+    public BannerMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, DyeColor baseColor, @Nullable CompoundNBT bannerNBT, @Nullable ITextComponent name) {
+        super(modifier);
+        this.baseColor = baseColor;
+        this.bannerNBT = bannerNBT;
+        this.name = name;
+    }
+
     @Override
     public void remove(World world, BlockPos pos) {
-
+        ItemStack itemStack = new ItemStack(BannerBlock.forColor(baseColor));
+        if (bannerNBT != null) {
+            itemStack.getOrCreateTag().put("BlockEntityTag", bannerNBT);
+        }
+        if (name != null) {
+            itemStack.setDisplayName(name);
+        }
+        InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), itemStack);
     }
 
     @Override
