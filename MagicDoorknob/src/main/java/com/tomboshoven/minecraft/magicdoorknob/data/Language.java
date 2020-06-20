@@ -14,8 +14,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class Language extends LanguageProvider {
-    public Language(DataGenerator gen) {
+class Language extends LanguageProvider {
+    Language(DataGenerator gen) {
         super(gen, MagicDoorknobMod.MOD_ID, "en_us");
     }
 
@@ -31,11 +31,11 @@ public class Language extends LanguageProvider {
         addDoorknob("wood", "Wooden");
     }
 
-    protected void addDoorknob(String typeName) {
+    private void addDoorknob(String typeName) {
         addDoorknob(typeName, StringUtils.capitalize(typeName));
     }
 
-    protected void addDoorknob(String typeName, String materialName) {
+    private void addDoorknob(String typeName, String materialName) {
         MagicDoorknobItem doorknob = Items.DOORKNOBS.get(typeName);
         add(doorknob, String.format("%s Magic Doorknob", materialName));
     }

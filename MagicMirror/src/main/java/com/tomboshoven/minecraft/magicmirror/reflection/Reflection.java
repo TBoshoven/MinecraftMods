@@ -21,7 +21,7 @@ public class Reflection {
     /**
      * The number of currently active reflections on the client side.
      */
-    static int activeReflectionsClient = 0;
+    static int activeReflectionsClient;
 
     /**
      * An ordered list of all the modifiers.

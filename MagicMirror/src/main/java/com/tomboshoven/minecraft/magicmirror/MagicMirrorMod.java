@@ -25,7 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Mod(MagicMirrorMod.MOD_ID)
-public class MagicMirrorMod {
+public final class MagicMirrorMod {
     public static final String MOD_ID = "magic_mirror";
 
     public static final Logger LOGGER = LogManager.getLogger();

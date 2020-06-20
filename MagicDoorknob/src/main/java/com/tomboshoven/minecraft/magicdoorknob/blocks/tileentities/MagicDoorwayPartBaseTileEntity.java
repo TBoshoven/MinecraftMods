@@ -51,7 +51,7 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     // The doorknob that caused this block to be created.
     private MagicDoorknobItem doorknob;
 
-    public MagicDoorwayPartBaseTileEntity(TileEntityType<? extends MagicDoorwayPartBaseTileEntity> tileEntityType) {
+    MagicDoorwayPartBaseTileEntity(TileEntityType<? extends MagicDoorwayPartBaseTileEntity> tileEntityType) {
         super(tileEntityType);
     }
 
@@ -106,7 +106,6 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
 
         // Get the base block texture
         World world = getWorld();
-        BlockState baseBlockState = getBaseBlockState();
         TextureAtlasSprite blockTexture = world == null ? MissingTextureSprite.func_217790_a() : blockModelShapes.getTexture(baseBlockState, world, getPos());
         if (blockTexture instanceof MissingTextureSprite) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.
@@ -114,7 +113,6 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
         }
 
         // Get the highlight texture
-        MagicDoorknobItem doorknob = getDoorknob();
         ResourceLocation doorknobTextureLocation;
         if (doorknob != null) {
             doorknobTextureLocation = doorknob.getMainTextureLocation();

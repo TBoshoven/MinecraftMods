@@ -304,7 +304,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     public static class MessageEquip {
         final int slotIdx;
         final ItemStack armor;
-        BlockPos mirrorPos;
+        final BlockPos mirrorPos;
 
         MessageEquip(BlockPos mirrorPos, int slotIdx, ItemStack armor) {
             this.mirrorPos = mirrorPos;
@@ -354,7 +354,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
             }
         }
 
-        public void encodeArmor(PacketBuffer buf) {
+        void encodeArmor(PacketBuffer buf) {
             for (ItemStack stack : armor.replacementInventory) {
                 buf.writeItemStack(stack);
             }
@@ -367,7 +367,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     public static class MessageSwapMirror extends MessageSwap {
         BlockPos mirrorPos;
 
-        @SuppressWarnings("unused")
+        @SuppressWarnings({"unused", "WeakerAccess"})
         public MessageSwapMirror() {
         }
 
@@ -406,7 +406,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     public static class MessageSwapPlayer extends MessageSwap {
         int entityId;
 
-        @SuppressWarnings("unused")
+        @SuppressWarnings({"unused", "WeakerAccess"})
         public MessageSwapPlayer() {
         }
 
@@ -442,7 +442,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     /**
      * Handler for messages describing players equipping the mirror with armor.
      */
-    public static void onMessageEquip(MessageEquip message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void onMessageEquip(MessageEquip message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ClientWorld world = Minecraft.getInstance().world;
@@ -462,7 +462,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     /**
      * Handler for messages describing players swapping armor with the mirror.
      */
-    public static void onMessageSwapMirror(MessageSwapMirror message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void onMessageSwapMirror(MessageSwapMirror message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             TileEntity te = Minecraft.getInstance().world.getTileEntity(message.mirrorPos);
@@ -478,7 +478,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     /**
      * Handler for messages describing players swapping armor with the mirror.
      */
-    public static void onMessageSwapPlayer(MessageSwapPlayer message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void onMessageSwapPlayer(MessageSwapPlayer message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             Entity entity = Minecraft.getInstance().world.getEntityByID(message.entityId);

@@ -1,6 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorTileEntity;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
@@ -45,7 +46,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
     public static final EnumProperty<Direction> HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     // Indexed by horizontal index
-    private static final VoxelShape[] SHAPES = new VoxelShape[]{
+    private static final VoxelShape[] SHAPES = {
             Block.makeCuboidShape(0, 0, 0, 1, 16, 16),
             Block.makeCuboidShape(0, 0, 0, 16, 16, 1),
             Block.makeCuboidShape(15, 0, 0, 16, 16, 16),
@@ -61,7 +62,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
         // Return the sound type of the base block, except that placing and removing it are door open and close sounds.
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof MagicDoorTileEntity) {
-            BlockState textureBlock = ((MagicDoorTileEntity) tileEntity).getBaseBlockState();
+            BlockState textureBlock = ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState();
             SoundType actualSoundType = textureBlock.getBlock().getSoundType(textureBlock, world, pos, null);
             return new SoundType(
                     actualSoundType.volume,
@@ -84,10 +85,10 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
      * @return The doorknob if it can be found
      */
     @Nullable
-    private MagicDoorknobItem getDoorknob(World world, BlockPos pos) {
+    private static MagicDoorknobItem getDoorknob(IBlockReader world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof MagicDoorTileEntity) {
-            return ((MagicDoorTileEntity) tileEntity).getDoorknob();
+            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getDoorknob();
         }
         return null;
     }
@@ -121,7 +122,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
      * @param pos    The position of the door block
      * @param facing The direction the door is facing in (opposite to doorway)
      */
-    private void breakDoorway(World world, BlockPos pos, Direction facing) {
+    private static void breakDoorway(World world, BlockPos pos, Direction facing) {
         Direction doorwayFacing = facing.getOpposite();
 
         MagicDoorknobItem doorknob = getDoorknob(world, pos);
@@ -139,7 +140,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext) {
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return SHAPES[state.get(HORIZONTAL_FACING).getHorizontalIndex()];
     }
 
@@ -155,7 +156,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, BlockRayTraceResult rayTraceResult) {
+    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (!worldIn.isRemote) {
             worldIn.destroyBlock(pos, false);
         }

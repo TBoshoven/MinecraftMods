@@ -48,7 +48,7 @@ public class CreatureMagicMirrorTileEntityModifier extends MagicMirrorTileEntity
         }
     }
 
-    private CreatureReflectionModifier createReflectionModifier() {
+    private static CreatureReflectionModifier createReflectionModifier() {
         return DistExecutor.runForDist(
                 () -> CreatureReflectionModifierClient::new,
                 () -> CreatureReflectionModifier::new

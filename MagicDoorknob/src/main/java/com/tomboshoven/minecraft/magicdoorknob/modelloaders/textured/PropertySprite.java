@@ -16,7 +16,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
-public class PropertySprite extends TextureAtlasSprite {
+class PropertySprite extends TextureAtlasSprite {
     /**
      * @param name The location of the property
      */

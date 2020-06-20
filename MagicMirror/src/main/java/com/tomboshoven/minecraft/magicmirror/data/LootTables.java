@@ -27,8 +27,8 @@ import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LootTables extends LootTableProvider {
-    public LootTables(DataGenerator dataGeneratorIn) {
+class LootTables extends LootTableProvider {
+    LootTables(DataGenerator dataGeneratorIn) {
         super(dataGeneratorIn);
     }
 
@@ -38,8 +38,8 @@ public class LootTables extends LootTableProvider {
     }
 
     @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationResults validationResults) {
-        map.forEach((name, table) -> LootTableManager.func_215302_a(validationResults, name, table, map::get));
+    protected void validate(Map<ResourceLocation, LootTable> map, ValidationResults validationresults) {
+        map.forEach((name, table) -> LootTableManager.func_215302_a(validationresults, name, table, map::get));
     }
 
     private static class BlockTables extends BlockLootTables {
