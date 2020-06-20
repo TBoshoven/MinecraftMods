@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
-import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorBlock;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
@@ -21,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
-public class PropertySprite extends TextureAtlasSprite {
+class PropertySprite extends TextureAtlasSprite {
     private final ResourceLocation name;
 
     private static final AtlasTexture ATLAS_TEXTURE = new AtlasTexture(new ResourceLocation(MagicDoorknobMod.MOD_ID, "property_texture_atlas"));

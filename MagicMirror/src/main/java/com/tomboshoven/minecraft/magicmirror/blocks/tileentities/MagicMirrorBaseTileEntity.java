@@ -5,6 +5,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartTyp
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -25,7 +26,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class MagicMirrorBaseTileEntity extends TileEntity {
-    public MagicMirrorBaseTileEntity(TileEntityType<? extends MagicMirrorBaseTileEntity> tileEntityTypeIn) {
+    MagicMirrorBaseTileEntity(TileEntityType<? extends MagicMirrorBaseTileEntity> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -104,7 +105,7 @@ public abstract class MagicMirrorBaseTileEntity extends TileEntity {
      * @return Which direction the mirror is facing in.
      */
     public Direction getFacing() {
-        return getBlockState().get(MagicMirrorBlock.HORIZONTAL_FACING);
+        return getBlockState().get(HorizontalBlock.HORIZONTAL_FACING);
     }
 
     /**

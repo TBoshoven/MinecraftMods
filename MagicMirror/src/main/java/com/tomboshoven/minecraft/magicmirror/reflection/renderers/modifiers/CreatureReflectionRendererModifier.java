@@ -105,9 +105,9 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
         }
 
         @Override
-        public void render(T entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-            setArmPoses(entity);
-            super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+        public void render(T entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+            setArmPoses(entityIn);
+            super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         }
 
         /**

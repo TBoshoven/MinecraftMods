@@ -53,14 +53,14 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     /**
      * All parts of the model that need to be textured.
      */
-    private static final String[] SUBMODEL_NAMES = new String[] {"door", "doorknob", "top", "wall1", "wall2", "pillar1", "pillar2", "pillar3", "pillar4"};
+    private static final String[] SUBMODEL_NAMES = {"door", "doorknob", "top", "wall1", "wall2", "pillar1", "pillar2", "pillar3", "pillar4"};
 
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.getDefaultState();
     // The doorknob that caused this block to be created.
     private MagicDoorknobItem doorknob;
 
-    public MagicDoorwayPartBaseTileEntity(TileEntityType<? extends MagicDoorwayPartBaseTileEntity> tileEntityType) {
+    MagicDoorwayPartBaseTileEntity(TileEntityType<? extends MagicDoorwayPartBaseTileEntity> tileEntityType) {
         super(tileEntityType);
     }
 
@@ -115,7 +115,6 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
 
         // Get the base block texture
         World world = getWorld();
-        BlockState baseBlockState = getBaseBlockState();
         TextureAtlasSprite blockTexture = world == null ? null : blockModelShapes.getTexture(baseBlockState, world, getPos());
         Material blockMaterial;
         if (blockTexture == null || blockTexture instanceof MissingTextureSprite) {
@@ -127,7 +126,6 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
         }
 
         // Get the highlight texture
-        MagicDoorknobItem doorknob = getDoorknob();
         Material doorknobMaterial;
         if (doorknob != null) {
             doorknobMaterial = doorknob.getMainMaterial();

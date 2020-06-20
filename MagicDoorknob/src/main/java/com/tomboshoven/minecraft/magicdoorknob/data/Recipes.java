@@ -18,8 +18,8 @@ import static net.minecraft.item.Items.ENDER_PEARL;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class Recipes extends RecipeProvider {
-    public Recipes(DataGenerator generatorIn) {
+class Recipes extends RecipeProvider {
+    Recipes(DataGenerator generatorIn) {
         super(generatorIn);
     }
 

@@ -71,7 +71,6 @@ public final class Items {
         addDoorknob(typeName, tier, new ResourceLocation("minecraft", String.format("block/%s", blockName)), recipeTag);
     }
 
-    @SuppressWarnings("BoundedWildcard")
     @SubscribeEvent
     public static void registerItems(Register<Item> event) {
         IForgeRegistry<Item> registry = event.getRegistry();

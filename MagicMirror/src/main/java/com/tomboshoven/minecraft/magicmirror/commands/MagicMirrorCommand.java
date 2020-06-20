@@ -15,14 +15,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MagicMirrorCommand {
+final class MagicMirrorCommand {
     /**
      * Reply with some debugging information.
      *
      * @param context The command context.
      * @return Currently, the number of active reflections.
      */
-    private static int debug(CommandContext<CommandSource> context) {
+    private static int debug(CommandContext<? extends CommandSource> context) {
         int reflectionCount = Reflection.getActiveReflectionsClient();
         context.getSource().sendFeedback(new TranslationTextComponent("commands.magic_mirror.debug.reflections", reflectionCount), true);
         return reflectionCount;
@@ -33,7 +33,7 @@ public class MagicMirrorCommand {
      *
      * @param dispatcher The command dispatcher to register the command to.
      */
-    public void register(CommandDispatcher<CommandSource> dispatcher) {
+    void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(
                 net.minecraft.command.Commands.literal("magic_mirror").then(
                         net.minecraft.command.Commands.literal("debug").executes(

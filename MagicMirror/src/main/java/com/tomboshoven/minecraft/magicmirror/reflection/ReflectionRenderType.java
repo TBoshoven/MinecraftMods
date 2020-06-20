@@ -11,6 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR_TEX;
+import static org.lwjgl.opengl.GL11.GL_FLAT;
 import static org.lwjgl.opengl.GL11.GL_LEQUAL;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.GL_SMOOTH;
@@ -21,8 +22,8 @@ import static org.lwjgl.opengl.GL11.GL_SMOOTH;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
-public class ReflectionRenderType extends RenderType {
-    public ReflectionRenderType(ReflectionClient reflection) {
+class ReflectionRenderType extends RenderType {
+    ReflectionRenderType(ReflectionClient reflection) {
         // Builtin RenderType builders are incredibly annoying to use due to how they're set up, so we just roll our own
         super(String.format("reflection[%d]", reflection.hashCode()), POSITION_COLOR_TEX, GL_QUADS, 64, true, true, () -> {
             // Texture
@@ -66,7 +67,7 @@ public class ReflectionRenderType extends RenderType {
             RenderSystem.disableDepthTest();
 
             // Shade model
-            RenderSystem.shadeModel(7424);
+            RenderSystem.shadeModel(GL_FLAT);
 
             // Transparency
             RenderSystem.disableBlend();

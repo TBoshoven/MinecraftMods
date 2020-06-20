@@ -17,6 +17,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IEntityReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -49,7 +50,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     /**
      * The reflection object, used for keeping track of who is being reflected and rendering.
      */
-    private Reflection reflection;
+    private final Reflection reflection;
     // Start the update counter at its max, so we update on the first tick.
     private int reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
 
@@ -66,7 +67,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
      * @param ownPosition The position of the tile entity in the world.
      * @return A list of players that are candidates for reflecting.
      */
-    private static List<PlayerEntity> findReflectablePlayers(World world, BlockPos ownPosition) {
+    private static List<PlayerEntity> findReflectablePlayers(IEntityReader world, BlockPos ownPosition) {
         // TODO: Add facing limitations
         AxisAlignedBB scanBB = new AxisAlignedBB(ownPosition.add(-10, -4, -10), ownPosition.add(10, 4, 10));
         List<PlayerEntity> playerEntities = world.getEntitiesWithinAABB(PlayerEntity.class, scanBB);
@@ -82,7 +83,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
      * @return A player to reflect, or null if there are no valid candidates.
      */
     @Nullable
-    private static PlayerEntity findPlayerToReflect(World world, BlockPos ownPosition) {
+    private static PlayerEntity findPlayerToReflect(IEntityReader world, BlockPos ownPosition) {
         List<PlayerEntity> players = findReflectablePlayers(world, ownPosition);
         if (players.isEmpty()) {
             return null;

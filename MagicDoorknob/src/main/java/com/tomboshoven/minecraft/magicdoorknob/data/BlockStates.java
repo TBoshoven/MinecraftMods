@@ -19,8 +19,8 @@ import static com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayPartBas
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BlockStates extends BlockStateProvider {
-    public BlockStates(DataGenerator gen, ExistingFileHelper existingFileHelper) {
+class BlockStates extends BlockStateProvider {
+    BlockStates(DataGenerator gen, ExistingFileHelper existingFileHelper) {
         super(gen, MagicDoorknobMod.MOD_ID, existingFileHelper);
     }
 
