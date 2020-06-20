@@ -28,7 +28,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MagicMirrorMod {
     public static final String MOD_ID = "magic_mirror";
 
-    @SuppressWarnings("PublicField")
     public static final Logger LOGGER = LogManager.getLogger();
 
     public MagicMirrorMod() {
