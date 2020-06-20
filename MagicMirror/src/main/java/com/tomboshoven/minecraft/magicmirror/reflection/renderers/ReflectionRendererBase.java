@@ -32,13 +32,13 @@ public abstract class ReflectionRendererBase {
      * Set up the rendering perspective.
      * Always call tearDownPerspective after rendering.
      */
-    public abstract void setupPerspective();
+    public abstract void setUp();
 
     /**
      * Tear down the rendering perspective.
      * Always call setupPerspective before this.
      */
-    public abstract void tearDownPerspective();
+    public abstract void tearDown();
 
     /**
      * Render the reflection.

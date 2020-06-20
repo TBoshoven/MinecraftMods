@@ -55,7 +55,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
     }
 
     @Override
-    public void setupPerspective() {
+    public void setUp() {
         // Re-initialize the projection matrix to keep full control over the perspective
         RenderSystem.matrixMode(GL_PROJECTION);
         RenderSystem.pushMatrix();
@@ -66,7 +66,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
     }
 
     @Override
-    public void tearDownPerspective() {
+    public void tearDown() {
         // Simply pop the projection matrix
         RenderSystem.matrixMode(GL_PROJECTION);
         RenderSystem.popMatrix();
