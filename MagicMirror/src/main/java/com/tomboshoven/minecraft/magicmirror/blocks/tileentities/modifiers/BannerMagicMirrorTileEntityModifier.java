@@ -2,6 +2,9 @@ package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
+import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
+import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.BannerReflectionModifier;
+import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.BannerReflectionModifierClient;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BannerBlock;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,6 +16,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.DistExecutor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,11 +25,25 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityModifier {
+    /**
+     * The initial color of the banner (before any patterns are applied)
+     */
     private DyeColor baseColor = DyeColor.BLACK;
+    /**
+     * The banner NBT tag, stored here for removal.
+     */
     @Nullable
     private CompoundNBT bannerNBT;
+    /**
+     * The banner name.
+     */
     @Nullable
     private ITextComponent name;
+    /**
+     * The object that modifies the reflection in the mirror to show the banner in the background.
+     */
+    @Nullable
+    private BannerReflectionModifier reflectionModifier;
 
     public BannerMagicMirrorTileEntityModifier(MagicMirrorModifier modifier) {
         super(modifier);
@@ -74,12 +92,28 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
 
     @Override
     public void activate(MagicMirrorBaseTileEntity tileEntity) {
+        Reflection reflection = tileEntity.getReflection();
+        if (reflection != null) {
+            reflectionModifier = createReflectionModifier();
+            reflection.addModifier(reflectionModifier);
+        }
+    }
 
+    private static BannerReflectionModifier createReflectionModifier() {
+        return DistExecutor.runForDist(
+                () -> BannerReflectionModifierClient::new,
+                () -> BannerReflectionModifier::new
+        );
     }
 
     @Override
     public void deactivate(MagicMirrorBaseTileEntity tileEntity) {
-
+        if (reflectionModifier != null) {
+            Reflection reflection = tileEntity.getReflection();
+            if (reflection != null) {
+                reflection.removeModifier(reflectionModifier);
+            }
+        }
     }
 
     @Override
