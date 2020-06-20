@@ -17,7 +17,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BannerReflectionModifier extends ReflectionModifier {
-    ImmutableList<Pair<BannerPattern, DyeColor>> patternList;
+    private ImmutableList<Pair<BannerPattern, DyeColor>> patternList;
 
     public BannerReflectionModifier(Collection<? extends Pair<BannerPattern, DyeColor>> patternList) {
         this.patternList = ImmutableList.copyOf(patternList);
@@ -27,5 +27,9 @@ public class BannerReflectionModifier extends ReflectionModifier {
     public ReflectionRendererBase apply(ReflectionRendererBase reflectionRenderer) {
         // Nothing to do on the server side
         return reflectionRenderer;
+    }
+
+    ImmutableList<Pair<BannerPattern, DyeColor>> getPatternList() {
+        return patternList;
     }
 }
