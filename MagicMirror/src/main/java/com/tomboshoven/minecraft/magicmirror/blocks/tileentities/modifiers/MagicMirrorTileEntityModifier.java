@@ -118,4 +118,11 @@ public abstract class MagicMirrorTileEntityModifier {
             --cooldown;
         }
     }
+
+    /**
+     * @return The modifier that applied this object to the tile entity.
+     */
+    public MagicMirrorModifier getModifier() {
+        return modifier;
+    }
 }

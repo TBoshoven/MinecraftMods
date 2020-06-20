@@ -77,17 +77,17 @@ public abstract class MagicMirrorModifier {
     /**
      * Find out whether the mirror at the given position already has a modifier of a given type.
      *
-     * @param world        The world in which to check the block.
-     * @param pos          The position of the mirror block to check.
-     * @param modifierType The type of modifier to test for.
+     * @param world    The world in which to check the block.
+     * @param pos      The position of the mirror block to check.
+     * @param modifier The modifier to test for.
      * @return Whether the mirror at the given position has the given modifier.
      */
-    private static boolean hasModifierOfType(IEnviromentBlockReader world, BlockPos pos, Class<? extends MagicMirrorModifier> modifierType) {
+    private static boolean hasModifierOfType(IEnviromentBlockReader world, BlockPos pos, MagicMirrorModifier modifier) {
         MagicMirrorBaseTileEntity magicMirrorTileEntity = getMagicMirrorTileEntity(world, pos);
         if (magicMirrorTileEntity == null) {
             return false;
         }
-        return magicMirrorTileEntity.getModifiers().stream().anyMatch(modifierType::isInstance);
+        return magicMirrorTileEntity.getModifiers().stream().anyMatch(teModifier -> teModifier.getModifier() == modifier);
     }
 
     /**
@@ -162,6 +162,6 @@ public abstract class MagicMirrorModifier {
      * @return Whether the mirror at the given position has the current modifier.
      */
     boolean hasModifierOfType(IEnviromentBlockReader world, BlockPos pos) {
-        return hasModifierOfType(world, pos, getClass());
+        return hasModifierOfType(world, pos, this);
     }
 }
