@@ -59,24 +59,24 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
 
     @SuppressWarnings("deprecation")
     @Override
-    public int getOpacity(BlockState state, IBlockReader world, BlockPos pos) {
+    public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
         // Use the base block's light opacity.
-        TileEntity tileEntity = world.getTileEntity(pos);
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
-            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getOpacity(world, pos);
+            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getOpacity(worldIn, pos);
         }
-        return super.getOpacity(state, world, pos);
+        return super.getOpacity(state, worldIn, pos);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public float getBlockHardness(BlockState blockState, IBlockReader world, BlockPos pos) {
+    public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
         // Use the base block's hardness.
-        TileEntity tileEntity = world.getTileEntity(pos);
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
-            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getBlockHardness(world, pos);
+            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getBlockHardness(worldIn, pos);
         }
-        return super.getBlockHardness(blockState, world, pos);
+        return super.getBlockHardness(blockState, worldIn, pos);
     }
 
     @Override

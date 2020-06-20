@@ -20,6 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 
 /**
@@ -37,18 +38,18 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
     private static final double MAX_VERTICAL_DISTANCE_SQ = 3 * 3;
 
     @Override
-    public void render(MagicMirrorBaseTileEntity te, double x, double y, double z, float partialTicks, int destroyStage) {
-        super.render(te, x, y, z, partialTicks, destroyStage);
+    public void render(MagicMirrorBaseTileEntity tileEntityIn, double x, double y, double z, float partialTicks, int destroyStage) {
+        super.render(tileEntityIn, x, y, z, partialTicks, destroyStage);
 
-        Reflection reflection = te.getReflection();
+        Reflection reflection = tileEntityIn.getReflection();
 
         if (reflection != null) {
             Entity reflected = reflection.getReflectedEntity();
             if (reflected != null) {
-                EnumPartType part = te.getPart();
-                Direction facing = te.getFacing();
+                EnumPartType part = tileEntityIn.getPart();
+                Direction facing = tileEntityIn.getFacing();
 
-                BlockPos tePos = te.getPos();
+                BlockPos tePos = tileEntityIn.getPos();
 
                 Vec3d reflectedPos = reflected.getPositionVector().add(.5, .5, .5);
                 Vec3d distanceVector = reflectedPos.subtract(tePos.getX(), tePos.getY(), tePos.getZ());
@@ -107,7 +108,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
         double texBottom = part == EnumPartType.TOP ? .5 : 1;
 
         // Draw a simple quad
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         bufferbuilder.pos(-.5, -.5, 0).tex(0, texBottom).endVertex();
         bufferbuilder.pos(.5, -.5, 0).tex(1, texBottom).endVertex();
         bufferbuilder.pos(.5, .5, 0).tex(1, texTop).endVertex();

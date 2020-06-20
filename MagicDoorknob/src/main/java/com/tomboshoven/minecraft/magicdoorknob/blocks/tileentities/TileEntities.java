@@ -8,9 +8,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @SuppressWarnings("ConstantConditions")
-public class TileEntities {
-    static TileEntityType<MagicDoorTileEntity> MAGIC_DOOR = TileEntityType.Builder.create(MagicDoorTileEntity::new, Blocks.MAGIC_DOOR).build(null);
-    static TileEntityType<MagicDoorwayTileEntity> MAGIC_DOORWAY = TileEntityType.Builder.create(MagicDoorwayTileEntity::new, Blocks.MAGIC_DOORWAY).build(null);
+public final class TileEntities {
+    static final TileEntityType<MagicDoorTileEntity> MAGIC_DOOR = TileEntityType.Builder.create(MagicDoorTileEntity::new, Blocks.MAGIC_DOOR).build(null);
+    static final TileEntityType<MagicDoorwayTileEntity> MAGIC_DOORWAY = TileEntityType.Builder.create(MagicDoorwayTileEntity::new, Blocks.MAGIC_DOORWAY).build(null);
 
     @SubscribeEvent
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> evt) {

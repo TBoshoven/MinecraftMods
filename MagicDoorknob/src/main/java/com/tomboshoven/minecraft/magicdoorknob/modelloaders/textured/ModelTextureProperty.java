@@ -14,12 +14,12 @@ import java.util.Objects;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ModelTextureProperty extends ModelProperty<ResourceLocation> {
+public final class ModelTextureProperty extends ModelProperty<ResourceLocation> {
     // Lazily filled map of model texture properties.
     // Can't just use equality as they are used in an IdentityHashMap.
-    private static Map<ResourceLocation, ModelTextureProperty> PROPERTIES = Maps.newHashMap();
+    private static final Map<ResourceLocation, ModelTextureProperty> PROPERTIES = Maps.newHashMap();
 
-    private ResourceLocation name;
+    private final ResourceLocation name;
 
     /**
      * @param name The name of the property

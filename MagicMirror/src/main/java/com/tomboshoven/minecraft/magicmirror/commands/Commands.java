@@ -14,7 +14,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public final class Commands {
-    static MagicMirrorCommand MAGIC_MIRROR = new MagicMirrorCommand();
+    private static final MagicMirrorCommand MAGIC_MIRROR = new MagicMirrorCommand();
 
     private Commands() {
     }
@@ -24,7 +24,7 @@ public final class Commands {
      *
      * @param dispatcher The command dispatcher to register our commands to.
      */
-    public static void registerCommands(CommandDispatcher<CommandSource> dispatcher) {
+    private static void registerCommands(CommandDispatcher<CommandSource> dispatcher) {
         MAGIC_MIRROR.register(dispatcher);
     }
 

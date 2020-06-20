@@ -25,7 +25,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class MagicMirrorBaseTileEntity extends TileEntity {
-    public MagicMirrorBaseTileEntity(TileEntityType<? extends MagicMirrorBaseTileEntity> tileEntityTypeIn) {
+    MagicMirrorBaseTileEntity(TileEntityType<? extends MagicMirrorBaseTileEntity> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

@@ -4,9 +4,9 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorTileEntity;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayTileEntity;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.IItemTier;
@@ -20,7 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IEnviromentBlockReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -34,11 +34,11 @@ public class MagicDoorknobItem extends Item {
     // The main texture of the item
     private final ResourceLocation mainTextureLocation;
     // The name of the type of item (used in NBT data; do not modify)
-    private String typeName;
+    private final String typeName;
     // The item material, used for determining doorway generation properties
-    private IItemTier tier;
+    private final IItemTier tier;
     // The item tag to use in recipes
-    private Tag<Item> recipeTag;
+    private final Tag<Item> recipeTag;
 
     /**
      * @param properties          The item properties
@@ -47,7 +47,7 @@ public class MagicDoorknobItem extends Item {
      * @param mainTextureLocation The name of the type of item (used in NBT data; do not modify)
      * @param recipeTag           The item tag to use in recipes
      */
-    public MagicDoorknobItem(Properties properties, String typeName, IItemTier tier, ResourceLocation mainTextureLocation, Tag<Item> recipeTag) {
+    MagicDoorknobItem(Properties properties, String typeName, IItemTier tier, ResourceLocation mainTextureLocation, Tag<Item> recipeTag) {
         super(properties);
 
         this.typeName = typeName;
@@ -62,7 +62,7 @@ public class MagicDoorknobItem extends Item {
      * @param useContext The context for the interaction that triggered this check.
      * @return Whether the block can be replaced by a door or doorway
      */
-    private static boolean isEmpty(IEnviromentBlockReader world, BlockPos pos, BlockItemUseContext useContext) {
+    private static boolean isEmpty(IBlockReader world, BlockPos pos, BlockItemUseContext useContext) {
         BlockState blockState = world.getBlockState(pos);
         if (blockState.getBlock().isAir(blockState, world, pos)) {
             return true;
@@ -113,8 +113,8 @@ public class MagicDoorknobItem extends Item {
         );
         TileEntity topTileEntity = world.getTileEntity(doorPos);
         if (topTileEntity instanceof MagicDoorTileEntity) {
-            ((MagicDoorTileEntity) topTileEntity).setBaseBlockState(world.getBlockState(pos));
-            ((MagicDoorTileEntity) topTileEntity).setDoorknob(this);
+            ((MagicDoorwayPartBaseTileEntity) topTileEntity).setBaseBlockState(world.getBlockState(pos));
+            ((MagicDoorwayPartBaseTileEntity) topTileEntity).setDoorknob(this);
         }
         world.setBlockState(
                 doorPos.down(),
@@ -124,8 +124,8 @@ public class MagicDoorknobItem extends Item {
         );
         TileEntity bottomTileEntity = world.getTileEntity(doorPos.down());
         if (bottomTileEntity instanceof MagicDoorTileEntity) {
-            ((MagicDoorTileEntity) bottomTileEntity).setBaseBlockState(world.getBlockState(pos.down()));
-            ((MagicDoorTileEntity) bottomTileEntity).setDoorknob(this);
+            ((MagicDoorwayPartBaseTileEntity) bottomTileEntity).setBaseBlockState(world.getBlockState(pos.down()));
+            ((MagicDoorwayPartBaseTileEntity) bottomTileEntity).setDoorknob(this);
         }
         world.playSound(null, doorPos, SoundEvents.BLOCK_WOODEN_DOOR_OPEN, SoundCategory.BLOCKS, 1, 1);
     }
@@ -173,8 +173,8 @@ public class MagicDoorknobItem extends Item {
 
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof MagicDoorwayTileEntity) {
-                ((MagicDoorwayTileEntity) tileEntity).setBaseBlockState(state);
-                ((MagicDoorwayTileEntity) tileEntity).setDoorknob(this);
+                ((MagicDoorwayPartBaseTileEntity) tileEntity).setBaseBlockState(state);
+                ((MagicDoorwayPartBaseTileEntity) tileEntity).setDoorknob(this);
             }
         }
     }
@@ -188,7 +188,7 @@ public class MagicDoorknobItem extends Item {
      * @param useContext The context for the interaction that triggered this check.
      * @return Whether a door can be placed at the given position.
      */
-    private boolean canPlaceDoor(IEnviromentBlockReader world, BlockPos pos, Direction facing, BlockItemUseContext useContext) {
+    private boolean canPlaceDoor(IBlockReader world, BlockPos pos, Direction facing, BlockItemUseContext useContext) {
         if (!isReplaceable(world, pos) || !isReplaceable(world, pos.down())) {
             return false;
         }
@@ -202,7 +202,7 @@ public class MagicDoorknobItem extends Item {
      * @param pos   The position to check
      * @return Whether this doorknob can replace the given block by a door or doorway
      */
-    private boolean isReplaceable(IEnviromentBlockReader world, BlockPos pos) {
+    private boolean isReplaceable(IBlockReader world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         if (blockState.hasTileEntity()) {
             return false;

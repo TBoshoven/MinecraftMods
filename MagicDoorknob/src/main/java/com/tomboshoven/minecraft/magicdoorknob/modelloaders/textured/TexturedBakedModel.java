@@ -36,9 +36,9 @@ import java.util.stream.Collectors;
 @OnlyIn(Dist.CLIENT)
 class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
     // The baked texture getter
-    private Function<? super ResourceLocation, ? extends TextureAtlasSprite> bakedTextureGetter;
+    private final Function<? super ResourceLocation, ? extends TextureAtlasSprite> bakedTextureGetter;
     // The mapper that replaces property textures by their values
-    private ITextureMapper textureMapper;
+    private final ITextureMapper textureMapper;
 
     /**
      * @param originalModel      The original baked model
@@ -86,7 +86,7 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
         /**
          * @param wrappedOverrideList The original baked model's override list
          */
-        public TexturedOverrideList(ItemOverrideList wrappedOverrideList) {
+        TexturedOverrideList(ItemOverrideList wrappedOverrideList) {
             this.wrappedOverrideList = wrappedOverrideList;
         }
 
@@ -96,13 +96,13 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
         }
 
         @Override
-        public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, @Nullable World world, @Nullable LivingEntity entity) {
+        public IBakedModel getModelWithOverrides(IBakedModel model, ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn) {
             // If the item has a texture mapper, use it.
             Item item = stack.getItem();
             if (item instanceof IItemStackTextureMapperProvider) {
-                return new TexturedBakedModel<>(originalModel, bakedTextureGetter, ((IItemStackTextureMapperProvider) item).getTextureMapper(stack));
+                return new TexturedBakedModel<>(model, bakedTextureGetter, ((IItemStackTextureMapperProvider) item).getTextureMapper(stack));
             }
-            return wrappedOverrideList.getModelWithOverrides(originalModel, stack, world, entity);
+            return wrappedOverrideList.getModelWithOverrides(model, stack, worldIn, entityIn);
         }
     }
 }
