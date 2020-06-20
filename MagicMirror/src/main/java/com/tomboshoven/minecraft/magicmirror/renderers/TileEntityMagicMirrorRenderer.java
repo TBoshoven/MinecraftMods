@@ -36,7 +36,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
     private static final double MAX_HORIZONTAL_DISTANCE_SQ = 8 * 8;
     private static final double MAX_VERTICAL_DISTANCE_SQ = 3 * 3;
 
-    public TileEntityMagicMirrorRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+    TileEntityMagicMirrorRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 

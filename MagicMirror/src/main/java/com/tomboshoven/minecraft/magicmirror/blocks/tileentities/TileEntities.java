@@ -8,9 +8,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @SuppressWarnings("ConstantConditions")
-public class TileEntities {
-    public static TileEntityType<MagicMirrorCoreTileEntity> MAGIC_MIRROR_CORE = TileEntityType.Builder.create(MagicMirrorCoreTileEntity::new, Blocks.MAGIC_MIRROR).build(null);
-    public static TileEntityType<MagicMirrorPartTileEntity> MAGIC_MIRROR_PART = TileEntityType.Builder.create(MagicMirrorPartTileEntity::new, Blocks.MAGIC_MIRROR).build(null);
+public final class TileEntities {
+    public static final TileEntityType<MagicMirrorCoreTileEntity> MAGIC_MIRROR_CORE = TileEntityType.Builder.create(MagicMirrorCoreTileEntity::new, Blocks.MAGIC_MIRROR).build(null);
+    public static final TileEntityType<MagicMirrorPartTileEntity> MAGIC_MIRROR_PART = TileEntityType.Builder.create(MagicMirrorPartTileEntity::new, Blocks.MAGIC_MIRROR).build(null);
 
     @SubscribeEvent
     public static void registerTileEntities(Register<TileEntityType<?>> evt) {

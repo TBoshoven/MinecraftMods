@@ -11,8 +11,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class Language extends LanguageProvider {
-    public Language(DataGenerator gen) {
+class Language extends LanguageProvider {
+    Language(DataGenerator gen) {
         super(gen, MagicMirrorMod.MOD_ID, "en_us");
     }
 

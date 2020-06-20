@@ -51,7 +51,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
     /**
      * Property describing whether the mirror is completely constructed.
      */
-    public static final BooleanProperty COMPLETE = BooleanProperty.create("complete");
+    private static final BooleanProperty COMPLETE = BooleanProperty.create("complete");
 
     /**
      * Property describing which part of the mirror is being represented by this block.
@@ -172,12 +172,12 @@ public class MagicMirrorBlock extends HorizontalBlock {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         // The mirror will only do anything if it's used from the front.
         if (state.get(HORIZONTAL_FACING) == hit.getFace()) {
             if (!worldIn.isRemote) {
                 // First, see if we can add a modifier
-                ItemStack heldItem = player.getHeldItem(hand);
+                ItemStack heldItem = player.getHeldItem(handIn);
                 if (!heldItem.isEmpty()) {
                     for (MagicMirrorModifier modifier : MagicMirrorModifier.getModifiers()) {
                         if (modifier.canModify(worldIn, pos, heldItem)) {
@@ -190,7 +190,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
                 // Then, see if any existing modifier can do something.
                 TileEntity tileEntity = worldIn.getTileEntity(pos);
                 if (tileEntity instanceof MagicMirrorBaseTileEntity) {
-                    if (((MagicMirrorBaseTileEntity) tileEntity).tryActivate(player, hand)) {
+                    if (((MagicMirrorBaseTileEntity) tileEntity).tryActivate(player, handIn)) {
                         return ActionResultType.SUCCESS;
                     }
                 }
@@ -264,7 +264,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
          */
         String modifierName;
 
-        @SuppressWarnings("unused")
+        @SuppressWarnings({"unused", "WeakerAccess"})
         public MessageAttachModifier() {
         }
 
@@ -309,19 +309,21 @@ public class MagicMirrorBlock extends HorizontalBlock {
     /**
      * Handler for messages describing modifiers being attached to mirrors.
      */
-    public static void onMessageAttachModifier(MessageAttachModifier message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void onMessageAttachModifier(MessageAttachModifier message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ClientWorld world = Minecraft.getInstance().world;
-            TileEntity te = world.getTileEntity(message.mirrorPos);
-            if (te instanceof MagicMirrorBaseTileEntity) {
-                MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
-                if (modifier == null) {
-                    MagicMirrorMod.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
-                    return;
+            if (world != null) {
+                TileEntity te = world.getTileEntity(message.mirrorPos);
+                if (te instanceof MagicMirrorBaseTileEntity) {
+                    MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
+                    if (modifier == null) {
+                        MagicMirrorMod.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
+                        return;
+                    }
+                    modifier.apply(world, message.mirrorPos, message.usedItemStack);
+                    world.playSound(message.mirrorPos, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);
                 }
-                modifier.apply(world, message.mirrorPos, message.usedItemStack);
-                world.playSound(message.mirrorPos, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);
             }
         }));
         ctx.setPacketHandled(true);

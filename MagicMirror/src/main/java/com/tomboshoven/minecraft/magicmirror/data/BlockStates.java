@@ -16,8 +16,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BlockStates extends BlockStateProvider {
-    public BlockStates(DataGenerator gen, ExistingFileHelper existingFileHelper) {
+class BlockStates extends BlockStateProvider {
+    BlockStates(DataGenerator gen, ExistingFileHelper existingFileHelper) {
         super(gen, MagicMirrorMod.MOD_ID, existingFileHelper);
     }
 

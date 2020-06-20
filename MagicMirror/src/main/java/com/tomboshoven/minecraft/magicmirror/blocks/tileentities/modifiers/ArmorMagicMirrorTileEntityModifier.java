@@ -304,7 +304,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     public static class MessageEquip {
         final int slotIdx;
         final ItemStack armor;
-        BlockPos mirrorPos;
+        final BlockPos mirrorPos;
 
         MessageEquip(BlockPos mirrorPos, int slotIdx, ItemStack armor) {
             this.mirrorPos = mirrorPos;
@@ -354,7 +354,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
             }
         }
 
-        public void encodeArmor(PacketBuffer buf) {
+        void encodeArmor(PacketBuffer buf) {
             for (ItemStack stack : armor.replacementInventory) {
                 buf.writeItemStack(stack);
             }
@@ -367,7 +367,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     public static class MessageSwapMirror extends MessageSwap {
         BlockPos mirrorPos;
 
-        @SuppressWarnings("unused")
+        @SuppressWarnings({"unused", "WeakerAccess"})
         public MessageSwapMirror() {
         }
 
@@ -406,7 +406,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     public static class MessageSwapPlayer extends MessageSwap {
         int entityId;
 
-        @SuppressWarnings("unused")
+        @SuppressWarnings({"unused", "WeakerAccess"})
         public MessageSwapPlayer() {
         }
 
@@ -442,18 +442,20 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     /**
      * Handler for messages describing players equipping the mirror with armor.
      */
-    public static void onMessageEquip(MessageEquip message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void onMessageEquip(MessageEquip message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ClientWorld world = Minecraft.getInstance().world;
-            TileEntity te = world.getTileEntity(message.mirrorPos);
-            if (te instanceof MagicMirrorBaseTileEntity) {
-                ((MagicMirrorBaseTileEntity) te).getModifiers().stream()
-                        .filter(modifier -> modifier instanceof ArmorMagicMirrorTileEntityModifier).findFirst()
-                        .map(ArmorMagicMirrorTileEntityModifier.class::cast)
-                        .ifPresent(modifier -> modifier.replacementArmor.set(message.slotIdx, message.armor));
-                ArmorItem item = (ArmorItem)message.armor.getItem();
-                world.playSound(message.mirrorPos, item.getArmorMaterial().getSoundEvent(), SoundCategory.BLOCKS, 1, 1, false);
+            if (world != null) {
+                TileEntity te = world.getTileEntity(message.mirrorPos);
+                if (te instanceof MagicMirrorBaseTileEntity) {
+                    ((MagicMirrorBaseTileEntity) te).getModifiers().stream()
+                            .filter(modifier -> modifier instanceof ArmorMagicMirrorTileEntityModifier).findFirst()
+                            .map(ArmorMagicMirrorTileEntityModifier.class::cast)
+                            .ifPresent(modifier -> modifier.replacementArmor.set(message.slotIdx, message.armor));
+                    ArmorItem item = (ArmorItem) message.armor.getItem();
+                    world.playSound(message.mirrorPos, item.getArmorMaterial().getSoundEvent(), SoundCategory.BLOCKS, 1, 1, false);
+                }
             }
         }));
         ctx.setPacketHandled(true);
@@ -462,14 +464,17 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     /**
      * Handler for messages describing players swapping armor with the mirror.
      */
-    public static void onMessageSwapMirror(MessageSwapMirror message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void onMessageSwapMirror(MessageSwapMirror message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            TileEntity te = Minecraft.getInstance().world.getTileEntity(message.mirrorPos);
-            if (te instanceof MagicMirrorBaseTileEntity) {
-                ((MagicMirrorBaseTileEntity) te).getModifiers().stream()
-                        .filter(modifier -> modifier instanceof ArmorMagicMirrorTileEntityModifier).findFirst()
-                        .ifPresent(modifier -> message.armor.swap((ArmorMagicMirrorTileEntityModifier) modifier));
+            ClientWorld world = Minecraft.getInstance().world;
+            if (world != null) {
+                TileEntity te = world.getTileEntity(message.mirrorPos);
+                if (te instanceof MagicMirrorBaseTileEntity) {
+                    ((MagicMirrorBaseTileEntity) te).getModifiers().stream()
+                            .filter(modifier -> modifier instanceof ArmorMagicMirrorTileEntityModifier).findFirst()
+                            .ifPresent(modifier -> message.armor.swap((ArmorMagicMirrorTileEntityModifier) modifier));
+                }
             }
         }));
         ctx.setPacketHandled(true);
@@ -478,26 +483,29 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     /**
      * Handler for messages describing players swapping armor with the mirror.
      */
-    public static void onMessageSwapPlayer(MessageSwapPlayer message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void onMessageSwapPlayer(MessageSwapPlayer message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            Entity entity = Minecraft.getInstance().world.getEntityByID(message.entityId);
+            ClientWorld world = Minecraft.getInstance().world;
+            if (world != null) {
+                Entity entity = world.getEntityByID(message.entityId);
 
-            if (entity instanceof PlayerEntity) {
-                message.armor.swap((PlayerEntity) entity);
+                if (entity instanceof PlayerEntity) {
+                    message.armor.swap((PlayerEntity) entity);
 
-                entity.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, .8f, .4f);
-                Random random = new Random();
-                for (int i = 0; i < SWAP_PARTICLE_COUNT; ++i) {
-                    entity.getEntityWorld().addParticle(
-                            ParticleTypes.PORTAL,
-                            entity.getPosX() + random.nextGaussian() / 4,
-                            entity.getPosY() + 2 * random.nextDouble(),
-                            entity.getPosZ() + random.nextGaussian() / 4,
-                            random.nextGaussian() / 2,
-                            random.nextDouble(),
-                            random.nextGaussian() / 2
-                    );
+                    entity.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, .8f, .4f);
+                    Random random = new Random();
+                    for (int i = 0; i < SWAP_PARTICLE_COUNT; ++i) {
+                        entity.getEntityWorld().addParticle(
+                                ParticleTypes.PORTAL,
+                                entity.getPosX() + random.nextGaussian() / 4,
+                                entity.getPosY() + 2 * random.nextDouble(),
+                                entity.getPosZ() + random.nextGaussian() / 4,
+                                random.nextGaussian() / 2,
+                                random.nextDouble(),
+                                random.nextGaussian() / 2
+                        );
+                    }
                 }
             }
         }));

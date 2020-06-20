@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Mod(MagicDoorknobMod.MOD_ID)
-public class MagicDoorknobMod {
+public final class MagicDoorknobMod {
     public static final String MOD_ID = "magic_doorknob";
 
     public MagicDoorknobMod() {

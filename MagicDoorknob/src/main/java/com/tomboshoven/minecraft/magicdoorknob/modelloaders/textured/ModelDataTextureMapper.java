@@ -22,11 +22,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @OnlyIn(Dist.CLIENT)
 class ModelDataTextureMapper implements ITextureMapper {
     @Override
-    public Material mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable IModelData modelData) {
-        if (modelData != null) {
+    public Material mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable IModelData extraData) {
+        if (extraData != null) {
             ResourceLocation name = spriteToMap.getName();
             ModelProperty<Material> modelProperty = ModelTextureProperty.get(name);
-            Material material = modelData.getData(modelProperty);
+            Material material = extraData.getData(modelProperty);
             if (material != null) {
                 return material;
             }

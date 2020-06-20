@@ -13,8 +13,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemModels extends ItemModelProvider {
-    public ItemModels(DataGenerator gen, ExistingFileHelper helper) {
+class ItemModels extends ItemModelProvider {
+    ItemModels(DataGenerator gen, ExistingFileHelper helper) {
         super(gen, MagicDoorknobMod.MOD_ID, helper);
     }
 

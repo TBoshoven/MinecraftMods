@@ -14,8 +14,8 @@ import java.util.Set;
  * Instead, we re-render the reflection if the reflection was requested in the *previous* frame.
  * Downside of this is that we're always one frame late, but that should not be very noticeable.
  */
-public class ReflectionClientUpdater {
-    private static Set<ReflectionClient> toRerender = Sets.newConcurrentHashSet();
+public final class ReflectionClientUpdater {
+    private static final Set<ReflectionClient> toRerender = Sets.newConcurrentHashSet();
 
     public static void markViewed(ReflectionClient reflection) {
         toRerender.add(reflection);

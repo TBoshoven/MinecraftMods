@@ -26,7 +26,7 @@ public class TexturedModelLoader implements IModelLoader<TexturedModelGeometry> 
     // The namespace of the properties; used in model definitions
     public static final String PROPERTY_NAMESPACE = "property";
     // All extra textures that were requested.
-    private Set<Material> extraTextures = Sets.newHashSet();
+    private final Set<Material> extraTextures = Sets.newHashSet();
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {

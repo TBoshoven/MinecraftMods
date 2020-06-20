@@ -5,7 +5,6 @@ import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.Direction;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,7 +20,7 @@ public class Reflection {
     /**
      * The number of currently active reflections on the client side.
      */
-    static int activeReflectionsClient = 0;
+    static int activeReflectionsClient;
 
     /**
      * An ordered list of all the modifiers.
@@ -37,7 +36,7 @@ public class Reflection {
     /**
      * The angle in degrees over the Y axis that the reflection should be rotated.
      */
-    protected float angle;
+    float angle;
 
     /**
      * Get the total number of active reflections in this instance's client thread; used for debugging leaks.

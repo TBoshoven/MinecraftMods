@@ -26,6 +26,8 @@ import static net.minecraft.client.Minecraft.IS_RUNNING_ON_MAC;
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public class ReflectionClient extends Reflection {
+    private static final int TEXTURE_WIDTH = 64;
+    private static final int TEXTURE_HEIGHT = 128;
     /**
      * The renderer for the reflection.
      */
@@ -63,7 +65,7 @@ public class ReflectionClient extends Reflection {
     void buildFrameBuffer() {
         super.buildFrameBuffer();
 
-        frameBuffer = new Framebuffer(64, 128, true, IS_RUNNING_ON_MAC);
+        frameBuffer = new Framebuffer(TEXTURE_WIDTH, TEXTURE_HEIGHT, true, IS_RUNNING_ON_MAC);
         frameBuffer.unbindFramebuffer();
     }
 

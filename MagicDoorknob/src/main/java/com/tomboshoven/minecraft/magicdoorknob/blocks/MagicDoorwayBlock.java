@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
+import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayTileEntity;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
@@ -91,16 +92,16 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (newState.isAir(world, pos)) {
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (newState.isAir(worldIn, pos)) {
             // When this block is destroyed (manually or by closing the door), replace it by its base block.
-            TileEntity tileEntity = world.getTileEntity(pos);
+            TileEntity tileEntity = worldIn.getTileEntity(pos);
             if (tileEntity instanceof MagicDoorwayTileEntity) {
-                world.setBlockState(pos, ((MagicDoorwayTileEntity) tileEntity).getBaseBlockState());
+                worldIn.setBlockState(pos, ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState());
             }
         }
 
-        super.onReplaced(state, world, pos, newState, isMoving);
+        super.onReplaced(state, worldIn, pos, newState, isMoving);
     }
 
     @Override

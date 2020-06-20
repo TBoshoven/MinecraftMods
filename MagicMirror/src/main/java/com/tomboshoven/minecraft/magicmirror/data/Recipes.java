@@ -19,8 +19,8 @@ import static net.minecraftforge.common.Tags.Items.RODS_WOODEN;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class Recipes extends RecipeProvider {
-    public Recipes(DataGenerator generatorIn) {
+class Recipes extends RecipeProvider {
+    Recipes(DataGenerator generatorIn) {
         super(generatorIn);
     }
 
