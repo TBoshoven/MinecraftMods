@@ -20,6 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 
 /**
@@ -107,7 +108,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
         double texBottom = part == EnumPartType.TOP ? .5 : 1;
 
         // Draw a simple quad
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         bufferbuilder.pos(-.5, -.5, 0).tex(0, texBottom).endVertex();
         bufferbuilder.pos(.5, -.5, 0).tex(1, texBottom).endVertex();
         bufferbuilder.pos(.5, .5, 0).tex(1, texTop).endVertex();

@@ -10,6 +10,9 @@ import net.minecraft.entity.Entity;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+
 /**
  * Renderer for reflections in the mirror.
  */
@@ -56,12 +59,12 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         }
 
         // Set the perspective to prevent FoV impacting things.
-        GlStateManager.matrixMode(5889);
+        GlStateManager.matrixMode(GL_PROJECTION);
         GlStateManager.pushMatrix();
         GlStateManager.loadIdentity();
         // Aspect is .5 to compensate for the rectangular mirror
         GlStateManager.multMatrix(Matrix4f.perspective(90f, .5f, .05f, 50f));
-        GlStateManager.matrixMode(5888);
+        GlStateManager.matrixMode(GL_MODELVIEW);
 
         GlStateManager.pushMatrix();
 
@@ -83,9 +86,9 @@ public class ReflectionRenderer extends ReflectionRendererBase {
 
         GlStateManager.popMatrix();
         // Restore the perspective.
-        GlStateManager.matrixMode(5889);
+        GlStateManager.matrixMode(GL_PROJECTION);
         GlStateManager.popMatrix();
-        GlStateManager.matrixMode(5888);
+        GlStateManager.matrixMode(GL_MODELVIEW);
 
         GlStateManager.activeTexture(GLX.GL_TEXTURE1);
         GlStateManager.disableTexture();

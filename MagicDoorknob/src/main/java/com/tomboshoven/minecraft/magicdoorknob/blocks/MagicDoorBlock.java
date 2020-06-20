@@ -53,6 +53,11 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
             Block.makeCuboidShape(0, 0, 15, 16, 16, 16),
     };
 
+    /**
+     * Maximum number of doorway blocks to break when closing a doorway.
+     */
+    private static final int DOORWAY_BREAK_MAX_DEPTH = 32;
+
     MagicDoorBlock(Properties properties) {
         super(properties);
     }
@@ -127,7 +132,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
 
         MagicDoorknobItem doorknob = getDoorknob(world, pos);
         // If the doorknob can't be found, just go with some high number (32)
-        float depth = doorknob == null ? 32 : doorknob.getTier().getEfficiency();
+        float depth = doorknob == null ? DOORWAY_BREAK_MAX_DEPTH : doorknob.getTier().getEfficiency();
 
         for (int i = 1; i <= depth; ++i) {
             BlockPos blockPos = pos.offset(doorwayFacing, i);
