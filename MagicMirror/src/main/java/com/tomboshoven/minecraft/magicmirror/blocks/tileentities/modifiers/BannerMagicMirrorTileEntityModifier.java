@@ -34,7 +34,7 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
     public BannerMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, DyeColor baseColor, @Nullable CompoundNBT bannerNBT, @Nullable ITextComponent name) {
         super(modifier);
         this.baseColor = baseColor;
-        this.bannerNBT = bannerNBT;
+        this.bannerNBT = bannerNBT != null ? bannerNBT.copy() : null;
         this.name = name;
     }
 
@@ -48,6 +48,28 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
             itemStack.setDisplayName(name);
         }
         InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), itemStack);
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT nbt) {
+        super.write(nbt);
+        nbt.putInt("BannerColor", baseColor.getId());
+        if (bannerNBT != null) {
+            nbt.put("BannerData", bannerNBT.copy());
+        }
+        nbt.putString("BannerName", ITextComponent.Serializer.toJson(name));
+        return nbt;
+    }
+
+    @Override
+    public void read(CompoundNBT nbt) {
+        super.read(nbt);
+        baseColor = DyeColor.byId(nbt.getInt("BannerColor"));
+        CompoundNBT bannerData = nbt.getCompound("BannerData");
+        if (!bannerData.isEmpty()) {
+            bannerNBT = bannerData.copy();
+        }
+        name = ITextComponent.Serializer.fromJson(nbt.getString("BannerName"));
     }
 
     @Override
