@@ -53,11 +53,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
     }
 
     @Override
-    public void render(float facing, float partialTicks) {
-        if (entityRenderer == null) {
-            return;
-        }
-
+    public void setUp() {
         // Set the perspective to prevent FoV impacting things.
         GlStateManager.matrixMode(GL_PROJECTION);
         GlStateManager.pushMatrix();
@@ -72,18 +68,14 @@ public class ReflectionRenderer extends ReflectionRendererBase {
 
         GlStateManager.rotated(180, 1, 0, 0);
 
-        GlStateManager.translated(0, 0, 1.5);
-        GlStateManager.rotatef(facing, 0, 1, 0);
-
+        // Disable light map
         GlStateManager.activeTexture(GLX.GL_TEXTURE1);
         GlStateManager.disableTexture();
         GlStateManager.activeTexture(GLX.GL_TEXTURE0);
+    }
 
-        // The typing of these classes works out a little weird, so instead of complicating things too much, let's go
-        // with the unchecked cast.
-        //noinspection unchecked
-        ((EntityRenderer<Entity>) entityRenderer).doRender(entity, 0, -1, 0, 0, partialTicks);
-
+    @Override
+    public void tearDown() {
         GlStateManager.popMatrix();
         // Restore the perspective.
         GlStateManager.matrixMode(GL_PROJECTION);
@@ -91,7 +83,26 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         GlStateManager.matrixMode(GL_MODELVIEW);
 
         GlStateManager.activeTexture(GLX.GL_TEXTURE1);
-        GlStateManager.disableTexture();
+        GlStateManager.enableTexture();
         GlStateManager.activeTexture(GLX.GL_TEXTURE0);
+    }
+
+    @Override
+    public void render(float facing, float partialTicks) {
+        if (entityRenderer == null) {
+            return;
+        }
+
+        GlStateManager.pushMatrix();
+
+        GlStateManager.translated(0, 0, 1.5);
+        GlStateManager.rotatef(facing, 0, 1, 0);
+
+        // The typing of these classes works out a little weird, so instead of complicating things too much, let's go
+        // with the unchecked cast.
+        //noinspection unchecked
+        ((EntityRenderer<Entity>) entityRenderer).doRender(entity, 0, -1, 0, 0, partialTicks);
+
+        GlStateManager.popMatrix();
     }
 }

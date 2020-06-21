@@ -95,8 +95,10 @@ public class MagicMirrorBlock extends HorizontalBlock {
      * @param modifier The modifier to attach to the mirror.
      */
     private static void attachModifier(World worldIn, BlockPos pos, ItemStack heldItem, MagicMirrorModifier modifier) {
+        // Item stack may change by attaching
+        ItemStack originalHeldItem = heldItem.copy();
         modifier.apply(worldIn, pos, heldItem);
-        MessageAttachModifier message = new MessageAttachModifier(pos, heldItem, modifier);
+        MessageAttachModifier message = new MessageAttachModifier(pos, originalHeldItem, modifier);
         PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_CHUNK.with(() -> worldIn.getChunkAt(pos));
         Network.CHANNEL.send(target, message);
     }

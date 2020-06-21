@@ -42,6 +42,16 @@ class ReflectionRendererModifier extends ReflectionRendererBase {
     }
 
     @Override
+    public void setUp() {
+        baseRenderer.setUp();
+    }
+
+    @Override
+    public void tearDown() {
+        baseRenderer.tearDown();
+    }
+
+    @Override
     public void render(float facing, float partialTicks) {
         baseRenderer.render(facing, partialTicks);
     }
