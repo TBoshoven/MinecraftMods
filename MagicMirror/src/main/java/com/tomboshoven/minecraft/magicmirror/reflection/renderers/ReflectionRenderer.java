@@ -68,6 +68,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
 
         GlStateManager.rotated(180, 1, 0, 0);
 
+        // Disable light map
         GlStateManager.activeTexture(GLX.GL_TEXTURE1);
         GlStateManager.disableTexture();
         GlStateManager.activeTexture(GLX.GL_TEXTURE0);
@@ -82,7 +83,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         GlStateManager.matrixMode(GL_MODELVIEW);
 
         GlStateManager.activeTexture(GLX.GL_TEXTURE1);
-        GlStateManager.disableTexture();
+        GlStateManager.enableTexture();
         GlStateManager.activeTexture(GLX.GL_TEXTURE0);
     }
 
