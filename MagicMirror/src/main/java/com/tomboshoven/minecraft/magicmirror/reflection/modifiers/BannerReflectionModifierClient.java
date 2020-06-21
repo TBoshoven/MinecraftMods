@@ -20,6 +20,6 @@ public class BannerReflectionModifierClient extends BannerReflectionModifier {
     @Override
     public ReflectionRendererBase apply(ReflectionRendererBase reflectionRenderer) {
         super.apply(reflectionRenderer);
-        return new BannerReflectionRendererModifier(reflectionRenderer);
+        return new BannerReflectionRendererModifier(reflectionRenderer, patternList);
     }
 }
