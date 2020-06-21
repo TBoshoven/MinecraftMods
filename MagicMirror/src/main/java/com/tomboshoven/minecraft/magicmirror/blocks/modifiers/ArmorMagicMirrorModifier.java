@@ -5,6 +5,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.Magic
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -33,7 +34,14 @@ public class ArmorMagicMirrorModifier extends MagicMirrorModifier {
     }
 
     @Override
-    MagicMirrorTileEntityModifier createTileEntityModifier() {
+    MagicMirrorTileEntityModifier createTileEntityModifier(CompoundNBT nbt) {
+        MagicMirrorTileEntityModifier teModifier = new ArmorMagicMirrorTileEntityModifier(this);
+        teModifier.read(nbt);
+        return teModifier;
+    }
+
+    @Override
+    MagicMirrorTileEntityModifier createTileEntityModifier(ItemStack usedItem) {
         return new ArmorMagicMirrorTileEntityModifier(this);
     }
 }

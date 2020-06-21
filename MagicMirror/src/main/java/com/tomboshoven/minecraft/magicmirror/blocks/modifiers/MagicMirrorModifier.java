@@ -133,7 +133,7 @@ public abstract class MagicMirrorModifier {
      * @param heldItem   The item used on the block.
      */
     private void apply(MagicMirrorBaseTileEntity tileEntity, ItemStack heldItem) {
-        tileEntity.addModifier(createTileEntityModifier());
+        tileEntity.addModifier(createTileEntityModifier(heldItem));
         heldItem.shrink(1);
     }
 
@@ -144,15 +144,21 @@ public abstract class MagicMirrorModifier {
      * @param nbt        The NBT tag to use for the modifier.
      */
     public void apply(MagicMirrorBaseTileEntity tileEntity, CompoundNBT nbt) {
-        MagicMirrorTileEntityModifier magicMirrorTileEntityModifier = createTileEntityModifier();
-        magicMirrorTileEntityModifier.read(nbt);
+        MagicMirrorTileEntityModifier magicMirrorTileEntityModifier = createTileEntityModifier(nbt);
         tileEntity.addModifier(magicMirrorTileEntityModifier);
     }
 
     /**
+     * @param nbt The NBT tag of the modifier.
      * @return A new instance of the tile entity modifier.
      */
-    abstract MagicMirrorTileEntityModifier createTileEntityModifier();
+    abstract MagicMirrorTileEntityModifier createTileEntityModifier(CompoundNBT nbt);
+
+    /**
+     * @param usedItem The item used to attach the modifier.
+     * @return A new instance of the tile entity modifier.
+     */
+    abstract MagicMirrorTileEntityModifier createTileEntityModifier(ItemStack usedItem);
 
     /**
      * Find out whether the mirror at the given position already has a modifier of the current type.

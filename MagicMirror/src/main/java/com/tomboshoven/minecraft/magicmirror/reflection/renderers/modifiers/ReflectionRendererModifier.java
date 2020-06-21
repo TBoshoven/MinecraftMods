@@ -43,13 +43,13 @@ class ReflectionRendererModifier extends ReflectionRendererBase {
     }
 
     @Override
-    public void setupPerspective() {
-        baseRenderer.setupPerspective();
+    public void setUp() {
+        baseRenderer.setUp();
     }
 
     @Override
-    public void tearDownPerspective() {
-        baseRenderer.tearDownPerspective();
+    public void tearDown() {
+        baseRenderer.tearDown();
     }
 
     @Override

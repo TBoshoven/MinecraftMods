@@ -115,13 +115,13 @@ public class ReflectionClient extends Reflection {
             frameBuffer.framebufferClear(IS_RUNNING_ON_MAC);
             frameBuffer.bindFramebuffer(true);
 
-            reflectionRenderer.setupPerspective();
+            reflectionRenderer.setUp();
 
             reflectionRenderer.render(angle, partialTicks, renderTypeBuffer);
 
             renderTypeBuffer.finish();
 
-            reflectionRenderer.tearDownPerspective();
+            reflectionRenderer.tearDown();
 
             frameBuffer.unbindFramebuffer();
         }
