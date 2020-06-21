@@ -27,10 +27,32 @@ import static org.lwjgl.opengl.GL11.GL_QUADS;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BannerReflectionRendererModifier extends ReflectionRendererModifier {
+    /**
+     * The distance at which to render the background.
+     */
+    private static final double BACKGROUND_DISTANCE = 16;
+
+    // Texture coordinates of the rendered banner in the banner texture
+    private static final double BANNER_TEXTURE_START_U = 0, BANNER_TEXTURE_END_U = 22.0 / 64.0;
+    private static final double BANNER_TEXTURE_START_V = 0, BANNER_TEXTURE_END_V = 41.0 / 64.0;
+
+    /**
+     * The list of patterns to render (pattern colors stored separately).
+     */
     private final ImmutableList<BannerPattern> patternList;
+    /**
+     * The list of colors for the individual patterns.
+     */
     private final ImmutableList<DyeColor> colorList;
+    /**
+     * The identifier for the banner pattern; should match Vanilla.
+     */
     private final String bannerPatternString;
 
+    /**
+     * @param baseRenderer     The renderer that is being proxied.
+     * @param patternColorList A list of patterns to be rendered with their colors.
+     */
     public BannerReflectionRendererModifier(ReflectionRendererBase baseRenderer, Collection<Pair<BannerPattern, DyeColor>> patternColorList) {
         super(baseRenderer);
 
@@ -40,12 +62,19 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
         bannerPatternString = generateBannerPatternString(patternColorList);
     }
 
+    /**
+     * @param patternColorList A list of patterns to be rendered with their colors.
+     * @return The identifier for the banner texture.
+     */
     private static String generateBannerPatternString(Collection<? extends Pair<BannerPattern, DyeColor>> patternColorList) {
         return patternColorList.stream()
                 .flatMap(patternItem -> Stream.of(patternItem.getLeft().getHashname(), Integer.toString(patternItem.getRight().getId())))
                 .collect(Collectors.joining());
     }
 
+    /**
+     * @return The banner texture location.
+     */
     @Nullable
     private ResourceLocation getBannerResourceLocation() {
         return BannerTextures.BANNER_DESIGNS.getResourceLocation(bannerPatternString, patternList, colorList);
@@ -62,11 +91,12 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
             BufferBuilder bufferbuilder = tessellator.getBuffer();
 
             // Draw a simple quad
+            // Perspective is 90 degrees, so width should be distance for a perfect fit
             bufferbuilder.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-            bufferbuilder.pos(-8, 16, 16).tex(0, 0).endVertex();
-            bufferbuilder.pos(8, 16, 16).tex(22.0 / 64.0, 0).endVertex();
-            bufferbuilder.pos(8, -16, 16).tex(22.0 / 64.0, 41.0 / 64.0).endVertex();
-            bufferbuilder.pos(-8, -16, 16).tex(0, 41.0 / 64.0).endVertex();
+            bufferbuilder.pos(-BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).tex(BANNER_TEXTURE_START_U, BANNER_TEXTURE_START_V).endVertex();
+            bufferbuilder.pos(BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).tex(BANNER_TEXTURE_END_U, BANNER_TEXTURE_START_V).endVertex();
+            bufferbuilder.pos(BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).tex(BANNER_TEXTURE_END_U, BANNER_TEXTURE_END_V).endVertex();
+            bufferbuilder.pos(-BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).tex(BANNER_TEXTURE_START_U, BANNER_TEXTURE_END_V).endVertex();
             tessellator.draw();
         }
     }
