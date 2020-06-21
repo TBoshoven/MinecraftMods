@@ -1,9 +1,14 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BannerTextures;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.DyeColor;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.util.ResourceLocation;
@@ -14,6 +19,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 
 /**
  * A modifier for a reflection renderer which puts a banner pattern in the background of the reflection.
@@ -43,5 +52,25 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
     @Nullable
     private ResourceLocation getBannerResourceLocation() {
         return BannerTextures.BANNER_DESIGNS.getResourceLocation(bannerPatternString, patternList, colorList);
+    }
+
+    @Override
+    public void render(float facing, float partialTicks) {
+        super.render(facing, partialTicks);
+
+        ResourceLocation bannerLocation = getBannerResourceLocation();
+        if (bannerLocation != null) {
+            Minecraft.getInstance().getTextureManager().bindTexture(bannerLocation);
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
+
+            // Draw a simple quad
+            bufferbuilder.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+            bufferbuilder.pos(-8, 16, 16).tex(0, 0).endVertex();
+            bufferbuilder.pos(8, 16, 16).tex(22.0 / 64.0, 0).endVertex();
+            bufferbuilder.pos(8, -16, 16).tex(22.0 / 64.0, 41.0 / 64.0).endVertex();
+            bufferbuilder.pos(-8, -16, 16).tex(0, 41.0 / 64.0).endVertex();
+            tessellator.draw();
+        }
     }
 }
