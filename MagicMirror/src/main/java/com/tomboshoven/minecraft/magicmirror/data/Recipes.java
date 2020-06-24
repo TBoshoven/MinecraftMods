@@ -26,7 +26,7 @@ class Recipes extends RecipeProvider {
 
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shapedRecipe(Items.MAGIC_MIRROR, 2)
+        ShapedRecipeBuilder.shapedRecipe(Items.MAGIC_MIRROR.get(), 2)
                 .patternLine("|e|")
                 .patternLine("| |")
                 .patternLine("|#|")

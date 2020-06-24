@@ -9,7 +9,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * A reflection modifier that changes the background of the reflection.
@@ -17,7 +16,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BannerReflectionModifier extends ReflectionModifier {
-    ImmutableList<Pair<BannerPattern, DyeColor>> patternList;
+    final ImmutableList<Pair<BannerPattern, DyeColor>> patternList;
 
     public BannerReflectionModifier(Collection<? extends Pair<BannerPattern, DyeColor>> patternList) {
         this.patternList = ImmutableList.copyOf(patternList);

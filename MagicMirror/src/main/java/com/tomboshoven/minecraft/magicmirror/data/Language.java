@@ -18,7 +18,7 @@ class Language extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        add(Blocks.MAGIC_MIRROR, "Magic Mirror");
+        add(Blocks.MAGIC_MIRROR.get(), "Magic Mirror");
 
         add("commands.magic_mirror.debug.reflections", "Total number of reflections: %d");
     }

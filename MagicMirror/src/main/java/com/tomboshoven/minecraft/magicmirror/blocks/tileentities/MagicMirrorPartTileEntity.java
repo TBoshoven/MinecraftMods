@@ -18,7 +18,7 @@ public class MagicMirrorPartTileEntity extends MagicMirrorBaseTileEntity {
     private MagicMirrorCoreTileEntity core;
 
     public MagicMirrorPartTileEntity() {
-        super(TileEntities.MAGIC_MIRROR_PART);
+        super(TileEntities.MAGIC_MIRROR_PART.get());
     }
 
     @Nullable

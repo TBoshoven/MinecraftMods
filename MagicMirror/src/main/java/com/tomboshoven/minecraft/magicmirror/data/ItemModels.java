@@ -20,9 +20,9 @@ class ItemModels extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        ResourceLocation registryName = Items.MAGIC_MIRROR.getRegistryName();
-        if (registryName != null) {
-            getBuilder(registryName.getPath())
+        ResourceLocation magicMirrorId = Items.MAGIC_MIRROR.getId();
+        if (magicMirrorId != null) {
+            getBuilder(magicMirrorId.getPath())
                     .parent(new ModelFile.ExistingModelFile(modLoc("block/magic_mirror"), existingFileHelper));
         }
     }
