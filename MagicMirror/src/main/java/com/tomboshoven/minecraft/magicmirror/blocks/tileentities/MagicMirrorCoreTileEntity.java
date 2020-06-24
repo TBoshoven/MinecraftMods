@@ -28,6 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -52,7 +53,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     private int reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
 
     public MagicMirrorCoreTileEntity() {
-        super(TileEntities.MAGIC_MIRROR_CORE);
+        super(Objects.requireNonNull(TileEntities.MAGIC_MIRROR_CORE.get()));
 
         reflection = DistExecutor.runForDist(() -> ReflectionClient::new, () -> Reflection::new);
     }

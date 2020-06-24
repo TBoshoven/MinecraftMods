@@ -6,7 +6,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry2;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 
 import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
 
@@ -18,8 +18,11 @@ public final class ModelLoaders {
     private ModelLoaders() {
     }
 
-    @SubscribeEvent
-    public static void registerModelLoaders(ModelRegistryEvent event) {
+    public static void register(IEventBus eventBus) {
+        eventBus.addListener(ModelLoaders::registerModelLoaders);
+    }
+
+   private static void registerModelLoaders(ModelRegistryEvent event) {
         // Initialize textured model loader
         TexturedModelLoader modelLoader = new TexturedModelLoader();
         modelLoader.registerTexture(new ResourceLocation(MOD_ID, "block/empty"));

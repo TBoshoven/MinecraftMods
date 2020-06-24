@@ -23,12 +23,12 @@ public final class MagicDoorknobMod {
 
     public MagicDoorknobMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.register(BlockColorHandlers.class);
-        modEventBus.register(Blocks.class);
-        modEventBus.register(DataGenerators.class);
-        modEventBus.register(Items.class);
-        modEventBus.register(TileEntities.class);
+        BlockColorHandlers.register(modEventBus);
+        Blocks.register(modEventBus);
+        DataGenerators.register(modEventBus);
+        Items.register(modEventBus);
+        TileEntities.register(modEventBus);
 
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.register(ModelLoaders.class));
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> ModelLoaders.register(modEventBus));
     }
 }

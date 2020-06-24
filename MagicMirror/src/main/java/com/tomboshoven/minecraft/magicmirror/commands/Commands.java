@@ -3,7 +3,7 @@ package com.tomboshoven.minecraft.magicmirror.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandSource;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -28,8 +28,11 @@ public final class Commands {
         MAGIC_MIRROR.register(dispatcher);
     }
 
-    @SubscribeEvent
-    public static void serverStarting(FMLServerStartingEvent event) {
+    public static void register(IEventBus eventBus) {
+        eventBus.addListener(Commands::serverStarting);
+    }
+
+    private static void serverStarting(FMLServerStartingEvent event) {
         registerCommands(event.getCommandDispatcher());
     }
 }

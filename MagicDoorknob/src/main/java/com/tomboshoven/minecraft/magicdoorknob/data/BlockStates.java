@@ -33,7 +33,7 @@ class BlockStates extends BlockStateProvider {
     private void registerDoor() {
         ModelFile doorBottom = new ModelFile.ExistingModelFile(modLoc("block/magic_door_bottom"), existingFileHelper);
         ModelFile doorTop = new ModelFile.ExistingModelFile(modLoc("block/magic_door_top"), existingFileHelper);
-        horizontalBlock(Blocks.MAGIC_DOOR, blockState -> blockState.get(MagicDoorBlock.PART) == TOP ? doorTop : doorBottom, 270);
+        horizontalBlock(Blocks.MAGIC_DOOR.get(), blockState -> blockState.get(MagicDoorBlock.PART) == TOP ? doorTop : doorBottom, 270);
     }
 
     private void registerDoorway() {
@@ -44,7 +44,7 @@ class BlockStates extends BlockStateProvider {
         ModelFile doorwayOpenBottom = new ModelFile.ExistingModelFile(modLoc("block/magic_doorway_open_bottom"), existingFileHelper);
         ModelFile doorwayOpenTop = new ModelFile.ExistingModelFile(modLoc("block/magic_doorway_open_top"), existingFileHelper);
 
-        getVariantBuilder(Blocks.MAGIC_DOORWAY).forAllStates(
+        getVariantBuilder(Blocks.MAGIC_DOORWAY.get()).forAllStates(
                 blockState -> {
                     boolean openEastWest = blockState.get(MagicDoorwayBlock.OPEN_EAST_WEST);
                     boolean openNorthSouth = blockState.get(MagicDoorwayBlock.OPEN_NORTH_SOUTH);
