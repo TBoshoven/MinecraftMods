@@ -9,13 +9,13 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayT
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -43,7 +43,7 @@ public class MagicDoorknobItem extends Item {
     // The item material, used for determining doorway generation properties
     private final IItemTier tier;
     // The item tag to use in recipes
-    private final Tag<Item> recipeTag;
+    private final INamedTag<Item> recipeTag;
 
     /**
      * @param properties          The item properties
@@ -52,7 +52,7 @@ public class MagicDoorknobItem extends Item {
      * @param mainTextureLocation The main material for rendering the block
      * @param recipeTag           The item tag to use in recipes
      */
-    MagicDoorknobItem(Item.Properties properties, String typeName, IItemTier tier, ResourceLocation mainTextureLocation, Tag<Item> recipeTag) {
+    MagicDoorknobItem(Item.Properties properties, String typeName, IItemTier tier, ResourceLocation mainTextureLocation, INamedTag<Item> recipeTag) {
         super(properties);
 
         this.typeName = typeName;
@@ -225,8 +225,8 @@ public class MagicDoorknobItem extends Item {
      * @return The location of the main texture of the doorknob
      */
     @OnlyIn(Dist.CLIENT)
-    public Material getMainMaterial() {
-        return new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, mainTextureLocation);
+    public RenderMaterial getMainMaterial() {
+        return new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE, mainTextureLocation);
     }
 
     /**
@@ -246,7 +246,7 @@ public class MagicDoorknobItem extends Item {
     /**
      * @return The item tag for use in recipes
      */
-    public Tag<Item> getRecipeTag() {
+    public INamedTag<Item> getRecipeTag() {
         return recipeTag;
     }
 }

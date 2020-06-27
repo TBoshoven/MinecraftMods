@@ -7,16 +7,16 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverride;
 import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.BakedModelWrapper;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @OnlyIn(Dist.CLIENT)
 class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
     // The baked texture getter
-    private final Function<? super Material, ? extends TextureAtlasSprite> bakedTextureGetter;
+    private final Function<? super RenderMaterial, ? extends TextureAtlasSprite> bakedTextureGetter;
     // The mapper that replaces property textures by their values
     private final ITextureMapper textureMapper;
 
@@ -71,7 +71,7 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
      * @param bakedTextureGetter The baked texture getter
      * @param textureMapper      The mapper that replaces property textures by their values
      */
-    TexturedBakedModel(T originalModel, Function<? super Material, ? extends TextureAtlasSprite> bakedTextureGetter, ITextureMapper textureMapper) {
+    TexturedBakedModel(T originalModel, Function<? super RenderMaterial, ? extends TextureAtlasSprite> bakedTextureGetter, ITextureMapper textureMapper) {
         super(originalModel);
         this.bakedTextureGetter = bakedTextureGetter;
         this.textureMapper = textureMapper;
@@ -84,7 +84,7 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
         return quads.stream().map(quad -> {
             TextureAtlasSprite sprite = quad.func_187508_a();
             if (sprite instanceof PropertySprite) {
-                Material material = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
+                RenderMaterial material = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
                 TextureAtlasSprite actualSprite = bakedTextureGetter.apply(material);
                 return retexture(quad, actualSprite);
             }
@@ -117,7 +117,7 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
             idx += stride;
         }
 
-        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting());
+        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getFace(), sprite, quad.func_239287_f_());
     }
 
     private static int getAtByteOffset(int[] inData, int offset) {
@@ -181,13 +181,13 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
         }
 
         @Override
-        public IBakedModel getModelWithOverrides(IBakedModel model, ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn) {
+        public IBakedModel func_239290_a_(IBakedModel model, ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn) {
             // If the item has a texture mapper, use it.
             Item item = stack.getItem();
             if (item instanceof IItemStackTextureMapperProvider) {
                 return new TexturedBakedModel<>(model, bakedTextureGetter, ((IItemStackTextureMapperProvider) item).getTextureMapper(stack));
             }
-            return wrappedOverrideList.getModelWithOverrides(model, stack, worldIn, entityIn);
+            return wrappedOverrideList.func_239290_a_(model, stack, worldIn, entityIn);
         }
     }
 }

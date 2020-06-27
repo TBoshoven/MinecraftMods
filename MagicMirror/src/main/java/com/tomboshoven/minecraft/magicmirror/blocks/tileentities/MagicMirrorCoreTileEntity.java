@@ -57,7 +57,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     public MagicMirrorCoreTileEntity() {
         super(TileEntities.MAGIC_MIRROR_CORE.get());
 
-        reflection = DistExecutor.runForDist(() -> ReflectionClient::new, () -> Reflection::new);
+        reflection = DistExecutor.unsafeRunForDist(() -> ReflectionClient::new, () -> Reflection::new);
     }
 
     /**
@@ -88,7 +88,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
         if (players.isEmpty()) {
             return null;
         }
-        return Collections.min(players, Comparator.comparingDouble(player -> player.getPosition().distanceSq(ownPosition)));
+        return Collections.min(players, Comparator.comparingDouble(player -> ownPosition.distanceSq(player.getPosX(), player.getPosY(), player.getPosZ(), true)));
     }
 
     @Nullable
@@ -167,8 +167,12 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     }
 
     @Override
-    public void read(CompoundNBT compound) {
-        super.read(compound);
+    public void func_230337_a_(BlockState state, CompoundNBT compound) {
+        super.func_230337_a_(state, compound);
+        read(compound);
+    }
+
+    private void read(CompoundNBT compound) {
         ListNBT modifiers = compound.getList("modifiers", 10);
         for (INBT modifierCompound : modifiers) {
             if (modifierCompound instanceof CompoundNBT) {

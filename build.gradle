@@ -24,7 +24,7 @@ subprojects {
 
     String modName = project.getName().replaceAll(/([a-z])([A-Z])/, /$1_$2/).toLowerCase()
 
-    version = "1.15.2-DEV.0"
+    version = "1.16.1-DEV.0"
     group = "com.tomboshoven.minecraft." + project.getName().toLowerCase()
     archivesBaseName = project.projectDir.name
 
@@ -32,7 +32,7 @@ subprojects {
     targetCompatibility = 1.8
 
     minecraft {
-        mappings channel: 'snapshot', version: '20200514-1.15.1'
+        mappings channel: 'snapshot', version: '20200514-1.16'
 
         runs {
             client {
@@ -68,7 +68,7 @@ subprojects {
     }
 
     dependencies {
-        minecraft "net.minecraftforge:forge:1.15.2-31.2.0"
+        minecraft "net.minecraftforge:forge:1.16.1-32.0.21"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }

@@ -7,8 +7,8 @@ import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemTier;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.RegistryEvent.Register;
@@ -45,7 +45,7 @@ public final class Items {
      * @param mainTexture The main texture of the doorknob
      * @param recipeTag   The tag to use in recipes
      */
-    private static void addDoorknob(IForgeRegistry<? super Item> registry, String typeName, IItemTier tier, ResourceLocation mainTexture, Tag<Item> recipeTag) {
+    private static void addDoorknob(IForgeRegistry<? super Item> registry, String typeName, IItemTier tier, ResourceLocation mainTexture, INamedTag<Item> recipeTag) {
         MagicDoorknobItem i = new MagicDoorknobItem(new Item.Properties().group(ItemGroup.TOOLS), typeName, tier, mainTexture, recipeTag);
         i.setRegistryName(MagicDoorknobMod.MOD_ID, String.format("magic_doorknob_%s", typeName));
         registry.register(i);
@@ -61,7 +61,7 @@ public final class Items {
      * @param blockName The name of the block that provides the texture of the doorknob
      * @param recipeTag The tag to use in recipes
      */
-    private static void addDoorknob(IForgeRegistry<? super Item> registry, String typeName, IItemTier tier, String blockName, Tag<Item> recipeTag) {
+    private static void addDoorknob(IForgeRegistry<? super Item> registry, String typeName, IItemTier tier, String blockName, INamedTag<Item> recipeTag) {
         addDoorknob(registry, typeName, tier, new ResourceLocation("minecraft", String.format("block/%s", blockName)), recipeTag);
     }
 

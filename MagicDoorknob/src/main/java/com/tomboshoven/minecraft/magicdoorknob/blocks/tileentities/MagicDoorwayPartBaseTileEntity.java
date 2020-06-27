@@ -1,6 +1,5 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
 
-import com.mojang.datafixers.Dynamic;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ModelTextureProperty;
@@ -9,12 +8,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTDynamicOps;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
@@ -73,7 +72,7 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
         CompoundNBT result = super.write(compound);
         ResourceLocation registryName = baseBlockState.getBlock().getRegistryName();
         if (registryName != null) {
-            compound.put("baseBlock", BlockState.serialize(NBTDynamicOps.INSTANCE, baseBlockState).getValue());
+            compound.put("baseBlock", NBTUtil.writeBlockState(baseBlockState));
         }
         if (doorknob != null) {
             result.putString("doorknobType", doorknob.getTypeName());
@@ -82,9 +81,13 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     }
 
     @Override
-    public void read(CompoundNBT compound) {
-        super.read(compound);
-        baseBlockState = BlockState.deserialize(new Dynamic<>(NBTDynamicOps.INSTANCE, compound.get("baseBlock")));
+    public void func_230337_a_(BlockState state, CompoundNBT compound) {
+        super.func_230337_a_(state, compound);
+        read(compound);
+    }
+
+    private void read(CompoundNBT compound) {
+        baseBlockState = NBTUtil.readBlockState(compound.getCompound("baseBlock"));
         String doorknobType = compound.getString("doorknobType");
         doorknob = Items.DOORKNOBS.get(doorknobType);
     }
@@ -116,17 +119,17 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
         // Get the base block texture
         World world = getWorld();
         TextureAtlasSprite blockTexture = world == null ? null : blockModelShapes.getTexture(baseBlockState, world, getPos());
-        Material blockMaterial;
+        RenderMaterial blockMaterial;
         if (blockTexture == null || blockTexture instanceof MissingTextureSprite) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.
-            blockMaterial = new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(MOD_ID, "block/empty"));
+            blockMaterial = new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(MOD_ID, "block/empty"));
         }
         else {
-            blockMaterial = new Material(blockTexture.getAtlasTexture().getTextureLocation(), blockTexture.getName());
+            blockMaterial = new RenderMaterial(blockTexture.getAtlasTexture().getTextureLocation(), blockTexture.getName());
         }
 
         // Get the highlight texture
-        Material doorknobMaterial;
+        RenderMaterial doorknobMaterial;
         if (doorknob != null) {
             doorknobMaterial = doorknob.getMainMaterial();
         } else {

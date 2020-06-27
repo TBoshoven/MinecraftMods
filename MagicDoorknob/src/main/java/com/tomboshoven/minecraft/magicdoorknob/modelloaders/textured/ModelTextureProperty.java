@@ -2,7 +2,7 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import com.google.common.collect.Maps;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.ModelProperty;
 
@@ -15,7 +15,7 @@ import java.util.Objects;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public final class ModelTextureProperty extends ModelProperty<Material> {
+public final class ModelTextureProperty extends ModelProperty<RenderMaterial> {
     // Lazily filled map of model texture properties.
     // Can't just use equality as they are used in an IdentityHashMap.
     private static final Map<ResourceLocation, ModelTextureProperty> PROPERTIES = Maps.newHashMap();

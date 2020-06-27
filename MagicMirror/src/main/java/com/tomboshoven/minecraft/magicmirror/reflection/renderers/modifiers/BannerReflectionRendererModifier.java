@@ -7,7 +7,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.DyeColor;
@@ -43,7 +43,7 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
 
         for (Pair<BannerPattern, DyeColor> patternColor : patternColorList) {
             float[] rgb = patternColor.getRight().getColorComponentValues();
-            Material material = new Material(Atlases.BANNER_ATLAS, patternColor.getLeft().func_226957_a_(true));
+            RenderMaterial material = new RenderMaterial(Atlases.BANNER_ATLAS, patternColor.getLeft().func_226957_a_(true));
 
             IVertexBuilder buffer = material.getBuffer(renderTypeBuffer, RenderType::getEntityNoOutline);
 

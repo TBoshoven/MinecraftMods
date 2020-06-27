@@ -10,7 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 @SuppressWarnings("ConstantConditions")
 public final class TileEntities {
-    private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, MagicDoorknobMod.MOD_ID);
+    private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MagicDoorknobMod.MOD_ID);
 
     static final RegistryObject<TileEntityType<MagicDoorTileEntity>> MAGIC_DOOR =
             TILE_ENTITIES.register("magic_door",

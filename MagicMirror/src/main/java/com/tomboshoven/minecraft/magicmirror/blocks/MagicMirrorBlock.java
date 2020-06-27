@@ -136,11 +136,6 @@ public class MagicMirrorBlock extends HorizontalBlock {
     }
 
     @Override
-    public boolean hasTileEntity() {
-        return true;
-    }
-
-    @Override
     public boolean hasTileEntity(BlockState state) {
         return state.get(COMPLETE);
     }
@@ -239,7 +234,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
         }
 
         @Override
-        public String getName() {
+        public String func_176610_l() {
             return name;
         }
 

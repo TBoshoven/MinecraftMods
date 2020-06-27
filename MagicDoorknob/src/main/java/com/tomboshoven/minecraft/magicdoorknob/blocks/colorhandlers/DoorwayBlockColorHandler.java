@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 class DoorwayBlockColorHandler implements IBlockColor {
     @Override
-    public int getColor(BlockState state, @Nullable ILightReader worldIn, @Nullable BlockPos pos, int tintIndex) {
+    public int getColor(BlockState state, @Nullable IBlockDisplayReader worldIn, @Nullable BlockPos pos, int tintIndex) {
         if (worldIn != null && pos != null) {
             BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 

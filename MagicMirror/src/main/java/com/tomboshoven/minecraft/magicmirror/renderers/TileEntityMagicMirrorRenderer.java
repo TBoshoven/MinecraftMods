@@ -9,14 +9,14 @@ import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClientUpdater;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -52,8 +52,8 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
 
                 BlockPos tePos = tileEntityIn.getPos();
 
-                Vec3d reflectedPos = reflected.getPositionVector().add(.5, .5, .5);
-                Vec3d distanceVector = reflectedPos.subtract(tePos.getX(), tePos.getY(), tePos.getZ());
+                Vector3d reflectedPos = reflected.getPositionVec().add(.5, .5, .5);
+                Vector3d distanceVector = reflectedPos.subtract(tePos.getX(), tePos.getY(), tePos.getZ());
 
                 ReflectionClientUpdater.markViewed((ReflectionClient) reflection);
 
@@ -72,7 +72,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
      * @param facing           The direction in which the mirror part is facing.
      * @param distance         The distance between the mirror and the reflected subject; used for fading.
      */
-    private static void renderReflection(ReflectionClient reflection, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, EnumPartType part, Direction facing, Vec3d distance) {
+    private static void renderReflection(ReflectionClient reflection, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, EnumPartType part, Direction facing, Vector3d distance) {
         // The further away the subject is, the more faint the reflection
         double horizontalDistanceSq = distance.x * distance.x + distance.z * distance.z;
         double verticalDistanceSq = distance.y * distance.y;
