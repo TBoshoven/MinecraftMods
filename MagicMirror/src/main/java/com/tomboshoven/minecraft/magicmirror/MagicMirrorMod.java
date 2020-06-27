@@ -13,7 +13,6 @@ import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -33,16 +32,17 @@ public final class MagicMirrorMod {
 
     public MagicMirrorMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.register(Blocks.class);
-        modEventBus.register(DataGenerators.class);
-        modEventBus.register(Items.class);
-        modEventBus.register(TileEntities.class);
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.register(Renderers.class));
+
+        Blocks.register(modEventBus);
+        DataGenerators.register(modEventBus);
+        Items.register(modEventBus);
+        TileEntities.register(modEventBus);
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> Renderers.register(modEventBus));
 
         // Register packets
         Network.registerMessages();
 
-        MinecraftForge.EVENT_BUS.register(Commands.class);
+        Commands.register(modEventBus);
 
         // Register modifiers
         MagicMirrorModifier.register(new ArmorMagicMirrorModifier());

@@ -11,6 +11,7 @@ import net.minecraft.data.ShapedRecipeBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static net.minecraft.item.Items.ENDER_EYE;
@@ -26,7 +27,7 @@ class Recipes extends RecipeProvider {
 
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shapedRecipe(Items.MAGIC_MIRROR, 2)
+        ShapedRecipeBuilder.shapedRecipe(Objects.requireNonNull(Items.MAGIC_MIRROR.get()), 2)
                 .patternLine("|e|")
                 .patternLine("| |")
                 .patternLine("|#|")

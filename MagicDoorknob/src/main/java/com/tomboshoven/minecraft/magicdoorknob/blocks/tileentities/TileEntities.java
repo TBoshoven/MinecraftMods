@@ -3,22 +3,28 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @SuppressWarnings("ConstantConditions")
 public final class TileEntities {
-    static final TileEntityType<MagicDoorTileEntity> MAGIC_DOOR = TileEntityType.Builder.create(MagicDoorTileEntity::new, Blocks.MAGIC_DOOR).build(null);
-    static final TileEntityType<MagicDoorwayTileEntity> MAGIC_DOORWAY = TileEntityType.Builder.create(MagicDoorwayTileEntity::new, Blocks.MAGIC_DOORWAY).build(null);
+    private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, MagicDoorknobMod.MOD_ID);
 
-    @SubscribeEvent
-    public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> evt) {
-        IForgeRegistry<TileEntityType<?>> registry = evt.getRegistry();
+    static final RegistryObject<TileEntityType<MagicDoorTileEntity>> MAGIC_DOOR =
+            TILE_ENTITIES.register("magic_door",
+                    () -> TileEntityType.Builder.create(MagicDoorTileEntity::new, Blocks.MAGIC_DOOR.get()).build(null)
+            );
+    static final RegistryObject<TileEntityType<MagicDoorwayTileEntity>> MAGIC_DOORWAY =
+            TILE_ENTITIES.register("magic_doorway",
+                    () -> TileEntityType.Builder.create(MagicDoorwayTileEntity::new, Blocks.MAGIC_DOORWAY.get()).build(null)
+            );
 
-        MAGIC_DOOR.setRegistryName(MagicDoorknobMod.MOD_ID, "magic_door");
-        registry.register(MAGIC_DOOR);
-        MAGIC_DOORWAY.setRegistryName(MagicDoorknobMod.MOD_ID, "magic_doorway");
-        registry.register(MAGIC_DOORWAY);
+    private TileEntities() {
+    }
+
+    public static void register(IEventBus eventBus) {
+        TILE_ENTITIES.register(eventBus);
     }
 }

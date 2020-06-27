@@ -6,11 +6,14 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraftforge.event.RegistryEvent.Register;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Objects;
 
 /**
  * Collection of all items in the mod.
@@ -19,20 +22,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public final class Items {
+    private static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, MagicMirrorMod.MOD_ID);
+
     /**
      * The item version of the magic mirror block.
      */
-    public static final Item MAGIC_MIRROR = new BlockItem(
-            Blocks.MAGIC_MIRROR,
-            new Item.Properties().group(ItemGroup.DECORATIONS)
-    ).setRegistryName(MagicMirrorMod.MOD_ID, "magic_mirror");
+    public static final RegistryObject<Item> MAGIC_MIRROR =
+            ITEMS.register("magic_mirror", () -> new BlockItem(
+                    Objects.requireNonNull(Blocks.MAGIC_MIRROR.get()),
+                    new Item.Properties().group(ItemGroup.DECORATIONS)
+            ));
 
     private Items() {
     }
 
-    @SuppressWarnings("BoundedWildcard")
-    @SubscribeEvent
-    public static void registerItems(Register<Item> event) {
-        event.getRegistry().registerAll(MAGIC_MIRROR);
+    public static void register(IEventBus eventBus) {
+        ITEMS.register(eventBus);
     }
 }

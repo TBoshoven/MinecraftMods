@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -45,12 +46,12 @@ class LootTables extends LootTableProvider {
     private static class BlockTables extends BlockLootTables {
         @Override
         protected void addTables() {
-            func_218492_c(Blocks.MAGIC_MIRROR);
+            func_218492_c(Objects.requireNonNull(Blocks.MAGIC_MIRROR.get()));
         }
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
-            return Stream.of(Blocks.MAGIC_MIRROR)::iterator;
+            return Stream.of(Blocks.MAGIC_MIRROR.get())::iterator;
         }
     }
 
