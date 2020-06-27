@@ -55,7 +55,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     private int reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
 
     public MagicMirrorCoreTileEntity() {
-        super(TileEntities.MAGIC_MIRROR_CORE);
+        super(TileEntities.MAGIC_MIRROR_CORE.get());
 
         reflection = DistExecutor.runForDist(() -> ReflectionClient::new, () -> Reflection::new);
     }

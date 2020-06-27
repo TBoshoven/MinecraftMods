@@ -45,12 +45,12 @@ class LootTables extends LootTableProvider {
     private static class BlockTables extends BlockLootTables {
         @Override
         protected void addTables() {
-            registerDropSelfLootTable(Blocks.MAGIC_MIRROR);
+            registerDropSelfLootTable(Blocks.MAGIC_MIRROR.get());
         }
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
-            return Stream.of(Blocks.MAGIC_MIRROR)::iterator;
+            return Stream.of(Blocks.MAGIC_MIRROR.get())::iterator;
         }
     }
 

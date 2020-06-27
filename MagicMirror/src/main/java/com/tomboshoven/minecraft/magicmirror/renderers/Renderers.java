@@ -5,7 +5,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -20,9 +20,12 @@ public final class Renderers {
     private Renderers() {
     }
 
-    @SubscribeEvent
-    public static void registerRenders(ModelRegistryEvent event) {
-        ClientRegistry.bindTileEntityRenderer(TileEntities.MAGIC_MIRROR_CORE, TileEntityMagicMirrorRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(TileEntities.MAGIC_MIRROR_PART, TileEntityMagicMirrorRenderer::new);
+    public static void register(IEventBus eventBus) {
+        eventBus.addListener(Renderers::registerRenderers);
+    }
+
+    private static void registerRenderers(ModelRegistryEvent event) {
+        ClientRegistry.bindTileEntityRenderer(TileEntities.MAGIC_MIRROR_CORE.get(), TileEntityMagicMirrorRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(TileEntities.MAGIC_MIRROR_PART.get(), TileEntityMagicMirrorRenderer::new);
     }
 }

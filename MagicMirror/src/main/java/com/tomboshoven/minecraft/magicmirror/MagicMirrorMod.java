@@ -34,19 +34,20 @@ public final class MagicMirrorMod {
 
     public MagicMirrorMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.register(Blocks.class);
-        modEventBus.register(DataGenerators.class);
-        modEventBus.register(Items.class);
-        modEventBus.register(TileEntities.class);
+
+        Blocks.register(modEventBus);
+        DataGenerators.register(modEventBus);
+        Items.register(modEventBus);
+        TileEntities.register(modEventBus);
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            modEventBus.register(Renderers.class);
+            Renderers.register(modEventBus);
             MinecraftForge.EVENT_BUS.register(ReflectionClientUpdater.class);
         });
 
         // Register packets
         Network.registerMessages();
 
-        MinecraftForge.EVENT_BUS.register(Commands.class);
+        Commands.register(modEventBus);
 
         // Register modifiers
         MagicMirrorModifier.register(new ArmorMagicMirrorModifier());

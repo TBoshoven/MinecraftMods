@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 
 import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
 
@@ -23,15 +23,18 @@ public final class ModelLoaders {
     private ModelLoaders() {
     }
 
-    @SubscribeEvent
-    public static void registerModelLoaders(ModelRegistryEvent event) {
+    public static void register(IEventBus eventBus) {
+        eventBus.addListener(ModelLoaders::registerModelLoaders);
+    }
+
+   private static void registerModelLoaders(ModelRegistryEvent event) {
         // Initialize textured model loader
         TexturedModelLoader modelLoader = new TexturedModelLoader();
         modelLoader.registerTexture(new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(MOD_ID, "block/empty")));
         ModelLoaderRegistry.registerLoader(new ResourceLocation(MOD_ID, "textured"), modelLoader);
 
         // Translucent has the best results across block types
-        RenderTypeLookup.setRenderLayer(Blocks.MAGIC_DOOR, RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(Blocks.MAGIC_DOORWAY, RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(Blocks.MAGIC_DOOR.get(), RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(Blocks.MAGIC_DOORWAY.get(), RenderType.getTranslucent());
     }
 }

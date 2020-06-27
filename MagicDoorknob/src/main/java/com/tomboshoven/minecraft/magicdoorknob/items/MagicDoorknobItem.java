@@ -7,6 +7,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorTile
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayTileEntity;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.inventory.container.PlayerContainer;
@@ -109,9 +110,10 @@ public class MagicDoorknobItem extends Item {
      */
     private void placeDoor(World world, BlockPos pos, Direction facing) {
         BlockPos doorPos = pos.offset(facing);
+        Block block = Blocks.MAGIC_DOOR.get();
         world.setBlockState(
                 doorPos,
-                Blocks.MAGIC_DOOR.getDefaultState()
+                block.getDefaultState()
                         .with(MagicDoorBlock.HORIZONTAL_FACING, facing)
                         .with(MagicDoorBlock.PART, MagicDoorBlock.EnumPartType.TOP)
         );
@@ -122,7 +124,7 @@ public class MagicDoorknobItem extends Item {
         }
         world.setBlockState(
                 doorPos.down(),
-                Blocks.MAGIC_DOOR.getDefaultState()
+                block.getDefaultState()
                         .with(MagicDoorBlock.HORIZONTAL_FACING, facing)
                         .with(MagicDoorBlock.PART, MagicDoorBlock.EnumPartType.BOTTOM)
         );
@@ -173,7 +175,8 @@ public class MagicDoorknobItem extends Item {
     private void placeDoorwayElement(World world, BlockPos pos, boolean isNorthSouth, MagicDoorwayBlock.EnumPartType part) {
         if (isReplaceable(world, pos)) {
             BlockState state = world.getBlockState(pos);
-            world.setBlockState(pos, Blocks.MAGIC_DOORWAY.getDefaultState().with(MagicDoorwayBlock.OPEN_NORTH_SOUTH, isNorthSouth).with(MagicDoorwayBlock.OPEN_EAST_WEST, !isNorthSouth).with(MagicDoorwayBlock.PART, part));
+            Block block = Blocks.MAGIC_DOORWAY.get();
+            world.setBlockState(pos, block.getDefaultState().with(MagicDoorwayBlock.OPEN_NORTH_SOUTH, isNorthSouth).with(MagicDoorwayBlock.OPEN_EAST_WEST, !isNorthSouth).with(MagicDoorwayBlock.PART, part));
 
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof MagicDoorwayTileEntity) {

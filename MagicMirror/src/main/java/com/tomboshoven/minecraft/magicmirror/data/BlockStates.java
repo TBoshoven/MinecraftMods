@@ -24,7 +24,7 @@ class BlockStates extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         ModelFile mirrorModel = models().getExistingFile(modLoc("block/magic_mirror"));
-        getVariantBuilder(Blocks.MAGIC_MIRROR)
+        getVariantBuilder(Blocks.MAGIC_MIRROR.get())
                 .forAllStates(state -> {
                             int rotation = state.get(MagicMirrorBlock.PART) == MagicMirrorBlock.EnumPartType.TOP ? 180 : 0;
                             return ConfiguredModel.builder()

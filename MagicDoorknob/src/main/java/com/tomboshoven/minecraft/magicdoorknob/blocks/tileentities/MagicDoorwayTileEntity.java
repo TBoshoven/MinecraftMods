@@ -11,6 +11,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class MagicDoorwayTileEntity extends MagicDoorwayPartBaseTileEntity {
     public MagicDoorwayTileEntity() {
-        super(TileEntities.MAGIC_DOORWAY);
+        super(TileEntities.MAGIC_DOORWAY.get());
     }
 }

@@ -21,8 +21,8 @@ class Language extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        add(Blocks.MAGIC_DOOR, "Magic Door");
-        add(Blocks.MAGIC_DOORWAY, "Magic Doorway");
+        add(Blocks.MAGIC_DOOR.get(), "Magic Door");
+        add(Blocks.MAGIC_DOORWAY.get(), "Magic Doorway");
 
         addDoorknob("diamond");
         addDoorknob("gold", "Golden");
