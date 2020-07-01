@@ -16,6 +16,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@OnlyIn(Dist.CLIENT)
 public final class BlockColorHandlers {
     private BlockColorHandlers() {
     }
@@ -27,7 +28,6 @@ public final class BlockColorHandlers {
     /**
      * Register all color handlers.
      */
-    @OnlyIn(Dist.CLIENT)
     private static void registerBlockColorHandlers(ColorHandlerEvent.Block event) {
         BlockColors blockColors = event.getBlockColors();
 
