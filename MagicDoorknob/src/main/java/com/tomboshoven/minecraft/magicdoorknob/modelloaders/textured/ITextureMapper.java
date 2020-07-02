@@ -24,4 +24,10 @@ public interface ITextureMapper {
      * @return The location of the appropriate texture
      */
     ResourceLocation mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable IModelData extraData);
+
+    /**
+     * @param extraData   Extra model data if available
+     * @return The location of the appropriate particle texture
+     */
+    ResourceLocation getParticleTexture(@Nullable IModelData extraData);
 }
