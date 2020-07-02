@@ -30,16 +30,4 @@ class ModelDataTextureMapper implements ITextureMapper {
         }
         return new ResourceLocation("missingno");
     }
-
-    @Override
-    public ResourceLocation getParticleTexture(@Nullable IModelData extraData) {
-        if (extraData != null) {
-            ModelProperty<ResourceLocation> modelProperty = ModelTextureProperty.getParticleProperty();
-            ResourceLocation spriteLocation = extraData.getData(modelProperty);
-            if (spriteLocation != null) {
-                return spriteLocation;
-            }
-        }
-        return new ResourceLocation("missingno");
-    }
 }
