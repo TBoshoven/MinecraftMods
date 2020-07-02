@@ -3,6 +3,7 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ModelTextureProperty;
+import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ModelTextureProperty.ModelParticleTextureProperty;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -46,6 +47,11 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
      * The highlight texture of the doorway (based on doorknob).
      */
     private static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(new ResourceLocation(PROPERTY_NAMESPACE, "texture_highlight"));
+
+    /**
+     * The particle texture of the doorway (based on base block).
+     */
+    private static final ModelParticleTextureProperty TEXTURE_PARTICLE = ModelTextureProperty.getParticleProperty();
 
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.getDefaultState();
@@ -134,6 +140,7 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
         CompositeModel.CompositeModelData compositeModelData = new CompositeModel.CompositeModelData();
         compositeModelData.setData(TEXTURE_MAIN, blockMaterial);
         compositeModelData.setData(TEXTURE_HIGHLIGHT, doorknobMaterial);
+        compositeModelData.setData(TEXTURE_PARTICLE, blockMaterial);
         return compositeModelData;
     }
 
