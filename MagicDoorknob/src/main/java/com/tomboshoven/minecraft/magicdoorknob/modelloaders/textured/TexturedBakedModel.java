@@ -79,8 +79,12 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
 
     @Override
     public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data) {
-        ResourceLocation particleTextureLocation = textureMapper.getParticleTexture(data);
-        return bakedTextureGetter.apply(particleTextureLocation);
+        TextureAtlasSprite sprite = super.getParticleTexture(data);
+        if (sprite instanceof PropertySprite) {
+            ResourceLocation spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, null, data);
+            sprite = bakedTextureGetter.apply(spriteLocation);
+        }
+        return sprite;
     }
 
     /**
