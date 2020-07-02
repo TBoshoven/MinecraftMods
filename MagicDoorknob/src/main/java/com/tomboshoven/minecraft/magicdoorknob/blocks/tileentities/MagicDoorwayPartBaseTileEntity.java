@@ -24,14 +24,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.CompositeModel;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
 import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedModelLoader.PROPERTY_NAMESPACE;
-import static net.minecraftforge.client.model.CompositeModel.SUBMODEL_DATA;
 
 /**
  * Base class for tile entities that make up magic doorways.
@@ -48,11 +46,6 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
      * The highlight texture of the doorway (based on doorknob).
      */
     private static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(new ResourceLocation(PROPERTY_NAMESPACE, "texture_highlight"));
-
-    /**
-     * All parts of the model that need to be textured.
-     */
-    private static final String[] SUBMODEL_NAMES = {"door", "doorknob", "top", "wall1", "wall2", "pillar1", "pillar2", "pillar3", "pillar4"};
 
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.getDefaultState();
@@ -138,17 +131,10 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
             doorknobMaterial = blockMaterial;
         }
 
-        IModelData submodelData = new ModelDataMap.Builder()
-                .withInitial(TEXTURE_MAIN, blockMaterial)
-                .withInitial(TEXTURE_HIGHLIGHT, doorknobMaterial)
-                .build();
-        CompositeModel.SubmodelModelData submodelModelData = new CompositeModel.SubmodelModelData();
-        for (String submodelName : SUBMODEL_NAMES) {
-            submodelModelData.putSubmodelData(submodelName, submodelData);
-        }
-        return new ModelDataMap.Builder()
-                .withInitial(SUBMODEL_DATA, submodelModelData)
-                .build();
+        CompositeModel.CompositeModelData compositeModelData = new CompositeModel.CompositeModelData();
+        compositeModelData.setData(TEXTURE_MAIN, blockMaterial);
+        compositeModelData.setData(TEXTURE_HIGHLIGHT, doorknobMaterial);
+        return compositeModelData;
     }
 
     /**
