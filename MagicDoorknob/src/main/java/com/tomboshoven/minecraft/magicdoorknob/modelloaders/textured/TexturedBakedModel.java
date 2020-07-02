@@ -23,6 +23,7 @@ import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -159,6 +160,12 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
     @Override
     public ItemOverrideList getOverrides() {
         return new TexturedOverrideList(super.getOverrides());
+    }
+
+    @Override
+    public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data) {
+        Material particleTextureLocation = textureMapper.getParticleTexture(data);
+        return bakedTextureGetter.apply(particleTextureLocation);
     }
 
     /**

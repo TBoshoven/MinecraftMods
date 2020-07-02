@@ -1,8 +1,6 @@
 {
-  "loader": "forge:composite",
-  "textures": {
-    "particle": "minecraft:block/obsidian"
-  },
+  "loader": "magic_doorknob:textured",
+  "base_loader": "forge:composite",
   "parts": {
     "wall1": {
       "parent": "magic_doorknob:block/part/magic_doorway_wall"

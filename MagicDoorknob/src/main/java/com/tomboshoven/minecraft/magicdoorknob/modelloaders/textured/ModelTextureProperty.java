@@ -19,6 +19,7 @@ public final class ModelTextureProperty extends ModelProperty<Material> {
     // Lazily filled map of model texture properties.
     // Can't just use equality as they are used in an IdentityHashMap.
     private static final Map<ResourceLocation, ModelTextureProperty> PROPERTIES = Maps.newHashMap();
+    private static final ModelParticleTextureProperty PARTICLE_PROPERTY = new ModelParticleTextureProperty();
 
     private final ResourceLocation name;
 
@@ -40,6 +41,10 @@ public final class ModelTextureProperty extends ModelProperty<Material> {
         return PROPERTIES.computeIfAbsent(name, ModelTextureProperty::new);
     }
 
+    public static ModelParticleTextureProperty getParticleProperty() {
+        return PARTICLE_PROPERTY;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -52,4 +57,6 @@ public final class ModelTextureProperty extends ModelProperty<Material> {
     public int hashCode() {
         return Objects.hash(name);
     }
+
+    public static class ModelParticleTextureProperty extends ModelProperty<Material> {}
 }
