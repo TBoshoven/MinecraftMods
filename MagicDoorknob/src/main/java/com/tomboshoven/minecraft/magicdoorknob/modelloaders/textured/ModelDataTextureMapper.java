@@ -33,16 +33,4 @@ class ModelDataTextureMapper implements ITextureMapper {
         }
         return new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, MissingTextureSprite.getLocation());
     }
-
-    @Override
-    public Material getParticleTexture(@Nullable IModelData extraData) {
-        if (extraData != null) {
-            ModelProperty<Material> modelProperty = ModelTextureProperty.getParticleProperty();
-            Material spriteLocation = extraData.getData(modelProperty);
-            if (spriteLocation != null) {
-                return spriteLocation;
-            }
-        }
-        return new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, MissingTextureSprite.getLocation());
-    }
 }
