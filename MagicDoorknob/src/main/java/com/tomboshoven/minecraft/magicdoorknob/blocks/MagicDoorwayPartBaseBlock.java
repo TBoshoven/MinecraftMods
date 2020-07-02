@@ -7,6 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
@@ -74,6 +75,17 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
             return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getSlipperiness(world, pos, entity);
         }
         return super.getSlipperiness(state, world, pos, entity);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public float getPlayerRelativeBlockHardness(BlockState state, PlayerEntity player, IBlockReader worldIn, BlockPos pos) {
+        // Use the base block's hardness.
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
+            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getPlayerRelativeBlockHardness(player, worldIn, pos);
+        }
+        return super.getPlayerRelativeBlockHardness(state, player, worldIn, pos);
     }
 
     @Override
