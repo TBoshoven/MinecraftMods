@@ -27,6 +27,7 @@ class Language extends LanguageProvider {
         addDoorknob("diamond");
         addDoorknob("gold", "Golden");
         addDoorknob("iron");
+        addDoorknob("netherite");
         addDoorknob("stone");
         addDoorknob("wood", "Wooden");
     }
