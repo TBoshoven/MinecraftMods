@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicdoorknob.items;
 import com.google.common.collect.Maps;
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.Blocks;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -80,6 +79,6 @@ public final class Items {
         addDoorknob(registry, "iron", ItemTier.IRON, "iron_block", () -> Ingredient.fromTag(Tags.Items.INGOTS_IRON));
         addDoorknob(registry, "gold", ItemTier.GOLD, "gold_block", () -> Ingredient.fromTag(Tags.Items.INGOTS_GOLD));
         addDoorknob(registry, "diamond", ItemTier.DIAMOND, "diamond_block", () -> Ingredient.fromTag(Tags.Items.GEMS_DIAMOND));
-        addDoorknob(registry, "netherite", ItemTier.NETHERITE, "netherite_block", () -> Ingredient.fromItems(Blocks.field_235397_ng_));
+        addDoorknob(registry, "netherite", ItemTier.NETHERITE, "netherite_block", () -> Ingredient.fromItems(net.minecraft.item.Items.field_234759_km_));
     }
 }
