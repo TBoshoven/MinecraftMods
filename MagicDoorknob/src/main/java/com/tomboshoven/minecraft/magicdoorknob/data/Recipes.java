@@ -30,7 +30,7 @@ class Recipes extends RecipeProvider {
                         .patternLine(" # ")
                         .patternLine("#@#")
                         .patternLine(" # ")
-                        .key('#', doorknob.getRecipeTag())
+                        .key('#', doorknob.getIngredient())
                         .key('@', Tags.Items.ENDER_PEARLS)
                         .setGroup("magic_doorknob")
                         .addCriterion("ender_pearls", InventoryChangeTrigger.Instance.forItems(ENDER_PEARL))
