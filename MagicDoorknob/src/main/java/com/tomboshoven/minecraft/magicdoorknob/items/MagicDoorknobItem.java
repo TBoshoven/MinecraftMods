@@ -13,7 +13,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.tags.Tag;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * A magic doorknob that allows you to open doors that don't exist.
@@ -39,23 +40,23 @@ public class MagicDoorknobItem extends Item {
     private final String typeName;
     // The item material, used for determining doorway generation properties
     private final IItemTier tier;
-    // The item tag to use in recipes
-    private final Tag<Item> recipeTag;
+    // The ingredient used to make doorknobs of this type
+    private final Supplier<Ingredient> ingredient;
 
     /**
      * @param properties          The item properties
      * @param typeName            The main texture of the item
      * @param tier                The item material, used for determining doorway generation properties
      * @param mainTextureLocation The name of the type of item (used in NBT data; do not modify)
-     * @param recipeTag           The item tag to use in recipes
+     * @param ingredient          The ingredient used to make doorknobs of this type
      */
-    MagicDoorknobItem(Properties properties, String typeName, IItemTier tier, ResourceLocation mainTextureLocation, Tag<Item> recipeTag) {
+    MagicDoorknobItem(Properties properties, String typeName, IItemTier tier, ResourceLocation mainTextureLocation, Supplier<Ingredient> ingredient) {
         super(properties);
 
         this.typeName = typeName;
         this.tier = tier;
         this.mainTextureLocation = mainTextureLocation;
-        this.recipeTag = recipeTag;
+        this.ingredient = ingredient;
     }
 
     /**
@@ -240,9 +241,9 @@ public class MagicDoorknobItem extends Item {
     }
 
     /**
-     * @return The item tag for use in recipes
+     * @return The ingredient used to make doorknobs of this type
      */
-    public Tag<Item> getRecipeTag() {
-        return recipeTag;
+    public Ingredient getIngredient() {
+        return ingredient.get();
     }
 }
