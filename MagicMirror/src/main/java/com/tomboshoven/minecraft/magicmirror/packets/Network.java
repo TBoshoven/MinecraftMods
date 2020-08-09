@@ -4,6 +4,7 @@ import com.tomboshoven.minecraft.magicmirror.ModMagicMirror;
 import com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror;
 import com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror.MessageAttachModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor.MessageEquip;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor.MessageSwapMirror;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifierArmor.MessageSwapPlayer;
 import mcp.MethodsReturnNonnullByDefault;
@@ -70,5 +71,6 @@ public final class Network {
         CHANNEL.registerMessage(MagicMirrorTileEntityModifierArmor.messageHandlerSwapMirror, MessageSwapMirror.class, id++, Side.CLIENT);
         CHANNEL.registerMessage(MagicMirrorTileEntityModifierArmor.messageHandlerSwapPlayer, MessageSwapPlayer.class, id++, Side.CLIENT);
         CHANNEL.registerMessage(BlockMagicMirror.messageHandlerAttachModifier, MessageAttachModifier.class, id++, Side.CLIENT);
+        CHANNEL.registerMessage(MagicMirrorTileEntityModifierArmor.messageHandlerEquip, MessageEquip.class, id++, Side.CLIENT);
     }
 }

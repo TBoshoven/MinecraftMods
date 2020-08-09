@@ -20,7 +20,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
@@ -180,7 +179,7 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
      * @param facing The direction the door will be facing
      * @return Whether a door can be placed at the given position.
      */
-    private boolean canPlaceDoor(IBlockAccess world, BlockPos pos, EnumFacing facing) {
+    private boolean canPlaceDoor(World world, BlockPos pos, EnumFacing facing) {
         if (!isReplaceable(world, pos) || !isReplaceable(world, pos.down())) {
             return false;
         }
@@ -194,10 +193,14 @@ public class ItemMagicDoorknob extends Item implements IItemStackTextureMapperPr
      * @param pos   The position to check
      * @return Whether this doorknob can replace the given block by a door or doorway
      */
-    private boolean isReplaceable(IBlockAccess world, BlockPos pos) {
+    private boolean isReplaceable(World world, BlockPos pos) {
         IBlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         if (block.hasTileEntity(blockState)) {
+            return false;
+        }
+        // Blocks like bedrock use this to prevent interactions
+        if (blockState.getBlockHardness(world, pos) < 0) {
             return false;
         }
         return block.getHarvestLevel(blockState) <= material.getHarvestLevel();
