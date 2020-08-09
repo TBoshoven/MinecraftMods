@@ -10,6 +10,7 @@ import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectio
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -232,8 +233,13 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          */
         public void swap(NonNullList<ItemStack> inventory) {
             for (int i = 0; i < 4; ++i) {
+                ItemStack original = inventory.get(i);
                 ItemStack replacement = replacementInventory.get(i);
-                replacementInventory.set(i, inventory.get(i));
+                if (EnchantmentHelper.hasBindingCurse(original) || EnchantmentHelper.hasBindingCurse(replacement)) {
+                    // Cannot swap armor with curse of binding
+                    continue;
+                }
+                replacementInventory.set(i, original);
                 inventory.set(i, replacement);
             }
         }
@@ -245,12 +251,17 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          */
         void swap(PlayerEntity player) {
             for (int i = 0; i < 4; ++i) {
+                ItemStack playerArmor = player.inventory.armorInventory.get(i);
+                ItemStack replacement = replacementInventory.get(i);
+                if (EnchantmentHelper.hasBindingCurse(playerArmor) || EnchantmentHelper.hasBindingCurse(replacement)) {
+                    // Cannot swap armor with curse of binding
+                    continue;
+                }
                 if (player instanceof ServerPlayerEntity) {
                     // Make sure to do this on the client side as well.
-                    ((ServerPlayerEntity) player).connection.sendPacket(new SSetSlotPacket(-2, i + 36, replacementInventory.get(i)));
+                    ((ServerPlayerEntity) player).connection.sendPacket(new SSetSlotPacket(-2, i + 36, replacement));
                 }
-                ItemStack replacement = replacementInventory.get(i);
-                replacementInventory.set(i, player.inventory.armorInventory.get(i));
+                replacementInventory.set(i, playerArmor);
                 player.inventory.armorInventory.set(i, replacement);
             }
         }
