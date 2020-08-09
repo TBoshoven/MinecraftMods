@@ -13,6 +13,7 @@ import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClientUpdater;
 import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -47,7 +48,7 @@ public final class MagicMirrorMod {
         // Register packets
         Network.registerMessages();
 
-        Commands.register(modEventBus);
+        Commands.register(MinecraftForge.EVENT_BUS);
 
         // Register modifiers
         MagicMirrorModifier.register(new ArmorMagicMirrorModifier());
