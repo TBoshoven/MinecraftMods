@@ -24,7 +24,9 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 @ParametersAreNonnullByDefault
@@ -107,10 +109,11 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
                 int size = patterns.size();
                 for (int i = 0; i < size; ++i) {
                     CompoundNBT pattern = patterns.getCompound(i);
-                    BannerPattern bannerPattern = BannerPattern.byHash(pattern.getString("Pattern"));
-                    if (bannerPattern != null) {
+                    String patternHash = pattern.getString("Pattern");
+                    Optional<BannerPattern> bannerPattern = Arrays.stream(BannerPattern.values()).filter(p -> p.getHashname().equals(patternHash)).findFirst();
+                    if (bannerPattern.isPresent()) {
                         DyeColor bannerPatternColor = DyeColor.byId(pattern.getInt("Color"));
-                        patternList.add(Pair.of(bannerPattern, bannerPatternColor));
+                        patternList.add(Pair.of(bannerPattern.get(), bannerPatternColor));
                     }
                 }
             }
