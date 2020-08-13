@@ -7,7 +7,7 @@ import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.BannerReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.BannerReflectionModifierClient;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.BannerBlock;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.DyeColor;
@@ -16,10 +16,12 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -65,7 +67,11 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
 
     @Override
     public void remove(World world, BlockPos pos) {
-        ItemStack itemStack = new ItemStack(BannerBlock.forColor(baseColor));
+        // BannerBlock.forColor is client-only.
+        // Let's do a super-ugly workaround.
+        // This will cause issues if dye colors are ever made extensible.
+        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(String.format("minecraft:%s_banner", baseColor.getTranslationKey())));
+        ItemStack itemStack = new ItemStack(block);
         if (bannerNBT != null) {
             itemStack.getOrCreateTag().put("BlockEntityTag", bannerNBT);
         }
