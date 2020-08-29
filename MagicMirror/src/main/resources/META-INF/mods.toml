@@ -1,6 +1,7 @@
 modLoader="javafml"
 loaderVersion="[28,)"
 issueTrackerURL="https://github.com/TBoshoven/MinecraftMods/issues"
+license="GPLv3"
 
 [[mods]]
 modId="magic_mirror"
