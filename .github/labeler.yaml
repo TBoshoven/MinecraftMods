@@ -1,0 +1,15 @@
+ci:
+- '.circleci/**/*'
+- '.github/**/*'
+minecraft 1.16.2:
+# Looks like Labeler doesn't match directories starting on '.' by default.
+# Include at least the root-level ones.
+- '.*'
+- '.*/**/*'
+- '**/*'
+mod magic doorknob:
+- 'MagicDoorknob/**/*'
+- 'build.gradle'
+mod magic mirror:
+- 'MagicMirror/**/*'
+- 'build.gradle'
