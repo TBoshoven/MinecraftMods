@@ -457,8 +457,9 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
     }
 
     /**
-     * Handler for messages describing players equipping the mirror with armor.
+     * Handler for messages describing players equipping the mirror with armor (client).
      */
+    @SideOnly(Side.CLIENT)
     public static class MessageHandlerEquipClient implements IMessageHandler<MessageEquip, IMessage> {
         @Nullable
         @Override
@@ -473,6 +474,18 @@ public class MagicMirrorTileEntityModifierArmor extends MagicMirrorTileEntityMod
                 ItemArmor item = (ItemArmor)message.armor.getItem();
                 world.playSound(message.mirrorPos, item.getArmorMaterial().getSoundEvent(), SoundCategory.BLOCKS, 1, 1, false);
             }
+            return null;
+        }
+    }
+
+    /**
+     * Handler for messages describing players equipping the mirror with armor (server).
+     */
+    @SideOnly(Side.SERVER)
+    public static class MessageHandlerEquipServer implements IMessageHandler<MessageEquip, IMessage> {
+        @Nullable
+        @Override
+        public IMessage onMessage(MessageEquip message, MessageContext ctx) {
             return null;
         }
     }
