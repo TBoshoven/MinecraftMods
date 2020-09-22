@@ -2,7 +2,7 @@ package com.tomboshoven.minecraft.magicmirror.data;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.client.model.generators.ExistingFileHelper;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
