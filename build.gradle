@@ -24,7 +24,7 @@ subprojects {
 
     String modName = project.getName().replaceAll(/([a-z])([A-Z])/, /$1_$2/).toLowerCase()
 
-    version = "1.16.3-DEV.0"
+    version = "1.16.4-DEV.0"
     group = "com.tomboshoven.minecraft." + project.getName().toLowerCase()
     archivesBaseName = project.projectDir.name
 
@@ -68,7 +68,7 @@ subprojects {
     }
 
     dependencies {
-        minecraft "net.minecraftforge:forge:1.16.3-34.0.13"
+        minecraft "net.minecraftforge:forge:1.16.4-35.0.15"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
