@@ -83,7 +83,7 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
         // Return the original quads, with the property sprites replaced by actual ones
         List<BakedQuad> quads = originalModel.getQuads(state, side, rand, extraData);
         return quads.stream().map(quad -> {
-            TextureAtlasSprite sprite = quad.func_187508_a();
+            TextureAtlasSprite sprite = quad.getSprite();
             if (sprite instanceof PropertySprite) {
                 RenderMaterial material = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
                 TextureAtlasSprite actualSprite = bakedTextureGetter.apply(material);
@@ -118,7 +118,7 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
             idx += stride;
         }
 
-        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getFace(), sprite, quad.func_239287_f_());
+        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getFace(), sprite, quad.applyDiffuseLighting());
     }
 
     private static int getAtByteOffset(int[] inData, int offset) {
@@ -192,13 +192,13 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
         }
 
         @Override
-        public IBakedModel func_239290_a_(IBakedModel model, ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn) {
+        public IBakedModel getOverrideModel(IBakedModel model, ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn) {
             // If the item has a texture mapper, use it.
             Item item = stack.getItem();
             if (item instanceof IItemStackTextureMapperProvider) {
                 return new TexturedBakedModel<>(model, bakedTextureGetter, ((IItemStackTextureMapperProvider) item).getTextureMapper(stack));
             }
-            return wrappedOverrideList.func_239290_a_(model, stack, worldIn, entityIn);
+            return wrappedOverrideList.getOverrideModel(model, stack, worldIn, entityIn);
         }
     }
 }

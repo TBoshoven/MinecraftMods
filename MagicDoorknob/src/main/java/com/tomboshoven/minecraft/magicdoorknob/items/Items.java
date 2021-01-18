@@ -79,6 +79,6 @@ public final class Items {
         addDoorknob(registry, "iron", ItemTier.IRON, "iron_block", () -> Ingredient.fromTag(Tags.Items.INGOTS_IRON));
         addDoorknob(registry, "gold", ItemTier.GOLD, "gold_block", () -> Ingredient.fromTag(Tags.Items.INGOTS_GOLD));
         addDoorknob(registry, "diamond", ItemTier.DIAMOND, "diamond_block", () -> Ingredient.fromTag(Tags.Items.GEMS_DIAMOND));
-        addDoorknob(registry, "netherite", ItemTier.NETHERITE, "netherite_block", () -> Ingredient.fromItems(net.minecraft.item.Items.field_234759_km_));
+        addDoorknob(registry, "netherite", ItemTier.NETHERITE, "netherite_block", () -> Ingredient.fromTag(Tags.Items.INGOTS_NETHERITE));
     }
 }

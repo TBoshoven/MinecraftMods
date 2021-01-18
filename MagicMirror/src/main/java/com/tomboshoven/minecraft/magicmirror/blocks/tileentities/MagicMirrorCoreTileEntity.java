@@ -167,12 +167,12 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     }
 
     @Override
-    public void func_230337_a_(BlockState state, CompoundNBT compound) {
-        super.func_230337_a_(state, compound);
-        read(compound);
+    public void read(BlockState state, CompoundNBT compound) {
+        super.read(state, compound);
+        readInternal(compound);
     }
 
-    private void read(CompoundNBT compound) {
+    private void readInternal(CompoundNBT compound) {
         ListNBT modifiers = compound.getList("modifiers", 10);
         for (INBT modifierCompound : modifiers) {
             if (modifierCompound instanceof CompoundNBT) {
@@ -231,6 +231,6 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     @OnlyIn(Dist.CLIENT)
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        read(pkt.getNbtCompound());
+        readInternal(pkt.getNbtCompound());
     }
 }

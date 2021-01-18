@@ -43,7 +43,7 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
 
         for (Pair<BannerPattern, DyeColor> patternColor : patternColorList) {
             float[] rgb = patternColor.getRight().getColorComponentValues();
-            RenderMaterial material = new RenderMaterial(Atlases.BANNER_ATLAS, patternColor.getLeft().func_226957_a_(true));
+            RenderMaterial material = new RenderMaterial(Atlases.BANNER_ATLAS, patternColor.getLeft().getTextureLocation(true));
 
             IVertexBuilder buffer = material.getBuffer(renderTypeBuffer, RenderType::getEntityNoOutline);
 

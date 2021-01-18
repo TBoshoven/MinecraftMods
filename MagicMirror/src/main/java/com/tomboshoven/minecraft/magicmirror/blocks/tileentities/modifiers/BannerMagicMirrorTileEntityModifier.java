@@ -100,7 +100,7 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
         if (!bannerData.isEmpty()) {
             bannerNBT = bannerData.copy();
         }
-        name = ITextComponent.Serializer.func_240643_a_(nbt.getString("BannerName"));
+        name = ITextComponent.Serializer.getComponentFromJson(nbt.getString("BannerName"));
     }
 
     @Override

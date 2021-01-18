@@ -74,12 +74,12 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     }
 
     @Override
-    public void func_230337_a_(BlockState state, CompoundNBT compound) {
-        super.func_230337_a_(state, compound);
-        read(compound);
+    public void read(BlockState state, CompoundNBT compound) {
+        super.read(state, compound);
+        readInternal(compound);
     }
 
-    private void read(CompoundNBT compound) {
+    private void readInternal(CompoundNBT compound) {
         baseBlockState = NBTUtil.readBlockState(compound.getCompound("baseBlock"));
         String doorknobType = compound.getString("doorknobType");
         doorknob = Items.DOORKNOBS.get(doorknobType);
@@ -99,7 +99,7 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        read(pkt.getNbtCompound());
+        readInternal(pkt.getNbtCompound());
         requestModelDataUpdate();
     }
 
