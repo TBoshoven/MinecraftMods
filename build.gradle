@@ -74,7 +74,7 @@ subprojects {
     jar {
         manifest {
             attributes([
-                "Implementation-Version": "${getArchiveVersion()}",
+                "Implementation-Version": getArchiveVersion(),
             ])
         }
     }
