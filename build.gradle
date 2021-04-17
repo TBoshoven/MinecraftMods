@@ -14,7 +14,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.+', changing: true
     }
 }
 
@@ -67,15 +67,14 @@ subprojects {
     }
 
     dependencies {
-        minecraft "net.minecraftforge:forge:1.14.4-28.2.17"
-
+        minecraft "net.minecraftforge:forge:1.14.4-28.2.23"
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
 
     jar {
         manifest {
             attributes([
-                "Implementation-Version": "${version}",
+                "Implementation-Version": "${getArchiveVersion()}",
             ])
         }
     }
