@@ -14,7 +14,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.+', changing: true
     }
 }
 
@@ -32,7 +32,7 @@ subprojects {
     targetCompatibility = 1.8
 
     minecraft {
-        mappings channel: 'snapshot', version: '20201028-1.16.3'
+        mappings channel: 'snapshot', version: '20210309-1.16.5'
 
         runs {
             client {
@@ -68,7 +68,7 @@ subprojects {
     }
 
     dependencies {
-        minecraft "net.minecraftforge:forge:1.16.5-36.0.1"
+        minecraft "net.minecraftforge:forge:1.16.5-36.1.4"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
@@ -76,7 +76,7 @@ subprojects {
     jar {
         manifest {
             attributes([
-                "Implementation-Version": "${version}",
+                "Implementation-Version": "${getArchiveVersion()}",
             ])
         }
     }
