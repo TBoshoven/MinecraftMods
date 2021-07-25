@@ -94,18 +94,18 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
     }
 
     private static BakedQuad retexture(BakedQuad quad, TextureAtlasSprite sprite) {
-        int[] vertexData = quad.getVertexData().clone();
+        int[] vertexData = quad.getVertices().clone();
 
         // Offset between vertices
-        int stride = VERTEX_FORMAT.getSize();
+        int stride = VERTEX_FORMAT.getVertexSize();
         // Offset for a single U/V
         int eltOffset = VERTEX_FORMAT_ELEMENT_UV.getType().getSize();
 
-        float minU = sprite.getMinU();
-        float maxU = sprite.getMaxU();
+        float minU = sprite.getU0();
+        float maxU = sprite.getU1();
         float uDiff = maxU - minU;
-        float minV = sprite.getMinV();
-        float maxV = sprite.getMaxV();
+        float minV = sprite.getV0();
+        float maxV = sprite.getV1();
         float vDiff = maxV - minV;
 
         int idx = VERTEX_FORMAT_ELEMENT_UV_OFFSET;
@@ -118,7 +118,7 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
             idx += stride;
         }
 
-        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getFace(), sprite, quad.applyDiffuseLighting());
+        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getDirection(), sprite, quad.isShade());
     }
 
     private static int getAtByteOffset(int[] inData, int offset) {
@@ -192,13 +192,13 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
         }
 
         @Override
-        public IBakedModel getOverrideModel(IBakedModel model, ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn) {
+        public IBakedModel resolve(IBakedModel model, ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn) {
             // If the item has a texture mapper, use it.
             Item item = stack.getItem();
             if (item instanceof IItemStackTextureMapperProvider) {
                 return new TexturedBakedModel<>(model, bakedTextureGetter, ((IItemStackTextureMapperProvider) item).getTextureMapper(stack));
             }
-            return wrappedOverrideList.getOverrideModel(model, stack, worldIn, entityIn);
+            return wrappedOverrideList.resolve(model, stack, worldIn, entityIn);
         }
     }
 }

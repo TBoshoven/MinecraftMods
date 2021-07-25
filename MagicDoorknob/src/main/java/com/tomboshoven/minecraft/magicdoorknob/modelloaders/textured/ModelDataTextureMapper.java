@@ -31,6 +31,6 @@ class ModelDataTextureMapper implements ITextureMapper {
                 return material;
             }
         }
-        return new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE, MissingTextureSprite.getLocation());
+        return new RenderMaterial(PlayerContainer.BLOCK_ATLAS, MissingTextureSprite.getLocation());
     }
 }

@@ -25,17 +25,17 @@ class Recipes extends RecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shapedRecipe(Items.MAGIC_MIRROR.get(), 2)
-                .patternLine("|e|")
-                .patternLine("| |")
-                .patternLine("|#|")
-                .key('|', RODS_WOODEN)
-                .key('e', ENDER_EYE)
-                .key('#', GLASS_PANES)
-                .setGroup("magic_mirror")
-                .addCriterion("ender_eye", InventoryChangeTrigger.Instance.forItems(ENDER_EYE))
-                .build(consumer);
+    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
+        ShapedRecipeBuilder.shaped(Items.MAGIC_MIRROR.get(), 2)
+                .pattern("|e|")
+                .pattern("| |")
+                .pattern("|#|")
+                .define('|', RODS_WOODEN)
+                .define('e', ENDER_EYE)
+                .define('#', GLASS_PANES)
+                .group("magic_mirror")
+                .unlockedBy("ender_eye", InventoryChangeTrigger.Instance.hasItems(ENDER_EYE))
+                .save(consumer);
     }
 
     @Nonnull
