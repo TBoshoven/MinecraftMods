@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static net.minecraft.client.Minecraft.IS_RUNNING_ON_MAC;
+import static net.minecraft.client.Minecraft.ON_OSX;
 
 /**
  * Client-side version of the reflection.
@@ -65,8 +65,8 @@ public class ReflectionClient extends Reflection {
     void buildFrameBuffer() {
         super.buildFrameBuffer();
 
-        frameBuffer = new Framebuffer(TEXTURE_WIDTH, TEXTURE_HEIGHT, true, IS_RUNNING_ON_MAC);
-        frameBuffer.unbindFramebuffer();
+        frameBuffer = new Framebuffer(TEXTURE_WIDTH, TEXTURE_HEIGHT, true, ON_OSX);
+        frameBuffer.unbindWrite();
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ReflectionClient extends Reflection {
         super.cleanUpFrameBuffer();
 
         if (frameBuffer != null) {
-            frameBuffer.deleteFramebuffer();
+            frameBuffer.destroyBuffers();
             frameBuffer = null;
         }
     }
@@ -110,20 +110,20 @@ public class ReflectionClient extends Reflection {
 
 
         if (frameBuffer != null && reflectionRenderer != null) {
-            IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+            IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
 
-            frameBuffer.framebufferClear(IS_RUNNING_ON_MAC);
-            frameBuffer.bindFramebuffer(true);
+            frameBuffer.clear(ON_OSX);
+            frameBuffer.bindWrite(true);
 
             reflectionRenderer.setUp();
 
             reflectionRenderer.render(angle, partialTicks, renderTypeBuffer);
 
-            renderTypeBuffer.finish();
+            renderTypeBuffer.endBatch();
 
             reflectionRenderer.tearDown();
 
-            frameBuffer.unbindFramebuffer();
+            frameBuffer.unbindWrite();
         }
     }
 
@@ -138,7 +138,7 @@ public class ReflectionClient extends Reflection {
      */
     boolean bind() {
         if (frameBuffer != null) {
-            frameBuffer.bindFramebufferTexture();
+            frameBuffer.bindRead();
             return true;
         }
         else {

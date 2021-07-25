@@ -50,9 +50,9 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
                 EnumPartType part = tileEntityIn.getPart();
                 Direction facing = tileEntityIn.getFacing();
 
-                BlockPos tePos = tileEntityIn.getPos();
+                BlockPos tePos = tileEntityIn.getBlockPos();
 
-                Vec3d reflectedPos = reflected.getPositionVector().add(.5, .5, .5);
+                Vec3d reflectedPos = reflected.getCommandSenderWorldPosition().add(.5, .5, .5);
                 Vec3d distanceVector = reflectedPos.subtract(tePos.getX(), tePos.getY(), tePos.getZ());
 
                 ReflectionClientUpdater.markViewed((ReflectionClient) reflection);
@@ -81,7 +81,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
         matrixStack.translate(.5, .5, .5);
 
         // Draw on top of the model instead of in the center of the block
-        matrixStack.rotate(Vector3f.YN.rotationDegrees(facing.getHorizontalAngle()));
+        matrixStack.mulPose(Vector3f.YN.rotationDegrees(facing.toYRot()));
         matrixStack.translate(0, 0, -.4);
 
         IVertexBuilder buffer = renderTypeBuffer.getBuffer(reflection.getRenderType());
@@ -89,12 +89,12 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
         float texTop = part == EnumPartType.TOP ? 0f : .5f;
         float texBottom = part == EnumPartType.TOP ? .5f : 1f;
 
-        Matrix4f matrix = matrixStack.getLast().getMatrix();
+        Matrix4f matrix = matrixStack.last().pose();
 
         // Draw a simple quad
-        buffer.pos(matrix, -.5f, -.5f, 0).color(1f, 1f, 1f, reflectionAlpha).tex(0, texBottom).endVertex();
-        buffer.pos(matrix, .5f, -.5f, 0).color(1f, 1f, 1f, reflectionAlpha).tex(1, texBottom).endVertex();
-        buffer.pos(matrix, .5f, .5f, 0).color(1f, 1f, 1f, reflectionAlpha).tex(1, texTop).endVertex();
-        buffer.pos(matrix, -.5f, .5f, 0).color(1f, 1f, 1f, reflectionAlpha).tex(0, texTop).endVertex();
+        buffer.vertex(matrix, -.5f, -.5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(0, texBottom).endVertex();
+        buffer.vertex(matrix, .5f, -.5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(1, texBottom).endVertex();
+        buffer.vertex(matrix, .5f, .5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(1, texTop).endVertex();
+        buffer.vertex(matrix, -.5f, .5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(0, texTop).endVertex();
     }
 }

@@ -25,9 +25,9 @@ public class MagicMirrorPartTileEntity extends MagicMirrorBaseTileEntity {
     @Override
     protected MagicMirrorCoreTileEntity getCore() {
         if (core == null) {
-            World world = getWorld();
+            World world = getLevel();
             if (world != null) {
-                TileEntity teBelow = world.getTileEntity(getPos().down());
+                TileEntity teBelow = world.getBlockEntity(getBlockPos().below());
                 if (teBelow instanceof MagicMirrorCoreTileEntity) {
                     core = (MagicMirrorCoreTileEntity) teBelow;
                 }

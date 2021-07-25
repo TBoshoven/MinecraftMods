@@ -105,13 +105,13 @@ public abstract class MagicMirrorBaseTileEntity extends TileEntity {
      * @return Which direction the mirror is facing in.
      */
     public Direction getFacing() {
-        return getBlockState().get(HorizontalBlock.HORIZONTAL_FACING);
+        return getBlockState().getValue(HorizontalBlock.FACING);
     }
 
     /**
      * @return Which part of the mirror this tile entity belongs to.
      */
     public EnumPartType getPart() {
-        return getBlockState().get(MagicMirrorBlock.PART);
+        return getBlockState().getValue(MagicMirrorBlock.PART);
     }
 }

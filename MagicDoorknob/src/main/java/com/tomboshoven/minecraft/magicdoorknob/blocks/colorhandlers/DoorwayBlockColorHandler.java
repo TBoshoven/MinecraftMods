@@ -27,7 +27,7 @@ class DoorwayBlockColorHandler implements IBlockColor {
         if (worldIn != null && pos != null) {
             BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 
-            TileEntity tileEntity = worldIn.getTileEntity(pos);
+            TileEntity tileEntity = worldIn.getBlockEntity(pos);
             if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
                 BlockState baseBlock = ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState();
                 // Return whatever the base block would.

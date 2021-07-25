@@ -36,7 +36,7 @@ public class CreatureMagicMirrorTileEntityModifier extends MagicMirrorTileEntity
 
     @Override
     public void remove(World world, BlockPos pos) {
-        InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.SKELETON_SKULL, 1));
+        InventoryHelper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.SKELETON_SKULL, 1));
     }
 
     @Override

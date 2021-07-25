@@ -54,7 +54,7 @@ class ReflectionRenderType extends RenderType {
             RenderSystem.enableCull();
 
             // Fog
-            FogRenderer.applyFog();
+            FogRenderer.levelFogColor();
             RenderSystem.enableFog();
         }, () -> {
             // Fog

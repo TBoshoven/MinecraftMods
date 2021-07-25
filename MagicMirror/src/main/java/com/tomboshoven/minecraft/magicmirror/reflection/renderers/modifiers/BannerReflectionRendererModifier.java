@@ -42,19 +42,19 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
         super.render(facing, partialTicks, renderTypeBuffer);
 
         for (Pair<BannerPattern, DyeColor> patternColor : patternColorList) {
-            float[] rgb = patternColor.getRight().getColorComponentValues();
-            Material material = new Material(Atlases.BANNER_ATLAS, patternColor.getLeft().func_226957_a_(true));
+            float[] rgb = patternColor.getRight().getTextureDiffuseColors();
+            Material material = new Material(Atlases.BANNER_SHEET, patternColor.getLeft().location(true));
 
-            IVertexBuilder buffer = material.getBuffer(renderTypeBuffer, RenderType::getEntityNoOutline);
+            IVertexBuilder buffer = material.buffer(renderTypeBuffer, RenderType::entityNoOutline);
 
-            TextureAtlasSprite sprite = material.getSprite();
+            TextureAtlasSprite sprite = material.sprite();
 
             // Draw a simple quad
             // Perspective is 90 degrees, so width should be distance for a perfect fit
-            buffer.pos(-BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).color(rgb[0], rgb[1], rgb[2], 1).tex(sprite.getInterpolatedU(BANNER_TEXTURE_START_U), sprite.getInterpolatedV(BANNER_TEXTURE_START_V)).overlay(OverlayTexture.NO_OVERLAY).lightmap(0x00f000f0).normal(0, 0, 1).endVertex();
-            buffer.pos(BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).color(rgb[0], rgb[1], rgb[2], 1).tex(sprite.getInterpolatedU(BANNER_TEXTURE_END_U), sprite.getInterpolatedV(BANNER_TEXTURE_START_V)).overlay(OverlayTexture.NO_OVERLAY).lightmap(0x00f000f0).normal(0, 0, 1).endVertex();
-            buffer.pos(BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).color(rgb[0], rgb[1], rgb[2], 1).tex(sprite.getInterpolatedU(BANNER_TEXTURE_END_U), sprite.getInterpolatedV(BANNER_TEXTURE_END_V)).overlay(OverlayTexture.NO_OVERLAY).lightmap(0x00f000f0).normal(0, 0, 1).endVertex();
-            buffer.pos(-BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).color(rgb[0], rgb[1], rgb[2], 1).tex(sprite.getInterpolatedU(BANNER_TEXTURE_START_U), sprite.getInterpolatedV(BANNER_TEXTURE_END_V)).overlay(OverlayTexture.NO_OVERLAY).lightmap(0x00f000f0).normal(0, 0, 1).endVertex();
+            buffer.vertex(-BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).color(rgb[0], rgb[1], rgb[2], 1).uv(sprite.getU(BANNER_TEXTURE_START_U), sprite.getV(BANNER_TEXTURE_START_V)).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0x00f000f0).normal(0, 0, 1).endVertex();
+            buffer.vertex(BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).color(rgb[0], rgb[1], rgb[2], 1).uv(sprite.getU(BANNER_TEXTURE_END_U), sprite.getV(BANNER_TEXTURE_START_V)).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0x00f000f0).normal(0, 0, 1).endVertex();
+            buffer.vertex(BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).color(rgb[0], rgb[1], rgb[2], 1).uv(sprite.getU(BANNER_TEXTURE_END_U), sprite.getV(BANNER_TEXTURE_END_V)).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0x00f000f0).normal(0, 0, 1).endVertex();
+            buffer.vertex(-BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).color(rgb[0], rgb[1], rgb[2], 1).uv(sprite.getU(BANNER_TEXTURE_START_U), sprite.getV(BANNER_TEXTURE_END_V)).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0x00f000f0).normal(0, 0, 1).endVertex();
         }
     }
 }

@@ -13,6 +13,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite.Info;
+
 /**
  * A sprite that does not link to a texture.
  * Instead, it describes a property that allows others to provide the texture (see ITextureMapper).
