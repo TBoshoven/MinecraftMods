@@ -49,9 +49,9 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
                 EnumPartType part = tileEntityIn.getPart();
                 Direction facing = tileEntityIn.getFacing();
 
-                BlockPos tePos = tileEntityIn.getPos();
+                BlockPos tePos = tileEntityIn.getBlockPos();
 
-                Vec3d reflectedPos = reflected.getPositionVector().add(.5, .5, .5);
+                Vec3d reflectedPos = reflected.getCommandSenderWorldPosition().add(.5, .5, .5);
                 Vec3d distanceVector = reflectedPos.subtract(tePos.getX(), tePos.getY(), tePos.getZ());
 
                 renderReflection(reflection, x, y, z, partialTicks, part, facing, distanceVector);
@@ -77,7 +77,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
 
         // Rebind original frame buffer.
         // This could be done in a nicer way, but I don't think a frame buffer stacking mechanism is available.
-        Minecraft.getInstance().getFramebuffer().bindFramebuffer(true);
+        Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
 
         GlStateManager.pushMatrix();
 
@@ -93,7 +93,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
         GlStateManager.translated(x + .5, y + .5, z + .5);
 
         // Draw on top of the model instead of in the center of the block
-        GlStateManager.rotatef(facing.getHorizontalAngle(), 0f, -1f, 0f);
+        GlStateManager.rotatef(facing.toYRot(), 0f, -1f, 0f);
         GlStateManager.translated(0, 0, -.4);
 
         GlStateManager.disableLighting();
@@ -102,18 +102,18 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
         reflection.bind();
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
 
         double texTop = part == EnumPartType.TOP ? 0 : .5;
         double texBottom = part == EnumPartType.TOP ? .5 : 1;
 
         // Draw a simple quad
         bufferbuilder.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos(-.5, -.5, 0).tex(0, texBottom).endVertex();
-        bufferbuilder.pos(.5, -.5, 0).tex(1, texBottom).endVertex();
-        bufferbuilder.pos(.5, .5, 0).tex(1, texTop).endVertex();
-        bufferbuilder.pos(-.5, .5, 0).tex(0, texTop).endVertex();
-        tessellator.draw();
+        bufferbuilder.vertex(-.5, -.5, 0).uv(0, texBottom).endVertex();
+        bufferbuilder.vertex(.5, -.5, 0).uv(1, texBottom).endVertex();
+        bufferbuilder.vertex(.5, .5, 0).uv(1, texTop).endVertex();
+        bufferbuilder.vertex(-.5, .5, 0).uv(0, texTop).endVertex();
+        tessellator.end();
 
         GlStateManager.enableLighting();
 

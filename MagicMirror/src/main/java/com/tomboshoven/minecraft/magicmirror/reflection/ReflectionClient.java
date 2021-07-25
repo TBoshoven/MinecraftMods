@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static net.minecraft.client.Minecraft.IS_RUNNING_ON_MAC;
+import static net.minecraft.client.Minecraft.ON_OSX;
 
 /**
  * Client-side version of the reflection.
@@ -58,8 +58,8 @@ public class ReflectionClient extends Reflection {
     void buildFrameBuffer() {
         super.buildFrameBuffer();
 
-        frameBuffer = new Framebuffer(TEXTURE_WIDTH, TEXTURE_HEIGHT, true, IS_RUNNING_ON_MAC);
-        frameBuffer.unbindFramebuffer();
+        frameBuffer = new Framebuffer(TEXTURE_WIDTH, TEXTURE_HEIGHT, true, ON_OSX);
+        frameBuffer.unbindWrite();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ReflectionClient extends Reflection {
         super.cleanUpFrameBuffer();
 
         if (frameBuffer != null) {
-            frameBuffer.deleteFramebuffer();
+            frameBuffer.destroyBuffers();
             frameBuffer = null;
         }
     }
@@ -109,14 +109,14 @@ public class ReflectionClient extends Reflection {
         lastRenderPartialTicks = partialTicks;
 
         if (frameBuffer != null && reflectionRenderer != null) {
-            frameBuffer.framebufferClear(IS_RUNNING_ON_MAC);
-            frameBuffer.bindFramebuffer(true);
+            frameBuffer.clear(ON_OSX);
+            frameBuffer.bindWrite(true);
 
             reflectionRenderer.setUp();
-            reflectionRenderer.render(facing.getHorizontalAngle(), partialTicks);
+            reflectionRenderer.render(facing.toYRot(), partialTicks);
             reflectionRenderer.tearDown();
 
-            frameBuffer.unbindFramebuffer();
+            frameBuffer.unbindWrite();
         }
     }
 
@@ -134,6 +134,6 @@ public class ReflectionClient extends Reflection {
         if (frameBuffer == null) {
             throw new RuntimeException("No active reflection");
         }
-        frameBuffer.bindFramebufferTexture();
+        frameBuffer.bindRead();
     }
 }

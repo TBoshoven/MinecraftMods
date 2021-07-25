@@ -51,6 +51,6 @@ public class BannerMagicMirrorModifier extends MagicMirrorModifier {
             // Get the block tag instead of the item stack tag
             bannerTag = bannerTag.getCompound("BlockEntityTag");
         }
-        return new BannerMagicMirrorTileEntityModifier(this, bannerColor, bannerTag, usedItem.hasDisplayName() ? usedItem.getDisplayName() : null);
+        return new BannerMagicMirrorTileEntityModifier(this, bannerColor, bannerTag, usedItem.hasCustomHoverName() ? usedItem.getHoverName() : null);
     }
 }

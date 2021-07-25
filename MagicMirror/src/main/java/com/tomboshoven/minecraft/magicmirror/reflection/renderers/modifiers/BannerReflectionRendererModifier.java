@@ -77,7 +77,7 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
      */
     @Nullable
     private ResourceLocation getBannerResourceLocation() {
-        return BannerTextures.BANNER_DESIGNS.getResourceLocation(bannerPatternString, patternList, colorList);
+        return BannerTextures.BANNER_CACHE.getTextureLocation(bannerPatternString, patternList, colorList);
     }
 
     @Override
@@ -86,18 +86,18 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
 
         ResourceLocation bannerLocation = getBannerResourceLocation();
         if (bannerLocation != null) {
-            Minecraft.getInstance().getTextureManager().bindTexture(bannerLocation);
+            Minecraft.getInstance().getTextureManager().bind(bannerLocation);
             Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferbuilder = tessellator.getBuffer();
+            BufferBuilder bufferbuilder = tessellator.getBuilder();
 
             // Draw a simple quad
             // Perspective is 90 degrees, so width should be distance for a perfect fit
             bufferbuilder.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-            bufferbuilder.pos(-BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).tex(BANNER_TEXTURE_START_U, BANNER_TEXTURE_START_V).endVertex();
-            bufferbuilder.pos(BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).tex(BANNER_TEXTURE_END_U, BANNER_TEXTURE_START_V).endVertex();
-            bufferbuilder.pos(BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).tex(BANNER_TEXTURE_END_U, BANNER_TEXTURE_END_V).endVertex();
-            bufferbuilder.pos(-BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).tex(BANNER_TEXTURE_START_U, BANNER_TEXTURE_END_V).endVertex();
-            tessellator.draw();
+            bufferbuilder.vertex(-BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).uv(BANNER_TEXTURE_START_U, BANNER_TEXTURE_START_V).endVertex();
+            bufferbuilder.vertex(BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).uv(BANNER_TEXTURE_END_U, BANNER_TEXTURE_START_V).endVertex();
+            bufferbuilder.vertex(BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).uv(BANNER_TEXTURE_END_U, BANNER_TEXTURE_END_V).endVertex();
+            bufferbuilder.vertex(-BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).uv(BANNER_TEXTURE_START_U, BANNER_TEXTURE_END_V).endVertex();
+            tessellator.end();
         }
     }
 }

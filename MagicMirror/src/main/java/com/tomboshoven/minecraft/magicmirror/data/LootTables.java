@@ -40,13 +40,13 @@ class LootTables extends LootTableProvider {
 
     @Override
     protected void validate(Map<ResourceLocation, LootTable> map, ValidationResults validationresults) {
-        map.forEach((name, table) -> LootTableManager.func_215302_a(validationresults, name, table, map::get));
+        map.forEach((name, table) -> LootTableManager.validate(validationresults, name, table, map::get));
     }
 
     private static class BlockTables extends BlockLootTables {
         @Override
         protected void addTables() {
-            func_218492_c(Objects.requireNonNull(Blocks.MAGIC_MIRROR.get()));
+            dropSelf(Objects.requireNonNull(Blocks.MAGIC_MIRROR.get()));
         }
 
         @Override

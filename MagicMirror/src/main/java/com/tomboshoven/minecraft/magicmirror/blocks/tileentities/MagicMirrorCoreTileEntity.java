@@ -67,8 +67,8 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
      */
     private static List<PlayerEntity> findReflectablePlayers(IEntityReader world, BlockPos ownPosition) {
         // TODO: Add facing limitations
-        AxisAlignedBB scanBB = new AxisAlignedBB(ownPosition.add(-10, -4, -10), ownPosition.add(10, 4, 10));
-        List<PlayerEntity> playerEntities = world.getEntitiesWithinAABB(PlayerEntity.class, scanBB);
+        AxisAlignedBB scanBB = new AxisAlignedBB(ownPosition.offset(-10, -4, -10), ownPosition.offset(10, 4, 10));
+        List<PlayerEntity> playerEntities = world.getEntitiesOfClass(PlayerEntity.class, scanBB);
         // Only return real players
         return playerEntities.stream().filter(player -> !(player instanceof FakePlayer)).collect(Collectors.toList());
     }
@@ -86,7 +86,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
         if (players.isEmpty()) {
             return null;
         }
-        return Collections.min(players, Comparator.comparingDouble(player -> player.getPosition().distanceSq(ownPosition)));
+        return Collections.min(players, Comparator.comparingDouble(player -> player.getCommandSenderBlockPosition().distSqr(ownPosition)));
     }
 
     @Nullable
@@ -99,10 +99,10 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
      * Update the reflection to show the closest player.
      */
     private void updateReflection() {
-        World world = getWorld();
+        World world = getLevel();
 
         if (world != null) {
-            PlayerEntity playerToReflect = findPlayerToReflect(world, getPos());
+            PlayerEntity playerToReflect = findPlayerToReflect(world, getBlockPos());
 
             if (playerToReflect == null) {
                 reflection.stopReflecting();
@@ -130,8 +130,8 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         // Stop reflecting, but prepare to restart the next tick, in case we get validated again
         // We need to make sure that we stop reflecting when the tile entity is destroyed, so we don't leak any frame
         // buffers and textures
@@ -140,8 +140,8 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        return writeInternal(super.write(compound));
+    public CompoundNBT save(CompoundNBT compound) {
+        return writeInternal(super.save(compound));
     }
 
     /**
@@ -162,8 +162,8 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     }
 
     @Override
-    public void read(CompoundNBT compound) {
-        super.read(compound);
+    public void load(CompoundNBT compound) {
+        super.load(compound);
         ListNBT modifiers = compound.getList("modifiers", 10);
         for (INBT modifierCompound : modifiers) {
             if (modifierCompound instanceof CompoundNBT) {
@@ -196,7 +196,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     public void addModifier(MagicMirrorTileEntityModifier modifier) {
         modifiers.add(modifier);
         modifier.activate(this);
-        markDirty();
+        setChanged();
     }
 
     @Override
@@ -216,12 +216,12 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(getPos(), 1, getUpdateTag());
+        return new SUpdateTileEntityPacket(getBlockPos(), 1, getUpdateTag());
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        read(pkt.getNbtCompound());
+        load(pkt.getTag());
     }
 }

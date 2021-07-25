@@ -29,7 +29,7 @@ public final class Blocks {
     public static final RegistryObject<Block> MAGIC_MIRROR =
             BLOCKS.register("magic_mirror",
                     () -> new MagicMirrorBlock(
-                        Block.Properties.create(new Material.Builder(MaterialColor.GRAY).build()).hardnessAndResistance(.8f).sound(SoundType.GLASS)
+                        Block.Properties.of(new Material.Builder(MaterialColor.COLOR_GRAY).build()).strength(.8f).sound(SoundType.GLASS)
                     )
             );
 

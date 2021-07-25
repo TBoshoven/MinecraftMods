@@ -14,11 +14,11 @@ public final class TileEntities {
 
     static final RegistryObject<TileEntityType<MagicDoorTileEntity>> MAGIC_DOOR =
             TILE_ENTITIES.register("magic_door",
-                    () -> TileEntityType.Builder.create(MagicDoorTileEntity::new, Blocks.MAGIC_DOOR.get()).build(null)
+                    () -> TileEntityType.Builder.of(MagicDoorTileEntity::new, Blocks.MAGIC_DOOR.get()).build(null)
             );
     static final RegistryObject<TileEntityType<MagicDoorwayTileEntity>> MAGIC_DOORWAY =
             TILE_ENTITIES.register("magic_doorway",
-                    () -> TileEntityType.Builder.create(MagicDoorwayTileEntity::new, Blocks.MAGIC_DOORWAY.get()).build(null)
+                    () -> TileEntityType.Builder.of(MagicDoorwayTileEntity::new, Blocks.MAGIC_DOORWAY.get()).build(null)
             );
 
     private TileEntities() {
