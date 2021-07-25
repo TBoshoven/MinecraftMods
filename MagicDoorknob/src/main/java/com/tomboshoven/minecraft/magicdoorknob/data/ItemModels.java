@@ -26,7 +26,7 @@ class ItemModels extends ItemModelProvider {
                     if (registryName != null) {
                         getBuilder(registryName.getPath())
                                 .parent(new ModelFile.ExistingModelFile(modLoc("item/magic_doorknob"), existingFileHelper))
-                                .texture("main", doorknob.getMainMaterial().getTextureLocation());
+                                .texture("main", doorknob.getMainMaterial().texture());
                     }
                 }
         );

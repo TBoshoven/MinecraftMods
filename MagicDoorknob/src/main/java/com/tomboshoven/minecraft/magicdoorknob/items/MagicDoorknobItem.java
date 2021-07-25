@@ -74,15 +74,15 @@ public class MagicDoorknobItem extends Item {
             return true;
         }
 
-        return blockState.isReplaceable(useContext);
+        return blockState.canBeReplaced(useContext);
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        World world = context.getWorld();
-        if (!world.isRemote) {
-            Direction face = context.getFace();
-            BlockPos pos = context.getPos();
+    public ActionResultType useOn(ItemUseContext context) {
+        World world = context.getLevel();
+        if (!world.isClientSide) {
+            Direction face = context.getClickedFace();
+            BlockPos pos = context.getClickedPos();
 
             // Only sideways doors right now
             if (face == Direction.UP || face == Direction.DOWN) {
@@ -93,7 +93,7 @@ public class MagicDoorknobItem extends Item {
             if (canPlaceDoor(world, pos, face, useContext)) {
                 placeDoor(world, pos, face);
                 placeDoorway(world, pos, face, useContext);
-                context.getItem().shrink(1);
+                context.getItemInHand().shrink(1);
                 return ActionResultType.SUCCESS;
             }
             return ActionResultType.FAIL;
@@ -110,31 +110,31 @@ public class MagicDoorknobItem extends Item {
      * @param facing The direction the door should be facing
      */
     private void placeDoor(World world, BlockPos pos, Direction facing) {
-        BlockPos doorPos = pos.offset(facing);
+        BlockPos doorPos = pos.relative(facing);
         Block block = Blocks.MAGIC_DOOR.get();
-        world.setBlockState(
+        world.setBlockAndUpdate(
                 doorPos,
-                block.getDefaultState()
-                        .with(MagicDoorBlock.HORIZONTAL_FACING, facing)
-                        .with(MagicDoorBlock.PART, MagicDoorBlock.EnumPartType.TOP)
+                block.defaultBlockState()
+                        .setValue(MagicDoorBlock.HORIZONTAL_FACING, facing)
+                        .setValue(MagicDoorBlock.PART, MagicDoorBlock.EnumPartType.TOP)
         );
-        TileEntity topTileEntity = world.getTileEntity(doorPos);
+        TileEntity topTileEntity = world.getBlockEntity(doorPos);
         if (topTileEntity instanceof MagicDoorTileEntity) {
             ((MagicDoorwayPartBaseTileEntity) topTileEntity).setBaseBlockState(world.getBlockState(pos));
             ((MagicDoorwayPartBaseTileEntity) topTileEntity).setDoorknob(this);
         }
-        world.setBlockState(
-                doorPos.down(),
-                block.getDefaultState()
-                        .with(MagicDoorBlock.HORIZONTAL_FACING, facing)
-                        .with(MagicDoorBlock.PART, MagicDoorBlock.EnumPartType.BOTTOM)
+        world.setBlockAndUpdate(
+                doorPos.below(),
+                block.defaultBlockState()
+                        .setValue(MagicDoorBlock.HORIZONTAL_FACING, facing)
+                        .setValue(MagicDoorBlock.PART, MagicDoorBlock.EnumPartType.BOTTOM)
         );
-        TileEntity bottomTileEntity = world.getTileEntity(doorPos.down());
+        TileEntity bottomTileEntity = world.getBlockEntity(doorPos.below());
         if (bottomTileEntity instanceof MagicDoorTileEntity) {
-            ((MagicDoorwayPartBaseTileEntity) bottomTileEntity).setBaseBlockState(world.getBlockState(pos.down()));
+            ((MagicDoorwayPartBaseTileEntity) bottomTileEntity).setBaseBlockState(world.getBlockState(pos.below()));
             ((MagicDoorwayPartBaseTileEntity) bottomTileEntity).setDoorknob(this);
         }
-        world.playSound(null, doorPos, SoundEvents.BLOCK_WOODEN_DOOR_OPEN, SoundCategory.BLOCKS, 1, 1);
+        world.playSound(null, doorPos, SoundEvents.WOODEN_DOOR_OPEN, SoundCategory.BLOCKS, 1, 1);
     }
 
     /**
@@ -149,15 +149,15 @@ public class MagicDoorknobItem extends Item {
     private void placeDoorway(World world, BlockPos pos, Direction facing, BlockItemUseContext useContext) {
         Direction doorwayFacing = facing.getOpposite();
         boolean isNorthSouth = facing == Direction.NORTH || facing == Direction.SOUTH;
-        float depth = tier.getEfficiency();
+        float depth = tier.getSpeed();
         for (int i = 0; i < depth; ++i) {
-            BlockPos elementPos = pos.offset(doorwayFacing, i);
+            BlockPos elementPos = pos.relative(doorwayFacing, i);
             if (
                     (isReplaceable(world, elementPos) && !isEmpty(world, elementPos, useContext)) ||
-                            (isReplaceable(world, elementPos.down()) && !isEmpty(world, elementPos.down(), useContext))
+                            (isReplaceable(world, elementPos.below()) && !isEmpty(world, elementPos.below(), useContext))
             ) {
                 placeDoorwayElement(world, elementPos, isNorthSouth, MagicDoorwayBlock.EnumPartType.TOP);
-                placeDoorwayElement(world, elementPos.down(), isNorthSouth, MagicDoorwayBlock.EnumPartType.BOTTOM);
+                placeDoorwayElement(world, elementPos.below(), isNorthSouth, MagicDoorwayBlock.EnumPartType.BOTTOM);
             } else {
                 // Stop iterating if we've hit two empty blocks
                 break;
@@ -177,9 +177,9 @@ public class MagicDoorknobItem extends Item {
         if (isReplaceable(world, pos)) {
             BlockState state = world.getBlockState(pos);
             Block block = Blocks.MAGIC_DOORWAY.get();
-            world.setBlockState(pos, block.getDefaultState().with(MagicDoorwayBlock.OPEN_NORTH_SOUTH, isNorthSouth).with(MagicDoorwayBlock.OPEN_EAST_WEST, !isNorthSouth).with(MagicDoorwayBlock.PART, part));
+            world.setBlockAndUpdate(pos, block.defaultBlockState().setValue(MagicDoorwayBlock.OPEN_NORTH_SOUTH, isNorthSouth).setValue(MagicDoorwayBlock.OPEN_EAST_WEST, !isNorthSouth).setValue(MagicDoorwayBlock.PART, part));
 
-            TileEntity tileEntity = world.getTileEntity(pos);
+            TileEntity tileEntity = world.getBlockEntity(pos);
             if (tileEntity instanceof MagicDoorwayTileEntity) {
                 ((MagicDoorwayPartBaseTileEntity) tileEntity).setBaseBlockState(state);
                 ((MagicDoorwayPartBaseTileEntity) tileEntity).setDoorknob(this);
@@ -197,10 +197,10 @@ public class MagicDoorknobItem extends Item {
      * @return Whether a door can be placed at the given position.
      */
     private boolean canPlaceDoor(IBlockReader world, BlockPos pos, Direction facing, BlockItemUseContext useContext) {
-        if (!isReplaceable(world, pos) || !isReplaceable(world, pos.down())) {
+        if (!isReplaceable(world, pos) || !isReplaceable(world, pos.below())) {
             return false;
         }
-        return isEmpty(world, pos.offset(facing), useContext) && isEmpty(world, pos.offset(facing).down(), useContext);
+        return isEmpty(world, pos.relative(facing), useContext) && isEmpty(world, pos.relative(facing).below(), useContext);
     }
 
     /**
@@ -216,10 +216,10 @@ public class MagicDoorknobItem extends Item {
             return false;
         }
         // Blocks like bedrock use this to prevent interactions
-        if (blockState.getBlockHardness(world, pos) < 0) {
+        if (blockState.getDestroySpeed(world, pos) < 0) {
             return false;
         }
-        return blockState.getHarvestLevel() <= tier.getHarvestLevel();
+        return blockState.getHarvestLevel() <= tier.getLevel();
     }
 
     /**
@@ -227,7 +227,7 @@ public class MagicDoorknobItem extends Item {
      */
     @OnlyIn(Dist.CLIENT)
     public Material getMainMaterial() {
-        return new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, mainTextureLocation);
+        return new Material(PlayerContainer.BLOCK_ATLAS, mainTextureLocation);
     }
 
     /**

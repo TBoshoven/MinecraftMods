@@ -36,7 +36,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
      */
     public ReflectionRenderer(Entity entity) {
         this.entity = entity;
-        entityRenderer = Minecraft.getInstance().getRenderManager().getRenderer(entity);
+        entityRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity);
     }
 
     @Override
@@ -82,11 +82,11 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         MatrixStack reflectionMatrixStack = new MatrixStack();
 
         // Head's up
-        reflectionMatrixStack.rotate(Vector3f.XP.rotationDegrees(180));
+        reflectionMatrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
         // Position within the frame
         reflectionMatrixStack.translate(0, -1, 1.5);
         // Face toward the front of the mirror
-        reflectionMatrixStack.rotate(Vector3f.YP.rotationDegrees(facing));
+        reflectionMatrixStack.mulPose(Vector3f.YP.rotationDegrees(facing));
 
         // The typing of these classes works out a little weird, so instead of complicating things too much, let's go
         // with the unchecked cast.

@@ -67,7 +67,7 @@ public abstract class MagicMirrorModifier {
      */
     @Nullable
     private static MagicMirrorBaseTileEntity getMagicMirrorTileEntity(IBlockReader worldIn, BlockPos pos) {
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        TileEntity tileEntity = worldIn.getBlockEntity(pos);
         if (tileEntity instanceof MagicMirrorBaseTileEntity) {
             return (MagicMirrorBaseTileEntity) tileEntity;
         }

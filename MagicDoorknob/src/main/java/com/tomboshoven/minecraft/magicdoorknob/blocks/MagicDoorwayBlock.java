@@ -40,17 +40,17 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
      */
     public static final BooleanProperty OPEN_EAST_WEST = BooleanProperty.create("open_east_west");
 
-    private static final VoxelShape BOUNDING_BOX_PILLAR_NW = makeCuboidShape(0, 0, 15, 1, 16, 16);
-    private static final VoxelShape BOUNDING_BOX_PILLAR_NE = makeCuboidShape(15, 0, 0, 16, 16, 15);
-    private static final VoxelShape BOUNDING_BOX_PILLAR_SW = makeCuboidShape(0, 0, 0, 1, 16, 1);
-    private static final VoxelShape BOUNDING_BOX_PILLAR_SE = makeCuboidShape(15, 0, 15, 16, 16, 16);
+    private static final VoxelShape BOUNDING_BOX_PILLAR_NW = box(0, 0, 15, 1, 16, 16);
+    private static final VoxelShape BOUNDING_BOX_PILLAR_NE = box(15, 0, 0, 16, 16, 15);
+    private static final VoxelShape BOUNDING_BOX_PILLAR_SW = box(0, 0, 0, 1, 16, 1);
+    private static final VoxelShape BOUNDING_BOX_PILLAR_SE = box(15, 0, 15, 16, 16, 16);
 
-    private static final VoxelShape BOUNDING_BOX_WALL_S = makeCuboidShape(0, 0, 0, 16, 16, 1);
-    private static final VoxelShape BOUNDING_BOX_WALL_N = makeCuboidShape(0, 0, 15, 16, 16, 16);
-    private static final VoxelShape BOUNDING_BOX_WALL_E = makeCuboidShape(0, 0, 0, 1, 16, 16);
-    private static final VoxelShape BOUNDING_BOX_WALL_W = makeCuboidShape(15, 0, 0, 16, 16, 16);
+    private static final VoxelShape BOUNDING_BOX_WALL_S = box(0, 0, 0, 16, 16, 1);
+    private static final VoxelShape BOUNDING_BOX_WALL_N = box(0, 0, 15, 16, 16, 16);
+    private static final VoxelShape BOUNDING_BOX_WALL_E = box(0, 0, 0, 1, 16, 16);
+    private static final VoxelShape BOUNDING_BOX_WALL_W = box(15, 0, 0, 16, 16, 16);
 
-    private static final VoxelShape BOUNDING_BOX_TOP = makeCuboidShape(0, 15, 0, 16, 16, 16);
+    private static final VoxelShape BOUNDING_BOX_TOP = box(0, 15, 0, 16, 16, 16);
 
     /**
      * Create a new Magic Doorway block.
@@ -59,20 +59,20 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
         super(properties);
 
         // By default, the doorway is not open in any direction
-        setDefaultState(
-                stateContainer.getBaseState()
-                        .with(PART, EnumPartType.BOTTOM)
-                        .with(OPEN_EAST_WEST, Boolean.TRUE)
-                        .with(OPEN_NORTH_SOUTH, Boolean.FALSE)
+        registerDefaultState(
+                stateDefinition.any()
+                        .setValue(PART, EnumPartType.BOTTOM)
+                        .setValue(OPEN_EAST_WEST, Boolean.TRUE)
+                        .setValue(OPEN_NORTH_SOUTH, Boolean.FALSE)
         );
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        boolean openNorthSouth = state.get(OPEN_NORTH_SOUTH);
-        boolean openEastWest = state.get(OPEN_EAST_WEST);
-        boolean isTop = state.get(PART) == EnumPartType.TOP;
+        boolean openNorthSouth = state.getValue(OPEN_NORTH_SOUTH);
+        boolean openEastWest = state.getValue(OPEN_EAST_WEST);
+        boolean isTop = state.getValue(PART) == EnumPartType.TOP;
         VoxelShape result = VoxelShapes.empty();
         if (openNorthSouth && openEastWest) {
             result = VoxelShapes.or(result, BOUNDING_BOX_PILLAR_NE, BOUNDING_BOX_PILLAR_NW, BOUNDING_BOX_PILLAR_SE, BOUNDING_BOX_PILLAR_SW);
@@ -92,20 +92,20 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.isAir(worldIn, pos)) {
             // When this block is destroyed (manually or by closing the door), replace it by its base block.
-            TileEntity tileEntity = worldIn.getTileEntity(pos);
+            TileEntity tileEntity = worldIn.getBlockEntity(pos);
             if (tileEntity instanceof MagicDoorwayTileEntity) {
-                worldIn.setBlockState(pos, ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState());
+                worldIn.setBlockAndUpdate(pos, ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState());
             }
         }
 
-        super.onReplaced(state, worldIn, pos, newState, isMoving);
+        super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(PART, OPEN_NORTH_SOUTH, OPEN_EAST_WEST);
     }
 
