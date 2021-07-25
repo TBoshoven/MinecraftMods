@@ -30,7 +30,7 @@ public final class Items {
     public static final RegistryObject<Item> MAGIC_MIRROR =
             ITEMS.register("magic_mirror", () -> new BlockItem(
                     Objects.requireNonNull(Blocks.MAGIC_MIRROR.get()),
-                    new Item.Properties().group(ItemGroup.DECORATIONS)
+                    new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)
             ));
 
     private Items() {

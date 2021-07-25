@@ -107,13 +107,13 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
         }
 
         @Override
-        public IBakedModel getModelWithOverrides(IBakedModel model, ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn) {
+        public IBakedModel resolve(IBakedModel model, ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn) {
             // If the item has a texture mapper, use it.
             Item item = stack.getItem();
             if (item instanceof IItemStackTextureMapperProvider) {
                 return new TexturedBakedModel<>(model, bakedTextureGetter, ((IItemStackTextureMapperProvider) item).getTextureMapper(stack));
             }
-            return wrappedOverrideList.getModelWithOverrides(model, stack, worldIn, entityIn);
+            return wrappedOverrideList.resolve(model, stack, worldIn, entityIn);
         }
     }
 }

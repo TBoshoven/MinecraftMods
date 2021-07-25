@@ -70,15 +70,15 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
         // BannerBlock.forColor is client-only.
         // Let's do a super-ugly workaround.
         // This will cause issues if dye colors are ever made extensible.
-        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(String.format("minecraft:%s_banner", baseColor.getTranslationKey())));
+        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(String.format("minecraft:%s_banner", baseColor.getName())));
         ItemStack itemStack = new ItemStack(block);
         if (bannerNBT != null) {
             itemStack.getOrCreateTag().put("BlockEntityTag", bannerNBT);
         }
         if (name != null) {
-            itemStack.setDisplayName(name);
+            itemStack.setHoverName(name);
         }
-        InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), itemStack);
+        InventoryHelper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), itemStack);
     }
 
     @Override

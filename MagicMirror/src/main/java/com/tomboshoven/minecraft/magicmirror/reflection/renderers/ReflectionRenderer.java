@@ -34,7 +34,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
      */
     public ReflectionRenderer(Entity entity) {
         this.entity = entity;
-        entityRenderer = Minecraft.getInstance().getRenderManager().getRenderer(entity);
+        entityRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         // The typing of these classes works out a little weird, so instead of complicating things too much, let's go
         // with the unchecked cast.
         //noinspection unchecked
-        ((EntityRenderer<Entity>) entityRenderer).doRender(entity, 0, -1, 0, 0, partialTicks);
+        ((EntityRenderer<Entity>) entityRenderer).render(entity, 0, -1, 0, 0, partialTicks);
 
         GlStateManager.popMatrix();
     }

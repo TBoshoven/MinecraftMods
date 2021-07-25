@@ -47,7 +47,7 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     private static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(new ResourceLocation(PROPERTY_NAMESPACE, "texture_highlight"));
 
     // The block we're basing the appearance of this block on.
-    private BlockState baseBlockState = Blocks.AIR.getDefaultState();
+    private BlockState baseBlockState = Blocks.AIR.defaultBlockState();
     // The doorknob that caused this block to be created.
     private MagicDoorknobItem doorknob;
 
@@ -56,12 +56,12 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         return writeInternal(compound);
     }
 
     private CompoundNBT writeInternal(CompoundNBT compound) {
-        CompoundNBT result = super.write(compound);
+        CompoundNBT result = super.save(compound);
         ResourceLocation registryName = baseBlockState.getBlock().getRegistryName();
         if (registryName != null) {
             compound.put("baseBlock", BlockState.serialize(NBTDynamicOps.INSTANCE, baseBlockState).getValue());
@@ -73,8 +73,8 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     }
 
     @Override
-    public void read(CompoundNBT compound) {
-        super.read(compound);
+    public void load(CompoundNBT compound) {
+        super.load(compound);
         baseBlockState = BlockState.deserialize(new Dynamic<>(NBTDynamicOps.INSTANCE, compound.get("baseBlock")));
         String doorknobType = compound.getString("doorknobType");
         doorknob = Items.DOORKNOBS.get(doorknobType);
@@ -88,13 +88,13 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(getPos(), 1, getUpdateTag());
+        return new SUpdateTileEntityPacket(getBlockPos(), 1, getUpdateTag());
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        read(pkt.getNbtCompound());
+        load(pkt.getTag());
         requestModelDataUpdate();
     }
 
@@ -102,14 +102,14 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     @OnlyIn(Dist.CLIENT)
     public IModelData getModelData() {
         Minecraft minecraft = Minecraft.getInstance();
-        BlockModelShapes blockModelShapes = minecraft.getBlockRendererDispatcher().getBlockModelShapes();
+        BlockModelShapes blockModelShapes = minecraft.getBlockRenderer().getBlockModelShaper();
 
         // Get the base block texture
-        World world = getWorld();
-        TextureAtlasSprite blockTexture = world == null ? MissingTextureSprite.func_217790_a() : blockModelShapes.getTexture(baseBlockState, world, getPos());
+        World world = getLevel();
+        TextureAtlasSprite blockTexture = world == null ? MissingTextureSprite.newInstance() : blockModelShapes.getTexture(baseBlockState, world, getBlockPos());
         if (blockTexture instanceof MissingTextureSprite) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.
-            blockTexture = minecraft.getTextureMap().getAtlasSprite(MOD_ID + ":block/empty");
+            blockTexture = minecraft.getTextureAtlas().getTexture(MOD_ID + ":block/empty");
         }
 
         // Get the highlight texture

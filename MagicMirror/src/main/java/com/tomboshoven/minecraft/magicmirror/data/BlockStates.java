@@ -26,11 +26,11 @@ class BlockStates extends BlockStateProvider {
         ModelFile mirrorModel = new ModelFile.ExistingModelFile(modLoc("block/magic_mirror"), existingFileHelper);
         getVariantBuilder(Blocks.MAGIC_MIRROR.get())
                 .forAllStates(state -> {
-                            int rotation = state.get(MagicMirrorBlock.PART) == MagicMirrorBlock.EnumPartType.TOP ? 180 : 0;
+                            int rotation = state.getValue(MagicMirrorBlock.PART) == MagicMirrorBlock.EnumPartType.TOP ? 180 : 0;
                             return ConfiguredModel.builder()
                                     .modelFile(mirrorModel)
                                     .rotationX(rotation)
-                                    .rotationY(((int) state.get(BlockStateProperties.HORIZONTAL_FACING).getHorizontalAngle() + rotation) % 360)
+                                    .rotationY(((int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + rotation) % 360)
                                     .build();
                         }
                 );
