@@ -39,13 +39,13 @@ class LootTables extends LootTableProvider {
 
     @Override
     protected void validate(Map<ResourceLocation, LootTable> map, ValidationTracker validationtracker) {
-        map.forEach((name, table) -> LootTableManager.validateLootTable(validationtracker, name, table));
+        map.forEach((name, table) -> LootTableManager.validate(validationtracker, name, table));
     }
 
     private static class BlockTables extends BlockLootTables {
         @Override
         protected void addTables() {
-            registerDropSelfLootTable(Blocks.MAGIC_MIRROR.get());
+            dropSelf(Blocks.MAGIC_MIRROR.get());
         }
 
         @Override

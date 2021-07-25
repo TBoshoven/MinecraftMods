@@ -47,7 +47,7 @@ public final class Items {
      * @param ingredient  The ingredient used to build the doorknob
      */
     private static void addDoorknob(IForgeRegistry<? super Item> registry, String typeName, IItemTier tier, ResourceLocation mainTexture, Supplier<Ingredient> ingredient) {
-        MagicDoorknobItem i = new MagicDoorknobItem(new Item.Properties().group(ItemGroup.TOOLS), typeName, tier, mainTexture, ingredient);
+        MagicDoorknobItem i = new MagicDoorknobItem(new Item.Properties().tab(ItemGroup.TAB_TOOLS), typeName, tier, mainTexture, ingredient);
         i.setRegistryName(MagicDoorknobMod.MOD_ID, String.format("magic_doorknob_%s", typeName));
         registry.register(i);
         DOORKNOBS.put(typeName, i);
@@ -74,11 +74,11 @@ public final class Items {
         IForgeRegistry<Item> registry = event.getRegistry();
 
         // Add all Vanilla tool materials
-        addDoorknob(registry, "wood", ItemTier.WOOD, "oak_planks", () -> Ingredient.fromTag(ItemTags.PLANKS));
-        addDoorknob(registry, "stone", ItemTier.STONE, "stone", () -> Ingredient.fromTag(Tags.Items.COBBLESTONE));
-        addDoorknob(registry, "iron", ItemTier.IRON, "iron_block", () -> Ingredient.fromTag(Tags.Items.INGOTS_IRON));
-        addDoorknob(registry, "gold", ItemTier.GOLD, "gold_block", () -> Ingredient.fromTag(Tags.Items.INGOTS_GOLD));
-        addDoorknob(registry, "diamond", ItemTier.DIAMOND, "diamond_block", () -> Ingredient.fromTag(Tags.Items.GEMS_DIAMOND));
-        addDoorknob(registry, "netherite", ItemTier.NETHERITE, "netherite_block", () -> Ingredient.fromTag(Tags.Items.INGOTS_NETHERITE));
+        addDoorknob(registry, "wood", ItemTier.WOOD, "oak_planks", () -> Ingredient.of(ItemTags.PLANKS));
+        addDoorknob(registry, "stone", ItemTier.STONE, "stone", () -> Ingredient.of(Tags.Items.COBBLESTONE));
+        addDoorknob(registry, "iron", ItemTier.IRON, "iron_block", () -> Ingredient.of(Tags.Items.INGOTS_IRON));
+        addDoorknob(registry, "gold", ItemTier.GOLD, "gold_block", () -> Ingredient.of(Tags.Items.INGOTS_GOLD));
+        addDoorknob(registry, "diamond", ItemTier.DIAMOND, "diamond_block", () -> Ingredient.of(Tags.Items.GEMS_DIAMOND));
+        addDoorknob(registry, "netherite", ItemTier.NETHERITE, "netherite_block", () -> Ingredient.of(Tags.Items.INGOTS_NETHERITE));
     }
 }

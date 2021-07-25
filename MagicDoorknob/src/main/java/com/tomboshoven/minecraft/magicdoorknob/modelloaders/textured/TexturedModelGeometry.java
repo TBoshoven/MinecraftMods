@@ -50,7 +50,7 @@ class TexturedModelGeometry implements IModelGeometry<TexturedModelGeometry> {
     public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         // Filter out the property textures since they don't get filled in until runtime
         Set<RenderMaterial> textures = originalModelGeometry.getTextures(owner, modelGetter, missingTextureErrors).stream()
-                .filter(location -> !PROPERTY_NAMESPACE.equals(location.getTextureLocation().getNamespace()))
+                .filter(location -> !PROPERTY_NAMESPACE.equals(location.texture().getNamespace()))
                 .collect(Collectors.toSet());
         return Sets.union(textures, extraTextures);
     }
@@ -59,8 +59,8 @@ class TexturedModelGeometry implements IModelGeometry<TexturedModelGeometry> {
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
         // Use a custom texture getter and baked model
         Function<RenderMaterial, TextureAtlasSprite> augmentedSpriteGetter = material -> {
-            if (PROPERTY_NAMESPACE.equals(material.getTextureLocation().getNamespace())) {
-                return new PropertySprite(material.getTextureLocation());
+            if (PROPERTY_NAMESPACE.equals(material.texture().getNamespace())) {
+                return new PropertySprite(material.texture());
             }
             return spriteGetter.apply(material);
         };

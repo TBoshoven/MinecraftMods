@@ -63,13 +63,13 @@ public class MagicMirrorBlock extends HorizontalBlock {
      */
     private static final VoxelShape[] SHAPES = {
             // South
-            makeCuboidShape(0, 0, 0, 16, 16, 2),
+            box(0, 0, 0, 16, 16, 2),
             // West
-            makeCuboidShape(14, 0, 0, 16, 16, 16),
+            box(14, 0, 0, 16, 16, 16),
             // North
-            makeCuboidShape(0, 0, 14, 16, 16, 16),
+            box(0, 0, 14, 16, 16, 16),
             // East
-            makeCuboidShape(0, 0, 0, 2, 16, 16),
+            box(0, 0, 0, 2, 16, 16),
     };
 
     /**
@@ -79,10 +79,10 @@ public class MagicMirrorBlock extends HorizontalBlock {
         super(properties);
 
         // By default, we're the bottom part of a broken mirror
-        setDefaultState(
-                stateContainer.getBaseState()
-                        .with(COMPLETE, Boolean.FALSE)
-                        .with(PART, EnumPartType.BOTTOM)
+        registerDefaultState(
+                stateDefinition.any()
+                        .setValue(COMPLETE, Boolean.FALSE)
+                        .setValue(PART, EnumPartType.BOTTOM)
         );
     }
 
@@ -105,46 +105,46 @@ public class MagicMirrorBlock extends HorizontalBlock {
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+    public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(worldIn, pos, state, placer, stack);
 
         // Try to complete a mirror by looking for an incomplete mirror above or below.
-        BlockState blockBelow = worldIn.getBlockState(pos.down());
-        BlockState blockAbove = worldIn.getBlockState(pos.up());
-        if (blockBelow.getBlock() == this && !blockBelow.get(COMPLETE) && blockBelow.get(HORIZONTAL_FACING) == state.get(HORIZONTAL_FACING)) {
-            worldIn.setBlockState(pos.down(), blockBelow.with(COMPLETE, true).with(PART, EnumPartType.BOTTOM));
-            worldIn.setBlockState(pos, state.with(COMPLETE, true).with(PART, EnumPartType.TOP));
-        } else if (blockAbove.getBlock() == this && !blockAbove.get(COMPLETE) && blockAbove.get(HORIZONTAL_FACING) == state.get(HORIZONTAL_FACING)) {
-            worldIn.setBlockState(pos.up(), blockAbove.with(COMPLETE, true).with(PART, EnumPartType.TOP));
-            worldIn.setBlockState(pos, state.with(COMPLETE, true).with(PART, EnumPartType.BOTTOM));
+        BlockState blockBelow = worldIn.getBlockState(pos.below());
+        BlockState blockAbove = worldIn.getBlockState(pos.above());
+        if (blockBelow.getBlock() == this && !blockBelow.getValue(COMPLETE) && blockBelow.getValue(FACING) == state.getValue(FACING)) {
+            worldIn.setBlockAndUpdate(pos.below(), blockBelow.setValue(COMPLETE, true).setValue(PART, EnumPartType.BOTTOM));
+            worldIn.setBlockAndUpdate(pos, state.setValue(COMPLETE, true).setValue(PART, EnumPartType.TOP));
+        } else if (blockAbove.getBlock() == this && !blockAbove.getValue(COMPLETE) && blockAbove.getValue(FACING) == state.getValue(FACING)) {
+            worldIn.setBlockAndUpdate(pos.above(), blockAbove.setValue(COMPLETE, true).setValue(PART, EnumPartType.TOP));
+            worldIn.setBlockAndUpdate(pos, state.setValue(COMPLETE, true).setValue(PART, EnumPartType.BOTTOM));
         }
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(HORIZONTAL_FACING, COMPLETE, PART);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(FACING, COMPLETE, PART);
     }
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return SHAPES[state.get(HORIZONTAL_FACING).getHorizontalIndex()];
+        return SHAPES[state.getValue(FACING).get2DDataValue()];
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.MODEL;
     }
 
     @Override
     public boolean hasTileEntity(BlockState state) {
-        return state.get(COMPLETE);
+        return state.getValue(COMPLETE);
     }
 
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         // The bottom part is the core of the mirror which has all the logic; the top part just uses the results.
-        if (state.get(PART) == EnumPartType.BOTTOM) {
+        if (state.getValue(PART) == EnumPartType.BOTTOM) {
             return new MagicMirrorCoreTileEntity();
         }
         return new MagicMirrorPartTileEntity();
@@ -152,7 +152,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
 
     @Override
     public BlockState rotate(BlockState state, Rotation rot) {
-        return state.with(HORIZONTAL_FACING, rot.rotate(state.get(HORIZONTAL_FACING)));
+        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
@@ -165,16 +165,16 @@ public class MagicMirrorBlock extends HorizontalBlock {
                 break;
             }
         }
-        return getDefaultState().with(HORIZONTAL_FACING, horizontalDirection.getOpposite());
+        return defaultBlockState().setValue(FACING, horizontalDirection.getOpposite());
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         // The mirror will only do anything if it's used from the front.
-        if (state.get(HORIZONTAL_FACING) == hit.getFace()) {
-            if (!worldIn.isRemote) {
+        if (state.getValue(FACING) == hit.getDirection()) {
+            if (!worldIn.isClientSide) {
                 // First, see if we can add a modifier
-                ItemStack heldItem = player.getHeldItem(handIn);
+                ItemStack heldItem = player.getItemInHand(handIn);
                 if (!heldItem.isEmpty()) {
                     for (MagicMirrorModifier modifier : MagicMirrorModifier.getModifiers()) {
                         if (modifier.canModify(worldIn, pos, heldItem)) {
@@ -185,7 +185,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
                 }
 
                 // Then, see if any existing modifier can do something.
-                TileEntity tileEntity = worldIn.getTileEntity(pos);
+                TileEntity tileEntity = worldIn.getBlockEntity(pos);
                 if (tileEntity instanceof MagicMirrorBaseTileEntity) {
                     if (((MagicMirrorBaseTileEntity) tileEntity).tryActivate(player, handIn)) {
                         return ActionResultType.SUCCESS;
@@ -199,21 +199,21 @@ public class MagicMirrorBlock extends HorizontalBlock {
     }
 
     @Override
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.get(COMPLETE)) {
-            TileEntity tileEntity = worldIn.getTileEntity(pos);
+    public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (state.getValue(COMPLETE)) {
+            TileEntity tileEntity = worldIn.getBlockEntity(pos);
             if (tileEntity instanceof MagicMirrorBaseTileEntity) {
                 ((MagicMirrorBaseTileEntity) tileEntity).removeModifiers(worldIn, pos);
             }
 
             // Change the other part to incomplete
-            BlockPos otherPos = state.get(PART) == EnumPartType.TOP ? pos.down() : pos.up();
+            BlockPos otherPos = state.getValue(PART) == EnumPartType.TOP ? pos.below() : pos.above();
             BlockState otherState = worldIn.getBlockState(otherPos);
             if (otherState.getBlock() == this) {
-                worldIn.setBlockState(otherPos, otherState.with(COMPLETE, false));
+                worldIn.setBlockAndUpdate(otherPos, otherState.setValue(COMPLETE, false));
             }
         }
-        super.onReplaced(state, worldIn, pos, newState, isMoving);
+        super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 
     /**
@@ -234,7 +234,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
         }
 
         @Override
-        public String getString() {
+        public String getSerializedName() {
             return name;
         }
 
@@ -285,8 +285,8 @@ public class MagicMirrorBlock extends HorizontalBlock {
         public static MessageAttachModifier decode(PacketBuffer buf) {
             MessageAttachModifier result = new MessageAttachModifier();
             result.mirrorPos = buf.readBlockPos();
-            result.usedItemStack = buf.readItemStack();
-            result.modifierName = buf.readString();
+            result.usedItemStack = buf.readItem();
+            result.modifierName = buf.readUtf();
             return result;
         }
 
@@ -298,8 +298,8 @@ public class MagicMirrorBlock extends HorizontalBlock {
          */
         public void encode(PacketBuffer buf) {
             buf.writeBlockPos(mirrorPos);
-            buf.writeItemStack(usedItemStack);
-            buf.writeString(modifierName);
+            buf.writeItem(usedItemStack);
+            buf.writeUtf(modifierName);
         }
     }
 
@@ -309,9 +309,9 @@ public class MagicMirrorBlock extends HorizontalBlock {
     public static void onMessageAttachModifier(MessageAttachModifier message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            ClientWorld world = Minecraft.getInstance().world;
+            ClientWorld world = Minecraft.getInstance().level;
             if (world != null) {
-                TileEntity te = world.getTileEntity(message.mirrorPos);
+                TileEntity te = world.getBlockEntity(message.mirrorPos);
                 if (te instanceof MagicMirrorBaseTileEntity) {
                     MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
                     if (modifier == null) {
@@ -319,7 +319,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
                         return;
                     }
                     modifier.apply(world, message.mirrorPos, message.usedItemStack);
-                    world.playSound(message.mirrorPos, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);
+                    world.playLocalSound(message.mirrorPos, SoundEvents.ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);
                 }
             }
         }));

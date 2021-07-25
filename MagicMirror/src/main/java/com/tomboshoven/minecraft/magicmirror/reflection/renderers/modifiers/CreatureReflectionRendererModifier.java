@@ -50,7 +50,7 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
      */
     public CreatureReflectionRendererModifier(ReflectionRendererBase baseRenderer) {
         super(baseRenderer);
-        replacementRenderer = new RenderOffModelPlayer<>(Minecraft.getInstance().getRenderManager(), new ModelSkeletonPlayer<>(), new ResourceLocation("textures/entity/skeleton/skeleton.png"));
+        replacementRenderer = new RenderOffModelPlayer<>(Minecraft.getInstance().getEntityRenderDispatcher(), new ModelSkeletonPlayer<>(), new ResourceLocation("textures/entity/skeleton/skeleton.png"));
     }
 
     @Override
@@ -117,17 +117,17 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
          * @param entity The entity to take the arm poses from.
          */
         private void setArmPoses(T entity) {
-            M model = getEntityModel();
+            M model = getModel();
 
-            ItemStack[] handItems = {entity.getHeldItemMainhand(), entity.getHeldItemOffhand()};
+            ItemStack[] handItems = {entity.getMainHandItem(), entity.getOffhandItem()};
             ArmPose[] armPoses = {ArmPose.EMPTY, ArmPose.EMPTY};
 
             for (int side = 0; side < 2; ++side) {
                 if (!handItems[side].isEmpty()) {
                     armPoses[side] = ArmPose.ITEM;
 
-                    if (entity.getItemInUseCount() > 0) {
-                        UseAction itemUseAction = handItems[side].getUseAction();
+                    if (entity.getUseItemRemainingTicks() > 0) {
+                        UseAction itemUseAction = handItems[side].getUseAnimation();
 
                         if (itemUseAction == UseAction.BLOCK) {
                             armPoses[side] = ArmPose.BLOCK;
@@ -140,8 +140,8 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
 
             if (model instanceof BipedModel) {
                 BipedModel<?> bipedModel = (BipedModel<?>) model;
-                bipedModel.isSneak = entity.isSneaking();
-                if (entity.getPrimaryHand() == HandSide.RIGHT) {
+                bipedModel.crouching = entity.isShiftKeyDown();
+                if (entity.getMainArm() == HandSide.RIGHT) {
                     bipedModel.rightArmPose = armPoses[0];
                     bipedModel.leftArmPose = armPoses[1];
                 } else {
@@ -152,7 +152,7 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
         }
 
         @Override
-        public ResourceLocation getEntityTexture(T entity) {
+        public ResourceLocation getTextureLocation(T entity) {
             return textureLocation;
         }
     }
@@ -170,20 +170,20 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
 
             // Skeletons have slightly different models, so we just apply the same modifications as the skeleton model
             // does.
-            bipedRightArm = new ModelRenderer(this, 40, 16);
-            bipedRightArm.addBox(-1.0F, -2.0F, -1.0F, 2, 12, 2, 0);
-            bipedRightArm.setRotationPoint(-5.0F, 2.0F, 0.0F);
-            bipedLeftArm = new ModelRenderer(this, 40, 16);
-            bipedLeftArm.mirror = true;
-            bipedLeftArm.addBox(-1.0F, -2.0F, -1.0F, 2, 12, 2, 0);
-            bipedLeftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
-            bipedRightLeg = new ModelRenderer(this, 0, 16);
-            bipedRightLeg.addBox(-1.0F, 0.0F, -1.0F, 2, 12, 2, 0);
-            bipedRightLeg.setRotationPoint(-2.0F, 12.0F, 0.0F);
-            bipedLeftLeg = new ModelRenderer(this, 0, 16);
-            bipedLeftLeg.mirror = true;
-            bipedLeftLeg.addBox(-1.0F, 0.0F, -1.0F, 2, 12, 2, 0);
-            bipedLeftLeg.setRotationPoint(2.0F, 12.0F, 0.0F);
+            rightArm = new ModelRenderer(this, 40, 16);
+            rightArm.addBox(-1.0F, -2.0F, -1.0F, 2, 12, 2, 0);
+            rightArm.setPos(-5.0F, 2.0F, 0.0F);
+            leftArm = new ModelRenderer(this, 40, 16);
+            leftArm.mirror = true;
+            leftArm.addBox(-1.0F, -2.0F, -1.0F, 2, 12, 2, 0);
+            leftArm.setPos(5.0F, 2.0F, 0.0F);
+            rightLeg = new ModelRenderer(this, 0, 16);
+            rightLeg.addBox(-1.0F, 0.0F, -1.0F, 2, 12, 2, 0);
+            rightLeg.setPos(-2.0F, 12.0F, 0.0F);
+            leftLeg = new ModelRenderer(this, 0, 16);
+            leftLeg.mirror = true;
+            leftLeg.addBox(-1.0F, 0.0F, -1.0F, 2, 12, 2, 0);
+            leftLeg.setPos(2.0F, 12.0F, 0.0F);
         }
     }
 }

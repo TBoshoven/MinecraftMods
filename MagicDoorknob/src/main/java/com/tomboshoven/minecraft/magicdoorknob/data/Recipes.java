@@ -24,17 +24,17 @@ class Recipes extends RecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
+    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
         Items.DOORKNOBS.values().forEach(
-                doorknob -> ShapedRecipeBuilder.shapedRecipe(doorknob)
-                        .patternLine(" # ")
-                        .patternLine("#@#")
-                        .patternLine(" # ")
-                        .key('#', doorknob.getIngredient())
-                        .key('@', Tags.Items.ENDER_PEARLS)
-                        .setGroup("magic_doorknob")
-                        .addCriterion("ender_pearls", InventoryChangeTrigger.Instance.forItems(ENDER_PEARL))
-                        .build(consumer)
+                doorknob -> ShapedRecipeBuilder.shaped(doorknob)
+                        .pattern(" # ")
+                        .pattern("#@#")
+                        .pattern(" # ")
+                        .define('#', doorknob.getIngredient())
+                        .define('@', Tags.Items.ENDER_PEARLS)
+                        .group("magic_doorknob")
+                        .unlockedBy("ender_pearls", InventoryChangeTrigger.Instance.hasItems(ENDER_PEARL))
+                        .save(consumer)
         );
     }
 
