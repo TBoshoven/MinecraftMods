@@ -16,7 +16,7 @@ jobs:
               TAG_VERSION="$(echo "$CIRCLE_TAG" | sed -E 's/[^0-9]+//')"
               sed -Ei 's/^(\s*version = ")([0-9]+\.){2}[0-9]+-DEV\.0+"$/\1'$TAG_VERSION'.'$CIRCLE_BUILD_NUM'"/' build.gradle
             else
-              [[ $CIRCLE_BRANCH = '1.16.5' ]] && LIB_VERSION=MASTER || LIB_VERSION=DEV
+              [[ $CIRCLE_BRANCH = '1.17.1' ]] && LIB_VERSION=MASTER || LIB_VERSION=DEV
               sed -Ei 's/^(\s*version = "([0-9]+\.){2}[0-9]+-)DEV\.0+"$/\1'$LIB_VERSION'.'$CIRCLE_BUILD_NUM'"/' build.gradle
             fi
       - restore_cache:
@@ -90,7 +90,7 @@ jobs:
             FILE="$(ls /tmp/workspace/libs/*.jar | head -n 1)"
             # Use the build number on the JAR to prevent confusion.
             ORIGINAL_BUILD_NUM="$(echo "$FILE" | sed -E 's/^.*\.([0-9]+)\.jar$/\1/')"
-            METADATA="$(jq -n '{"changelog": $ARGS.positional[0], "changelogType": "markdown", "displayName": $ARGS.positional[1], "gameVersions": [8203, 7498, 4458], "releaseType": "release"}' --args "$DESCRIPTION" "v$TAG_VERSION.$ORIGINAL_BUILD_NUM")"
+            METADATA="$(jq -n '{"changelog": $ARGS.positional[0], "changelogType": "markdown", "displayName": $ARGS.positional[1], "gameVersions": [8516, 7498, 8325], "releaseType": "release"}' --args "$DESCRIPTION" "v$TAG_VERSION.$ORIGINAL_BUILD_NUM")"
             curl -XPOST "https://minecraft.curseforge.com/api/projects/$PROJECT_ID/upload-file" -F "file=@$FILE" -F "metadata=$METADATA" -H "X-Api-Token: $CURSEFORGE_TOKEN"
 workflows:
   version: 2
