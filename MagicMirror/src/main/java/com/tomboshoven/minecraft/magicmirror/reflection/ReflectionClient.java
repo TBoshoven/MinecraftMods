@@ -6,10 +6,10 @@ import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRend
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.shader.Framebuffer;
-import net.minecraft.entity.Entity;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -38,7 +38,7 @@ public class ReflectionClient extends Reflection {
      * The frame buffer which is used for rendering the reflection to and subsequently rendering it into the world.
      */
     @Nullable
-    private Framebuffer frameBuffer;
+    private RenderTarget frameBuffer;
 
     /**
      * Render type for rendering this reflection to the screen.
@@ -65,7 +65,7 @@ public class ReflectionClient extends Reflection {
     void buildFrameBuffer() {
         super.buildFrameBuffer();
 
-        frameBuffer = new Framebuffer(TEXTURE_WIDTH, TEXTURE_HEIGHT, true, ON_OSX);
+        frameBuffer = new RenderTarget(TEXTURE_WIDTH, TEXTURE_HEIGHT, true, ON_OSX);
         frameBuffer.unbindWrite();
     }
 
@@ -110,7 +110,7 @@ public class ReflectionClient extends Reflection {
 
 
         if (frameBuffer != null && reflectionRenderer != null) {
-            IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
+            MultiBufferSource.BufferSource renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
 
             frameBuffer.clear(ON_OSX);
             frameBuffer.bindWrite(true);

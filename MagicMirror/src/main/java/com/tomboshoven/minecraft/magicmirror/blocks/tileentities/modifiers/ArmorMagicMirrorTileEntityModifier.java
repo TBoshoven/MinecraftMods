@@ -9,29 +9,29 @@ import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectio
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifierClient;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SSetSlotPacket;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.Containers;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.NonNullList;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -69,19 +69,19 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundTag write(CompoundTag nbt) {
         return replacementArmor.write(super.write(nbt));
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void read(CompoundTag nbt) {
         super.read(nbt);
         replacementArmor.read(nbt);
     }
 
     @Override
-    public void remove(World world, BlockPos pos) {
-        InventoryHelper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.ARMOR_STAND));
+    public void remove(Level world, BlockPos pos) {
+        Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.ARMOR_STAND));
         replacementArmor.spawn(world, pos);
     }
 
@@ -112,13 +112,13 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     }
 
     @Override
-    public boolean tryPlayerActivate(MagicMirrorBaseTileEntity tileEntity, PlayerEntity playerIn, Hand hand) {
+    public boolean tryPlayerActivate(MagicMirrorBaseTileEntity tileEntity, Player playerIn, InteractionHand hand) {
         if (coolingDown()) {
             return false;
         }
 
         // Can only be done on server side.
-        if (!(playerIn instanceof ServerPlayerEntity)) {
+        if (!(playerIn instanceof ServerPlayer)) {
             return false;
         }
 
@@ -140,15 +140,15 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
      *
      * @return Whether the held item was successfully equipped as armor.
      */
-    private boolean tryEquipArmor(MagicMirrorBaseTileEntity tileEntity, PlayerEntity playerIn, Hand hand) {
+    private boolean tryEquipArmor(MagicMirrorBaseTileEntity tileEntity, Player playerIn, InteractionHand hand) {
         ItemStack heldItem = playerIn.getItemInHand(hand);
         if (heldItem.getItem() instanceof ArmorItem) {
-            EquipmentSlotType equipmentSlotType = MobEntity.getEquipmentSlotForItem(heldItem);
-            if (equipmentSlotType.getType() == EquipmentSlotType.Group.ARMOR) {
+            EquipmentSlot equipmentSlotType = Mob.getEquipmentSlotForItem(heldItem);
+            if (equipmentSlotType.getType() == EquipmentSlot.Type.ARMOR) {
                 int slotIndex = equipmentSlotType.getIndex();
                 if (replacementArmor.isEmpty(slotIndex)) {
                     BlockPos pos = tileEntity.getBlockPos();
-                    World world = tileEntity.getLevel();
+                    Level world = tileEntity.getLevel();
                     if (world != null) {
                         MessageEquip message = new MessageEquip(pos, slotIndex, heldItem);
                         PacketDistributor.PacketTarget mirrorTarget = PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos));
@@ -173,11 +173,11 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
      * @param tileEntity The mirror tile entity.
      * @param playerIn The player entity to swap armor with.
      */
-    private void swapArmor(MagicMirrorBaseTileEntity tileEntity, PlayerEntity playerIn) {
+    private void swapArmor(MagicMirrorBaseTileEntity tileEntity, Player playerIn) {
         // Send two individual messages, to cover the situation where a player is tracked but the mirror isn't and vice
         // versa.
         BlockPos pos = tileEntity.getBlockPos();
-        World world = tileEntity.getLevel();
+        Level world = tileEntity.getLevel();
         if (world != null) {
             MessageSwapMirror mirrorMessage = new MessageSwapMirror(tileEntity, playerIn);
             PacketDistributor.PacketTarget mirrorTarget = PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos));
@@ -249,7 +249,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          *
          * @param player The player to swap armor with.
          */
-        void swap(PlayerEntity player) {
+        void swap(Player player) {
             for (int i = 0; i < 4; ++i) {
                 ItemStack playerArmor = player.inventory.armor.get(i);
                 ItemStack replacement = replacementInventory.get(i);
@@ -257,9 +257,9 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
                     // Cannot swap armor with curse of binding
                     continue;
                 }
-                if (player instanceof ServerPlayerEntity) {
+                if (player instanceof ServerPlayer) {
                     // Make sure to do this on the client side as well.
-                    ((ServerPlayerEntity) player).connection.send(new SSetSlotPacket(-2, i + 36, replacement));
+                    ((ServerPlayer) player).connection.send(new ClientboundContainerSetSlotPacket(-2, i + 36, replacement));
                 }
                 replacementInventory.set(i, playerArmor);
                 player.inventory.armor.set(i, replacement);
@@ -272,8 +272,8 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          * @param nbt The NBT tag compound to write to.
          * @return The input compound, for chaining.
          */
-        CompoundNBT write(CompoundNBT nbt) {
-            ItemStackHelper.saveAllItems(nbt, replacementInventory, true);
+        CompoundTag write(CompoundTag nbt) {
+            ContainerHelper.saveAllItems(nbt, replacementInventory, true);
             return nbt;
         }
 
@@ -282,8 +282,8 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          *
          * @param nbt The NBT tag compound to read from.
          */
-        void read(CompoundNBT nbt) {
-            ItemStackHelper.loadAllItems(nbt, replacementInventory);
+        void read(CompoundTag nbt) {
+            ContainerHelper.loadAllItems(nbt, replacementInventory);
         }
 
         /**
@@ -294,10 +294,10 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          * @param world The world in which to spawn the item entities.
          * @param pos   The location to spawn the item entities in.
          */
-        void spawn(World world, BlockPos pos) {
+        void spawn(Level world, BlockPos pos) {
             for (ItemStack itemStack : replacementInventory) {
                 if (!itemStack.isEmpty()) {
-                    InventoryHelper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), itemStack);
+                    Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), itemStack);
                     itemStack.setCount(0);
                 }
             }
@@ -329,7 +329,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          * @param buf The buffer to read from.
          * @return The created message instance.
          */
-        public static MessageEquip decode(PacketBuffer buf) {
+        public static MessageEquip decode(FriendlyByteBuf buf) {
             return new MessageEquip(buf.readBlockPos(), buf.readInt(), buf.readItem());
         }
 
@@ -338,7 +338,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          *
          * @param buf The buffer to write to.
          */
-        public void encode(PacketBuffer buf) {
+        public void encode(FriendlyByteBuf buf) {
             buf.writeBlockPos(mirrorPos);
             buf.writeInt(slotIdx);
             buf.writeItem(armor);
@@ -359,13 +359,13 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
             this.armor = new ReplacementArmor(armor);
         }
 
-        void decodeArmor(PacketBuffer buf) {
+        void decodeArmor(FriendlyByteBuf buf) {
             for (int i = 0; i < 4; ++i) {
                 armor.set(i, buf.readItem());
             }
         }
 
-        void encodeArmor(PacketBuffer buf) {
+        void encodeArmor(FriendlyByteBuf buf) {
             for (ItemStack stack : armor.replacementInventory) {
                 buf.writeItem(stack);
             }
@@ -382,7 +382,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
         public MessageSwapMirror() {
         }
 
-        MessageSwapMirror(MagicMirrorBaseTileEntity magicMirrorBase, PlayerEntity player) {
+        MessageSwapMirror(MagicMirrorBaseTileEntity magicMirrorBase, Player player) {
             super(player.getArmorSlots());
             mirrorPos = magicMirrorBase.getBlockPos();
         }
@@ -393,7 +393,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          * @param buf The buffer to read from.
          * @return The created message instance.
          */
-        public static MessageSwapMirror decode(PacketBuffer buf) {
+        public static MessageSwapMirror decode(FriendlyByteBuf buf) {
             MessageSwapMirror result = new MessageSwapMirror();
             result.decodeArmor(buf);
             result.mirrorPos = buf.readBlockPos();
@@ -405,7 +405,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          *
          * @param buf The buffer to write to.
          */
-        public void encode(PacketBuffer buf) {
+        public void encode(FriendlyByteBuf buf) {
             encodeArmor(buf);
             buf.writeBlockPos(mirrorPos);
         }
@@ -421,7 +421,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
         public MessageSwapPlayer() {
         }
 
-        MessageSwapPlayer(ArmorMagicMirrorTileEntityModifier armorModifier, PlayerEntity player) {
+        MessageSwapPlayer(ArmorMagicMirrorTileEntityModifier armorModifier, Player player) {
             super(armorModifier.getReplacementArmor().replacementInventory);
             entityId = player.getId();
         }
@@ -432,7 +432,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          * @param buf The buffer to read from.
          * @return The created message instance.
          */
-        public static MessageSwapPlayer decode(PacketBuffer buf) {
+        public static MessageSwapPlayer decode(FriendlyByteBuf buf) {
             MessageSwapPlayer result = new MessageSwapPlayer();
             result.decodeArmor(buf);
             result.entityId = buf.readInt();
@@ -444,7 +444,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          *
          * @param buf The buffer to write to.
          */
-        public void encode(PacketBuffer buf) {
+        public void encode(FriendlyByteBuf buf) {
             encodeArmor(buf);
             buf.writeInt(entityId);
         }
@@ -456,16 +456,16 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     public static void onMessageEquip(MessageEquip message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            ClientWorld world = Minecraft.getInstance().level;
+            ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
-                TileEntity te = world.getBlockEntity(message.mirrorPos);
+                BlockEntity te = world.getBlockEntity(message.mirrorPos);
                 if (te instanceof MagicMirrorBaseTileEntity) {
                     ((MagicMirrorBaseTileEntity) te).getModifiers().stream()
                             .filter(modifier -> modifier instanceof ArmorMagicMirrorTileEntityModifier).findFirst()
                             .map(ArmorMagicMirrorTileEntityModifier.class::cast)
                             .ifPresent(modifier -> modifier.replacementArmor.set(message.slotIdx, message.armor));
                     ArmorItem item = (ArmorItem) message.armor.getItem();
-                    world.playLocalSound(message.mirrorPos, item.getMaterial().getEquipSound(), SoundCategory.BLOCKS, 1, 1, false);
+                    world.playLocalSound(message.mirrorPos, item.getMaterial().getEquipSound(), SoundSource.BLOCKS, 1, 1, false);
                 }
             }
         }));
@@ -478,9 +478,9 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     public static void onMessageSwapMirror(MessageSwapMirror message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            ClientWorld world = Minecraft.getInstance().level;
+            ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
-                TileEntity te = world.getBlockEntity(message.mirrorPos);
+                BlockEntity te = world.getBlockEntity(message.mirrorPos);
                 if (te instanceof MagicMirrorBaseTileEntity) {
                     ((MagicMirrorBaseTileEntity) te).getModifiers().stream()
                             .filter(modifier -> modifier instanceof ArmorMagicMirrorTileEntityModifier).findFirst()
@@ -497,12 +497,12 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     public static void onMessageSwapPlayer(MessageSwapPlayer message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            ClientWorld world = Minecraft.getInstance().level;
+            ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
                 Entity entity = world.getEntity(message.entityId);
 
-                if (entity instanceof PlayerEntity) {
-                    message.armor.swap((PlayerEntity) entity);
+                if (entity instanceof Player) {
+                    message.armor.swap((Player) entity);
 
                     entity.playSound(SoundEvents.ENDERMAN_TELEPORT, .8f, .4f);
                     Random random = new Random();

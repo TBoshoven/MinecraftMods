@@ -3,11 +3,11 @@ package com.tomboshoven.minecraft.magicdoorknob.data;
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.RecipeProvider;
-import net.minecraft.data.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nonnull;
@@ -16,15 +16,14 @@ import java.util.function.Consumer;
 
 import static net.minecraft.item.Items.ENDER_PEARL;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@ParametersAnet.minecraft.world.item.ItemsodsReturnNonnullByDefault
 class Recipes extends RecipeProvider {
     Recipes(DataGenerator generatorIn) {
         super(generatorIn);
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
+    protected void buildShapelessRecipes(Consumer<FinishedRecipe> consumer) {
         Items.DOORKNOBS.values().forEach(
                 doorknob -> ShapedRecipeBuilder.shaped(doorknob)
                         .pattern(" # ")
@@ -33,7 +32,7 @@ class Recipes extends RecipeProvider {
                         .define('#', doorknob.getIngredient())
                         .define('@', Tags.Items.ENDER_PEARLS)
                         .group("magic_doorknob")
-                        .unlockedBy("ender_pearls", InventoryChangeTrigger.Instance.hasItems(ENDER_PEARL))
+                        .unlockedBy("ender_pearls", InventoryChangeTrigger.TriggerInstance.hasItems(ENDER_PEARL))
                         .save(consumer)
         );
     }

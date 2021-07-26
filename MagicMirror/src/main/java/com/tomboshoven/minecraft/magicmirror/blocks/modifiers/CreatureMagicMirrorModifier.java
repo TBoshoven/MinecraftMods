@@ -3,11 +3,11 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.CreatureMagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -34,12 +34,12 @@ public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
     }
 
     @Override
-    public boolean canModify(World worldIn, BlockPos pos, ItemStack heldItem) {
+    public boolean canModify(Level worldIn, BlockPos pos, ItemStack heldItem) {
         return isSupportedSkull(heldItem) && !hasModifierOfType(worldIn, pos);
     }
 
     @Override
-    MagicMirrorTileEntityModifier createTileEntityModifier(CompoundNBT nbt) {
+    MagicMirrorTileEntityModifier createTileEntityModifier(CompoundTag nbt) {
         MagicMirrorTileEntityModifier teModifier = new CreatureMagicMirrorTileEntityModifier(this);
         teModifier.read(nbt);
         return teModifier;

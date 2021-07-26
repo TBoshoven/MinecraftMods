@@ -3,11 +3,11 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.data.AnimationMetadataSection;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite.Info;
 class PropertySprite extends TextureAtlasSprite {
     private final ResourceLocation name;
 
-    private static final AtlasTexture ATLAS_TEXTURE = new AtlasTexture(new ResourceLocation(MagicDoorknobMod.MOD_ID, "property_texture_atlas"));
+    private static final TextureAtlas ATLAS_TEXTURE = new TextureAtlas(new ResourceLocation(MagicDoorknobMod.MOD_ID, "property_texture_atlas"));
     private static final NativeImage NATIVE_IMAGE = new NativeImage(0, 0, false);
 
     /**

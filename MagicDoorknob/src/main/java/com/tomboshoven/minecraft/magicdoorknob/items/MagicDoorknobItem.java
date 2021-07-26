@@ -7,24 +7,24 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorTile
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayTileEntity;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -42,7 +42,7 @@ public class MagicDoorknobItem extends Item {
     // The name of the type of item (used in NBT data; do not modify)
     private final String typeName;
     // The item material, used for determining doorway generation properties
-    private final IItemTier tier;
+    private final Tier tier;
     // The ingredient used to make doorknobs of this type
     private final Supplier<Ingredient> ingredient;
 
@@ -53,7 +53,7 @@ public class MagicDoorknobItem extends Item {
      * @param mainTextureLocation The main material for rendering the block
      * @param ingredient          The ingredient used to make doorknobs of this type
      */
-    MagicDoorknobItem(Item.Properties properties, String typeName, IItemTier tier, ResourceLocation mainTextureLocation, Supplier<Ingredient> ingredient) {
+    MagicDoorknobItem(Item.Properties properties, String typeName, Tier tier, ResourceLocation mainTextureLocation, Supplier<Ingredient> ingredient) {
         super(properties);
 
         this.typeName = typeName;
@@ -68,7 +68,7 @@ public class MagicDoorknobItem extends Item {
      * @param useContext The context for the interaction that triggered this check.
      * @return Whether the block can be replaced by a door or doorway
      */
-    private static boolean isEmpty(IBlockReader world, BlockPos pos, BlockItemUseContext useContext) {
+    private static boolean isEmpty(BlockGetter world, BlockPos pos, BlockPlaceContext useContext) {
         BlockState blockState = world.getBlockState(pos);
         if (blockState.getBlock().isAir(blockState, world, pos)) {
             return true;
@@ -78,27 +78,27 @@ public class MagicDoorknobItem extends Item {
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        World world = context.getLevel();
+    public InteractionResult useOn(UseOnContext context) {
+        Level world = context.getLevel();
         if (!world.isClientSide) {
             Direction face = context.getClickedFace();
             BlockPos pos = context.getClickedPos();
 
             // Only sideways doors right now
             if (face == Direction.UP || face == Direction.DOWN) {
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
             }
 
-            BlockItemUseContext useContext = new BlockItemUseContext(context);
+            BlockPlaceContext useContext = new BlockPlaceContext(context);
             if (canPlaceDoor(world, pos, face, useContext)) {
                 placeDoor(world, pos, face);
                 placeDoorway(world, pos, face, useContext);
                 context.getItemInHand().shrink(1);
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
-            return ActionResultType.FAIL;
+            return InteractionResult.FAIL;
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     /**
@@ -109,7 +109,7 @@ public class MagicDoorknobItem extends Item {
      * @param pos    The position of the top part of the door
      * @param facing The direction the door should be facing
      */
-    private void placeDoor(World world, BlockPos pos, Direction facing) {
+    private void placeDoor(Level world, BlockPos pos, Direction facing) {
         BlockPos doorPos = pos.relative(facing);
         Block block = Blocks.MAGIC_DOOR.get();
         world.setBlockAndUpdate(
@@ -118,7 +118,7 @@ public class MagicDoorknobItem extends Item {
                         .setValue(MagicDoorBlock.HORIZONTAL_FACING, facing)
                         .setValue(MagicDoorBlock.PART, MagicDoorBlock.EnumPartType.TOP)
         );
-        TileEntity topTileEntity = world.getBlockEntity(doorPos);
+        BlockEntity topTileEntity = world.getBlockEntity(doorPos);
         if (topTileEntity instanceof MagicDoorTileEntity) {
             ((MagicDoorwayPartBaseTileEntity) topTileEntity).setBaseBlockState(world.getBlockState(pos));
             ((MagicDoorwayPartBaseTileEntity) topTileEntity).setDoorknob(this);
@@ -129,12 +129,12 @@ public class MagicDoorknobItem extends Item {
                         .setValue(MagicDoorBlock.HORIZONTAL_FACING, facing)
                         .setValue(MagicDoorBlock.PART, MagicDoorBlock.EnumPartType.BOTTOM)
         );
-        TileEntity bottomTileEntity = world.getBlockEntity(doorPos.below());
+        BlockEntity bottomTileEntity = world.getBlockEntity(doorPos.below());
         if (bottomTileEntity instanceof MagicDoorTileEntity) {
             ((MagicDoorwayPartBaseTileEntity) bottomTileEntity).setBaseBlockState(world.getBlockState(pos.below()));
             ((MagicDoorwayPartBaseTileEntity) bottomTileEntity).setDoorknob(this);
         }
-        world.playSound(null, doorPos, SoundEvents.WOODEN_DOOR_OPEN, SoundCategory.BLOCKS, 1, 1);
+        world.playSound(null, doorPos, SoundEvents.WOODEN_DOOR_OPEN, SoundSource.BLOCKS, 1, 1);
     }
 
     /**
@@ -146,7 +146,7 @@ public class MagicDoorknobItem extends Item {
      * @param facing     The direction the door is facing (outward from the doorway)
      * @param useContext The context for the interaction that triggered this check.
      */
-    private void placeDoorway(World world, BlockPos pos, Direction facing, BlockItemUseContext useContext) {
+    private void placeDoorway(Level world, BlockPos pos, Direction facing, BlockPlaceContext useContext) {
         Direction doorwayFacing = facing.getOpposite();
         boolean isNorthSouth = facing == Direction.NORTH || facing == Direction.SOUTH;
         float depth = tier.getSpeed();
@@ -173,13 +173,13 @@ public class MagicDoorknobItem extends Item {
      * @param isNorthSouth Whether this is a north-south-facing doorway (as opposed to east-west)
      * @param part         Whether this is the top or bottom part
      */
-    private void placeDoorwayElement(World world, BlockPos pos, boolean isNorthSouth, MagicDoorwayBlock.EnumPartType part) {
+    private void placeDoorwayElement(Level world, BlockPos pos, boolean isNorthSouth, MagicDoorwayBlock.EnumPartType part) {
         if (isReplaceable(world, pos)) {
             BlockState state = world.getBlockState(pos);
             Block block = Blocks.MAGIC_DOORWAY.get();
             world.setBlockAndUpdate(pos, block.defaultBlockState().setValue(MagicDoorwayBlock.OPEN_NORTH_SOUTH, isNorthSouth).setValue(MagicDoorwayBlock.OPEN_EAST_WEST, !isNorthSouth).setValue(MagicDoorwayBlock.PART, part));
 
-            TileEntity tileEntity = world.getBlockEntity(pos);
+            BlockEntity tileEntity = world.getBlockEntity(pos);
             if (tileEntity instanceof MagicDoorwayTileEntity) {
                 ((MagicDoorwayPartBaseTileEntity) tileEntity).setBaseBlockState(state);
                 ((MagicDoorwayPartBaseTileEntity) tileEntity).setDoorknob(this);
@@ -196,7 +196,7 @@ public class MagicDoorknobItem extends Item {
      * @param useContext The context for the interaction that triggered this check.
      * @return Whether a door can be placed at the given position.
      */
-    private boolean canPlaceDoor(IBlockReader world, BlockPos pos, Direction facing, BlockItemUseContext useContext) {
+    private boolean canPlaceDoor(BlockGetter world, BlockPos pos, Direction facing, BlockPlaceContext useContext) {
         if (!isReplaceable(world, pos) || !isReplaceable(world, pos.below())) {
             return false;
         }
@@ -210,7 +210,7 @@ public class MagicDoorknobItem extends Item {
      * @param pos   The position to check
      * @return Whether this doorknob can replace the given block by a door or doorway
      */
-    private boolean isReplaceable(IBlockReader world, BlockPos pos) {
+    private boolean isReplaceable(BlockGetter world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         if (blockState.hasTileEntity()) {
             return false;
@@ -226,8 +226,8 @@ public class MagicDoorknobItem extends Item {
      * @return The location of the main texture of the doorknob
      */
     @OnlyIn(Dist.CLIENT)
-    public RenderMaterial getMainMaterial() {
-        return new RenderMaterial(PlayerContainer.BLOCK_ATLAS, mainTextureLocation);
+    public Material getMainMaterial() {
+        return new Material(InventoryMenu.BLOCK_ATLAS, mainTextureLocation);
     }
 
     /**
@@ -240,7 +240,7 @@ public class MagicDoorknobItem extends Item {
     /**
      * @return The material that the doorknob is made out of
      */
-    public IItemTier getTier() {
+    public Tier getTier() {
         return tier;
     }
 

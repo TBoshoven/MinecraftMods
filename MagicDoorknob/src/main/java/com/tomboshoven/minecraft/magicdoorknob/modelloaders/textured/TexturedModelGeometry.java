@@ -3,14 +3,14 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -32,7 +32,7 @@ import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.Text
 @OnlyIn(Dist.CLIENT)
 class TexturedModelGeometry implements IModelGeometry<TexturedModelGeometry> {
     // The extra textures to include with this model; used to enable textures that are not already present in the game
-    private final Set<? extends RenderMaterial> extraTextures;
+    private final Set<? extends Material> extraTextures;
     // The original model
     private final IModelGeometry<?> originalModelGeometry;
 
@@ -41,24 +41,24 @@ class TexturedModelGeometry implements IModelGeometry<TexturedModelGeometry> {
      * @param extraTextures         The extra textures to include with this model; used to enable textures that are not
      *                              already present in the game
      */
-    TexturedModelGeometry(IModelGeometry<?> originalModelGeometry, Set<? extends RenderMaterial> extraTextures) {
+    TexturedModelGeometry(IModelGeometry<?> originalModelGeometry, Set<? extends Material> extraTextures) {
         this.originalModelGeometry = originalModelGeometry;
         this.extraTextures = extraTextures;
     }
 
     @Override
-    public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+    public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         // Filter out the property textures since they don't get filled in until runtime
-        Set<RenderMaterial> textures = originalModelGeometry.getTextures(owner, modelGetter, missingTextureErrors).stream()
+        Set<Material> textures = originalModelGeometry.getTextures(owner, modelGetter, missingTextureErrors).stream()
                 .filter(location -> !PROPERTY_NAMESPACE.equals(location.texture().getNamespace()))
                 .collect(Collectors.toSet());
         return Sets.union(textures, extraTextures);
     }
 
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
+    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
         // Use a custom texture getter and baked model
-        Function<RenderMaterial, TextureAtlasSprite> augmentedSpriteGetter = material -> {
+        Function<Material, TextureAtlasSprite> augmentedSpriteGetter = material -> {
             if (PROPERTY_NAMESPACE.equals(material.texture().getNamespace())) {
                 return new PropertySprite(material.texture());
             }

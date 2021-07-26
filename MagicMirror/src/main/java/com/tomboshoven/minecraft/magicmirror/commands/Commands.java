@@ -2,7 +2,7 @@ package com.tomboshoven.minecraft.magicmirror.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
@@ -24,7 +24,7 @@ public final class Commands {
     }
 
     private static void registerCommands(RegisterCommandsEvent event) {
-        CommandDispatcher<CommandSource> dispatcher = event.getDispatcher();
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         MAGIC_MIRROR.register(dispatcher);
     }
 }

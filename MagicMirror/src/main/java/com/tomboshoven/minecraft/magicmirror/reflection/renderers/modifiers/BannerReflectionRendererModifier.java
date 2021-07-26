@@ -1,17 +1,17 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.DyeColor;
-import net.minecraft.tileentity.BannerPattern;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.entity.BannerPattern;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -38,14 +38,14 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
     }
 
     @Override
-    public void render(float facing, float partialTicks, IRenderTypeBuffer renderTypeBuffer) {
+    public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
         super.render(facing, partialTicks, renderTypeBuffer);
 
         for (Pair<BannerPattern, DyeColor> patternColor : patternColorList) {
             float[] rgb = patternColor.getRight().getTextureDiffuseColors();
-            RenderMaterial material = new RenderMaterial(Atlases.BANNER_SHEET, patternColor.getLeft().location(true));
+            Material material = new Material(Sheets.BANNER_SHEET, patternColor.getLeft().location(true));
 
-            IVertexBuilder buffer = material.buffer(renderTypeBuffer, RenderType::entityNoOutline);
+            VertexConsumer buffer = material.buffer(renderTypeBuffer, RenderType::entityNoOutline);
 
             TextureAtlasSprite sprite = material.sprite();
 

@@ -3,18 +3,18 @@ package com.tomboshoven.minecraft.magicmirror.data;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.RecipeProvider;
-import net.minecraft.data.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
 
 import static net.minecraft.item.Items.ENDER_EYE;
-import static net.minecraftforge.common.Tags.Items.GLASS_PANES;
+import staticnet.minecraft.world.item.Itemson.Tags.Items.GLASS_PANES;
 import static net.minecraftforge.common.Tags.Items.RODS_WOODEN;
 
 @ParametersAreNonnullByDefault
@@ -25,7 +25,7 @@ class Recipes extends RecipeProvider {
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
+    protected void buildShapelessRecipes(Consumer<FinishedRecipe> consumer) {
         ShapedRecipeBuilder.shaped(Items.MAGIC_MIRROR.get(), 2)
                 .pattern("|e|")
                 .pattern("| |")
@@ -34,7 +34,7 @@ class Recipes extends RecipeProvider {
                 .define('e', ENDER_EYE)
                 .define('#', GLASS_PANES)
                 .group("magic_mirror")
-                .unlockedBy("ender_eye", InventoryChangeTrigger.Instance.hasItems(ENDER_EYE))
+                .unlockedBy("ender_eye", InventoryChangeTrigger.TriggerInstance.hasItems(ENDER_EYE))
                 .save(consumer);
     }
 

@@ -1,22 +1,22 @@
 package com.tomboshoven.minecraft.magicmirror.renderers;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartType;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClientUpdater;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import com.mojang.math.Matrix4f;
+import net.minecraft.world.phys.Vec3;
+import com.mojang.math.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTileEntity> {
+class TileEntityMagicMirrorRenderer extends BlockEntityRenderer<MagicMirrorBaseTileEntity> {
     /**
      * Maximum distance for an entity to be rendered.
      * Used for fading the mirror image.
@@ -36,12 +36,12 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
     private static final double MAX_HORIZONTAL_DISTANCE_SQ = 8 * 8;
     private static final double MAX_VERTICAL_DISTANCE_SQ = 3 * 3;
 
-    TileEntityMagicMirrorRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+    TileEntityMagicMirrorRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(MagicMirrorBaseTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(MagicMirrorBaseTileEntity tileEntityIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         Reflection reflection = tileEntityIn.getReflection();
 
         if (reflection instanceof ReflectionClient) {
@@ -52,8 +52,8 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
 
                 BlockPos tePos = tileEntityIn.getBlockPos();
 
-                Vector3d reflectedPos = reflected.position().add(.5, .5, .5);
-                Vector3d distanceVector = reflectedPos.subtract(tePos.getX(), tePos.getY(), tePos.getZ());
+                Vec3 reflectedPos = reflected.position().add(.5, .5, .5);
+                Vec3 distanceVector = reflectedPos.subtract(tePos.getX(), tePos.getY(), tePos.getZ());
 
                 ReflectionClientUpdater.markViewed((ReflectionClient) reflection);
 
@@ -72,7 +72,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
      * @param facing           The direction in which the mirror part is facing.
      * @param distance         The distance between the mirror and the reflected subject; used for fading.
      */
-    private static void renderReflection(ReflectionClient reflection, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, EnumPartType part, Direction facing, Vector3d distance) {
+    private static void renderReflection(ReflectionClient reflection, PoseStack matrixStack, MultiBufferSource renderTypeBuffer, EnumPartType part, Direction facing, Vec3 distance) {
         // The further away the subject is, the more faint the reflection
         double horizontalDistanceSq = distance.x * distance.x + distance.z * distance.z;
         double verticalDistanceSq = distance.y * distance.y;
@@ -84,7 +84,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
         matrixStack.mulPose(Vector3f.YN.rotationDegrees(facing.toYRot()));
         matrixStack.translate(0, 0, -.4);
 
-        IVertexBuilder buffer = renderTypeBuffer.getBuffer(reflection.getRenderType());
+        VertexConsumer buffer = renderTypeBuffer.getBuffer(reflection.getRenderType());
 
         float texTop = part == EnumPartType.TOP ? 0f : .5f;
         float texBottom = part == EnumPartType.TOP ? .5f : 1f;

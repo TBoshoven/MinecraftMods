@@ -6,19 +6,19 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.Magic
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IEntityReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.EntityGetter;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayer;
@@ -34,11 +34,11 @@ import java.util.stream.Collectors;
 import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 /**
- * The tile entity for the bottom mirror block; this is the block that has all the reflection logic.
+ * The tnet.minecraft.world.level.block.state.properties.BlockStateProperties block that has all the reflection logic.
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity implements ITickableTileEntity {
+public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity implements TickableBlockEntity {
     /**
      * Number of ticks between updating who we're reflecting
      */
@@ -67,10 +67,10 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
      * @param ownPosition The position of the tile entity in the world.
      * @return A list of players that are candidates for reflecting.
      */
-    private static List<PlayerEntity> findReflectablePlayers(IEntityReader world, BlockPos ownPosition) {
+    private static List<Player> findReflectablePlayers(EntityGetter world, BlockPos ownPosition) {
         // TODO: Add facing limitations
-        AxisAlignedBB scanBB = new AxisAlignedBB(ownPosition.offset(-10, -4, -10), ownPosition.offset(10, 4, 10));
-        List<PlayerEntity> playerEntities = world.getEntitiesOfClass(PlayerEntity.class, scanBB);
+        AABB scanBB = new AABB(ownPosition.offset(-10, -4, -10), ownPosition.offset(10, 4, 10));
+        List<Player> playerEntities = world.getEntitiesOfClass(Player.class, scanBB);
         // Only return real players
         return playerEntities.stream().filter(player -> !(player instanceof FakePlayer)).collect(Collectors.toList());
     }
@@ -83,8 +83,8 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
      * @return A player to reflect, or null if there are no valid candidates.
      */
     @Nullable
-    private static PlayerEntity findPlayerToReflect(IEntityReader world, BlockPos ownPosition) {
-        List<PlayerEntity> players = findReflectablePlayers(world, ownPosition);
+    private static Player findPlayerToReflect(EntityGetter world, BlockPos ownPosition) {
+        List<Player> players = findReflectablePlayers(world, ownPosition);
         if (players.isEmpty()) {
             return null;
         }
@@ -101,7 +101,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
      * Update the reflection to show the closest player.
      */
     private void updateReflection() {
-        World world = getLevel();
+        Level world = getLevel();
 
         if (world != null) {
             // Update the reflection angle.
@@ -109,7 +109,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
             BlockState blockState = getBlockState();
             reflection.setAngle(blockState.getValue(HORIZONTAL_FACING).toYRot());
 
-            PlayerEntity playerToReflect = findPlayerToReflect(world, getBlockPos());
+            Player playerToReflect = findPlayerToReflect(world, getBlockPos());
 
             if (playerToReflect == null) {
                 reflection.stopReflecting();
@@ -145,7 +145,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
+    public CompoundTag save(CompoundTag compound) {
         return writeInternal(super.save(compound));
     }
 
@@ -155,10 +155,10 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
      * @param compound The NBT compound to write to.
      * @return The nbt parameter, for chaining.
      */
-    private CompoundNBT writeInternal(CompoundNBT compound) {
-        ListNBT modifierList = new ListNBT();
+    private CompoundTag writeInternal(CompoundTag compound) {
+        ListTag modifierList = new ListTag();
         for (MagicMirrorTileEntityModifier modifier : modifiers) {
-            CompoundNBT modifierCompound = new CompoundNBT();
+            CompoundTag modifierCompound = new CompoundTag();
             modifierCompound.putString("name", modifier.getName());
             modifierList.add(modifier.write(modifierCompound));
         }
@@ -167,19 +167,19 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT compound) {
+    public void load(BlockState state, CompoundTag compound) {
         super.load(state, compound);
         readInternal(compound);
     }
 
-    private void readInternal(CompoundNBT compound) {
-        ListNBT modifiers = compound.getList("modifiers", 10);
-        for (INBT modifierCompound : modifiers) {
-            if (modifierCompound instanceof CompoundNBT) {
-                String name = ((CompoundNBT) modifierCompound).getString("name");
+    private void readInternal(CompoundTag compound) {
+        ListTag modifiers = compound.getList("modifiers", 10);
+        for (Tag modifierCompound : modifiers) {
+            if (modifierCompound instanceof CompoundTag) {
+                String name = ((CompoundTag) modifierCompound).getString("name");
                 MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(name);
                 if (modifier != null) {
-                    modifier.apply(this, (CompoundNBT) modifierCompound);
+                    modifier.apply(this, (CompoundTag) modifierCompound);
                 }
             }
         }
@@ -197,7 +197,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     }
 
     @Override
-    public boolean tryActivate(PlayerEntity playerIn, Hand hand) {
+    public boolean tryActivate(Player playerIn, InteractionHand hand) {
         return modifiers.stream().anyMatch(modifier -> modifier.tryPlayerActivate(this, playerIn, hand));
     }
 
@@ -209,7 +209,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     }
 
     @Override
-    public void removeModifiers(World worldIn, BlockPos pos) {
+    public void removeModifiers(Level worldIn, BlockPos pos) {
         for (MagicMirrorTileEntityModifier modifier : modifiers) {
             modifier.deactivate(this);
             modifier.remove(worldIn, pos);
@@ -218,19 +218,19 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
+    public CompoundTag getUpdateTag() {
         return writeInternal(super.getUpdateTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(getBlockPos(), 1, getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(getBlockPos(), 1, getUpdateTag());
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         readInternal(pkt.getTag());
     }
 }

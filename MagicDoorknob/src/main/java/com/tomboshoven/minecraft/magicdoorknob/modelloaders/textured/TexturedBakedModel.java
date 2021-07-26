@@ -2,21 +2,21 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import com.google.common.collect.ImmutableList;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemOverride;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.ItemOverride;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.BakedModelWrapper;
@@ -37,14 +37,14 @@ import java.util.stream.Collectors;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
-class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
+class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
     // The baked texture getter
-    private final Function<? super RenderMaterial, ? extends TextureAtlasSprite> bakedTextureGetter;
+    private final Function<? super Material, ? extends TextureAtlasSprite> bakedTextureGetter;
     // The mapper that replaces property textures by their values
     private final ITextureMapper textureMapper;
 
     // The vertex format of the model. At the moment, only "block" is supported.
-    private static final VertexFormat VERTEX_FORMAT = DefaultVertexFormats.BLOCK;
+    private static final VertexFormat VERTEX_FORMAT = DefaultVertexFormat.BLOCK;
     // The vertex format element containing the first texture UV coordinates
     private static final VertexFormatElement VERTEX_FORMAT_ELEMENT_UV;
     // The offset of the UV coordinates in the vertex format
@@ -72,7 +72,7 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
      * @param bakedTextureGetter The baked texture getter
      * @param textureMapper      The mapper that replaces property textures by their values
      */
-    TexturedBakedModel(T originalModel, Function<? super RenderMaterial, ? extends TextureAtlasSprite> bakedTextureGetter, ITextureMapper textureMapper) {
+    TexturedBakedModel(T originalModel, Function<? super Material, ? extends TextureAtlasSprite> bakedTextureGetter, ITextureMapper textureMapper) {
         super(originalModel);
         this.bakedTextureGetter = bakedTextureGetter;
         this.textureMapper = textureMapper;
@@ -85,7 +85,7 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
         return quads.stream().map(quad -> {
             TextureAtlasSprite sprite = quad.getSprite();
             if (sprite instanceof PropertySprite) {
-                RenderMaterial material = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
+                Material material = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
                 TextureAtlasSprite actualSprite = bakedTextureGetter.apply(material);
                 return retexture(quad, actualSprite);
             }
@@ -158,7 +158,7 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
+    public ItemOverrides getOverrides() {
         return new TexturedOverrideList(super.getOverrides());
     }
 
@@ -166,7 +166,7 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
     public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data) {
         TextureAtlasSprite sprite = super.getParticleTexture(data);
         if (sprite instanceof PropertySprite) {
-            RenderMaterial spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, null, data);
+            Material spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, null, data);
             sprite = bakedTextureGetter.apply(spriteLocation);
         }
         return sprite;
@@ -175,14 +175,14 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
     /**
      * We use override lists to dynamically texture items.
      */
-    private class TexturedOverrideList extends ItemOverrideList {
+    private class TexturedOverrideList extends ItemOverrides {
         // The original baked model's override list
-        private final ItemOverrideList wrappedOverrideList;
+        private final ItemOverrides wrappedOverrideList;
 
         /**
          * @param wrappedOverrideList The original baked model's override list
          */
-        TexturedOverrideList(ItemOverrideList wrappedOverrideList) {
+        TexturedOverrideList(ItemOverrides wrappedOverrideList) {
             this.wrappedOverrideList = wrappedOverrideList;
         }
 
@@ -192,7 +192,7 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
         }
 
         @Override
-        public IBakedModel resolve(IBakedModel model, ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn) {
+        public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity entityIn) {
             // If the item has a texture mapper, use it.
             Item item = stack.getItem();
             if (item instanceof IItemStackTextureMapperProvider) {

@@ -4,22 +4,22 @@ import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ModelTextureProperty;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.MissingTextureSprite;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.CompositeModel;
@@ -36,7 +36,7 @@ import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.Text
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
+public abstract class MagicDoorwayPartBaseTileEntity extends BlockEntity {
     /**
      * The main texture of the doorway (based on base block).
      */
@@ -52,20 +52,20 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     // The doorknob that caused this block to be created.
     private MagicDoorknobItem doorknob;
 
-    MagicDoorwayPartBaseTileEntity(TileEntityType<? extends MagicDoorwayPartBaseTileEntity> tileEntityType) {
+    MagicDoorwayPartBaseTileEntity(BlockEntityType<? extends MagicDoorwayPartBaseTileEntity> tileEntityType) {
         super(tileEntityType);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
+    public CompoundTag save(CompoundTag compound) {
         return writeInternal(compound);
     }
 
-    private CompoundNBT writeInternal(CompoundNBT compound) {
-        CompoundNBT result = super.save(compound);
+    private CompoundTag writeInternal(CompoundTag compound) {
+        CompoundTag result = super.save(compound);
         ResourceLocation registryName = baseBlockState.getBlock().getRegistryName();
         if (registryName != null) {
-            compound.put("baseBlock", NBTUtil.writeBlockState(baseBlockState));
+            compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
         }
         if (doorknob != null) {
             result.putString("doorknobType", doorknob.getTypeName());
@@ -74,31 +74,31 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT compound) {
+    public void load(BlockState state, CompoundTag compound) {
         super.load(state, compound);
         readInternal(compound);
     }
 
-    private void readInternal(CompoundNBT compound) {
-        baseBlockState = NBTUtil.readBlockState(compound.getCompound("baseBlock"));
+    private void readInternal(CompoundTag compound) {
+        baseBlockState = NbtUtils.readBlockState(compound.getCompound("baseBlock"));
         String doorknobType = compound.getString("doorknobType");
         doorknob = Items.DOORKNOBS.get(doorknobType);
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
+    public CompoundTag getUpdateTag() {
         return writeInternal(super.getUpdateTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(getBlockPos(), 1, getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(getBlockPos(), 1, getUpdateTag());
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         readInternal(pkt.getTag());
         requestModelDataUpdate();
     }
@@ -107,22 +107,22 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     @OnlyIn(Dist.CLIENT)
     public IModelData getModelData() {
         Minecraft minecraft = Minecraft.getInstance();
-        BlockModelShapes blockModelShapes = minecraft.getBlockRenderer().getBlockModelShaper();
+        BlockModelShaper blockModelShapes = minecraft.getBlockRenderer().getBlockModelShaper();
 
         // Get the base block texture
-        World world = getLevel();
+        Level world = getLevel();
         TextureAtlasSprite blockTexture = world == null ? null : blockModelShapes.getTexture(baseBlockState, world, getBlockPos());
-        RenderMaterial blockMaterial;
-        if (blockTexture == null || blockTexture instanceof MissingTextureSprite) {
+        Material blockMaterial;
+        if (blockTexture == null || blockTexture instanceof MissingTextureAtlasSprite) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.
-            blockMaterial = new RenderMaterial(PlayerContainer.BLOCK_ATLAS, new ResourceLocation(MOD_ID, "block/empty"));
+            blockMaterial = new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation(MOD_ID, "block/empty"));
         }
         else {
-            blockMaterial = new RenderMaterial(blockTexture.atlas().location(), blockTexture.getName());
+            blockMaterial = new Material(blockTexture.atlas().location(), blockTexture.getName());
         }
 
         // Get the highlight texture
-        RenderMaterial doorknobMaterial;
+        Material doorknobMaterial;
         if (doorknob != null) {
             doorknobMaterial = doorknob.getMainMaterial();
         } else {

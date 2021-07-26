@@ -7,19 +7,19 @@ import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.BannerReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.BannerReflectionModifierClient;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.BannerPattern;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Containers;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
@@ -42,12 +42,12 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
      * The banner NBT tag, stored here for removal.
      */
     @Nullable
-    private CompoundNBT bannerNBT;
+    private CompoundTag bannerNBT;
     /**
      * The banner name.
      */
     @Nullable
-    private ITextComponent name;
+    private Component name;
     /**
      * The object that modifies the reflection in the mirror to show the banner in the background.
      */
@@ -58,7 +58,7 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
         super(modifier);
     }
 
-    public BannerMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, DyeColor baseColor, @Nullable CompoundNBT bannerNBT, @Nullable ITextComponent name) {
+    public BannerMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, DyeColor baseColor, @Nullable CompoundTag bannerNBT, @Nullable Component name) {
         super(modifier);
         this.baseColor = baseColor;
         this.bannerNBT = bannerNBT != null ? bannerNBT.copy() : null;
@@ -66,7 +66,7 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
     }
 
     @Override
-    public void remove(World world, BlockPos pos) {
+    public void remove(Level world, BlockPos pos) {
         // BannerBlock.forColor is client-only.
         // Let's do a super-ugly workaround.
         // This will cause issues if dye colors are ever made extensible.
@@ -78,29 +78,29 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
         if (name != null) {
             itemStack.setHoverName(name);
         }
-        InventoryHelper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), itemStack);
+        Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), itemStack);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundTag write(CompoundTag nbt) {
         super.write(nbt);
         nbt.putInt("BannerColor", baseColor.getId());
         if (bannerNBT != null) {
             nbt.put("BannerData", bannerNBT.copy());
         }
-        nbt.putString("BannerName", ITextComponent.Serializer.toJson(name));
+        nbt.putString("BannerName", Component.Serializer.toJson(name));
         return nbt;
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void read(CompoundTag nbt) {
         super.read(nbt);
         baseColor = DyeColor.byId(nbt.getInt("BannerColor"));
-        CompoundNBT bannerData = nbt.getCompound("BannerData");
+        CompoundTag bannerData = nbt.getCompound("BannerData");
         if (!bannerData.isEmpty()) {
             bannerNBT = bannerData.copy();
         }
-        name = ITextComponent.Serializer.fromJson(nbt.getString("BannerName"));
+        name = Component.Serializer.fromJson(nbt.getString("BannerName"));
     }
 
     @Override
@@ -111,10 +111,10 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
             patternList.add(Pair.of(BannerPattern.BASE, baseColor));
             if (bannerNBT != null) {
                 // Get the patterns from the NBT data
-                ListNBT patterns = bannerNBT.getList("Patterns", 10);
+                ListTag patterns = bannerNBT.getList("Patterns", 10);
                 int size = patterns.size();
                 for (int i = 0; i < size; ++i) {
-                    CompoundNBT pattern = patterns.getCompound(i);
+                    CompoundTag pattern = patterns.getCompound(i);
                     String patternHash = pattern.getString("Pattern");
                     Optional<BannerPattern> bannerPattern = Arrays.stream(BannerPattern.values()).filter(p -> p.getHashname().equals(patternHash)).findFirst();
                     if (bannerPattern.isPresent()) {
@@ -148,7 +148,7 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
     }
 
     @Override
-    public boolean tryPlayerActivate(MagicMirrorBaseTileEntity tileEntity, PlayerEntity playerIn, Hand hand) {
+    public boolean tryPlayerActivate(MagicMirrorBaseTileEntity tileEntity, Player playerIn, InteractionHand hand) {
         // No activation behavior
         return false;
     }

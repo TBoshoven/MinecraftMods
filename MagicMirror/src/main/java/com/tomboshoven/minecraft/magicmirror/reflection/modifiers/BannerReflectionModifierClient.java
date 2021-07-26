@@ -3,8 +3,8 @@ package com.tomboshoven.minecraft.magicmirror.reflection.modifiers;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers.BannerReflectionRendererModifier;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.item.DyeColor;
-import net.minecraft.tileentity.BannerPattern;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.entity.BannerPattern;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;

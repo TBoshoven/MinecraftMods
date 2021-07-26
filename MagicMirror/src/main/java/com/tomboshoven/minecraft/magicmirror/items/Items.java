@@ -3,9 +3,9 @@ package com.tomboshoven.minecraft.magicmirror.items;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -29,7 +29,7 @@ public final class Items {
     public static final RegistryObject<Item> MAGIC_MIRROR =
             ITEMS.register("magic_mirror", () -> new BlockItem(
                     Blocks.MAGIC_MIRROR.get(),
-                    new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)
+                    new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)
             ));
 
     private Items() {

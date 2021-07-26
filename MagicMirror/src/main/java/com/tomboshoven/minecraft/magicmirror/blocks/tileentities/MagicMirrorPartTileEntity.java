@@ -1,8 +1,8 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -25,9 +25,9 @@ public class MagicMirrorPartTileEntity extends MagicMirrorBaseTileEntity {
     @Override
     protected MagicMirrorCoreTileEntity getCore() {
         if (core == null) {
-            World world = getLevel();
+            Level world = getLevel();
             if (world != null) {
-                TileEntity teBelow = world.getBlockEntity(getBlockPos().below());
+                BlockEntity teBelow = world.getBlockEntity(getBlockPos().below());
                 if (teBelow instanceof MagicMirrorCoreTileEntity) {
                     core = (MagicMirrorCoreTileEntity) teBelow;
                 }

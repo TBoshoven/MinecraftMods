@@ -1,14 +1,14 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.renderers;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.entity.Entity;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -74,12 +74,12 @@ public class ReflectionRenderer extends ReflectionRendererBase {
     }
 
     @Override
-    public void render(float facing, float partialTicks, IRenderTypeBuffer renderTypeBuffer) {
+    public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
         if (entityRenderer == null) {
             return;
         }
 
-        MatrixStack reflectionMatrixStack = new MatrixStack();
+        PoseStack reflectionMatrixStack = new PoseStack();
 
         // Head's up
         reflectionMatrixStack.mulPose(Vector3f.XP.rotationDegrees(180));

@@ -3,13 +3,13 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.BannerMagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.item.BannerItem;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.item.BannerItem;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -25,7 +25,7 @@ public class BannerMagicMirrorModifier extends MagicMirrorModifier {
     }
 
     @Override
-    public boolean canModify(World worldIn, BlockPos pos, ItemStack heldItem) {
+    public boolean canModify(Level worldIn, BlockPos pos, ItemStack heldItem) {
         // Must be activated using a banner.
         if (!(heldItem.getItem() instanceof BannerItem)) {
             return false;
@@ -36,7 +36,7 @@ public class BannerMagicMirrorModifier extends MagicMirrorModifier {
     }
 
     @Override
-    MagicMirrorTileEntityModifier createTileEntityModifier(CompoundNBT nbt) {
+    MagicMirrorTileEntityModifier createTileEntityModifier(CompoundTag nbt) {
         MagicMirrorTileEntityModifier teModifier = new BannerMagicMirrorTileEntityModifier(this);
         teModifier.read(nbt);
         return teModifier;
@@ -46,7 +46,7 @@ public class BannerMagicMirrorModifier extends MagicMirrorModifier {
     MagicMirrorTileEntityModifier createTileEntityModifier(ItemStack usedItem) {
         Item bannerType = usedItem.getItem();
         DyeColor bannerColor = bannerType instanceof BannerItem ? ((BannerItem) bannerType).getColor() : DyeColor.BLACK;
-        CompoundNBT bannerTag = usedItem.getTag();
+        CompoundTag bannerTag = usedItem.getTag();
         if (bannerTag != null) {
             // Get the block tag instead of the item stack tag
             bannerTag = bannerTag.getCompound("BlockEntityTag");

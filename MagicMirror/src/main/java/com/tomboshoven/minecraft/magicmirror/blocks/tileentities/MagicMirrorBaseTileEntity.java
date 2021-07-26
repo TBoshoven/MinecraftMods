@@ -5,14 +5,14 @@ import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartTyp
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -25,8 +25,8 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class MagicMirrorBaseTileEntity extends TileEntity {
-    MagicMirrorBaseTileEntity(TileEntityType<? extends MagicMirrorBaseTileEntity> tileEntityTypeIn) {
+public abstract class MagicMirrorBaseTileEntity extends BlockEntity {
+    MagicMirrorBaseTileEntity(BlockEntityType<? extends MagicMirrorBaseTileEntity> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -79,7 +79,7 @@ public abstract class MagicMirrorBaseTileEntity extends TileEntity {
      * @param worldIn The world containing the removed block.
      * @param pos     The position of the block that was removed.
      */
-    public void removeModifiers(World worldIn, BlockPos pos) {
+    public void removeModifiers(Level worldIn, BlockPos pos) {
         MagicMirrorCoreTileEntity core = getCore();
         if (core != null) {
             core.removeModifiers(worldIn, pos);
@@ -93,7 +93,7 @@ public abstract class MagicMirrorBaseTileEntity extends TileEntity {
      * @param hand     The hand used by the player to activate the mirror.
      * @return Whether activation of the modifier was successful.
      */
-    public boolean tryActivate(PlayerEntity playerIn, Hand hand) {
+    public boolean tryActivate(Player playerIn, InteractionHand hand) {
         MagicMirrorCoreTileEntity core = getCore();
         if (core != null) {
             return core.tryActivate(playerIn, hand);
@@ -105,7 +105,7 @@ public abstract class MagicMirrorBaseTileEntity extends TileEntity {
      * @return Which direction the mirror is facing in.
      */
     public Direction getFacing() {
-        return getBlockState().getValue(HorizontalBlock.FACING);
+        return getBlockState().getValue(HorizontalDirectionalBlock.FACING);
     }
 
     /**

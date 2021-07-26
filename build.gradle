@@ -28,11 +28,11 @@ subprojects {
     group = "com.tomboshoven.minecraft." + project.getName().toLowerCase()
     archivesBaseName = project.projectDir.name
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = '16'
+    targetCompatibility = '16'
 
     minecraft {
-        mappings channel: 'official', version: '1.16.5'
+        mappings channel: 'official', version: '1.17.1'
 
         runs {
             client {
@@ -68,7 +68,7 @@ subprojects {
     }
 
     dependencies {
-        minecraft "net.minecraftforge:forge:1.16.5-36.1.4"
+        minecraft "net.minecraftforge:forge:1.17.1-37.0.9"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }

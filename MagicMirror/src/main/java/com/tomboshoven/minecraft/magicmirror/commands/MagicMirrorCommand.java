@@ -4,8 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.CommandSource;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -22,9 +22,9 @@ final class MagicMirrorCommand {
      * @param context The command context.
      * @return Currently, the number of active reflections.
      */
-    private static int debug(CommandContext<? extends CommandSource> context) {
+    private static int debug(CommandContext<? extends CommandSourceStack> context) {
         int reflectionCount = Reflection.getActiveReflectionsClient();
-        context.getSource().sendSuccess(new TranslationTextComponent("commands.magic_mirror.debug.reflections", reflectionCount), true);
+        context.getSource().sendSuccess(new TranslatableComponent("commands.magic_mirror.debug.reflections", reflectionCount), true);
         return reflectionCount;
     }
 
@@ -33,10 +33,10 @@ final class MagicMirrorCommand {
      *
      * @param dispatcher The command dispatcher to register the command to.
      */
-    void register(CommandDispatcher<CommandSource> dispatcher) {
+    void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
-                net.minecraft.command.Commands.literal("magic_mirror").then(
-                        net.minecraft.command.Commands.literal("debug").executes(
+                net.minecraft.commands.Commands.literal("magic_mirror").then(
+                        net.minecraft.commands.Commands.literal("debug").executes(
                                 MagicMirrorCommand::debug
                         )
                 )

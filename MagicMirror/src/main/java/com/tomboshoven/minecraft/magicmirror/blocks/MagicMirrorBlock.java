@@ -7,34 +7,34 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCore
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorPartTileEntity;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -47,7 +47,7 @@ import java.util.function.Supplier;
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MagicMirrorBlock extends HorizontalBlock {
+public class MagicMirrorBlock extends HorizontalDirectionalBlock {
     /**
      * Property describing whether the mirror is completely constructed.
      */
@@ -95,7 +95,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
      * @param heldItem The item used to attach the modifier to the mirror.
      * @param modifier The modifier to attach to the mirror.
      */
-    private static void attachModifier(World worldIn, BlockPos pos, ItemStack heldItem, MagicMirrorModifier modifier) {
+    private static void attachModifier(Level worldIn, BlockPos pos, ItemStack heldItem, MagicMirrorModifier modifier) {
         // Item stack may change by attaching
         ItemStack originalHeldItem = heldItem.copy();
         modifier.apply(worldIn, pos, heldItem);
@@ -105,7 +105,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
     }
 
     @Override
-    public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(worldIn, pos, state, placer, stack);
 
         // Try to complete a mirror by looking for an incomplete mirror above or below.
@@ -121,18 +121,18 @@ public class MagicMirrorBlock extends HorizontalBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING, COMPLETE, PART);
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPES[state.getValue(FACING).get2DDataValue()];
     }
 
     @Override
-    public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.MODEL;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 
     @Override
@@ -142,7 +142,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
         // The bottom part is the core of the mirror which has all the logic; the top part just uses the results.
         if (state.getValue(PART) == EnumPartType.BOTTOM) {
             return new MagicMirrorCoreTileEntity();
@@ -156,7 +156,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         // Make sure the mirror is facing the right way when placed
         Direction horizontalDirection = Direction.NORTH;
         for (Direction direction : context.getNearestLookingDirections()) {
@@ -169,7 +169,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
     }
 
     @Override
-    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         // The mirror will only do anything if it's used from the front.
         if (state.getValue(FACING) == hit.getDirection()) {
             if (!worldIn.isClientSide) {
@@ -179,29 +179,29 @@ public class MagicMirrorBlock extends HorizontalBlock {
                     for (MagicMirrorModifier modifier : MagicMirrorModifier.getModifiers()) {
                         if (modifier.canModify(worldIn, pos, heldItem)) {
                             attachModifier(worldIn, pos, heldItem, modifier);
-                            return ActionResultType.SUCCESS;
+                            return InteractionResult.SUCCESS;
                         }
                     }
                 }
 
                 // Then, see if any existing modifier can do something.
-                TileEntity tileEntity = worldIn.getBlockEntity(pos);
+                BlockEntity tileEntity = worldIn.getBlockEntity(pos);
                 if (tileEntity instanceof MagicMirrorBaseTileEntity) {
                     if (((MagicMirrorBaseTileEntity) tileEntity).tryActivate(player, handIn)) {
-                        return ActionResultType.SUCCESS;
+                        return InteractionResult.SUCCESS;
                     }
                 }
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getValue(COMPLETE)) {
-            TileEntity tileEntity = worldIn.getBlockEntity(pos);
+            BlockEntity tileEntity = worldIn.getBlockEntity(pos);
             if (tileEntity instanceof MagicMirrorBaseTileEntity) {
                 ((MagicMirrorBaseTileEntity) tileEntity).removeModifiers(worldIn, pos);
             }
@@ -219,7 +219,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
     /**
      * The mirror has two parts: top and bottom.
      */
-    public enum EnumPartType implements IStringSerializable {
+    public enum EnumPartType implements StringRepresentable {
         TOP("top"),
         BOTTOM("bottom"),
         ;
@@ -282,7 +282,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
          * @param buf The buffer to read from.
          * @return The created message instance.
          */
-        public static MessageAttachModifier decode(PacketBuffer buf) {
+        public static MessageAttachModifier decode(FriendlyByteBuf buf) {
             MessageAttachModifier result = new MessageAttachModifier();
             result.mirrorPos = buf.readBlockPos();
             result.usedItemStack = buf.readItem();
@@ -296,7 +296,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
          *
          * @param buf The buffer to write to.
          */
-        public void encode(PacketBuffer buf) {
+        public void encode(FriendlyByteBuf buf) {
             buf.writeBlockPos(mirrorPos);
             buf.writeItem(usedItemStack);
             buf.writeUtf(modifierName);
@@ -309,9 +309,9 @@ public class MagicMirrorBlock extends HorizontalBlock {
     public static void onMessageAttachModifier(MessageAttachModifier message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            ClientWorld world = Minecraft.getInstance().level;
+            ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
-                TileEntity te = world.getBlockEntity(message.mirrorPos);
+                BlockEntity te = world.getBlockEntity(message.mirrorPos);
                 if (te instanceof MagicMirrorBaseTileEntity) {
                     MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
                     if (modifier == null) {
@@ -319,7 +319,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
                         return;
                     }
                     modifier.apply(world, message.mirrorPos, message.usedItemStack);
-                    world.playLocalSound(message.mirrorPos, SoundEvents.ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);
+                    world.playLocalSound(message.mirrorPos, SoundEvents.ARMOR_EQUIP_GENERIC, SoundSource.BLOCKS, .6f, .6f, true);
                 }
             }
         }));

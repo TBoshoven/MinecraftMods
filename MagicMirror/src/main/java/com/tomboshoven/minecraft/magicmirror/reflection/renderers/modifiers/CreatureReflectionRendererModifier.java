@@ -1,34 +1,34 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.ArrowLayer;
 import net.minecraft.client.renderer.entity.layers.BeeStingerLayer;
-import net.minecraft.client.renderer.entity.layers.BipedArmorLayer;
+import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
-import net.minecraft.client.renderer.entity.layers.HeadLayer;
-import net.minecraft.client.renderer.entity.layers.HeldItemLayer;
-import net.minecraft.client.renderer.entity.layers.ParrotVariantLayer;
+import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
+import net.minecraft.client.renderer.entity.layers.ParrotOnShoulderLayer;
 import net.minecraft.client.renderer.entity.layers.SpinAttackEffectLayer;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.BipedModel.ArmPose;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.IHasArm;
-import net.minecraft.client.renderer.entity.model.IHasHead;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.UseAction;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.HumanoidModel.ArmPose;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.ArmedModel;
+import net.minecraft.client.model.HeadedModel;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -54,7 +54,7 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
     }
 
     @Override
-    public void render(float facing, float partialTicks, IRenderTypeBuffer renderTypeBuffer) {
+    public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
         EntityRenderer<? extends Entity> originalRenderer = getRenderer();
         setRenderer(replacementRenderer);
         super.render(facing, partialTicks, renderTypeBuffer);
@@ -66,36 +66,36 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
      */
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    private static class RenderOffModelPlayer<T extends LivingEntity, M extends EntityModel<T>> extends LivingRenderer<T, M> {
+    private static class RenderOffModelPlayer<T extends LivingEntity, M extends EntityModel<T>> extends LivingEntityRenderer<T, M> {
         /**
          * The location of the texture to use.
          */
         private final ResourceLocation textureLocation;
 
-        RenderOffModelPlayer(EntityRendererManager renderManager, M model, ResourceLocation textureLocation) {
+        RenderOffModelPlayer(EntityRenderDispatcher renderManager, M model, ResourceLocation textureLocation) {
             super(renderManager, model, 0);
 
             // Can't use explicit types here because there is no way to check whether the type M implements these
             // interfaces or subclasses these classes due to type erasure and I don't want to work with too many
             // subclasses.
-            if (model instanceof IHasHead) {
+            if (model instanceof HeadedModel) {
                 //noinspection unchecked,rawtypes
-                addLayer(new HeadLayer(this));
+                addLayer(new CustomHeadLayer(this));
             }
             addLayer(new ElytraLayer<>(this));
-            if (model instanceof IHasArm) {
+            if (model instanceof ArmedModel) {
                 //noinspection unchecked,rawtypes
-                addLayer(new HeldItemLayer(this));
+                addLayer(new ItemInHandLayer(this));
             }
-            if (model instanceof BipedModel) {
+            if (model instanceof HumanoidModel) {
                 //noinspection unchecked,rawtypes
-                addLayer(new BipedArmorLayer(this, new BipedModel<>(0.5F), new BipedModel<>(1.0F)));
+                addLayer(new HumanoidArmorLayer(this, new HumanoidModel<>(0.5F), new HumanoidModel<>(1.0F)));
             }
             if (model instanceof PlayerModel) {
                 //noinspection unchecked,rawtypes
                 addLayer(new ArrowLayer(this));
                 //noinspection unchecked,rawtypes
-                addLayer(new ParrotVariantLayer(this));
+                addLayer(new ParrotOnShoulderLayer(this));
                 //noinspection unchecked,rawtypes
                 addLayer(new SpinAttackEffectLayer(this));
                 //noinspection unchecked,rawtypes
@@ -105,7 +105,7 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
         }
 
         @Override
-        public void render(T entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        public void render(T entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
             setArmPoses(entityIn);
             super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         }
@@ -127,21 +127,21 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
                     armPoses[side] = ArmPose.ITEM;
 
                     if (entity.getUseItemRemainingTicks() > 0) {
-                        UseAction itemUseAction = handItems[side].getUseAnimation();
+                        UseAnim itemUseAction = handItems[side].getUseAnimation();
 
-                        if (itemUseAction == UseAction.BLOCK) {
+                        if (itemUseAction == UseAnim.BLOCK) {
                             armPoses[side] = ArmPose.BLOCK;
-                        } else if (itemUseAction == UseAction.BOW) {
+                        } else if (itemUseAction == UseAnim.BOW) {
                             armPoses[side] = ArmPose.BOW_AND_ARROW;
                         }
                     }
                 }
             }
 
-            if (model instanceof BipedModel) {
-                BipedModel<?> bipedModel = (BipedModel<?>) model;
+            if (model instanceof HumanoidModel) {
+                HumanoidModel<?> bipedModel = (HumanoidModel<?>) model;
                 bipedModel.crouching = entity.isShiftKeyDown();
-                if (entity.getMainArm() == HandSide.RIGHT) {
+                if (entity.getMainArm() == HumanoidArm.RIGHT) {
                     bipedModel.rightArmPose = armPoses[0];
                     bipedModel.leftArmPose = armPoses[1];
                 } else {
@@ -163,24 +163,24 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
      */
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    private static class ModelSkeletonPlayer<T extends LivingEntity> extends BipedModel<T> {
+    private static class ModelSkeletonPlayer<T extends LivingEntity> extends HumanoidModel<T> {
         @SuppressWarnings("AssignmentToSuperclassField")
         ModelSkeletonPlayer() {
             super(0, 0, 64, 32);
 
             // Skeletons have slightly different models, so we just apply the same modifications as the skeleton model
             // does.
-            rightArm = new ModelRenderer(this, 40, 16);
+            rightArm = new ModelPart(this, 40, 16);
             rightArm.addBox(-1.0F, -2.0F, -1.0F, 2, 12, 2, 0);
             rightArm.setPos(-5.0F, 2.0F, 0.0F);
-            leftArm = new ModelRenderer(this, 40, 16);
+            leftArm = new ModelPart(this, 40, 16);
             leftArm.mirror = true;
             leftArm.addBox(-1.0F, -2.0F, -1.0F, 2, 12, 2, 0);
             leftArm.setPos(5.0F, 2.0F, 0.0F);
-            rightLeg = new ModelRenderer(this, 0, 16);
+            rightLeg = new ModelPart(this, 0, 16);
             rightLeg.addBox(-1.0F, 0.0F, -1.0F, 2, 12, 2, 0);
             rightLeg.setPos(-2.0F, 12.0F, 0.0F);
-            leftLeg = new ModelRenderer(this, 0, 16);
+            leftLeg = new ModelPart(this, 0, 16);
             leftLeg.mirror = true;
             leftLeg.addBox(-1.0F, 0.0F, -1.0F, 2, 12, 2, 0);
             leftLeg.setPos(2.0F, 12.0F, 0.0F);

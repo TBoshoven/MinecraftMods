@@ -3,11 +3,11 @@ package com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier.ReplacementArmor;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.NonNullList;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -32,10 +32,10 @@ public class ArmorReflectionRendererModifier extends ReflectionRendererModifier 
     }
 
     @Override
-    public void render(float facing, float partialTicks, IRenderTypeBuffer renderTypeBuffer) {
+    public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
         Entity entity = getEntity();
-        if (entity instanceof PlayerEntity) {
-            NonNullList<ItemStack> inventoryToSwap = ((PlayerEntity) entity).inventory.armor;
+        if (entity instanceof Player) {
+            NonNullList<ItemStack> inventoryToSwap = ((Player) entity).inventory.armor;
 
             // Simply swap out the armor inventory twice
             replacementArmor.swap(inventoryToSwap);
