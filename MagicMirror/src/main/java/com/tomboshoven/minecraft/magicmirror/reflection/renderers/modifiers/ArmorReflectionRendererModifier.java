@@ -35,7 +35,7 @@ public class ArmorReflectionRendererModifier extends ReflectionRendererModifier 
     public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
         Entity entity = getEntity();
         if (entity instanceof Player) {
-            NonNullList<ItemStack> inventoryToSwap = ((Player) entity).inventory.armor;
+            NonNullList<ItemStack> inventoryToSwap = ((Player) entity).getInventory().armor;
 
             // Simply swap out the armor inventory twice
             replacementArmor.swap(inventoryToSwap);

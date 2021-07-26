@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -26,8 +27,8 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class MagicMirrorBaseTileEntity extends BlockEntity {
-    MagicMirrorBaseTileEntity(BlockEntityType<? extends MagicMirrorBaseTileEntity> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    MagicMirrorBaseTileEntity(BlockEntityType<? extends MagicMirrorBaseTileEntity> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     /**

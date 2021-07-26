@@ -8,13 +8,13 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import staticnet.minecraft.world.item.Itemson.Tags.Items.GLASS_PANES;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
 
-import static net.minecraft.item.Items.ENDER_EYE;
+import static net.minecraft.world.item.Items.ENDER_EYE;
+import static net.minecraftforge.common.Tags.Items.GLASS_PANES;
 import static net.minecraftforge.common.Tags.Items.RODS_WOODEN;
 
 @ParametersAreNonnullByDefault
@@ -25,7 +25,7 @@ class Recipes extends RecipeProvider {
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         ShapedRecipeBuilder.shaped(Items.MAGIC_MIRROR.get(), 2)
                 .pattern("|e|")
                 .pattern("| |")

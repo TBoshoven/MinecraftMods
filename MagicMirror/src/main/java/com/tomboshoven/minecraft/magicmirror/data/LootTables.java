@@ -38,7 +38,7 @@ class LootTables extends LootTableProvider {
 
     @Override
     protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext validationtracker) {
-        map.forEach((name, table) -> LootTables.validate(validationtracker, name, table));
+        map.forEach((name, table) -> net.minecraft.world.level.storage.loot.LootTables.validate(validationtracker, name, table));
     }
 
     private static class BlockTables extends BlockLoot {

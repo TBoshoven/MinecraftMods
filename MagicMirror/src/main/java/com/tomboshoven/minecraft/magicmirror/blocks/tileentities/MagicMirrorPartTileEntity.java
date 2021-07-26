@@ -1,8 +1,10 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -17,8 +19,8 @@ public class MagicMirrorPartTileEntity extends MagicMirrorBaseTileEntity {
     @Nullable
     private MagicMirrorCoreTileEntity core;
 
-    public MagicMirrorPartTileEntity() {
-        super(TileEntities.MAGIC_MIRROR_PART.get());
+    public MagicMirrorPartTileEntity(BlockPos pos, BlockState state) {
+        super(TileEntities.MAGIC_MIRROR_PART.get(), pos, state);
     }
 
     @Nullable

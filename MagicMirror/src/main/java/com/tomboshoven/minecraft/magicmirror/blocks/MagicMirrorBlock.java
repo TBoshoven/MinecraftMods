@@ -5,6 +5,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifie
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorPartTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntities;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
@@ -24,10 +25,13 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -47,7 +51,12 @@ import java.util.function.Supplier;
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MagicMirrorBlock extends HorizontalDirectionalBlock {
+public class MagicMirrorBlock extends HorizontalDirectionalBlock implements EntityBlock {
+    /**
+     * Number of ticks between updating who we're reflecting
+     */
+    private static final int REFLECTION_UPDATE_INTERVAL = 10;
+
     /**
      * Property describing whether the mirror is completely constructed.
      */
@@ -135,19 +144,14 @@ public class MagicMirrorBlock extends HorizontalDirectionalBlock {
         return RenderShape.MODEL;
     }
 
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return state.getValue(COMPLETE);
-    }
-
     @Nullable
     @Override
-    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         // The bottom part is the core of the mirror which has all the logic; the top part just uses the results.
         if (state.getValue(PART) == EnumPartType.BOTTOM) {
-            return new MagicMirrorCoreTileEntity();
+            return new MagicMirrorCoreTileEntity(pos, state);
         }
-        return new MagicMirrorPartTileEntity();
+        return new MagicMirrorPartTileEntity(pos, state);
     }
 
     @Override
@@ -214,6 +218,28 @@ public class MagicMirrorBlock extends HorizontalDirectionalBlock {
             }
         }
         super.onRemove(state, worldIn, pos, newState, isMoving);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> blockEntityType) {
+        if (blockEntityType != TileEntities.MAGIC_MIRROR_CORE.get()) {
+            return null;
+        }
+        return new BlockEntityTicker<>() {
+            // Start the update counter at its max, so we update on the first tick.
+            private int reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
+
+            @Override
+            public void tick(Level world, BlockPos pos, BlockState state, T entity) {
+                MagicMirrorCoreTileEntity mirrorEntity = (MagicMirrorCoreTileEntity)entity;
+                if (reflectionUpdateCounter++ == REFLECTION_UPDATE_INTERVAL) {
+                    reflectionUpdateCounter = 0;
+                    mirrorEntity.updateReflection();
+                    mirrorEntity.coolDown();
+                }
+            }
+        };
     }
 
     /**

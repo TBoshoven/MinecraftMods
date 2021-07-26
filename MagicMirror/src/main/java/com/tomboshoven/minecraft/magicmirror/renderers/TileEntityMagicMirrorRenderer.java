@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-class TileEntityMagicMirrorRenderer extends BlockEntityRenderer<MagicMirrorBaseTileEntity> {
+class TileEntityMagicMirrorRenderer implements BlockEntityRenderer<MagicMirrorBaseTileEntity> {
     /**
      * Maximum distance for an entity to be rendered.
      * Used for fading the mirror image.

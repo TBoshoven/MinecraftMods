@@ -34,8 +34,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -251,7 +251,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
          */
         void swap(Player player) {
             for (int i = 0; i < 4; ++i) {
-                ItemStack playerArmor = player.inventory.armor.get(i);
+                ItemStack playerArmor = player.getInventory().armor.get(i);
                 ItemStack replacement = replacementInventory.get(i);
                 if (EnchantmentHelper.hasBindingCurse(playerArmor) || EnchantmentHelper.hasBindingCurse(replacement)) {
                     // Cannot swap armor with curse of binding
@@ -259,10 +259,10 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
                 }
                 if (player instanceof ServerPlayer) {
                     // Make sure to do this on the client side as well.
-                    ((ServerPlayer) player).connection.send(new ClientboundContainerSetSlotPacket(-2, i + 36, replacement));
+                    ((ServerPlayer) player).connection.send(new ClientboundContainerSetSlotPacket(-2, 0, i + 36, replacement));
                 }
                 replacementInventory.set(i, playerArmor);
-                player.inventory.armor.set(i, replacement);
+                player.getInventory().armor.set(i, replacement);
             }
         }
 

@@ -16,7 +16,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.EntityGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.TickingBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,18 +34,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 /**
- * The tnet.minecraft.world.level.block.state.properties.BlockStateProperties block that has all the reflection logic.
+ * The block that has all the reflection logic.
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity implements TickableBlockEntity {
-    /**
-     * Number of ticks between updating who we're reflecting
-     */
-    private static final int REFLECTION_UPDATE_INTERVAL = 10;
+public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity {
     /**
      * The list of all modifiers to the mirror.
      */
@@ -51,11 +50,9 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
      * The reflection object, used for keeping track of who is being reflected and rendering.
      */
     private final Reflection reflection;
-    // Start the update counter at its max, so we update on the first tick.
-    private int reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
 
-    public MagicMirrorCoreTileEntity() {
-        super(TileEntities.MAGIC_MIRROR_CORE.get());
+    public MagicMirrorCoreTileEntity(BlockPos pos, BlockState state) {
+        super(TileEntities.MAGIC_MIRROR_CORE.get(), pos, state);
 
         reflection = DistExecutor.unsafeRunForDist(() -> ReflectionClient::new, () -> Reflection::new);
     }
@@ -100,7 +97,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     /**
      * Update the reflection to show the closest player.
      */
-    private void updateReflection() {
+    public void updateReflection() {
         Level world = getLevel();
 
         if (world != null) {
@@ -119,12 +116,10 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
         }
     }
 
-    @Override
-    public void tick() {
-        if (reflectionUpdateCounter++ == REFLECTION_UPDATE_INTERVAL) {
-            reflectionUpdateCounter = 0;
-            updateReflection();
-        }
+    /**
+     * Cool down all modifiers.
+     */
+    public void coolDown() {
         modifiers.forEach(MagicMirrorTileEntityModifier::coolDown);
     }
 
@@ -137,11 +132,9 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     @Override
     public void setRemoved() {
         super.setRemoved();
-        // Stop reflecting, but prepare to restart the next tick, in case we get validated again
         // We need to make sure that we stop reflecting when the tile entity is destroyed, so we don't leak any frame
         // buffers and textures
         reflection.stopReflecting();
-        reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
     }
 
     @Override
@@ -167,8 +160,8 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     }
 
     @Override
-    public void load(BlockState state, CompoundTag compound) {
-        super.load(state, compound);
+    public void load(CompoundTag compound) {
+        super.load(compound);
         readInternal(compound);
     }
 

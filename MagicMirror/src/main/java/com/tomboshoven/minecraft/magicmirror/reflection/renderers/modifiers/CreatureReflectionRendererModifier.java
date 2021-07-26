@@ -14,6 +14,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.ArrowLayer;
 import net.minecraft.client.renderer.entity.layers.BeeStingerLayer;
@@ -72,8 +73,8 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
          */
         private final ResourceLocation textureLocation;
 
-        RenderOffModelPlayer(EntityRenderDispatcher renderManager, M model, ResourceLocation textureLocation) {
-            super(renderManager, model, 0);
+        RenderOffModelPlayer(EntityRendererProvider.Context renderContext, M model, ResourceLocation textureLocation) {
+            super(renderContext, model, 0);
 
             // Can't use explicit types here because there is no way to check whether the type M implements these
             // interfaces or subclasses these classes due to type erasure and I don't want to work with too many
