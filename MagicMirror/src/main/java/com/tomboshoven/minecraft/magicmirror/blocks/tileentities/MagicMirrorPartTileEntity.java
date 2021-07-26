@@ -1,8 +1,8 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
 
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;

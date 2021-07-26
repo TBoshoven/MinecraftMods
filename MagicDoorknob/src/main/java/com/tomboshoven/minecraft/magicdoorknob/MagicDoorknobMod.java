@@ -6,7 +6,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntities;
 import com.tomboshoven.minecraft.magicdoorknob.data.DataGenerators;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.ModelLoaders;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;

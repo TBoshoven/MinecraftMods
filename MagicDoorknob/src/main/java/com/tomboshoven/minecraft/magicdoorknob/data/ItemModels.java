@@ -2,7 +2,7 @@ package com.tomboshoven.minecraft.magicdoorknob.data;
 
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelProvider;

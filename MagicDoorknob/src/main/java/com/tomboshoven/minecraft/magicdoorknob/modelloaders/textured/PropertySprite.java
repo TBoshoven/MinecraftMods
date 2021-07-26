@@ -1,10 +1,10 @@
 package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 
-import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import com.mojang.blaze3d.platform.NativeImage;
+import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
 import net.minecraft.resources.ResourceLocation;
@@ -12,8 +12,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import net.minecraft.client.renderer.texture.TextureAtlasSprite.Info;
 
 /**
  * A sprite that does not link to a texture.

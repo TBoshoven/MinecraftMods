@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import com.google.common.collect.Maps;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.data.ModelProperty;

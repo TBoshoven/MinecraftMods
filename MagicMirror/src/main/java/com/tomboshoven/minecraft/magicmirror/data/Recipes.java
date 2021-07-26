@@ -2,19 +2,19 @@ package com.tomboshoven.minecraft.magicmirror.data;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import staticnet.minecraft.world.item.Itemson.Tags.Items.GLASS_PANES;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
 
 import static net.minecraft.item.Items.ENDER_EYE;
-import staticnet.minecraft.world.item.Itemson.Tags.Items.GLASS_PANES;
 import static net.minecraftforge.common.Tags.Items.RODS_WOODEN;
 
 @ParametersAreNonnullByDefault

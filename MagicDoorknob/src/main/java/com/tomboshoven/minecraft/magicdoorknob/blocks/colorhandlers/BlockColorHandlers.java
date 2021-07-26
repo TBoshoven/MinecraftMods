@@ -1,9 +1,9 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;

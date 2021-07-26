@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.renderers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntities;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;

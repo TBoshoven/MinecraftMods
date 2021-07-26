@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;

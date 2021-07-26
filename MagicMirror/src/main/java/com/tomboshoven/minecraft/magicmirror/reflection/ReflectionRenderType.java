@@ -2,16 +2,16 @@ package com.tomboshoven.minecraft.magicmirror.reflection;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import staticcom.mojang.blaze3d.vertex.DefaultVertexFormatpengl.GL11.GL_LEQUAL;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR_TEX;
-import staticcom.mojang.blaze3d.vertex.DefaultVertexFormatpengl.GL11.GL_LEQUAL;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.GL_SMOOTH;
 

@@ -3,7 +3,7 @@ package com.tomboshoven.minecraft.magicmirror.reflection;
 import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nullable;

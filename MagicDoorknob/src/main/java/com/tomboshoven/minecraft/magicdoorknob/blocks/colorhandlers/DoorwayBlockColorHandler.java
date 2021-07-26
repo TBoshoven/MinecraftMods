@@ -1,14 +1,14 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

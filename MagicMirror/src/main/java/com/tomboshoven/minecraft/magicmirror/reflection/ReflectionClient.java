@@ -1,14 +1,14 @@
 package com.tomboshoven.minecraft.magicmirror.reflection;
 
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRenderer;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

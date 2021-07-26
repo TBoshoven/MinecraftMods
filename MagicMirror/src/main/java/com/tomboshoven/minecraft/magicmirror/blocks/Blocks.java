@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
