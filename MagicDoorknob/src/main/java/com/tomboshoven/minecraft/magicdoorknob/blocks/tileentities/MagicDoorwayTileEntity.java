@@ -1,6 +1,8 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -10,7 +12,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MagicDoorwayTileEntity extends MagicDoorwayPartBaseTileEntity {
-    public MagicDoorwayTileEntity() {
-        super(TileEntities.MAGIC_DOORWAY.get());
+    public MagicDoorwayTileEntity(BlockPos pos, BlockState state) {
+        super(TileEntities.MAGIC_DOORWAY.get(), pos, state);
     }
 }

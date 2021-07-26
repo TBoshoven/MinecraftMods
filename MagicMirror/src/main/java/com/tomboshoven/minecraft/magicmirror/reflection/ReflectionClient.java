@@ -1,6 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.reflection;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRenderer;
@@ -65,7 +66,7 @@ public class ReflectionClient extends Reflection {
     void buildFrameBuffer() {
         super.buildFrameBuffer();
 
-        frameBuffer = new RenderTarget(TEXTURE_WIDTH, TEXTURE_HEIGHT, true, ON_OSX);
+        frameBuffer = new TextureTarget(TEXTURE_WIDTH, TEXTURE_HEIGHT, true, ON_OSX);
         frameBuffer.unbindWrite();
     }
 

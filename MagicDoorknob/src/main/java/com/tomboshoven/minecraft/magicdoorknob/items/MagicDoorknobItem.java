@@ -70,11 +70,7 @@ public class MagicDoorknobItem extends Item {
      */
     private static boolean isEmpty(BlockGetter world, BlockPos pos, BlockPlaceContext useContext) {
         BlockState blockState = world.getBlockState(pos);
-        if (blockState.getBlock().isAir(blockState, world, pos)) {
-            return true;
-        }
-
-        return blockState.canBeReplaced(useContext);
+        return blockState.isAir() || blockState.canBeReplaced(useContext);
     }
 
     @Override
@@ -212,7 +208,7 @@ public class MagicDoorknobItem extends Item {
      */
     private boolean isReplaceable(BlockGetter world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
-        if (blockState.hasTileEntity()) {
+        if (blockState.hasBlockEntity()) {
             return false;
         }
         // Blocks like bedrock use this to prevent interactions

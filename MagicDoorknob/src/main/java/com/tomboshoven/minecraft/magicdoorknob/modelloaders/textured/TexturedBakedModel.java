@@ -163,8 +163,8 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data) {
-        TextureAtlasSprite sprite = super.getParticleTexture(data);
+    public TextureAtlasSprite getParticleIcon(@Nonnull IModelData data) {
+        TextureAtlasSprite sprite = super.getParticleIcon(data);
         if (sprite instanceof PropertySprite) {
             Material spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, null, data);
             sprite = bakedTextureGetter.apply(spriteLocation);
@@ -187,18 +187,19 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
         }
 
         @Override
-        public ImmutableList<ItemOverride> getOverrides() {
+        public com.google.common.collect.ImmutableList<BakedOverride> getOverrides() {
             return wrappedOverrideList.getOverrides();
         }
 
+        @Nullable
         @Override
-        public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity entityIn) {
+        public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity entityIn, int seed) {
             // If the item has a texture mapper, use it.
             Item item = stack.getItem();
             if (item instanceof IItemStackTextureMapperProvider) {
                 return new TexturedBakedModel<>(model, bakedTextureGetter, ((IItemStackTextureMapperProvider) item).getTextureMapper(stack));
             }
-            return wrappedOverrideList.resolve(model, stack, worldIn, entityIn);
+            return wrappedOverrideList.resolve(model, stack, worldIn, entityIn, seed);
         }
     }
 }

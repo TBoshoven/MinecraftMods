@@ -155,9 +155,10 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
         builder.add(PART, HORIZONTAL_FACING);
     }
 
+    @Nullable
     @Override
-    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-        return new MagicDoorTileEntity();
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new MagicDoorTileEntity(pos, state);
     }
 
     @SuppressWarnings("deprecation")

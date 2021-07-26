@@ -11,6 +11,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,16 +25,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class MagicDoorwayPartBaseBlock extends Block {
+public abstract class MagicDoorwayPartBaseBlock extends Block implements EntityBlock {
     MagicDoorwayPartBaseBlock(Block.Properties properties) {
         super(properties);
     }
 
-    @Override
-    public boolean addDestroyEffects(BlockState state, Level world, BlockPos pos, ParticleEngine manager) {
-        // Skip all block breaking textures
-        return true;
-    }
+    // TODO
+//    @Override
+//    public boolean addDestroyEffects(BlockState state, Level world, BlockPos pos, ParticleEngine manager) {
+//        // Skip all block breaking textures
+//        return true;
+//    }
 
     @Override
     public SoundType getSoundType(BlockState state, LevelReader world, BlockPos pos, @Nullable Entity entity) {
@@ -47,13 +49,13 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
     }
 
     @Override
-    public int getLightValue(BlockState state, BlockGetter world, BlockPos pos) {
+    public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
         // Use the base block's light value.
         BlockEntity tileEntity = world.getBlockEntity(pos);
         if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
-            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getLightValue(world, pos);
+            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getLightEmission(world, pos);
         }
-        return super.getLightValue(state, world, pos);
+        return super.getLightEmission(state, world, pos);
     }
 
     @SuppressWarnings("deprecation")
@@ -68,13 +70,13 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
     }
 
     @Override
-    public float getSlipperiness(BlockState state, LevelReader world, BlockPos pos, @Nullable Entity entity) {
+    public float getFriction(BlockState state, LevelReader world, BlockPos pos, @Nullable Entity entity) {
         // Use the base block's slipperiness.
         BlockEntity tileEntity = world.getBlockEntity(pos);
         if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
-            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getSlipperiness(world, pos, entity);
+            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getFriction(world, pos, entity);
         }
-        return super.getSlipperiness(state, world, pos, entity);
+        return super.getFriction(state, world, pos, entity);
     }
 
     @SuppressWarnings("deprecation")
@@ -101,11 +103,6 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
         // We don't have information about the base block here.
         // We allow breaking with any tool.
         return null;
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
     }
 
     /**

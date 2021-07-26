@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
@@ -52,8 +53,8 @@ public abstract class MagicDoorwayPartBaseTileEntity extends BlockEntity {
     // The doorknob that caused this block to be created.
     private MagicDoorknobItem doorknob;
 
-    MagicDoorwayPartBaseTileEntity(BlockEntityType<? extends MagicDoorwayPartBaseTileEntity> tileEntityType) {
-        super(tileEntityType);
+    MagicDoorwayPartBaseTileEntity(BlockEntityType<? extends MagicDoorwayPartBaseTileEntity> tileEntityType, BlockPos pos, BlockState state) {
+        super(tileEntityType, pos, state);
     }
 
     @Override
@@ -74,8 +75,8 @@ public abstract class MagicDoorwayPartBaseTileEntity extends BlockEntity {
     }
 
     @Override
-    public void load(BlockState state, CompoundTag compound) {
-        super.load(state, compound);
+    public void load(CompoundTag compound) {
+        super.load(compound);
         readInternal(compound);
     }
 

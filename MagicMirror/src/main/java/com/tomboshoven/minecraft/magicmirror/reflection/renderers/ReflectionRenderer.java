@@ -57,20 +57,15 @@ public class ReflectionRenderer extends ReflectionRendererBase {
     @Override
     public void setUp() {
         // Re-initialize the projection matrix to keep full control over the perspective
-        RenderSystem.matrixMode(GL_PROJECTION);
-        RenderSystem.pushMatrix();
-        RenderSystem.loadIdentity();
+        RenderSystem.backupProjectionMatrix();
         // Aspect is .5 to compensate for the rectangular mirror
-        RenderSystem.multMatrix(Matrix4f.perspective(90f, .5f, .05f, 50f));
-        RenderSystem.matrixMode(GL_MODELVIEW);
+        RenderSystem.setProjectionMatrix(Matrix4f.perspective(90f, .5f, .05f, 50f));
     }
 
     @Override
     public void tearDown() {
         // Simply pop the projection matrix
-        RenderSystem.matrixMode(GL_PROJECTION);
-        RenderSystem.popMatrix();
-        RenderSystem.matrixMode(GL_MODELVIEW);
+        RenderSystem.restoreProjectionMatrix();
     }
 
     @Override

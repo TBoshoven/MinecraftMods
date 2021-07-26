@@ -93,7 +93,7 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
     @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (newState.isAir(worldIn, pos)) {
+        if (newState.isAir()) {
             // When this block is destroyed (manually or by closing the door), replace it by its base block.
             BlockEntity tileEntity = worldIn.getBlockEntity(pos);
             if (tileEntity instanceof MagicDoorwayTileEntity) {
@@ -111,7 +111,7 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
 
     @Nullable
     @Override
-    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-        return new MagicDoorwayTileEntity();
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new MagicDoorwayTileEntity(pos, state);
     }
 }
