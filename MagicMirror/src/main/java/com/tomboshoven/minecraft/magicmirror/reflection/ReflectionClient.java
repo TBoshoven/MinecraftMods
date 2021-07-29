@@ -2,13 +2,17 @@ package com.tomboshoven.minecraft.magicmirror.reflection;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRenderer;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,6 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_COLOR_TEX;
 import static net.minecraft.client.Minecraft.ON_OSX;
 
 /**
@@ -48,8 +53,52 @@ public class ReflectionClient extends Reflection {
 
     private final RenderType renderType;
 
+    /**
+     * Texture state shard for the reflection.
+     *
+     * This is a custom one that enables texturing, but doesn't actually bind any textures.
+     * The texture binding is done in the transparency state, because that's where failure is handled.
+     */
+    private static class TextureState extends RenderStateShard.EmptyTextureStateShard {
+        public TextureState() {
+            // Textures will be set later
+            super(RenderSystem::enableTexture, () -> {});
+        }
+    }
+
+    private class TransparencyState extends RenderStateShard.TransparencyStateShard {
+        public TransparencyState() {
+            super("reflection_transparency", () -> {
+                RenderSystem.enableBlend();
+
+                if(ReflectionClient.this.bind()) {
+                    RenderSystem.defaultBlendFunc();
+                }
+                else {
+                    // If we couldn't bind the texture, just render nothing
+                    RenderSystem.blendFuncSeparate(SourceFactor.ZERO, DestFactor.ONE, SourceFactor.ZERO, DestFactor.ONE);
+                }
+            }, () -> {
+                Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
+                RenderSystem.disableBlend();
+                RenderSystem.defaultBlendFunc();
+            });
+        }
+    }
+
     public ReflectionClient() {
-        renderType = new ReflectionRenderType(this);
+        renderType = RenderType.create(
+                String.format("reflection[%d]", hashCode()),
+                POSITION_COLOR_TEX,
+                VertexFormat.Mode.QUADS,
+                64,
+                true,
+                true,
+                RenderType.CompositeState.builder()
+                        .setTextureState(new TextureState())
+                        .setTransparencyState(new TransparencyState())
+                        .createCompositeState(true)
+        );
     }
 
     @Override
