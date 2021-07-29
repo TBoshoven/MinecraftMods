@@ -13,6 +13,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
@@ -35,6 +36,10 @@ class TileEntityMagicMirrorRenderer implements BlockEntityRenderer<MagicMirrorBa
      */
     private static final double MAX_HORIZONTAL_DISTANCE_SQ = 8 * 8;
     private static final double MAX_VERTICAL_DISTANCE_SQ = 3 * 3;
+
+    TileEntityMagicMirrorRenderer(BlockEntityRendererProvider.Context context) {
+        super();
+    }
 
     @Override
     public void render(MagicMirrorBaseTileEntity tileEntityIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
