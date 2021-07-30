@@ -24,7 +24,7 @@ class PropertySprite extends TextureAtlasSprite {
     private final ResourceLocation name;
 
     private static final TextureAtlas ATLAS_TEXTURE = new TextureAtlas(new ResourceLocation(MagicDoorknobMod.MOD_ID, "property_texture_atlas"));
-    private static final NativeImage NATIVE_IMAGE = new NativeImage(0, 0, false);
+    private static final NativeImage NATIVE_IMAGE = new NativeImage(1, 1, false);
 
     /**
      * @param name The location of the property
