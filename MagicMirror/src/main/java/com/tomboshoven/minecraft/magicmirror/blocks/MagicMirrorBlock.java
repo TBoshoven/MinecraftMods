@@ -236,8 +236,8 @@ public class MagicMirrorBlock extends HorizontalDirectionalBlock implements Enti
                 if (reflectionUpdateCounter++ == REFLECTION_UPDATE_INTERVAL) {
                     reflectionUpdateCounter = 0;
                     mirrorEntity.updateReflection();
-                    mirrorEntity.coolDown();
                 }
+                mirrorEntity.coolDown();
             }
         };
     }

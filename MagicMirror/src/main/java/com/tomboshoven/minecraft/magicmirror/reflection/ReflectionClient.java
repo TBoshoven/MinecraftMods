@@ -11,6 +11,7 @@ import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRend
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -53,38 +54,37 @@ public class ReflectionClient extends Reflection {
 
     private final RenderType renderType;
 
+    RenderStateShard.ShaderStateShard SHADER_STATE_SHARD = new RenderStateShard.ShaderStateShard(GameRenderer::getBlockShader);
+
     /**
      * Texture state shard for the reflection.
-     *
-     * This is a custom one that enables texturing, but doesn't actually bind any textures.
-     * The texture binding is done in the transparency state, because that's where failure is handled.
      */
-    private static class TextureState extends RenderStateShard.EmptyTextureStateShard {
-        public TextureState() {
-            // Textures will be set later
-            super(RenderSystem::enableTexture, () -> {});
+    RenderStateShard.EmptyTextureStateShard TEXTURE_STATE_SHARD = new RenderStateShard.EmptyTextureStateShard(() -> {
+        if (frameBuffer != null) {
+            RenderSystem.enableTexture();
+            RenderSystem.setShaderTexture(0, frameBuffer.getColorTextureId());
         }
-    }
+    }, () -> {});
 
-    private class TransparencyState extends RenderStateShard.TransparencyStateShard {
-        public TransparencyState() {
-            super("reflection_transparency", () -> {
+    /**
+     * Transparency state shard for the reflection.
+     */
+    RenderStateShard.TransparencyStateShard TRANSPARENCY_STATE_SHARD = new RenderStateShard.TransparencyStateShard(
+            "reflection_transparency",
+            () -> {
                 RenderSystem.enableBlend();
 
-                if(ReflectionClient.this.bind()) {
+                if(frameBuffer != null) {
                     RenderSystem.defaultBlendFunc();
                 }
                 else {
-                    // If we couldn't bind the texture, just render nothing
+                    // If we don't have a texture, just render nothing
                     RenderSystem.blendFuncSeparate(SourceFactor.ZERO, DestFactor.ONE, SourceFactor.ZERO, DestFactor.ONE);
                 }
             }, () -> {
-                Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
-                RenderSystem.disableBlend();
                 RenderSystem.defaultBlendFunc();
+                RenderSystem.disableBlend();
             });
-        }
-    }
 
     public ReflectionClient() {
         renderType = RenderType.create(
@@ -95,8 +95,9 @@ public class ReflectionClient extends Reflection {
                 true,
                 true,
                 RenderType.CompositeState.builder()
-                        .setTextureState(new TextureState())
-                        .setTransparencyState(new TransparencyState())
+                        .setShaderState(SHADER_STATE_SHARD)
+                        .setTextureState(TEXTURE_STATE_SHARD)
+                        .setTransparencyState(TRANSPARENCY_STATE_SHARD)
                         .createCompositeState(true)
         );
     }
@@ -151,7 +152,7 @@ public class ReflectionClient extends Reflection {
     public void render(float partialTicks) {
         super.render(partialTicks);
 
-        // Create or destroy the framebuffer if needed
+        // Create or destroy the frame buffer if needed
         if (reflectedEntity != null && frameBuffer == null) {
             buildFrameBuffer();
         } else if (reflectedEntity == null && frameBuffer != null) {
@@ -179,21 +180,5 @@ public class ReflectionClient extends Reflection {
 
     public RenderType getRenderType() {
         return renderType;
-    }
-
-    /**
-     * Bind the reflection texture, if it's there.
-     *
-     * @return Whether the texture was successfully bound.
-     */
-    boolean bind() {
-        if (frameBuffer != null) {
-            frameBuffer.bindRead();
-            return true;
-        }
-        else {
-            RenderSystem.bindTexture(0);
-            return false;
-        }
     }
 }
