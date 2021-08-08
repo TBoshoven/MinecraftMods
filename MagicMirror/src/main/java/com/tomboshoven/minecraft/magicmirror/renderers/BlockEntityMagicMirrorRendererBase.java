@@ -24,10 +24,10 @@ public abstract class BlockEntityMagicMirrorRendererBase {
     /**
      * Render a reflection.
      *
-     * @param reflection The reflection to render.
-     * @param pos The block position to render to.
-     * @param facing The direction the reflection faces in.
-     * @param poseStack The pose stack to use for rendering.
+     * @param reflection        The reflection to render.
+     * @param pos               The block position to render to.
+     * @param facing            The direction the reflection faces in.
+     * @param poseStack         The pose stack to use for rendering.
      * @param multiBufferSource The buffer source to use for rendering.
      */
     public void render(Reflection reflection, BlockPos pos, Direction facing, PoseStack poseStack, MultiBufferSource multiBufferSource) {

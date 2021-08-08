@@ -60,7 +60,7 @@ class OffModelPlayerRenderer<T extends LivingEntity, M extends EntityModel<T>> e
         }
         if (model instanceof PlayerModel) {
             //noinspection unchecked,rawtypes
-            addLayer(new ArrowLayer(renderContext,this));
+            addLayer(new ArrowLayer(renderContext, this));
             //noinspection unchecked,rawtypes
             addLayer(new ParrotOnShoulderLayer(this, renderContext.getModelSet()));
             //noinspection unchecked,rawtypes

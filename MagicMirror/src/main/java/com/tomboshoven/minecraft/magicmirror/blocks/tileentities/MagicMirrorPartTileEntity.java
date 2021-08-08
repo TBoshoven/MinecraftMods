@@ -30,7 +30,7 @@ public class MagicMirrorPartTileEntity extends BlockEntity {
         Block block = getBlockState().getBlock();
         Level level = getLevel();
         if (level != null && block instanceof MagicMirrorActiveBlock) {
-            return ((MagicMirrorActiveBlock)block).getCoreBlockEntity(getLevel(), getBlockPos());
+            return ((MagicMirrorActiveBlock) block).getCoreBlockEntity(getLevel(), getBlockPos());
         }
         return null;
     }

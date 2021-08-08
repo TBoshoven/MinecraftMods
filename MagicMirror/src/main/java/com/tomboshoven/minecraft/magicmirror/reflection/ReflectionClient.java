@@ -64,7 +64,8 @@ public class ReflectionClient extends Reflection {
             RenderSystem.enableTexture();
             RenderSystem.setShaderTexture(0, frameBuffer.getColorTextureId());
         }
-    }, () -> {});
+    }, () -> {
+    });
 
     /**
      * Transparency state shard for the reflection.
@@ -74,17 +75,16 @@ public class ReflectionClient extends Reflection {
             () -> {
                 RenderSystem.enableBlend();
 
-                if(frameBuffer != null) {
+                if (frameBuffer != null) {
                     RenderSystem.defaultBlendFunc();
-                }
-                else {
+                } else {
                     // If we don't have a texture, just render nothing
                     RenderSystem.blendFuncSeparate(SourceFactor.ZERO, DestFactor.ONE, SourceFactor.ZERO, DestFactor.ONE);
                 }
             }, () -> {
-                RenderSystem.defaultBlendFunc();
-                RenderSystem.disableBlend();
-            });
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableBlend();
+    });
 
     public ReflectionClient() {
         renderType = RenderType.create(

@@ -24,7 +24,7 @@ public final class ReflectionClientUpdater {
     @SubscribeEvent
     public static void renderReflections(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START && !Minecraft.getInstance().noRender) {
-            for(Reflection reflection : toRerender) {
+            for (Reflection reflection : toRerender) {
                 reflection.render(event.renderTickTime);
             }
             // Restore the regular frame buffer

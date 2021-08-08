@@ -135,9 +135,8 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
      * This should be called on the server side.
      *
      * @param tileEntity The mirror tile entity.
-     * @param playerIn The player entity holding the armor.
-     * @param hand Which hand the player is holding the item in.
-     *
+     * @param playerIn   The player entity holding the armor.
+     * @param hand       Which hand the player is holding the item in.
      * @return Whether the held item was successfully equipped as armor.
      */
     private boolean tryEquipArmor(MagicMirrorCoreTileEntity tileEntity, Player playerIn, InteractionHand hand) {
@@ -171,7 +170,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
      * This should be called on the server side.
      *
      * @param tileEntity The mirror tile entity.
-     * @param playerIn The player entity to swap armor with.
+     * @param playerIn   The player entity to swap armor with.
      */
     private void swapArmor(MagicMirrorCoreTileEntity tileEntity, Player playerIn) {
         // Send two individual messages, to cover the situation where a player is tracked but the mirror isn't and vice

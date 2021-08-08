@@ -41,8 +41,7 @@ public class MagicMirrorBlockItem extends BlockItem {
         BlockState blockBelow = level.getBlockState(targetPos.below());
         if (blockBelow.getBlock() == Blocks.MAGIC_MIRROR_INACTIVE.get() && blockBelow.getValue(HorizontalDirectionalBlock.FACING) == targetFacing) {
             block = Blocks.MAGIC_MIRROR_PART.get();
-        }
-        else if (blockAbove.getBlock() == Blocks.MAGIC_MIRROR_INACTIVE.get() && blockAbove.getValue(HorizontalDirectionalBlock.FACING) == targetFacing) {
+        } else if (blockAbove.getBlock() == Blocks.MAGIC_MIRROR_INACTIVE.get() && blockAbove.getValue(HorizontalDirectionalBlock.FACING) == targetFacing) {
             block = Blocks.MAGIC_MIRROR_CORE.get();
         }
         return block.getStateForPlacement(context);
@@ -55,12 +54,11 @@ public class MagicMirrorBlockItem extends BlockItem {
         Block block = state.getBlock();
         Direction facing = state.getValue(HorizontalDirectionalBlock.FACING);
         if (block == Blocks.MAGIC_MIRROR_CORE.get()) {
-            if(!level.setBlockAndUpdate(context.getClickedPos().above(), Blocks.MAGIC_MIRROR_PART.get().defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, facing))) {
+            if (!level.setBlockAndUpdate(context.getClickedPos().above(), Blocks.MAGIC_MIRROR_PART.get().defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, facing))) {
                 return false;
             }
-        }
-        else if (block == Blocks.MAGIC_MIRROR_PART.get()) {
-            if(!level.setBlockAndUpdate(context.getClickedPos().below(), Blocks.MAGIC_MIRROR_CORE.get().defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, facing))) {
+        } else if (block == Blocks.MAGIC_MIRROR_PART.get()) {
+            if (!level.setBlockAndUpdate(context.getClickedPos().below(), Blocks.MAGIC_MIRROR_CORE.get().defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, facing))) {
                 return false;
             }
         }

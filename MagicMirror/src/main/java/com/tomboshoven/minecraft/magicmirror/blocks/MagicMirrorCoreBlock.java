@@ -89,7 +89,7 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
 
             @Override
             public void tick(Level world, BlockPos pos, BlockState state, T entity) {
-                MagicMirrorCoreTileEntity mirrorEntity = (MagicMirrorCoreTileEntity)entity;
+                MagicMirrorCoreTileEntity mirrorEntity = (MagicMirrorCoreTileEntity) entity;
                 if (reflectionUpdateCounter++ == REFLECTION_UPDATE_INTERVAL) {
                     reflectionUpdateCounter = 0;
                     mirrorEntity.updateReflection();
