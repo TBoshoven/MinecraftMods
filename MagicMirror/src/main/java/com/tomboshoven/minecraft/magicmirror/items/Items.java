@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicmirror.items;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -27,8 +26,8 @@ public final class Items {
      * The item version of the magic mirror block.
      */
     public static final RegistryObject<Item> MAGIC_MIRROR =
-            ITEMS.register("magic_mirror", () -> new BlockItem(
-                    Blocks.MAGIC_MIRROR.get(),
+            ITEMS.register("magic_mirror", () -> new MagicMirrorBlockItem(
+                    Blocks.MAGIC_MIRROR_INACTIVE.get(),
                     new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)
             ));
 

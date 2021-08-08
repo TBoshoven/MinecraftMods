@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -75,14 +75,14 @@ public abstract class MagicMirrorTileEntityModifier {
      *
      * @param tileEntity The tile entity that is being modified.
      */
-    public abstract void activate(MagicMirrorBaseTileEntity tileEntity);
+    public abstract void activate(MagicMirrorCoreTileEntity tileEntity);
 
     /**
      * Called when the modifier is detached from the tile entity.
      *
      * @param tileEntity The tile entity that is being modified.
      */
-    public abstract void deactivate(MagicMirrorBaseTileEntity tileEntity);
+    public abstract void deactivate(MagicMirrorCoreTileEntity tileEntity);
 
     /**
      * Called when the player activates a magic mirror that is modified by this modifier.
@@ -92,7 +92,7 @@ public abstract class MagicMirrorTileEntityModifier {
      * @param hand       The hand that the player is using to activate the magic mirror.
      * @return Whether it was activated. If true, no other modifiers are evaluated.
      */
-    public abstract boolean tryPlayerActivate(MagicMirrorBaseTileEntity tileEntity, Player playerIn, InteractionHand hand);
+    public abstract boolean tryPlayerActivate(MagicMirrorCoreTileEntity tileEntity, Player playerIn, InteractionHand hand);
 
     /**
      * When the modifier is used, this can be used to easily cool down, so it can't be activated all the time.

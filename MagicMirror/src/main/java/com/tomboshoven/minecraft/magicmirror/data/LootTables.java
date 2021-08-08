@@ -4,11 +4,13 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
+import com.tomboshoven.minecraft.magicmirror.items.Items;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.ValidationContext;
@@ -44,12 +46,17 @@ class LootTables extends LootTableProvider {
     private static class BlockTables extends BlockLoot {
         @Override
         protected void addTables() {
-            dropSelf(Blocks.MAGIC_MIRROR.get());
+            Item item = Items.MAGIC_MIRROR.get();
+            dropOther(Blocks.MAGIC_MIRROR_CORE.get(), item);
+            dropOther(Blocks.MAGIC_MIRROR_PART.get(), item);
+            dropOther(Blocks.MAGIC_MIRROR_INACTIVE.get(), item);
         }
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
-            return Stream.of(Blocks.MAGIC_MIRROR.get())::iterator;
+            return Stream.of(
+                    Blocks.MAGIC_MIRROR_CORE, Blocks.MAGIC_MIRROR_PART, Blocks.MAGIC_MIRROR_INACTIVE
+            ).map(Supplier::get)::iterator;
         }
     }
 

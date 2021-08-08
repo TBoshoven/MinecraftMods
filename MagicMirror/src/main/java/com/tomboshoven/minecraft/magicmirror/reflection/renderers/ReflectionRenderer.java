@@ -12,9 +12,6 @@ import net.minecraft.world.entity.Entity;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
-import static org.lwjgl.opengl.GL11.GL_PROJECTION;
-
 /**
  * Renderer for reflections in the mirror.
  */

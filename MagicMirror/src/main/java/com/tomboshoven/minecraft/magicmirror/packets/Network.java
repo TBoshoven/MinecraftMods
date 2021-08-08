@@ -1,8 +1,8 @@
 package com.tomboshoven.minecraft.magicmirror.packets;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
-import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock;
-import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.MessageAttachModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorCoreBlock;
+import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorCoreBlock.MessageAttachModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier.MessageEquip;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier.MessageSwapMirror;
@@ -41,6 +41,6 @@ public final class Network {
         CHANNEL.registerMessage(id++, MessageEquip.class, MessageEquip::encode, MessageEquip::decode, ArmorMagicMirrorTileEntityModifier::onMessageEquip);
         CHANNEL.registerMessage(id++, MessageSwapMirror.class, MessageSwapMirror::encode, MessageSwapMirror::decode, ArmorMagicMirrorTileEntityModifier::onMessageSwapMirror);
         CHANNEL.registerMessage(id++, MessageSwapPlayer.class, MessageSwapPlayer::encode, MessageSwapPlayer::decode, ArmorMagicMirrorTileEntityModifier::onMessageSwapPlayer);
-        CHANNEL.registerMessage(id++, MessageAttachModifier.class, MessageAttachModifier::encode, MessageAttachModifier::decode, MagicMirrorBlock::onMessageAttachModifier);
+        CHANNEL.registerMessage(id++, MessageAttachModifier.class, MessageAttachModifier::encode, MessageAttachModifier::decode, MagicMirrorCoreBlock::onMessageAttachModifier);
     }
 }

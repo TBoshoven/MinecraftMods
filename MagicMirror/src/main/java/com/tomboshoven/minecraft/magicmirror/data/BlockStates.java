@@ -2,7 +2,7 @@ package com.tomboshoven.minecraft.magicmirror.data;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
-import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock;
+import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorInactiveBlock;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -24,15 +24,28 @@ class BlockStates extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         ModelFile mirrorModel = models().getExistingFile(modLoc("block/magic_mirror"));
-        getVariantBuilder(Blocks.MAGIC_MIRROR.get())
+        getVariantBuilder(Blocks.MAGIC_MIRROR_INACTIVE.get())
                 .forAllStates(state -> {
-                            int rotation = state.getValue(MagicMirrorBlock.PART) == MagicMirrorBlock.EnumPartType.TOP ? 180 : 0;
+                            int rotation = state.getValue(MagicMirrorInactiveBlock.PART) == MagicMirrorInactiveBlock.EnumPartType.TOP ? 180 : 0;
                             return ConfiguredModel.builder()
                                     .modelFile(mirrorModel)
                                     .rotationX(rotation)
                                     .rotationY(((int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + rotation) % 360)
                                     .build();
                         }
+                );
+        getVariantBuilder(Blocks.MAGIC_MIRROR_CORE.get())
+                .forAllStates(state -> ConfiguredModel.builder()
+                        .modelFile(mirrorModel)
+                        .rotationY(((int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot()) % 360)
+                        .build()
+                );
+        getVariantBuilder(Blocks.MAGIC_MIRROR_PART.get())
+                .forAllStates(state -> ConfiguredModel.builder()
+                        .modelFile(mirrorModel)
+                        .rotationX(180)
+                        .rotationY(((int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + 180) % 360)
+                        .build()
                 );
     }
 

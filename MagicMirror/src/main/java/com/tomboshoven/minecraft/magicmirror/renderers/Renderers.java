@@ -40,8 +40,8 @@ public final class Renderers {
     }
 
     private static void registerRenderers(ModelRegistryEvent event) {
-        BlockEntityRenderers.register(TileEntities.MAGIC_MIRROR_CORE.get(), TileEntityMagicMirrorRenderer::new);
-        BlockEntityRenderers.register(TileEntities.MAGIC_MIRROR_PART.get(), TileEntityMagicMirrorRenderer::new);
+        BlockEntityRenderers.register(TileEntities.MAGIC_MIRROR_CORE.get(), BlockEntityMagicMirrorCoreRenderer::new);
+        BlockEntityRenderers.register(TileEntities.MAGIC_MIRROR_PART.get(), BlockEntityMagicMirrorPartRenderer::new);
 
         EntityRenderers.register(REFLECTION_ENTITY_TYPE, REFLECTION_ENTITY_RENDERER_PROVIDER);
     }

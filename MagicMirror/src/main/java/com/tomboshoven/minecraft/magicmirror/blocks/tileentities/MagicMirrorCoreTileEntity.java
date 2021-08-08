@@ -17,9 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.EntityGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.TickingBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
@@ -41,7 +38,7 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity {
+public class MagicMirrorCoreTileEntity extends BlockEntity {
     /**
      * The list of all modifiers to the mirror.
      */
@@ -86,12 +83,6 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity {
             return null;
         }
         return Collections.min(players, Comparator.comparingDouble(player -> ownPosition.distSqr(player.getX(), player.getY(), player.getZ(), true)));
-    }
-
-    @Nullable
-    @Override
-    protected MagicMirrorCoreTileEntity getCore() {
-        return this;
     }
 
     /**
@@ -178,30 +169,51 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity {
         }
     }
 
+    /**
+     * @return The reflection in the mirror.
+     */
     @Nullable
-    @Override
     public Reflection getReflection() {
         return reflection;
     }
 
-    @Override
+    /**
+     * @return A list of all the current modifiers of the mirror.
+     */
     public List<MagicMirrorTileEntityModifier> getModifiers() {
         return Collections.unmodifiableList(modifiers);
     }
 
-    @Override
+    /**
+     * Called when a player uses the magic mirror..
+     *
+     * @param playerIn The player that activated the mirror.
+     * @param hand     The hand used by the player to activate the mirror.
+     * @return Whether activation was successful.
+     */
     public boolean tryActivate(Player playerIn, InteractionHand hand) {
         return modifiers.stream().anyMatch(modifier -> modifier.tryPlayerActivate(this, playerIn, hand));
     }
 
-    @Override
+    /**
+     * Add a modifier to the mirror.
+     *
+     * @param modifier The modifier to add. Must be verified to be applicable.
+     */
     public void addModifier(MagicMirrorTileEntityModifier modifier) {
         modifiers.add(modifier);
         modifier.activate(this);
         setChanged();
     }
 
-    @Override
+    /**
+     * Remove all modifiers from the tile entity.
+     * This is used when the block is destroyed, and may have side effects such as spawning item entities into the
+     * world.
+     *
+     * @param worldIn The world containing the removed block.
+     * @param pos     The position of the block that was removed.
+     */
     public void removeModifiers(Level worldIn, BlockPos pos) {
         for (MagicMirrorTileEntityModifier modifier : modifiers) {
             modifier.deactivate(this);

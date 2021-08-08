@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
 import com.google.common.collect.Maps;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -66,10 +66,10 @@ public abstract class MagicMirrorModifier {
      * @return The tile entity, or null if it does not exist or is not a magic mirror tile entity.
      */
     @Nullable
-    private static MagicMirrorBaseTileEntity getMagicMirrorTileEntity(BlockGetter worldIn, BlockPos pos) {
+    private static MagicMirrorCoreTileEntity getMagicMirrorTileEntity(BlockGetter worldIn, BlockPos pos) {
         BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-        if (tileEntity instanceof MagicMirrorBaseTileEntity) {
-            return (MagicMirrorBaseTileEntity) tileEntity;
+        if (tileEntity instanceof MagicMirrorCoreTileEntity) {
+            return (MagicMirrorCoreTileEntity) tileEntity;
         }
         return null;
     }
@@ -83,7 +83,7 @@ public abstract class MagicMirrorModifier {
      * @return Whether the mirror at the given position has the given modifier.
      */
     private static boolean hasModifierOfType(BlockGetter world, BlockPos pos, MagicMirrorModifier modifier) {
-        MagicMirrorBaseTileEntity magicMirrorTileEntity = getMagicMirrorTileEntity(world, pos);
+        MagicMirrorCoreTileEntity magicMirrorTileEntity = getMagicMirrorTileEntity(world, pos);
         if (magicMirrorTileEntity == null) {
             return false;
         }
@@ -117,7 +117,7 @@ public abstract class MagicMirrorModifier {
      * @param heldItem The item used on the block.
      */
     public void apply(BlockGetter worldIn, BlockPos pos, ItemStack heldItem) {
-        MagicMirrorBaseTileEntity magicMirrorTileEntity = getMagicMirrorTileEntity(worldIn, pos);
+        MagicMirrorCoreTileEntity magicMirrorTileEntity = getMagicMirrorTileEntity(worldIn, pos);
         if (magicMirrorTileEntity == null) {
             return;
         }
@@ -132,7 +132,7 @@ public abstract class MagicMirrorModifier {
      * @param tileEntity The magic mirror tile entity to apply the modifier to.
      * @param heldItem   The item used on the block.
      */
-    private void apply(MagicMirrorBaseTileEntity tileEntity, ItemStack heldItem) {
+    private void apply(MagicMirrorCoreTileEntity tileEntity, ItemStack heldItem) {
         tileEntity.addModifier(createTileEntityModifier(heldItem));
         heldItem.shrink(1);
     }
@@ -143,7 +143,7 @@ public abstract class MagicMirrorModifier {
      * @param tileEntity The magic mirror tile entity to apply the modifier to.
      * @param nbt        The NBT tag to use for the modifier.
      */
-    public void apply(MagicMirrorBaseTileEntity tileEntity, CompoundTag nbt) {
+    public void apply(MagicMirrorCoreTileEntity tileEntity, CompoundTag nbt) {
         MagicMirrorTileEntityModifier magicMirrorTileEntityModifier = createTileEntityModifier(nbt);
         tileEntity.addModifier(magicMirrorTileEntityModifier);
     }

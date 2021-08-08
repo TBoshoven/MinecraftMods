@@ -2,7 +2,7 @@ package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
 
 import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.BannerReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.BannerReflectionModifierClient;
@@ -104,7 +104,7 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
     }
 
     @Override
-    public void activate(MagicMirrorBaseTileEntity tileEntity) {
+    public void activate(MagicMirrorCoreTileEntity tileEntity) {
         Reflection reflection = tileEntity.getReflection();
         if (reflection != null) {
             List<Pair<BannerPattern, DyeColor>> patternList = Lists.newArrayList();
@@ -138,7 +138,7 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
     }
 
     @Override
-    public void deactivate(MagicMirrorBaseTileEntity tileEntity) {
+    public void deactivate(MagicMirrorCoreTileEntity tileEntity) {
         if (reflectionModifier != null) {
             Reflection reflection = tileEntity.getReflection();
             if (reflection != null) {
@@ -148,7 +148,7 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
     }
 
     @Override
-    public boolean tryPlayerActivate(MagicMirrorBaseTileEntity tileEntity, Player playerIn, InteractionHand hand) {
+    public boolean tryPlayerActivate(MagicMirrorCoreTileEntity tileEntity, Player playerIn, InteractionHand hand) {
         // No activation behavior
         return false;
     }
