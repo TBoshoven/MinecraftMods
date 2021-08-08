@@ -53,16 +53,13 @@ class BlockStates extends BlockStateProvider {
                     if (openEastWest) {
                         if (openNorthSouth) {
                             builder = builder.modelFile(part == TOP ? doorwayOpenTop : doorwayOpenBottom);
-                        }
-                        else {
+                        } else {
                             builder = builder.modelFile(part == TOP ? doorwayHalfOpenTop : doorwayHalfOpenBottom);
                         }
-                    }
-                    else {
+                    } else {
                         if (openNorthSouth) {
                             builder = builder.modelFile(part == TOP ? doorwayHalfOpenTop : doorwayHalfOpenBottom).rotationY(90);
-                        }
-                        else {
+                        } else {
                             builder = builder.modelFile(part == TOP ? doorwayClosedTop : doorwayClosedBottom);
                         }
                     }

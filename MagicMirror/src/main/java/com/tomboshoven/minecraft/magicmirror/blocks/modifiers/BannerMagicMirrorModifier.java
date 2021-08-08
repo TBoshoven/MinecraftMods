@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.BannerMagicMirrorTileEntityModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.BannerMagicMirrorBlockEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -36,14 +36,14 @@ public class BannerMagicMirrorModifier extends MagicMirrorModifier {
     }
 
     @Override
-    MagicMirrorTileEntityModifier createTileEntityModifier(CompoundTag nbt) {
-        MagicMirrorTileEntityModifier teModifier = new BannerMagicMirrorTileEntityModifier(this);
+    MagicMirrorBlockEntityModifier createBlockEntityModifier(CompoundTag nbt) {
+        MagicMirrorBlockEntityModifier teModifier = new BannerMagicMirrorBlockEntityModifier(this);
         teModifier.read(nbt);
         return teModifier;
     }
 
     @Override
-    MagicMirrorTileEntityModifier createTileEntityModifier(ItemStack usedItem) {
+    MagicMirrorBlockEntityModifier createBlockEntityModifier(ItemStack usedItem) {
         Item bannerType = usedItem.getItem();
         DyeColor bannerColor = bannerType instanceof BannerItem ? ((BannerItem) bannerType).getColor() : DyeColor.BLACK;
         CompoundTag bannerTag = usedItem.getTag();
@@ -51,6 +51,6 @@ public class BannerMagicMirrorModifier extends MagicMirrorModifier {
             // Get the block tag instead of the item stack tag
             bannerTag = bannerTag.getCompound("BlockEntityTag");
         }
-        return new BannerMagicMirrorTileEntityModifier(this, bannerColor, bannerTag, usedItem.hasCustomHoverName() ? usedItem.getHoverName() : null);
+        return new BannerMagicMirrorBlockEntityModifier(this, bannerColor, bannerTag, usedItem.hasCustomHoverName() ? usedItem.getHoverName() : null);
     }
 }

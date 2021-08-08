@@ -1,9 +1,9 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.BlockEntities;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntities;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -53,14 +53,14 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new MagicMirrorCoreTileEntity(pos, state);
+        return new MagicMirrorCoreBlockEntity(pos, state);
     }
 
     @Override
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-        if (tileEntity instanceof MagicMirrorCoreTileEntity) {
-            ((MagicMirrorCoreTileEntity) tileEntity).removeModifiers(worldIn, pos);
+        BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+        if (blockEntity instanceof MagicMirrorCoreBlockEntity) {
+            ((MagicMirrorCoreBlockEntity) blockEntity).removeModifiers(worldIn, pos);
         }
 
         // Change the other part to incomplete
@@ -80,7 +80,7 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> blockEntityType) {
-        if (blockEntityType != TileEntities.MAGIC_MIRROR_CORE.get()) {
+        if (blockEntityType != BlockEntities.MAGIC_MIRROR_CORE.get()) {
             return null;
         }
         return new BlockEntityTicker<>() {
@@ -89,7 +89,7 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
 
             @Override
             public void tick(Level world, BlockPos pos, BlockState state, T entity) {
-                MagicMirrorCoreTileEntity mirrorEntity = (MagicMirrorCoreTileEntity) entity;
+                MagicMirrorCoreBlockEntity mirrorEntity = (MagicMirrorCoreBlockEntity) entity;
                 if (reflectionUpdateCounter++ == REFLECTION_UPDATE_INTERVAL) {
                     reflectionUpdateCounter = 0;
                     mirrorEntity.updateReflection();
@@ -167,7 +167,7 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
                 BlockEntity te = world.getBlockEntity(message.mirrorPos);
-                if (te instanceof MagicMirrorCoreTileEntity) {
+                if (te instanceof MagicMirrorCoreBlockEntity) {
                     MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
                     if (modifier == null) {
                         MagicMirrorMod.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);

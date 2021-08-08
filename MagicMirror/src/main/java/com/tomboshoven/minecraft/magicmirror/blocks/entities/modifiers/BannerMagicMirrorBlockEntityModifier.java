@@ -1,8 +1,8 @@
-package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
+package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
 import com.google.common.collect.Lists;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.BannerReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.BannerReflectionModifierClient;
@@ -33,7 +33,7 @@ import java.util.Optional;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityModifier {
+public class BannerMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntityModifier {
     /**
      * The initial color of the banner (before any patterns are applied)
      */
@@ -54,11 +54,11 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
     @Nullable
     private BannerReflectionModifier reflectionModifier;
 
-    public BannerMagicMirrorTileEntityModifier(MagicMirrorModifier modifier) {
+    public BannerMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier) {
         super(modifier);
     }
 
-    public BannerMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, DyeColor baseColor, @Nullable CompoundTag bannerNBT, @Nullable Component name) {
+    public BannerMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, DyeColor baseColor, @Nullable CompoundTag bannerNBT, @Nullable Component name) {
         super(modifier);
         this.baseColor = baseColor;
         this.bannerNBT = bannerNBT != null ? bannerNBT.copy() : null;
@@ -104,8 +104,8 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
     }
 
     @Override
-    public void activate(MagicMirrorCoreTileEntity tileEntity) {
-        Reflection reflection = tileEntity.getReflection();
+    public void activate(MagicMirrorCoreBlockEntity blockEntity) {
+        Reflection reflection = blockEntity.getReflection();
         if (reflection != null) {
             List<Pair<BannerPattern, DyeColor>> patternList = Lists.newArrayList();
             patternList.add(Pair.of(BannerPattern.BASE, baseColor));
@@ -138,9 +138,9 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
     }
 
     @Override
-    public void deactivate(MagicMirrorCoreTileEntity tileEntity) {
+    public void deactivate(MagicMirrorCoreBlockEntity blockEntity) {
         if (reflectionModifier != null) {
-            Reflection reflection = tileEntity.getReflection();
+            Reflection reflection = blockEntity.getReflection();
             if (reflection != null) {
                 reflection.removeModifier(reflectionModifier);
             }
@@ -148,7 +148,7 @@ public class BannerMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMo
     }
 
     @Override
-    public boolean tryPlayerActivate(MagicMirrorCoreTileEntity tileEntity, Player playerIn, InteractionHand hand) {
+    public boolean tryPlayerActivate(MagicMirrorCoreBlockEntity blockEntity, Player playerIn, InteractionHand hand) {
         // No activation behavior
         return false;
     }

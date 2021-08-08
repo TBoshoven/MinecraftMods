@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorPartTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorPartBlockEntity;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -32,7 +32,7 @@ public class MagicMirrorPartBlock extends MagicMirrorActiveBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new MagicMirrorPartTileEntity(pos, state);
+        return new MagicMirrorPartBlockEntity(pos, state);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.renderers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntities;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.BlockEntities;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -40,8 +40,8 @@ public final class Renderers {
     }
 
     private static void registerRenderers(ModelRegistryEvent event) {
-        BlockEntityRenderers.register(TileEntities.MAGIC_MIRROR_CORE.get(), BlockEntityMagicMirrorCoreRenderer::new);
-        BlockEntityRenderers.register(TileEntities.MAGIC_MIRROR_PART.get(), BlockEntityMagicMirrorPartRenderer::new);
+        BlockEntityRenderers.register(BlockEntities.MAGIC_MIRROR_CORE.get(), BlockEntityMagicMirrorCoreRenderer::new);
+        BlockEntityRenderers.register(BlockEntities.MAGIC_MIRROR_PART.get(), BlockEntityMagicMirrorPartRenderer::new);
 
         EntityRenderers.register(REFLECTION_ENTITY_TYPE, REFLECTION_ENTITY_RENDERER_PROVIDER);
     }

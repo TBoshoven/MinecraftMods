@@ -1,4 +1,4 @@
-package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
+package com.tomboshoven.minecraft.magicdoorknob.blocks.entities;
 
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
@@ -33,11 +33,11 @@ import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
 import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedModelLoader.PROPERTY_NAMESPACE;
 
 /**
- * Base class for tile entities that make up magic doorways.
+ * Base class for block entities that make up magic doorways.
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class MagicDoorwayPartBaseTileEntity extends BlockEntity {
+public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     /**
      * The main texture of the doorway (based on base block).
      */
@@ -53,8 +53,8 @@ public abstract class MagicDoorwayPartBaseTileEntity extends BlockEntity {
     // The doorknob that caused this block to be created.
     private MagicDoorknobItem doorknob;
 
-    MagicDoorwayPartBaseTileEntity(BlockEntityType<? extends MagicDoorwayPartBaseTileEntity> tileEntityType, BlockPos pos, BlockState state) {
-        super(tileEntityType, pos, state);
+    MagicDoorwayPartBaseBlockEntity(BlockEntityType<? extends MagicDoorwayPartBaseBlockEntity> blockEntityType, BlockPos pos, BlockState state) {
+        super(blockEntityType, pos, state);
     }
 
     @Override
@@ -117,8 +117,7 @@ public abstract class MagicDoorwayPartBaseTileEntity extends BlockEntity {
         if (blockTexture == null || blockTexture instanceof MissingTextureAtlasSprite) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.
             blockMaterial = new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation(MOD_ID, "block/empty"));
-        }
-        else {
+        } else {
             blockMaterial = new Material(blockTexture.atlas().location(), blockTexture.getName());
         }
 
@@ -127,7 +126,7 @@ public abstract class MagicDoorwayPartBaseTileEntity extends BlockEntity {
         if (doorknob != null) {
             doorknobMaterial = doorknob.getMainMaterial();
         } else {
-            // This can happen when we draw a frame before receiving the tile entity data from the server.
+            // This can happen when we draw a frame before receiving the block entity data from the server.
             // In that case, we just want to draw the outline to make it less conspicuous.
             doorknobMaterial = blockMaterial;
         }

@@ -1,8 +1,8 @@
 package com.tomboshoven.minecraft.magicmirror.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorPartTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorPartBlockEntity;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -14,22 +14,22 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Renderer for the Magic Mirror tile entity.
+ * Renderer for the Magic Mirror block entity.
  */
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-class BlockEntityMagicMirrorPartRenderer extends BlockEntityMagicMirrorRendererBase implements BlockEntityRenderer<MagicMirrorPartTileEntity> {
+class BlockEntityMagicMirrorPartRenderer extends BlockEntityMagicMirrorRendererBase implements BlockEntityRenderer<MagicMirrorPartBlockEntity> {
 
     BlockEntityMagicMirrorPartRenderer(BlockEntityRendererProvider.Context context) {
 
     }
 
     @Override
-    public void render(MagicMirrorPartTileEntity magicMirrorPartTileEntity, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLightIn, int combinedOverlayIn) {
-        MagicMirrorCoreTileEntity core = magicMirrorPartTileEntity.getCore();
+    public void render(MagicMirrorPartBlockEntity magicMirrorPartBlockEntity, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLightIn, int combinedOverlayIn) {
+        MagicMirrorCoreBlockEntity core = magicMirrorPartBlockEntity.getCore();
         if (core != null) {
-            render(core.getReflection(), magicMirrorPartTileEntity.getBlockPos(), core.getBlockState().getValue(HorizontalDirectionalBlock.FACING), poseStack, multiBufferSource);
+            render(core.getReflection(), magicMirrorPartBlockEntity.getBlockPos(), core.getBlockState().getValue(HorizontalDirectionalBlock.FACING), poseStack, multiBufferSource);
         }
     }
 

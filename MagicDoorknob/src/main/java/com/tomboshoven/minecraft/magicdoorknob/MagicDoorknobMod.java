@@ -2,7 +2,7 @@ package com.tomboshoven.minecraft.magicdoorknob;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers.BlockColorHandlers;
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntities;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.BlockEntities;
 import com.tomboshoven.minecraft.magicdoorknob.data.DataGenerators;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.ModelLoaders;
@@ -26,7 +26,7 @@ public final class MagicDoorknobMod {
         Blocks.register(modEventBus);
         DataGenerators.register(modEventBus);
         Items.register(modEventBus);
-        TileEntities.register(modEventBus);
+        BlockEntities.register(modEventBus);
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             BlockColorHandlers.register(modEventBus);

@@ -1,11 +1,11 @@
 package com.tomboshoven.minecraft.magicmirror;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.BlockEntities;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.ArmorMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.BannerMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntities;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
 import com.tomboshoven.minecraft.magicmirror.data.DataGenerators;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
@@ -38,7 +38,7 @@ public final class MagicMirrorMod {
         Blocks.register(modEventBus);
         DataGenerators.register(modEventBus);
         Items.register(modEventBus);
-        TileEntities.register(modEventBus);
+        BlockEntities.register(modEventBus);
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             Renderers.register(modEventBus);
             MinecraftForge.EVENT_BUS.register(ReflectionClientUpdater.class);

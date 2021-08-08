@@ -1,8 +1,8 @@
-package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
+package com.tomboshoven.minecraft.magicmirror.blocks.entities;
 
 import com.google.common.collect.Lists;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -38,18 +38,18 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MagicMirrorCoreTileEntity extends BlockEntity {
+public class MagicMirrorCoreBlockEntity extends BlockEntity {
     /**
      * The list of all modifiers to the mirror.
      */
-    private final List<MagicMirrorTileEntityModifier> modifiers = Lists.newArrayList();
+    private final List<MagicMirrorBlockEntityModifier> modifiers = Lists.newArrayList();
     /**
      * The reflection object, used for keeping track of who is being reflected and rendering.
      */
     private final Reflection reflection;
 
-    public MagicMirrorCoreTileEntity(BlockPos pos, BlockState state) {
-        super(TileEntities.MAGIC_MIRROR_CORE.get(), pos, state);
+    public MagicMirrorCoreBlockEntity(BlockPos pos, BlockState state) {
+        super(BlockEntities.MAGIC_MIRROR_CORE.get(), pos, state);
 
         reflection = DistExecutor.unsafeRunForDist(() -> ReflectionClient::new, () -> Reflection::new);
     }
@@ -57,8 +57,8 @@ public class MagicMirrorCoreTileEntity extends BlockEntity {
     /**
      * Find all players that can be reflected.
      *
-     * @param world       The world in which the tile entity exists.
-     * @param ownPosition The position of the tile entity in the world.
+     * @param world       The world in which the block entity exists.
+     * @param ownPosition The position of the block entity in the world.
      * @return A list of players that are candidates for reflecting.
      */
     private static List<Player> findReflectablePlayers(EntityGetter world, BlockPos ownPosition) {
@@ -72,8 +72,8 @@ public class MagicMirrorCoreTileEntity extends BlockEntity {
     /**
      * Find the best player to reflect.
      *
-     * @param world       The world in which the tile entity exists.
-     * @param ownPosition The position of the tile entity in the world.
+     * @param world       The world in which the block entity exists.
+     * @param ownPosition The position of the block entity in the world.
      * @return A player to reflect, or null if there are no valid candidates.
      */
     @Nullable
@@ -111,7 +111,7 @@ public class MagicMirrorCoreTileEntity extends BlockEntity {
      * Cool down all modifiers.
      */
     public void coolDown() {
-        modifiers.forEach(MagicMirrorTileEntityModifier::coolDown);
+        modifiers.forEach(MagicMirrorBlockEntityModifier::coolDown);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class MagicMirrorCoreTileEntity extends BlockEntity {
     @Override
     public void setRemoved() {
         super.setRemoved();
-        // We need to make sure that we stop reflecting when the tile entity is destroyed, so we don't leak any frame
+        // We need to make sure that we stop reflecting when the block entity is destroyed, so we don't leak any frame
         // buffers and textures
         reflection.stopReflecting();
     }
@@ -141,7 +141,7 @@ public class MagicMirrorCoreTileEntity extends BlockEntity {
      */
     private CompoundTag writeInternal(CompoundTag compound) {
         ListTag modifierList = new ListTag();
-        for (MagicMirrorTileEntityModifier modifier : modifiers) {
+        for (MagicMirrorBlockEntityModifier modifier : modifiers) {
             CompoundTag modifierCompound = new CompoundTag();
             modifierCompound.putString("name", modifier.getName());
             modifierList.add(modifier.write(modifierCompound));
@@ -180,7 +180,7 @@ public class MagicMirrorCoreTileEntity extends BlockEntity {
     /**
      * @return A list of all the current modifiers of the mirror.
      */
-    public List<MagicMirrorTileEntityModifier> getModifiers() {
+    public List<MagicMirrorBlockEntityModifier> getModifiers() {
         return Collections.unmodifiableList(modifiers);
     }
 
@@ -200,14 +200,14 @@ public class MagicMirrorCoreTileEntity extends BlockEntity {
      *
      * @param modifier The modifier to add. Must be verified to be applicable.
      */
-    public void addModifier(MagicMirrorTileEntityModifier modifier) {
+    public void addModifier(MagicMirrorBlockEntityModifier modifier) {
         modifiers.add(modifier);
         modifier.activate(this);
         setChanged();
     }
 
     /**
-     * Remove all modifiers from the tile entity.
+     * Remove all modifiers from the block entity.
      * This is used when the block is destroyed, and may have side effects such as spawning item entities into the
      * world.
      *
@@ -215,7 +215,7 @@ public class MagicMirrorCoreTileEntity extends BlockEntity {
      * @param pos     The position of the block that was removed.
      */
     public void removeModifiers(Level worldIn, BlockPos pos) {
-        for (MagicMirrorTileEntityModifier modifier : modifiers) {
+        for (MagicMirrorBlockEntityModifier modifier : modifiers) {
             modifier.deactivate(this);
             modifier.remove(worldIn, pos);
         }

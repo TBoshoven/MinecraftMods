@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayTileEntity;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlockEntity;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -95,9 +95,9 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.isAir()) {
             // When this block is destroyed (manually or by closing the door), replace it by its base block.
-            BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-            if (tileEntity instanceof MagicDoorwayTileEntity) {
-                worldIn.setBlockAndUpdate(pos, ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState());
+            BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+            if (blockEntity instanceof MagicDoorwayBlockEntity) {
+                worldIn.setBlockAndUpdate(pos, ((MagicDoorwayPartBaseBlockEntity) blockEntity).getBaseBlockState());
             }
         }
 
@@ -112,6 +112,6 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new MagicDoorwayTileEntity(pos, state);
+        return new MagicDoorwayBlockEntity(pos, state);
     }
 }

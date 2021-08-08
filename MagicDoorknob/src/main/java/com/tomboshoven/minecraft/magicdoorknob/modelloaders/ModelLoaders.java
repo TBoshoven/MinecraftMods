@@ -27,7 +27,7 @@ public final class ModelLoaders {
         eventBus.addListener(ModelLoaders::registerModelLoaders);
     }
 
-   private static void registerModelLoaders(ModelRegistryEvent event) {
+    private static void registerModelLoaders(ModelRegistryEvent event) {
         // Initialize textured model loader
         TexturedModelLoader modelLoader = new TexturedModelLoader();
         modelLoader.registerTexture(new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation(MOD_ID, "block/empty")));

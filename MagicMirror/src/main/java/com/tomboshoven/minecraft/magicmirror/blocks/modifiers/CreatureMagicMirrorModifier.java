@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.CreatureMagicMirrorTileEntityModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.CreatureMagicMirrorBlockEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -39,14 +39,14 @@ public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
     }
 
     @Override
-    MagicMirrorTileEntityModifier createTileEntityModifier(CompoundTag nbt) {
-        MagicMirrorTileEntityModifier teModifier = new CreatureMagicMirrorTileEntityModifier(this);
+    MagicMirrorBlockEntityModifier createBlockEntityModifier(CompoundTag nbt) {
+        MagicMirrorBlockEntityModifier teModifier = new CreatureMagicMirrorBlockEntityModifier(this);
         teModifier.read(nbt);
         return teModifier;
     }
 
     @Override
-    MagicMirrorTileEntityModifier createTileEntityModifier(ItemStack usedItem) {
-        return new CreatureMagicMirrorTileEntityModifier(this);
+    MagicMirrorBlockEntityModifier createBlockEntityModifier(ItemStack usedItem) {
+        return new CreatureMagicMirrorBlockEntityModifier(this);
     }
 }

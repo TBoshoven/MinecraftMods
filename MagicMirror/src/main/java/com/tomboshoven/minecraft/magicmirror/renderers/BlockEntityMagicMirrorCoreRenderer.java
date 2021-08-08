@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -13,19 +13,19 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Renderer for the Magic Mirror tile entity.
+ * Renderer for the Magic Mirror block entity.
  */
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-class BlockEntityMagicMirrorCoreRenderer extends BlockEntityMagicMirrorRendererBase implements BlockEntityRenderer<MagicMirrorCoreTileEntity> {
+class BlockEntityMagicMirrorCoreRenderer extends BlockEntityMagicMirrorRendererBase implements BlockEntityRenderer<MagicMirrorCoreBlockEntity> {
     BlockEntityMagicMirrorCoreRenderer(BlockEntityRendererProvider.Context context) {
 
     }
 
     @Override
-    public void render(MagicMirrorCoreTileEntity magicMirrorCoreTileEntity, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLightIn, int combinedOverlayIn) {
-        render(magicMirrorCoreTileEntity.getReflection(), magicMirrorCoreTileEntity.getBlockPos(), magicMirrorCoreTileEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING), poseStack, multiBufferSource);
+    public void render(MagicMirrorCoreBlockEntity magicMirrorCoreBlockEntity, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLightIn, int combinedOverlayIn) {
+        render(magicMirrorCoreBlockEntity.getReflection(), magicMirrorCoreBlockEntity.getBlockPos(), magicMirrorCoreBlockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING), poseStack, multiBufferSource);
     }
 
     @Override

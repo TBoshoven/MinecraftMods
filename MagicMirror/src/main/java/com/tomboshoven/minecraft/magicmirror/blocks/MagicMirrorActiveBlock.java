@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -45,10 +45,10 @@ public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implem
      * @return The block entity corresponding to the mirror core.
      */
     @Nullable
-    public MagicMirrorCoreTileEntity getCoreBlockEntity(Level level, BlockPos pos) {
+    public MagicMirrorCoreBlockEntity getCoreBlockEntity(Level level, BlockPos pos) {
         BlockEntity blockEntity = level.getBlockEntity(getCoreBlockPos(pos));
-        if (blockEntity instanceof MagicMirrorCoreTileEntity) {
-            return (MagicMirrorCoreTileEntity) blockEntity;
+        if (blockEntity instanceof MagicMirrorCoreBlockEntity) {
+            return (MagicMirrorCoreBlockEntity) blockEntity;
         }
         return null;
     }
@@ -91,7 +91,7 @@ public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implem
                 }
 
                 // Then, see if any existing modifier can do something.
-                MagicMirrorCoreTileEntity coreBlockEntity = getCoreBlockEntity(worldIn, pos);
+                MagicMirrorCoreBlockEntity coreBlockEntity = getCoreBlockEntity(worldIn, pos);
                 if (coreBlockEntity != null) {
                     if (coreBlockEntity.tryActivate(player, handIn)) {
                         return InteractionResult.SUCCESS;

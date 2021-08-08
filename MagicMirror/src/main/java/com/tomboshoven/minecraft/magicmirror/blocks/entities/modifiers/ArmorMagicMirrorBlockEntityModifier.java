@@ -1,8 +1,8 @@
-package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
+package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifier;
@@ -44,7 +44,7 @@ import java.util.function.Supplier;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityModifier {
+public class ArmorMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntityModifier {
     /**
      * The number of ticks this modifier needs to cool down.
      */
@@ -62,9 +62,9 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     private ArmorReflectionModifier reflectionModifier;
 
     /**
-     * @param modifier The modifier that applied this object to the tile entity.
+     * @param modifier The modifier that applied this object to the block entity.
      */
-    public ArmorMagicMirrorTileEntityModifier(MagicMirrorModifier modifier) {
+    public ArmorMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier) {
         super(modifier);
     }
 
@@ -86,8 +86,8 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     }
 
     @Override
-    public void activate(MagicMirrorCoreTileEntity tileEntity) {
-        Reflection reflection = tileEntity.getReflection();
+    public void activate(MagicMirrorCoreBlockEntity blockEntity) {
+        Reflection reflection = blockEntity.getReflection();
         if (reflection != null) {
             reflectionModifier = createReflectionModifier();
             reflection.addModifier(reflectionModifier);
@@ -102,9 +102,9 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     }
 
     @Override
-    public void deactivate(MagicMirrorCoreTileEntity tileEntity) {
+    public void deactivate(MagicMirrorCoreBlockEntity blockEntity) {
         if (reflectionModifier != null) {
-            Reflection reflection = tileEntity.getReflection();
+            Reflection reflection = blockEntity.getReflection();
             if (reflection != null) {
                 reflection.removeModifier(reflectionModifier);
             }
@@ -112,7 +112,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     }
 
     @Override
-    public boolean tryPlayerActivate(MagicMirrorCoreTileEntity tileEntity, Player playerIn, InteractionHand hand) {
+    public boolean tryPlayerActivate(MagicMirrorCoreBlockEntity blockEntity, Player playerIn, InteractionHand hand) {
         if (coolingDown()) {
             return false;
         }
@@ -123,8 +123,8 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
         }
 
         // First try to equip the held armor item. If that didn't work, swap armor.
-        if (!tryEquipArmor(tileEntity, playerIn, hand)) {
-            swapArmor(tileEntity, playerIn);
+        if (!tryEquipArmor(blockEntity, playerIn, hand)) {
+            swapArmor(blockEntity, playerIn);
         }
 
         return true;
@@ -134,20 +134,20 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
      * Attempt to equip the mirror with the held item as armor.
      * This should be called on the server side.
      *
-     * @param tileEntity The mirror tile entity.
-     * @param playerIn   The player entity holding the armor.
-     * @param hand       Which hand the player is holding the item in.
+     * @param blockEntity The mirror block entity.
+     * @param playerIn    The player entity holding the armor.
+     * @param hand        Which hand the player is holding the item in.
      * @return Whether the held item was successfully equipped as armor.
      */
-    private boolean tryEquipArmor(MagicMirrorCoreTileEntity tileEntity, Player playerIn, InteractionHand hand) {
+    private boolean tryEquipArmor(MagicMirrorCoreBlockEntity blockEntity, Player playerIn, InteractionHand hand) {
         ItemStack heldItem = playerIn.getItemInHand(hand);
         if (heldItem.getItem() instanceof ArmorItem) {
             EquipmentSlot equipmentSlotType = Mob.getEquipmentSlotForItem(heldItem);
             if (equipmentSlotType.getType() == EquipmentSlot.Type.ARMOR) {
                 int slotIndex = equipmentSlotType.getIndex();
                 if (replacementArmor.isEmpty(slotIndex)) {
-                    BlockPos pos = tileEntity.getBlockPos();
-                    Level world = tileEntity.getLevel();
+                    BlockPos pos = blockEntity.getBlockPos();
+                    Level world = blockEntity.getLevel();
                     if (world != null) {
                         MessageEquip message = new MessageEquip(pos, slotIndex, heldItem);
                         PacketDistributor.PacketTarget mirrorTarget = PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos));
@@ -157,7 +157,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
                     // Server side
                     replacementArmor.set(slotIndex, heldItem.copy());
                     heldItem.setCount(0);
-                    tileEntity.setChanged();
+                    blockEntity.setChanged();
                     return true;
                 }
             }
@@ -169,16 +169,16 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
      * Swap armor with the player.
      * This should be called on the server side.
      *
-     * @param tileEntity The mirror tile entity.
-     * @param playerIn   The player entity to swap armor with.
+     * @param blockEntity The mirror block entity.
+     * @param playerIn    The player entity to swap armor with.
      */
-    private void swapArmor(MagicMirrorCoreTileEntity tileEntity, Player playerIn) {
+    private void swapArmor(MagicMirrorCoreBlockEntity blockEntity, Player playerIn) {
         // Send two individual messages, to cover the situation where a player is tracked but the mirror isn't and vice
         // versa.
-        BlockPos pos = tileEntity.getBlockPos();
-        Level world = tileEntity.getLevel();
+        BlockPos pos = blockEntity.getBlockPos();
+        Level world = blockEntity.getLevel();
         if (world != null) {
-            MessageSwapMirror mirrorMessage = new MessageSwapMirror(tileEntity, playerIn);
+            MessageSwapMirror mirrorMessage = new MessageSwapMirror(blockEntity, playerIn);
             PacketDistributor.PacketTarget mirrorTarget = PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos));
             Network.CHANNEL.send(mirrorTarget, mirrorMessage);
         }
@@ -191,7 +191,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
         MagicMirrorMod.LOGGER.debug("Swapped inventory of mirror");
 
         setCooldown(COOLDOWN_TICKS);
-        tileEntity.setChanged();
+        blockEntity.setChanged();
     }
 
     /**
@@ -302,7 +302,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
             }
         }
 
-        void swap(ArmorMagicMirrorTileEntityModifier modifier) {
+        void swap(ArmorMagicMirrorBlockEntityModifier modifier) {
             MagicMirrorMod.LOGGER.info("Swapping with mirror");
             swap(modifier.getReplacementArmor().replacementInventory);
         }
@@ -381,7 +381,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
         public MessageSwapMirror() {
         }
 
-        MessageSwapMirror(MagicMirrorCoreTileEntity magicMirrorBase, Player player) {
+        MessageSwapMirror(MagicMirrorCoreBlockEntity magicMirrorBase, Player player) {
             super(player.getArmorSlots());
             mirrorPos = magicMirrorBase.getBlockPos();
         }
@@ -420,7 +420,7 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
         public MessageSwapPlayer() {
         }
 
-        MessageSwapPlayer(ArmorMagicMirrorTileEntityModifier armorModifier, Player player) {
+        MessageSwapPlayer(ArmorMagicMirrorBlockEntityModifier armorModifier, Player player) {
             super(armorModifier.getReplacementArmor().replacementInventory);
             entityId = player.getId();
         }
@@ -458,10 +458,10 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
                 BlockEntity te = world.getBlockEntity(message.mirrorPos);
-                if (te instanceof MagicMirrorCoreTileEntity) {
-                    ((MagicMirrorCoreTileEntity) te).getModifiers().stream()
-                            .filter(modifier -> modifier instanceof ArmorMagicMirrorTileEntityModifier).findFirst()
-                            .map(ArmorMagicMirrorTileEntityModifier.class::cast)
+                if (te instanceof MagicMirrorCoreBlockEntity) {
+                    ((MagicMirrorCoreBlockEntity) te).getModifiers().stream()
+                            .filter(modifier -> modifier instanceof ArmorMagicMirrorBlockEntityModifier).findFirst()
+                            .map(ArmorMagicMirrorBlockEntityModifier.class::cast)
                             .ifPresent(modifier -> modifier.replacementArmor.set(message.slotIdx, message.armor));
                     ArmorItem item = (ArmorItem) message.armor.getItem();
                     world.playLocalSound(message.mirrorPos, item.getMaterial().getEquipSound(), SoundSource.BLOCKS, 1, 1, false);
@@ -480,10 +480,10 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
                 BlockEntity te = world.getBlockEntity(message.mirrorPos);
-                if (te instanceof MagicMirrorCoreTileEntity) {
-                    ((MagicMirrorCoreTileEntity) te).getModifiers().stream()
-                            .filter(modifier -> modifier instanceof ArmorMagicMirrorTileEntityModifier).findFirst()
-                            .ifPresent(modifier -> message.armor.swap((ArmorMagicMirrorTileEntityModifier) modifier));
+                if (te instanceof MagicMirrorCoreBlockEntity) {
+                    ((MagicMirrorCoreBlockEntity) te).getModifiers().stream()
+                            .filter(modifier -> modifier instanceof ArmorMagicMirrorBlockEntityModifier).findFirst()
+                            .ifPresent(modifier -> message.armor.swap((ArmorMagicMirrorBlockEntityModifier) modifier));
                 }
             }
         }));

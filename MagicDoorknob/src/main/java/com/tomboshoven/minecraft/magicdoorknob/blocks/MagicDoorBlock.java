@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorTileEntity;
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorBlockEntity;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -66,9 +66,9 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
     @Override
     public SoundType getSoundType(BlockState state, LevelReader world, BlockPos pos, @Nullable Entity entity) {
         // Return the sound type of the base block, except that placing and removing it are door open and close sounds.
-        BlockEntity tileEntity = world.getBlockEntity(pos);
-        if (tileEntity instanceof MagicDoorTileEntity) {
-            BlockState textureBlock = ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState();
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (blockEntity instanceof MagicDoorBlockEntity) {
+            BlockState textureBlock = ((MagicDoorwayPartBaseBlockEntity) blockEntity).getBaseBlockState();
             SoundType actualSoundType = textureBlock.getBlock().getSoundType(textureBlock, world, pos, null);
             return new SoundType(
                     actualSoundType.volume,
@@ -92,9 +92,9 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
      */
     @Nullable
     private static MagicDoorknobItem getDoorknob(BlockGetter world, BlockPos pos) {
-        BlockEntity tileEntity = world.getBlockEntity(pos);
-        if (tileEntity instanceof MagicDoorTileEntity) {
-            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getDoorknob();
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (blockEntity instanceof MagicDoorBlockEntity) {
+            return ((MagicDoorwayPartBaseBlockEntity) blockEntity).getDoorknob();
         }
         return null;
     }
@@ -158,7 +158,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new MagicDoorTileEntity(pos, state);
+        return new MagicDoorBlockEntity(pos, state);
     }
 
     @SuppressWarnings("deprecation")

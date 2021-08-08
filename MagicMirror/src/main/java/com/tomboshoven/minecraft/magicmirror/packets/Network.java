@@ -3,10 +3,10 @@ package com.tomboshoven.minecraft.magicmirror.packets;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorCoreBlock;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorCoreBlock.MessageAttachModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier.MessageEquip;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier.MessageSwapMirror;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier.MessageSwapPlayer;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier.MessageEquip;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier.MessageSwapMirror;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier.MessageSwapPlayer;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fmllegacy.network.NetworkRegistry;
@@ -38,9 +38,9 @@ public final class Network {
     @SuppressWarnings("UnusedAssignment")
     public static void registerMessages() {
         int id = 0;
-        CHANNEL.registerMessage(id++, MessageEquip.class, MessageEquip::encode, MessageEquip::decode, ArmorMagicMirrorTileEntityModifier::onMessageEquip);
-        CHANNEL.registerMessage(id++, MessageSwapMirror.class, MessageSwapMirror::encode, MessageSwapMirror::decode, ArmorMagicMirrorTileEntityModifier::onMessageSwapMirror);
-        CHANNEL.registerMessage(id++, MessageSwapPlayer.class, MessageSwapPlayer::encode, MessageSwapPlayer::decode, ArmorMagicMirrorTileEntityModifier::onMessageSwapPlayer);
+        CHANNEL.registerMessage(id++, MessageEquip.class, MessageEquip::encode, MessageEquip::decode, ArmorMagicMirrorBlockEntityModifier::onMessageEquip);
+        CHANNEL.registerMessage(id++, MessageSwapMirror.class, MessageSwapMirror::encode, MessageSwapMirror::decode, ArmorMagicMirrorBlockEntityModifier::onMessageSwapMirror);
+        CHANNEL.registerMessage(id++, MessageSwapPlayer.class, MessageSwapPlayer::encode, MessageSwapPlayer::decode, ArmorMagicMirrorBlockEntityModifier::onMessageSwapPlayer);
         CHANNEL.registerMessage(id++, MessageAttachModifier.class, MessageAttachModifier::encode, MessageAttachModifier::decode, MagicMirrorCoreBlock::onMessageAttachModifier);
     }
 }

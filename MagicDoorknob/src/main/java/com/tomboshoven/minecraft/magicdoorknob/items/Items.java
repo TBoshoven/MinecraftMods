@@ -56,11 +56,11 @@ public final class Items {
     /**
      * Convenience function for doorknobs using Vanilla materials.
      *
-     * @param registry  The registry to which to add the doorknob item.
-     * @param typeName  The type name of the item. Keep this stable, since it is used in NBT data.
-     * @param tier      The material this doorknob is made of
-     * @param blockName The name of the block that provides the texture of the doorknob
-     * @param ingredient  The ingredient used to build the doorknob
+     * @param registry   The registry to which to add the doorknob item.
+     * @param typeName   The type name of the item. Keep this stable, since it is used in NBT data.
+     * @param tier       The material this doorknob is made of
+     * @param blockName  The name of the block that provides the texture of the doorknob
+     * @param ingredient The ingredient used to build the doorknob
      */
     private static void addDoorknob(IForgeRegistry<? super Item> registry, String typeName, Tier tier, String blockName, Supplier<Ingredient> ingredient) {
         addDoorknob(registry, typeName, tier, new ResourceLocation("minecraft", String.format("block/%s", blockName)), ingredient);

@@ -1,7 +1,7 @@
-package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
+package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -12,14 +12,14 @@ import net.minecraft.world.level.Level;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A magic mirror modifier as applied to a tile entity.
+ * A magic mirror modifier as applied to a block entity.
  * Instead of using this directly, apply it using a MagicMirrorModifier instance.
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class MagicMirrorTileEntityModifier {
+public abstract class MagicMirrorBlockEntityModifier {
     /**
-     * The modifier that applied this object to the tile entity.
+     * The modifier that applied this object to the block entity.
      */
     private final MagicMirrorModifier modifier;
 
@@ -29,14 +29,14 @@ public abstract class MagicMirrorTileEntityModifier {
     private int cooldown;
 
     /**
-     * @param modifier The modifier that applied this object to the tile entity.
+     * @param modifier The modifier that applied this object to the block entity.
      */
-    MagicMirrorTileEntityModifier(MagicMirrorModifier modifier) {
+    MagicMirrorBlockEntityModifier(MagicMirrorModifier modifier) {
         this.modifier = modifier;
     }
 
     /**
-     * @return The name of this tile entity modifier. This should probably match the name of the modifier.
+     * @return The name of this block entity modifier. This should probably match the name of the modifier.
      */
     public String getName() {
         return modifier.getName();
@@ -62,37 +62,37 @@ public abstract class MagicMirrorTileEntityModifier {
     }
 
     /**
-     * Called when the tile entity is removed.
+     * Called when the block entity is removed.
      * Can be used for things like spawning contained items back into the world.
      *
-     * @param world The world that the tile entity is being removed from.
+     * @param world The world that the block entity is being removed from.
      * @param pos   The position of the removed block in the world.
      */
     public abstract void remove(Level world, BlockPos pos);
 
     /**
-     * Called when the modifier is attached to the tile entity.
+     * Called when the modifier is attached to the block entity.
      *
-     * @param tileEntity The tile entity that is being modified.
+     * @param blockEntity The block entity that is being modified.
      */
-    public abstract void activate(MagicMirrorCoreTileEntity tileEntity);
+    public abstract void activate(MagicMirrorCoreBlockEntity blockEntity);
 
     /**
-     * Called when the modifier is detached from the tile entity.
+     * Called when the modifier is detached from the block entity.
      *
-     * @param tileEntity The tile entity that is being modified.
+     * @param blockEntity The block entity that is being modified.
      */
-    public abstract void deactivate(MagicMirrorCoreTileEntity tileEntity);
+    public abstract void deactivate(MagicMirrorCoreBlockEntity blockEntity);
 
     /**
      * Called when the player activates a magic mirror that is modified by this modifier.
      *
-     * @param tileEntity The tile entity of the magic mirror that is being activated.
-     * @param playerIn   The player that is activating the magic mirror.
-     * @param hand       The hand that the player is using to activate the magic mirror.
+     * @param blockEntity The block entity of the magic mirror that is being activated.
+     * @param playerIn    The player that is activating the magic mirror.
+     * @param hand        The hand that the player is using to activate the magic mirror.
      * @return Whether it was activated. If true, no other modifiers are evaluated.
      */
-    public abstract boolean tryPlayerActivate(MagicMirrorCoreTileEntity tileEntity, Player playerIn, InteractionHand hand);
+    public abstract boolean tryPlayerActivate(MagicMirrorCoreBlockEntity blockEntity, Player playerIn, InteractionHand hand);
 
     /**
      * When the modifier is used, this can be used to easily cool down, so it can't be activated all the time.
@@ -120,7 +120,7 @@ public abstract class MagicMirrorTileEntityModifier {
     }
 
     /**
-     * @return The modifier that applied this object to the tile entity.
+     * @return The modifier that applied this object to the block entity.
      */
     public MagicMirrorModifier getModifier() {
         return modifier;
