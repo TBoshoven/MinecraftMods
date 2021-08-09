@@ -5,6 +5,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirr
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -40,13 +41,13 @@ public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
 
     @Override
     MagicMirrorBlockEntityModifier createBlockEntityModifier(CompoundTag nbt) {
-        MagicMirrorBlockEntityModifier teModifier = new CreatureMagicMirrorBlockEntityModifier(this);
+        MagicMirrorBlockEntityModifier teModifier = new CreatureMagicMirrorBlockEntityModifier(this, EntityType.SKELETON);
         teModifier.read(nbt);
         return teModifier;
     }
 
     @Override
     MagicMirrorBlockEntityModifier createBlockEntityModifier(ItemStack usedItem) {
-        return new CreatureMagicMirrorBlockEntityModifier(this);
+        return new CreatureMagicMirrorBlockEntityModifier(this, EntityType.SKELETON);
     }
 }

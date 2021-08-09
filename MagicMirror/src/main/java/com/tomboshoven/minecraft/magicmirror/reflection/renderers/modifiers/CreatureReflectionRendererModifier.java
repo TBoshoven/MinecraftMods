@@ -1,12 +1,12 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
-import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
+import com.tomboshoven.minecraft.magicmirror.renderers.OffModelPlayerRenderers;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -18,23 +18,23 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CreatureReflectionRendererModifier extends ReflectionRendererModifier {
-    /**
-     * The renderer to use instead of the default one.
-     */
-    private final EntityRenderer<? extends Entity> replacementRenderer;
+    EntityType<?> entityType;
 
     /**
      * @param baseRenderer The renderer that is being proxied.
      */
-    public CreatureReflectionRendererModifier(ReflectionRendererBase baseRenderer) {
+    public CreatureReflectionRendererModifier(ReflectionRendererBase baseRenderer, EntityType<?> entityType) {
         super(baseRenderer);
-        replacementRenderer = Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(Renderers.REFLECTION_ENTITY_TYPE);
+        this.entityType = entityType;
     }
 
     @Override
     public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
         EntityRenderer<? extends Entity> originalRenderer = getRenderer();
-        setRenderer(replacementRenderer);
+        EntityRenderer<?> replacementRenderer = OffModelPlayerRenderers.getInstance().get(entityType);
+        if (replacementRenderer != null) {
+            setRenderer(replacementRenderer);
+        }
         super.render(facing, partialTicks, renderTypeBuffer);
         setRenderer(originalRenderer);
     }

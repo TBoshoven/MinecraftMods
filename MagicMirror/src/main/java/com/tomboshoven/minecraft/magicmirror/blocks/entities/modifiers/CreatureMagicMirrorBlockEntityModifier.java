@@ -9,6 +9,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -22,6 +23,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class CreatureMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntityModifier {
     /**
+     * The entity type to use for the reflection.
+     */
+    private final EntityType<?> entityType;
+
+    /**
      * The object that modifies the reflection in the mirror to show the replacement armor.
      */
     @Nullable
@@ -30,8 +36,9 @@ public class CreatureMagicMirrorBlockEntityModifier extends MagicMirrorBlockEnti
     /**
      * @param modifier The modifier that applied this object to the block entity.
      */
-    public CreatureMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier) {
+    public CreatureMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, EntityType<?> entityType) {
         super(modifier);
+        this.entityType = entityType;
     }
 
     @Override
@@ -48,10 +55,10 @@ public class CreatureMagicMirrorBlockEntityModifier extends MagicMirrorBlockEnti
         }
     }
 
-    private static CreatureReflectionModifier createReflectionModifier() {
+    private CreatureReflectionModifier createReflectionModifier() {
         return DistExecutor.runForDist(
-                () -> CreatureReflectionModifierClient::new,
-                () -> CreatureReflectionModifier::new
+                () -> () -> new CreatureReflectionModifierClient(entityType),
+                () -> () -> new CreatureReflectionModifier(entityType)
         );
     }
 
