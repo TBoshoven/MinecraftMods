@@ -87,6 +87,16 @@ public abstract class MagicDoorwayPartBaseBlock extends Block implements EntityB
         return super.getDestroyProgress(state, player, worldIn, pos);
     }
 
+    @Override
+    public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {
+        // Use the base block's hardness.
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (blockEntity instanceof MagicDoorwayPartBaseBlockEntity) {
+            return ((MagicDoorwayPartBaseBlockEntity) blockEntity).getBaseBlockState().canHarvestBlock(world, pos, player);
+        }
+        return super.canHarvestBlock(state, world, pos, player);
+    }
+
     /**
      * The doorway has two parts: top and bottom.
      */
