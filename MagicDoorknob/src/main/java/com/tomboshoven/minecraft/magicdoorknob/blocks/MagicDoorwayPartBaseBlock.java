@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -86,21 +85,6 @@ public abstract class MagicDoorwayPartBaseBlock extends Block implements EntityB
             return ((MagicDoorwayPartBaseBlockEntity) blockEntity).getBaseBlockState().getDestroyProgress(player, worldIn, pos);
         }
         return super.getDestroyProgress(state, player, worldIn, pos);
-    }
-
-    @Override
-    public int getHarvestLevel(BlockState state) {
-        // We don't have information about the base block here.
-        // Always allow breaking.
-        return -1;
-    }
-
-    @Nullable
-    @Override
-    public ToolType getHarvestTool(BlockState state) {
-        // We don't have information about the base block here.
-        // We allow breaking with any tool.
-        return null;
     }
 
     /**

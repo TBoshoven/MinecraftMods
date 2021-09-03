@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.TierSortingRegistry;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Supplier;
@@ -215,7 +216,7 @@ public class MagicDoorknobItem extends Item {
         if (blockState.getDestroySpeed(world, pos) < 0) {
             return false;
         }
-        return blockState.getHarvestLevel() <= tier.getLevel();
+        return TierSortingRegistry.isCorrectTierForDrops(tier, blockState);
     }
 
     /**
