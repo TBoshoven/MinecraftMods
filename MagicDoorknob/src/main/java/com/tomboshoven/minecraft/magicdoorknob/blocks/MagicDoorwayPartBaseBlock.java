@@ -2,20 +2,25 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.client.IBlockRenderProperties;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.function.Consumer;
 
 /**
  * Generic functionality for parts of the doorway.
@@ -27,12 +32,23 @@ public abstract class MagicDoorwayPartBaseBlock extends Block implements EntityB
         super(properties);
     }
 
-    // TODO
-//    @Override
-//    public boolean addDestroyEffects(BlockState state, Level world, BlockPos pos, ParticleEngine manager) {
-//        // Skip all block breaking textures
-//        return true;
-//    }
+    @Override
+    public void initializeClient(Consumer<IBlockRenderProperties> consumer) {
+        consumer.accept(new IBlockRenderProperties() {
+            @Override
+            public boolean addHitEffects(BlockState state, Level level, HitResult target, ParticleEngine manager) {
+                // Just remove all hit particles.
+                // While we could make this work, the interface for this is rather awkward and the benefit is little.
+                return true;
+            }
+
+            @Override
+            public boolean addDestroyEffects(BlockState state, Level Level, BlockPos pos, ParticleEngine manager) {
+                // Remove all breaking particles to prevent particle showers when closing a door.
+                return true;
+            }
+        });
+    }
 
     @Override
     public SoundType getSoundType(BlockState state, LevelReader world, BlockPos pos, @Nullable Entity entity) {

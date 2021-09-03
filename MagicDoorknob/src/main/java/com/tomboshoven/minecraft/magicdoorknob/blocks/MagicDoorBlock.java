@@ -108,7 +108,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
             // Spawn the doorknob
             Item doorknob = getDoorknob(worldIn, pos);
             if (doorknob != null) {
-                Containers.dropItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(doorknob, 1));
+                Containers.dropItemStack(worldIn, pos.getX(), pos.getY() - .5f, pos.getZ(), new ItemStack(doorknob, 1));
             }
 
             // Break the bottom part
