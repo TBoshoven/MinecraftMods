@@ -36,37 +36,6 @@
       }
     },
     {
-      "name": "Wide",
-      "from": [2, 4, 8],
-      "to": [14, 12, 9],
-      "faces": {
-        "north": {
-          "texture": "#main",
-          "uv": [14, 3, 2, 13]
-        },
-        "south": {
-          "texture": "#main",
-          "uv": [2, 3, 14, 13]
-        },
-        "east": {
-          "texture": "#main",
-          "uv": [14, 3, 14, 13]
-        },
-        "west": {
-          "texture": "#main",
-          "uv": [2, 3, 2, 13]
-        },
-        "up": {
-          "texture": "#main",
-          "uv": [2, 3, 14, 3]
-        },
-        "down": {
-          "texture": "#main",
-          "uv": [2, 13, 14, 13]
-        }
-      }
-    },
-    {
       "name": "Tall",
       "from": [3, 2, 8],
       "to": [13, 14, 9],
