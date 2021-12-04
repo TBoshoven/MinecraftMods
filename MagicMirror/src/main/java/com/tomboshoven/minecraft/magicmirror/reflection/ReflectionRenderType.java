@@ -58,7 +58,7 @@ class ReflectionRenderType extends RenderType {
             RenderSystem.disableFog();
 
             // Depth test
-            RenderSystem.disableDepthTest();
+            //RenderSystem.disableDepthTest();
             RenderSystem.depthFunc(GL_LEQUAL);
 
             // Alpha
