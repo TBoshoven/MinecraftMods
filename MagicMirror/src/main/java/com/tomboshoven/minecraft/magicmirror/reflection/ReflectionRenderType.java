@@ -50,9 +50,6 @@ class ReflectionRenderType extends RenderType {
             RenderSystem.enableDepthTest();
             RenderSystem.depthFunc(GL_LEQUAL);
 
-            // Culling
-            RenderSystem.enableCull();
-
             // Fog
             FogRenderer.levelFogColor();
             RenderSystem.enableFog();
@@ -60,17 +57,20 @@ class ReflectionRenderType extends RenderType {
             // Fog
             RenderSystem.disableFog();
 
-            // Culling
-            RenderSystem.disableCull();
-
             // Depth test
             RenderSystem.disableDepthTest();
+            RenderSystem.depthFunc(GL_LEQUAL);
+
+            // Alpha
+            RenderSystem.disableAlphaTest();
+            RenderSystem.defaultAlphaFunc();
 
             // Shade model
             RenderSystem.shadeModel(GL_FLAT);
 
             // Transparency
             RenderSystem.disableBlend();
+            RenderSystem.defaultBlendFunc();
         });
     }
 }
