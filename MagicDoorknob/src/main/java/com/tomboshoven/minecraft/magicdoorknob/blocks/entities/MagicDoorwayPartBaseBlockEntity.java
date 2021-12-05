@@ -94,14 +94,17 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return new ClientboundBlockEntityDataPacket(getBlockPos(), 1, getUpdateTag());
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        readInternal(pkt.getTag());
-        requestModelDataUpdate();
+        CompoundTag tag = pkt.getTag();
+        if (tag != null) {
+            readInternal(tag);
+            requestModelDataUpdate();
+        }
     }
 
     @Override

@@ -14,7 +14,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 
@@ -24,15 +24,14 @@ subprojects {
 
     String modName = project.getName().replaceAll(/([a-z])([A-Z])/, /$1_$2/).toLowerCase()
 
-    version = "1.17.1-DEV.0"
+    version = "1.18.0-DEV.0"
     group = "com.tomboshoven.minecraft." + project.getName().toLowerCase()
     archivesBaseName = project.projectDir.name
 
-    sourceCompatibility = '16'
-    targetCompatibility = '16'
+    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
     minecraft {
-        mappings channel: 'official', version: '1.17.1'
+        mappings channel: 'official', version: '1.18'
 
         runs {
             client {
@@ -68,7 +67,7 @@ subprojects {
     }
 
     dependencies {
-        minecraft "net.minecraftforge:forge:1.17.1-37.0.83"
+        minecraft "net.minecraftforge:forge:1.18-38.0.14"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }

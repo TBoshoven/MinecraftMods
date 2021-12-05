@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.util.ForgeSoundType;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -70,14 +71,14 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
         if (blockEntity instanceof MagicDoorBlockEntity) {
             BlockState textureBlock = ((MagicDoorwayPartBaseBlockEntity) blockEntity).getBaseBlockState();
             SoundType actualSoundType = textureBlock.getBlock().getSoundType(textureBlock, world, pos, null);
-            return new SoundType(
+            return new ForgeSoundType(
                     actualSoundType.volume,
                     actualSoundType.pitch,
-                    SoundEvents.WOODEN_DOOR_CLOSE,
-                    actualSoundType.getStepSound(),
-                    SoundEvents.WOODEN_DOOR_OPEN,
-                    actualSoundType.getHitSound(),
-                    actualSoundType.getFallSound()
+                    () -> SoundEvents.WOODEN_DOOR_CLOSE,
+                    actualSoundType::getStepSound,
+                    () -> SoundEvents.WOODEN_DOOR_OPEN,
+                    actualSoundType::getHitSound,
+                    actualSoundType::getFallSound
             );
         }
         return super.getSoundType(state, world, pos, entity);
