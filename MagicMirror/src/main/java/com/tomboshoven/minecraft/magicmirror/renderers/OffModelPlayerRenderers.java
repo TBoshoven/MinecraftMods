@@ -6,6 +6,8 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.ItemInHandRenderer;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -26,7 +28,7 @@ public class OffModelPlayerRenderers implements ResourceManagerReloadListener {
     /**
      * The map of entity types to off-model renderer provider.
      */
-    static Map<EntityType<?>, EntityRendererProvider<?>> RENDERER_PROVIDERS = new HashMap<>();
+    final static Map<EntityType<?>, EntityRendererProvider<?>> RENDERER_PROVIDERS = new HashMap<>();
 
     static {
         RENDERER_PROVIDERS.put(
@@ -41,7 +43,7 @@ public class OffModelPlayerRenderers implements ResourceManagerReloadListener {
      * The map from entity type to off-model renderers.
      * This is reloaded as part of regular reloads.
      */
-    Map<EntityType<?>, EntityRenderer<?>> RENDERERS = new HashMap<>();
+    final Map<EntityType<?>, EntityRenderer<?>> RENDERERS = new HashMap<>();
 
     private static OffModelPlayerRenderers INSTANCE;
 
@@ -57,15 +59,16 @@ public class OffModelPlayerRenderers implements ResourceManagerReloadListener {
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
-        EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        EntityModelSet entityModels = Minecraft.getInstance().getEntityModels();
-        Font font = Minecraft.getInstance().font;
-        EntityRendererProvider.Context context = new EntityRendererProvider.Context(entityRenderDispatcher, itemRenderer, resourceManager, entityModels, font);
+        Minecraft minecraft = Minecraft.getInstance();
+        EntityRenderDispatcher entityRenderDispatcher = minecraft.getEntityRenderDispatcher();
+        ItemRenderer itemRenderer = minecraft.getItemRenderer();
+        EntityModelSet entityModels = minecraft.getEntityModels();
+        BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
+        ItemInHandRenderer itemInHandRenderer = entityRenderDispatcher.getItemInHandRenderer();
+        Font font = minecraft.font;
+        EntityRendererProvider.Context context = new EntityRendererProvider.Context(entityRenderDispatcher, itemRenderer, blockRenderer, itemInHandRenderer, resourceManager, entityModels, font);
 
-        RENDERER_PROVIDERS.forEach((entityType, rendererProvider) -> {
-            RENDERERS.put(entityType, rendererProvider.create(context));
-        });
+        RENDERER_PROVIDERS.forEach((entityType, rendererProvider) -> RENDERERS.put(entityType, rendererProvider.create(context)));
     }
 
     /**

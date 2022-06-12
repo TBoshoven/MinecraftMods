@@ -47,12 +47,12 @@ class OffModelPlayerRenderer<T extends LivingEntity, M extends EntityModel<T>> e
         // subclasses.
         if (model instanceof HeadedModel) {
             //noinspection unchecked,rawtypes
-            addLayer(new CustomHeadLayer(this, renderContext.getModelSet()));
+            addLayer(new CustomHeadLayer(this, renderContext.getModelSet(), renderContext.getItemInHandRenderer()));
         }
         addLayer(new ElytraLayer<>(this, renderContext.getModelSet()));
         if (model instanceof ArmedModel) {
             //noinspection unchecked,rawtypes
-            addLayer(new ItemInHandLayer(this));
+            addLayer(new ItemInHandLayer(this, renderContext.getItemInHandRenderer()));
         }
         if (model instanceof HumanoidModel) {
             //noinspection unchecked,rawtypes
@@ -123,6 +123,6 @@ class OffModelPlayerRenderer<T extends LivingEntity, M extends EntityModel<T>> e
     }
 
     static <T extends LivingEntity, M extends EntityModel<T>> EntityRendererProvider<T> createProvider(Function<EntityRendererProvider.Context, M> modelProvider, ResourceLocation textureLocation) {
-        return renderContext -> new OffModelPlayerRenderer<T, M>(renderContext, modelProvider.apply(renderContext), textureLocation);
+        return renderContext -> new OffModelPlayerRenderer<>(renderContext, modelProvider.apply(renderContext), textureLocation);
     }
 }

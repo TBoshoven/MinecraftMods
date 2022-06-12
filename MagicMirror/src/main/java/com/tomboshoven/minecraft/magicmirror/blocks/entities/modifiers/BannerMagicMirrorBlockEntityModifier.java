@@ -8,6 +8,8 @@ import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.BannerReflecti
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.BannerReflectionModifierClient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -20,13 +22,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.world.level.block.entity.BannerPatterns;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -107,8 +109,9 @@ public class BannerMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntity
     public void activate(MagicMirrorCoreBlockEntity blockEntity) {
         Reflection reflection = blockEntity.getReflection();
         if (reflection != null) {
-            List<Pair<BannerPattern, DyeColor>> patternList = Lists.newArrayList();
-            patternList.add(Pair.of(BannerPattern.BASE, baseColor));
+            List<Pair<Holder<BannerPattern>, DyeColor>> patternList = Lists.newArrayList();
+            Optional<Holder<BannerPattern>> base = Registry.BANNER_PATTERN.getHolder(BannerPatterns.BASE);
+            base.ifPresent(bannerPatternHolder -> patternList.add(Pair.of(bannerPatternHolder, baseColor)));
             if (bannerNBT != null) {
                 // Get the patterns from the NBT data
                 ListTag patterns = bannerNBT.getList("Patterns", 10);
@@ -116,10 +119,10 @@ public class BannerMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntity
                 for (int i = 0; i < size; ++i) {
                     CompoundTag pattern = patterns.getCompound(i);
                     String patternHash = pattern.getString("Pattern");
-                    Optional<BannerPattern> bannerPattern = Arrays.stream(BannerPattern.values()).filter(p -> p.getHashname().equals(patternHash)).findFirst();
-                    if (bannerPattern.isPresent()) {
+                    Holder<BannerPattern> bannerPattern = BannerPattern.byHash(patternHash);
+                    if (bannerPattern != null) {
                         DyeColor bannerPatternColor = DyeColor.byId(pattern.getInt("Color"));
-                        patternList.add(Pair.of(bannerPattern.get(), bannerPatternColor));
+                        patternList.add(Pair.of(bannerPattern, bannerPatternColor));
                     }
                 }
             }
@@ -130,7 +133,7 @@ public class BannerMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntity
         }
     }
 
-    private static BannerReflectionModifier createReflectionModifier(List<? extends Pair<BannerPattern, DyeColor>> patternList) {
+    private static BannerReflectionModifier createReflectionModifier(List<? extends Pair<Holder<BannerPattern>, DyeColor>> patternList) {
         return DistExecutor.runForDist(
                 () -> () -> new BannerReflectionModifierClient(patternList),
                 () -> () -> new BannerReflectionModifier(patternList)

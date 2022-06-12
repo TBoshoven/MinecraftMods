@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -22,18 +23,18 @@ class ItemModels extends ItemModelProvider {
     protected void registerModels() {
         Items.DOORKNOBS.values().forEach(
                 doorknob -> {
-                    ResourceLocation registryName = doorknob.getRegistryName();
+                    ResourceLocation registryName = doorknob.getId();
                     if (registryName != null) {
                         getBuilder(registryName.getPath())
                                 .parent(new ModelFile.ExistingModelFile(modLoc("item/magic_doorknob"), existingFileHelper))
-                                .texture("main", doorknob.getMainMaterial().texture());
+                                .texture("main", doorknob.get().getMainMaterial().texture());
                     }
                 }
         );
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return String.format("%s Item Models", MagicDoorknobMod.MOD_ID);
     }
 }

@@ -25,6 +25,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.CompositeModel;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -58,37 +60,38 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
-        return writeInternal(compound);
+    protected void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
+        saveInternal(compound);
     }
 
-    private CompoundTag writeInternal(CompoundTag compound) {
-        CompoundTag result = super.save(compound);
-        ResourceLocation registryName = baseBlockState.getBlock().getRegistryName();
+    private void saveInternal(CompoundTag compound) {
+        ResourceLocation registryName = ForgeRegistries.BLOCKS.getKey(baseBlockState.getBlock());
         if (registryName != null) {
             compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
         }
         if (doorknob != null) {
-            result.putString("doorknobType", doorknob.getTypeName());
+            compound.putString("doorknobType", doorknob.getTypeName());
         }
-        return result;
     }
 
     @Override
     public void load(CompoundTag compound) {
         super.load(compound);
-        readInternal(compound);
+        loadInternal(compound);
     }
 
-    private void readInternal(CompoundTag compound) {
+    private void loadInternal(CompoundTag compound) {
         baseBlockState = NbtUtils.readBlockState(compound.getCompound("baseBlock"));
         String doorknobType = compound.getString("doorknobType");
-        doorknob = Items.DOORKNOBS.get(doorknobType);
+        doorknob = Items.DOORKNOBS.get(doorknobType).get();
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        return writeInternal(super.getUpdateTag());
+        CompoundTag updateTag = super.getUpdateTag();
+        saveInternal(updateTag);
+        return updateTag;
     }
 
     @Nullable
@@ -102,14 +105,14 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         CompoundTag tag = pkt.getTag();
         if (tag != null) {
-            readInternal(tag);
+            loadInternal(tag);
             requestModelDataUpdate();
         }
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public IModelData getModelData() {
+    public @NotNull IModelData getModelData() {
         Minecraft minecraft = Minecraft.getInstance();
         BlockModelShaper blockModelShapes = minecraft.getBlockRenderer().getBlockModelShaper();
 

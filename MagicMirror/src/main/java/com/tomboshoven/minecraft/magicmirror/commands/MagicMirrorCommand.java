@@ -5,7 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -24,7 +24,7 @@ final class MagicMirrorCommand {
      */
     private static int debug(CommandContext<? extends CommandSourceStack> context) {
         int reflectionCount = Reflection.getActiveReflectionsClient();
-        context.getSource().sendSuccess(new TranslatableComponent("commands.magic_mirror.debug.reflections", reflectionCount), true);
+        context.getSource().sendSuccess(Component.translatable("commands.magic_mirror.debug.reflections", reflectionCount), true);
         return reflectionCount;
     }
 

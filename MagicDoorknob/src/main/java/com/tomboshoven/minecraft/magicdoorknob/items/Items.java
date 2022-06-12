@@ -11,10 +11,11 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
@@ -30,7 +31,9 @@ public final class Items {
     /**
      * The magic doorknob items by type name.
      */
-    public static final Map<String, MagicDoorknobItem> DOORKNOBS = Maps.newHashMap();
+    public static final Map<String, RegistryObject<MagicDoorknobItem>> DOORKNOBS = Maps.newHashMap();
+
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MagicDoorknobMod.MOD_ID);
 
     private Items() {
     }
@@ -40,45 +43,39 @@ public final class Items {
      * <p>
      * Make sure to add a translation key.
      *
-     * @param registry    The registry to which to add the doorknob item.
      * @param typeName    The type name of the item. Keep this stable, since it is used in NBT data.
      * @param tier        The material this doorknob is made of
      * @param mainTexture The main texture of the doorknob
      * @param ingredient  The ingredient used to build the doorknob
      */
-    private static void addDoorknob(IForgeRegistry<? super Item> registry, String typeName, Tier tier, ResourceLocation mainTexture, Supplier<Ingredient> ingredient) {
-        MagicDoorknobItem i = new MagicDoorknobItem(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS), typeName, tier, mainTexture, ingredient);
-        i.setRegistryName(MagicDoorknobMod.MOD_ID, String.format("magic_doorknob_%s", typeName));
-        registry.register(i);
-        DOORKNOBS.put(typeName, i);
+    private static void addDoorknob(String typeName, Tier tier, ResourceLocation mainTexture, Supplier<Ingredient> ingredient) {
+        RegistryObject<MagicDoorknobItem> item = ITEMS.register(String.format("magic_doorknob_%s", typeName), () -> new MagicDoorknobItem(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS), typeName, tier, mainTexture, ingredient));
+        DOORKNOBS.put(typeName, item);
     }
 
     /**
      * Convenience function for doorknobs using Vanilla materials.
      *
-     * @param registry   The registry to which to add the doorknob item.
      * @param typeName   The type name of the item. Keep this stable, since it is used in NBT data.
      * @param tier       The material this doorknob is made of
      * @param blockName  The name of the block that provides the texture of the doorknob
      * @param ingredient The ingredient used to build the doorknob
      */
-    private static void addDoorknob(IForgeRegistry<? super Item> registry, String typeName, Tier tier, String blockName, Supplier<Ingredient> ingredient) {
-        addDoorknob(registry, typeName, tier, new ResourceLocation("minecraft", String.format("block/%s", blockName)), ingredient);
+    private static void addDoorknob(String typeName, Tier tier, String blockName, Supplier<Ingredient> ingredient) {
+        addDoorknob(typeName, tier, new ResourceLocation("minecraft", String.format("block/%s", blockName)), ingredient);
     }
 
     public static void register(IEventBus eventBus) {
-        eventBus.addGenericListener(Item.class, Items::registerItems);
+        ITEMS.register(eventBus);
     }
 
-    private static void registerItems(Register<Item> event) {
-        IForgeRegistry<Item> registry = event.getRegistry();
-
+    static {
         // Add all Vanilla tool materials
-        addDoorknob(registry, "wood", Tiers.WOOD, "oak_planks", () -> Ingredient.of(ItemTags.PLANKS));
-        addDoorknob(registry, "stone", Tiers.STONE, "stone", () -> Ingredient.of(Tags.Items.COBBLESTONE));
-        addDoorknob(registry, "iron", Tiers.IRON, "iron_block", () -> Ingredient.of(Tags.Items.INGOTS_IRON));
-        addDoorknob(registry, "gold", Tiers.GOLD, "gold_block", () -> Ingredient.of(Tags.Items.INGOTS_GOLD));
-        addDoorknob(registry, "diamond", Tiers.DIAMOND, "diamond_block", () -> Ingredient.of(Tags.Items.GEMS_DIAMOND));
-        addDoorknob(registry, "netherite", Tiers.NETHERITE, "netherite_block", () -> Ingredient.of(Tags.Items.INGOTS_NETHERITE));
+        addDoorknob("wood", Tiers.WOOD, "oak_planks", () -> Ingredient.of(ItemTags.PLANKS));
+        addDoorknob("stone", Tiers.STONE, "stone", () -> Ingredient.of(Tags.Items.COBBLESTONE));
+        addDoorknob("iron", Tiers.IRON, "iron_block", () -> Ingredient.of(Tags.Items.INGOTS_IRON));
+        addDoorknob("gold", Tiers.GOLD, "gold_block", () -> Ingredient.of(Tags.Items.INGOTS_GOLD));
+        addDoorknob("diamond", Tiers.DIAMOND, "diamond_block", () -> Ingredient.of(Tags.Items.GEMS_DIAMOND));
+        addDoorknob("netherite", Tiers.NETHERITE, "netherite_block", () -> Ingredient.of(Tags.Items.INGOTS_NETHERITE));
     }
 }

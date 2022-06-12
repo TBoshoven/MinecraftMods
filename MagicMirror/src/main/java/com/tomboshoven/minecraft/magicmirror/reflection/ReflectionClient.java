@@ -54,12 +54,12 @@ public class ReflectionClient extends Reflection {
 
     private final RenderType renderType;
 
-    RenderStateShard.ShaderStateShard SHADER_STATE_SHARD = new RenderStateShard.ShaderStateShard(GameRenderer::getBlockShader);
+    final RenderStateShard.ShaderStateShard SHADER_STATE_SHARD = new RenderStateShard.ShaderStateShard(GameRenderer::getBlockShader);
 
     /**
      * Texture state shard for the reflection.
      */
-    RenderStateShard.EmptyTextureStateShard TEXTURE_STATE_SHARD = new RenderStateShard.EmptyTextureStateShard(() -> {
+    final RenderStateShard.EmptyTextureStateShard TEXTURE_STATE_SHARD = new RenderStateShard.EmptyTextureStateShard(() -> {
         if (frameBuffer != null) {
             RenderSystem.enableTexture();
             RenderSystem.setShaderTexture(0, frameBuffer.getColorTextureId());
@@ -70,7 +70,7 @@ public class ReflectionClient extends Reflection {
     /**
      * Transparency state shard for the reflection.
      */
-    RenderStateShard.TransparencyStateShard TRANSPARENCY_STATE_SHARD = new RenderStateShard.TransparencyStateShard(
+    final RenderStateShard.TransparencyStateShard TRANSPARENCY_STATE_SHARD = new RenderStateShard.TransparencyStateShard(
             "reflection_transparency",
             () -> {
                 RenderSystem.enableBlend();

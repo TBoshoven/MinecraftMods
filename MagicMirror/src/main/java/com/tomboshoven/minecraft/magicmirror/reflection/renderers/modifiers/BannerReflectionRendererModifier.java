@@ -10,12 +10,15 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
+import java.util.Optional;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -29,9 +32,9 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
     private static final float BANNER_TEXTURE_START_U = 0, BANNER_TEXTURE_END_U = 22f / 64f * 16f;
     private static final float BANNER_TEXTURE_START_V = 0, BANNER_TEXTURE_END_V = 41f / 64f * 16f;
 
-    private final ImmutableList<Pair<BannerPattern, DyeColor>> patternColorList;
+    private final ImmutableList<Pair<Holder<BannerPattern>, DyeColor>> patternColorList;
 
-    public BannerReflectionRendererModifier(ReflectionRendererBase baseRenderer, Collection<Pair<BannerPattern, DyeColor>> patternColorList) {
+    public BannerReflectionRendererModifier(ReflectionRendererBase baseRenderer, Collection<Pair<Holder<BannerPattern>, DyeColor>> patternColorList) {
         super(baseRenderer);
 
         this.patternColorList = ImmutableList.copyOf(patternColorList);
@@ -41,9 +44,13 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
     public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
         super.render(facing, partialTicks, renderTypeBuffer);
 
-        for (Pair<BannerPattern, DyeColor> patternColor : patternColorList) {
+        for (Pair<Holder<BannerPattern>, DyeColor> patternColor : patternColorList) {
             float[] rgb = patternColor.getRight().getTextureDiffuseColors();
-            Material material = new Material(Sheets.BANNER_SHEET, patternColor.getLeft().location(true));
+            Optional<ResourceKey<BannerPattern>> key = patternColor.getLeft().unwrapKey();
+            if (key.isEmpty()) {
+                continue;
+            }
+            Material material = Sheets.getBannerMaterial(key.get());
 
             VertexConsumer buffer = material.buffer(renderTypeBuffer, RenderType::entityNoOutline);
 

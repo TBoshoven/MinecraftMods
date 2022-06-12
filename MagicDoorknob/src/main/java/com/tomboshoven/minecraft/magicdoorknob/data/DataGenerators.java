@@ -22,13 +22,11 @@ public final class DataGenerators {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
-        if (event.includeServer()) {
-            generator.addProvider(new BlockStates(generator, existingFileHelper));
-            generator.addProvider(new Language(generator));
-            generator.addProvider(new Recipes(generator));
-        }
-        if (event.includeClient()) {
-            generator.addProvider(new ItemModels(generator, existingFileHelper));
-        }
+        boolean includeServer = event.includeServer();
+        boolean includeClient = event.includeClient();
+        generator.addProvider(includeServer, new BlockStates(generator, existingFileHelper));
+        generator.addProvider(includeServer, new Language(generator));
+        generator.addProvider(includeServer, new Recipes(generator));
+        generator.addProvider(includeClient, new ItemModels(generator, existingFileHelper));
     }
 }

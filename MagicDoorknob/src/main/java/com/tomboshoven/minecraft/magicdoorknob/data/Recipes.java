@@ -26,11 +26,11 @@ class Recipes extends RecipeProvider {
     @Override
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         Items.DOORKNOBS.values().forEach(
-                doorknob -> ShapedRecipeBuilder.shaped(doorknob)
+                doorknob -> ShapedRecipeBuilder.shaped(doorknob.get())
                         .pattern(" # ")
                         .pattern("#@#")
                         .pattern(" # ")
-                        .define('#', doorknob.getIngredient())
+                        .define('#', doorknob.get().getIngredient())
                         .define('@', Tags.Items.ENDER_PEARLS)
                         .group("magic_doorknob")
                         .unlockedBy("ender_pearls", InventoryChangeTrigger.TriggerInstance.hasItems(ENDER_PEARL))

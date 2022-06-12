@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CreatureReflectionRendererModifier extends ReflectionRendererModifier {
-    EntityType<?> entityType;
+    final EntityType<?> entityType;
 
     /**
      * @param baseRenderer The renderer that is being proxied.

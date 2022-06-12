@@ -37,7 +37,7 @@ class Language extends LanguageProvider {
     }
 
     private void addDoorknob(String typeName, String materialName) {
-        MagicDoorknobItem doorknob = Items.DOORKNOBS.get(typeName);
+        MagicDoorknobItem doorknob = Items.DOORKNOBS.get(typeName).get();
         add(doorknob, String.format("%s Magic Doorknob", materialName));
     }
 
