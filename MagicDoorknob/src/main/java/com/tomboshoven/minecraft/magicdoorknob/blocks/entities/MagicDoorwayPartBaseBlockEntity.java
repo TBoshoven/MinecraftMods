@@ -58,20 +58,19 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
-        return writeInternal(compound);
+    protected void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
+        saveInternal(compound);
     }
 
-    private CompoundTag writeInternal(CompoundTag compound) {
-        CompoundTag result = super.save(compound);
+    private void saveInternal(CompoundTag compound) {
         ResourceLocation registryName = baseBlockState.getBlock().getRegistryName();
         if (registryName != null) {
             compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
         }
         if (doorknob != null) {
-            result.putString("doorknobType", doorknob.getTypeName());
+            compound.putString("doorknobType", doorknob.getTypeName());
         }
-        return result;
     }
 
     @Override
@@ -88,7 +87,9 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag() {
-        return writeInternal(super.getUpdateTag());
+        CompoundTag updateTag = super.getUpdateTag();
+        saveInternal(updateTag);
+        return updateTag;
     }
 
     @Nullable

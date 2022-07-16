@@ -82,7 +82,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
         if (players.isEmpty()) {
             return null;
         }
-        return Collections.min(players, Comparator.comparingDouble(player -> ownPosition.distSqr(player.getX(), player.getY(), player.getZ(), true)));
+        return Collections.min(players, Comparator.comparingDouble(player -> ownPosition.distSqr(player.getOnPos())));
     }
 
     /**
@@ -129,17 +129,17 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
-        return writeInternal(super.save(compound));
+    protected void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
+        saveInternal(compound);
     }
 
     /**
      * Write out the data for the magic mirror core to an NBT compound.
      *
      * @param compound The NBT compound to write to.
-     * @return The nbt parameter, for chaining.
      */
-    private CompoundTag writeInternal(CompoundTag compound) {
+    private void saveInternal(CompoundTag compound) {
         ListTag modifierList = new ListTag();
         for (MagicMirrorBlockEntityModifier modifier : modifiers) {
             CompoundTag modifierCompound = new CompoundTag();
@@ -147,7 +147,6 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
             modifierList.add(modifier.write(modifierCompound));
         }
         compound.put("modifiers", modifierList);
-        return compound;
     }
 
     @Override
@@ -224,7 +223,9 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag() {
-        return writeInternal(super.getUpdateTag());
+        CompoundTag updateTag = super.getUpdateTag();
+        saveInternal(updateTag);
+        return updateTag;
     }
 
     @Nullable

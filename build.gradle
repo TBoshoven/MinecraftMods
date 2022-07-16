@@ -24,14 +24,14 @@ subprojects {
 
     String modName = project.getName().replaceAll(/([a-z])([A-Z])/, /$1_$2/).toLowerCase()
 
-    version = "1.18.0-DEV.0"
+    version = "1.18.2-DEV.0"
     group = "com.tomboshoven.minecraft." + project.getName().toLowerCase()
     archivesBaseName = project.projectDir.name
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
     minecraft {
-        mappings channel: 'official', version: '1.18'
+        mappings channel: 'official', version: '1.18.2'
 
         runs {
             client {
@@ -67,7 +67,7 @@ subprojects {
     }
 
     dependencies {
-        minecraft "net.minecraftforge:forge:1.18-38.0.14"
+        minecraft "net.minecraftforge:forge:1.18.2-40.1.60"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
