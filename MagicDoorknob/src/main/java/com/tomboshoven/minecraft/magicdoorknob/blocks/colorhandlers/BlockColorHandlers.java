@@ -6,7 +6,7 @@ import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -28,7 +28,7 @@ public final class BlockColorHandlers {
     /**
      * Register all color handlers.
      */
-    private static void registerBlockColorHandlers(ColorHandlerEvent.Block event) {
+    private static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
         BlockColors blockColors = event.getBlockColors();
 
         BlockColor doorwayBlockColorHandler = new DoorwayBlockColorHandler();

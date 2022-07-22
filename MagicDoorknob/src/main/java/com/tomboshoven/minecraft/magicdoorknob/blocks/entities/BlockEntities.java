@@ -10,7 +10,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 @SuppressWarnings("ConstantConditions")
 public final class BlockEntities {
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MagicDoorknobMod.MOD_ID);
+    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MagicDoorknobMod.MOD_ID);
 
     static final RegistryObject<BlockEntityType<MagicDoorBlockEntity>> MAGIC_DOOR =
             BLOCK_ENTITIES.register("magic_door",

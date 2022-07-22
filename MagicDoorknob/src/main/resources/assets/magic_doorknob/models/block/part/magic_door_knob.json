@@ -1,6 +1,7 @@
 {
   "loader": "magic_doorknob:textured",
   "base_loader": "minecraft:elements",
+  "render_type": "translucent",
   "textures": {
     "main": "property:texture_main",
     "highlight": "property:texture_highlight"
