@@ -3,8 +3,8 @@ package com.tomboshoven.minecraft.magicdoorknob.data;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

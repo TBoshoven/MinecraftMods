@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -20,8 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.BakedModelWrapper;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -79,9 +79,9 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
     }
 
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, IModelData extraData) {
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
         // Return the original quads, with the property sprites replaced by actual ones
-        List<BakedQuad> quads = originalModel.getQuads(state, side, rand, extraData);
+        List<BakedQuad> quads = originalModel.getQuads(state, side, rand, extraData, renderType);
         return quads.stream().map(quad -> {
             TextureAtlasSprite sprite = quad.getSprite();
             if (sprite instanceof PropertySprite) {
@@ -154,7 +154,7 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-        return getQuads(state, side, rand, EmptyModelData.INSTANCE);
+        return getQuads(state, side, rand, ModelData.EMPTY, null);
     }
 
     @Override
@@ -163,7 +163,7 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
     }
 
     @Override
-    public TextureAtlasSprite getParticleIcon(@Nonnull IModelData data) {
+    public TextureAtlasSprite getParticleIcon(@Nonnull ModelData data) {
         TextureAtlasSprite sprite = super.getParticleIcon(data);
         if (sprite instanceof PropertySprite) {
             Material spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, null, data);

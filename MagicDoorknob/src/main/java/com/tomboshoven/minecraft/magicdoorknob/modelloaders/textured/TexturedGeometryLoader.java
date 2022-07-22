@@ -3,15 +3,15 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
+import net.minecraftforge.client.model.geometry.GeometryLoaderManager;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Set;
@@ -22,15 +22,11 @@ import java.util.Set;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
-public class TexturedModelLoader implements IModelLoader<TexturedModelGeometry> {
+public class TexturedGeometryLoader implements IGeometryLoader<TexturedUnbakedGeometry> {
     // The namespace of the properties; used in model definitions
     public static final String PROPERTY_NAMESPACE = "property";
     // All extra textures that were requested.
     private final Set<Material> extraTextures = Sets.newHashSet();
-
-    @Override
-    public void onResourceManagerReload(ResourceManager resourceManager) {
-    }
 
     /**
      * Register an additional texture to load with the models.
@@ -43,10 +39,14 @@ public class TexturedModelLoader implements IModelLoader<TexturedModelGeometry> 
     }
 
     @Override
-    public TexturedModelGeometry read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
+    public TexturedUnbakedGeometry read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) throws JsonParseException {
         // Load the original model through its configured base loader
-        ResourceLocation baseLoader = new ResourceLocation(modelContents.get("base_loader").getAsString());
-        IModelGeometry<?> modelGeometry = ModelLoaderRegistry.getModel(baseLoader, deserializationContext, modelContents);
-        return new TexturedModelGeometry(modelGeometry, extraTextures);
+        ResourceLocation baseLoaderName = new ResourceLocation(jsonObject.get("base_loader").getAsString());
+        IGeometryLoader<?> baseLoader = GeometryLoaderManager.get(baseLoaderName);
+        if (baseLoader == null) {
+            throw new RuntimeException(String.format("Invalid base loader \"%s\"", baseLoaderName));
+        }
+        IUnbakedGeometry<?> modelGeometry = baseLoader.read(jsonObject, deserializationContext);
+        return new TexturedUnbakedGeometry(modelGeometry, extraTextures);
     }
 }

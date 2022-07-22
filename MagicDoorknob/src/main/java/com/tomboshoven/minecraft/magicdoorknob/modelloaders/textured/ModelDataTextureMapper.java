@@ -8,7 +8,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import javax.annotation.Nullable;
@@ -22,11 +22,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @OnlyIn(Dist.CLIENT)
 class ModelDataTextureMapper implements ITextureMapper {
     @Override
-    public Material mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable IModelData extraData) {
+    public Material mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable ModelData extraData) {
         if (extraData != null) {
             ResourceLocation name = spriteToMap.getName();
             ModelProperty<Material> modelProperty = ModelTextureProperty.get(name);
-            Material material = extraData.getData(modelProperty);
+            Material material = extraData.get(modelProperty);
             if (material != null) {
                 return material;
             }

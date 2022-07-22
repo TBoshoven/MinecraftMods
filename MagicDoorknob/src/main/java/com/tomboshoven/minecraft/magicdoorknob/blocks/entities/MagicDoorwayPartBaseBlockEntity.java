@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.CompositeModel;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
-import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedModelLoader.PROPERTY_NAMESPACE;
+import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedGeometryLoader.PROPERTY_NAMESPACE;
 
 /**
  * Base class for block entities that make up magic doorways.
@@ -112,7 +112,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public @NotNull IModelData getModelData() {
+    public @NotNull ModelData getModelData() {
         Minecraft minecraft = Minecraft.getInstance();
         BlockModelShaper blockModelShapes = minecraft.getBlockRenderer().getBlockModelShaper();
 
@@ -137,10 +137,10 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
             doorknobMaterial = blockMaterial;
         }
 
-        CompositeModel.CompositeModelData compositeModelData = new CompositeModel.CompositeModelData();
-        compositeModelData.setData(TEXTURE_MAIN, blockMaterial);
-        compositeModelData.setData(TEXTURE_HIGHLIGHT, doorknobMaterial);
-        return compositeModelData;
+        return ModelData.builder()
+                .with(TEXTURE_MAIN, blockMaterial)
+                .with(TEXTURE_HIGHLIGHT, doorknobMaterial)
+                .build();
     }
 
     /**
