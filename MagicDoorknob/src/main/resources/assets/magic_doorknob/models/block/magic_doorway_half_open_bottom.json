@@ -4,7 +4,7 @@
   "textures": {
     "particle": "property:texture_main"
   },
-  "parts": {
+  "children": {
     "wall1": {
       "parent": "magic_doorknob:block/part/magic_doorway_wall"
     },

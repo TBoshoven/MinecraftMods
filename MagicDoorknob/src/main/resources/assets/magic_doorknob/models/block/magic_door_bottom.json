@@ -4,7 +4,7 @@
   "textures": {
     "particle": "property:texture_main"
   },
-  "parts": {
+  "children": {
     "door": {
       "parent": "magic_doorknob:block/part/magic_door"
     }
