@@ -141,6 +141,9 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
             if (state.getBlock() == Blocks.MAGIC_DOORWAY.get()) {
                 world.destroyBlock(blockPos, false);
             }
+            else if (state.getBlock() == Blocks.MAGIC_DOOR.get()) {
+                // If we find a door, make sure it's paired and close it
+            }
         }
     }
 

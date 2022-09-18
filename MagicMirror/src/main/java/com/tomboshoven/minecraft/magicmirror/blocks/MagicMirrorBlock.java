@@ -51,7 +51,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
     /**
      * Property describing whether the mirror is completely constructed.
      */
-    private static final BooleanProperty COMPLETE = BooleanProperty.create("complete");
+    public static final BooleanProperty COMPLETE = BooleanProperty.create("complete");
 
     /**
      * Property describing which part of the mirror is being represented by this block.

@@ -8,12 +8,12 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifie
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntities;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
 import com.tomboshoven.minecraft.magicmirror.data.DataGenerators;
+import com.tomboshoven.minecraft.magicmirror.entity.ai.EndermanMirrorLockAI;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClientUpdater;
 import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -54,5 +54,8 @@ public final class MagicMirrorMod {
         MagicMirrorModifier.register(new ArmorMagicMirrorModifier());
         MagicMirrorModifier.register(new BannerMagicMirrorModifier());
         MagicMirrorModifier.register(new CreatureMagicMirrorModifier());
+
+        // Register Enderman behavior
+        MinecraftForge.EVENT_BUS.register(EndermanMirrorLockAI.class);
     }
 }

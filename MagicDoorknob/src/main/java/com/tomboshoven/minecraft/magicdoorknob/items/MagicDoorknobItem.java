@@ -14,8 +14,10 @@ import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -28,6 +30,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Supplier;
 
@@ -77,6 +80,14 @@ public class MagicDoorknobItem extends Item {
         return blockState.isReplaceable(useContext);
     }
 
+    private static boolean hasAugment(ItemStack itemStack, MagicDoorknobAugment augment) {
+        CompoundNBT tag = itemStack.getTag();
+        if (tag != null) {
+            return tag.getCompound("augments").contains(augment.getId());
+        }
+        return false;
+    }
+
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         World world = context.getWorld();
@@ -91,7 +102,6 @@ public class MagicDoorknobItem extends Item {
 
             BlockItemUseContext useContext = new BlockItemUseContext(context);
             if (canPlaceDoor(world, pos, face, useContext)) {
-                placeDoor(world, pos, face);
                 placeDoorway(world, pos, face, useContext);
                 context.getItem().shrink(1);
                 return ActionResultType.SUCCESS;
@@ -109,7 +119,8 @@ public class MagicDoorknobItem extends Item {
      * @param pos    The position of the top part of the door
      * @param facing The direction the door should be facing
      */
-    private void placeDoor(World world, BlockPos pos, Direction facing) {
+    @Nullable
+    private PlacedDoor placeDoor(World world, BlockPos pos, Direction facing) {
         BlockPos doorPos = pos.offset(facing);
         Block block = Blocks.MAGIC_DOOR.get();
         world.setBlockState(
@@ -135,6 +146,10 @@ public class MagicDoorknobItem extends Item {
             ((MagicDoorwayPartBaseTileEntity) bottomTileEntity).setDoorknob(this);
         }
         world.playSound(null, doorPos, SoundEvents.BLOCK_WOODEN_DOOR_OPEN, SoundCategory.BLOCKS, 1, 1);
+        if (topTileEntity instanceof MagicDoorTileEntity && bottomTileEntity instanceof MagicDoorTileEntity) {
+            return new PlacedDoor((MagicDoorTileEntity) topTileEntity, (MagicDoorTileEntity) bottomTileEntity);
+        }
+        return null;
     }
 
     /**
@@ -147,10 +162,14 @@ public class MagicDoorknobItem extends Item {
      * @param useContext The context for the interaction that triggered this check.
      */
     private void placeDoorway(World world, BlockPos pos, Direction facing, BlockItemUseContext useContext) {
+        // Door at the start
+        ItemStack doorknobStack = useContext.getItem();
+        PlacedDoor door = placeDoor(world, pos, facing);
         Direction doorwayFacing = facing.getOpposite();
         boolean isNorthSouth = facing == Direction.NORTH || facing == Direction.SOUTH;
         float depth = tier.getEfficiency();
-        for (int i = 0; i < depth; ++i) {
+        int i = 0;
+        for (; i < depth; ++i) {
             BlockPos elementPos = pos.offset(doorwayFacing, i);
             if (
                     (isReplaceable(world, elementPos) && !isEmpty(world, elementPos, useContext)) ||
@@ -161,6 +180,16 @@ public class MagicDoorknobItem extends Item {
             } else {
                 // Stop iterating if we've hit two empty blocks
                 break;
+            }
+        }
+        // Place a door at the end if augmented
+        if (hasAugment(doorknobStack, MagicDoorknobAugment.EXTRA_DOORKNOB)) {
+            BlockPos nextPos = pos.offset(doorwayFacing, i - 1);
+            if (isEmpty(world, nextPos, useContext) && isEmpty(world, nextPos.down(), useContext)) {
+                PlacedDoor otherDoor = placeDoor(world, nextPos, facing.getOpposite());
+                if (door != null) {
+                    door.pairWith(otherDoor);
+                }
             }
         }
     }
@@ -249,5 +278,20 @@ public class MagicDoorknobItem extends Item {
      */
     public Ingredient getIngredient() {
         return ingredient.get();
+    }
+
+    private static class PlacedDoor {
+        private final MagicDoorTileEntity topTileEntity;
+        private final MagicDoorTileEntity bottomTileEntity;
+
+        public PlacedDoor(MagicDoorTileEntity topTileEntity, MagicDoorTileEntity bottomTileEntity) {
+            this.topTileEntity = topTileEntity;
+            this.bottomTileEntity = bottomTileEntity;
+        }
+
+        public void pairWith(@Nullable PlacedDoor otherDoor) {
+            topTileEntity.pairWith(otherDoor == null ? null : otherDoor.topTileEntity);
+            bottomTileEntity.pairWith(otherDoor == null ? null : otherDoor.bottomTileEntity);
+        }
     }
 }
