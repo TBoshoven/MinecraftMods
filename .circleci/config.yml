@@ -90,7 +90,7 @@ jobs:
             FILE="$(ls /tmp/workspace/libs/*.jar | head -n 1)"
             # Use the build number on the JAR to prevent confusion.
             ORIGINAL_BUILD_NUM="$(echo "$FILE" | sed -E 's/^.*\.([0-9]+)\.jar$/\1/')"
-            METADATA="$(jq -n '{"changelog": $ARGS.positional[0], "changelogType": "markdown", "displayName": $ARGS.positional[1], "gameVersions": [9366, 7498, 8326], "releaseType": "release"}' --args "$DESCRIPTION" "v$TAG_VERSION.$ORIGINAL_BUILD_NUM")"
+            METADATA="$(jq -n '{"changelog": $ARGS.positional[0], "changelogType": "markdown", "displayName": $ARGS.positional[1], "gameVersions": [9776, 7498, 8326], "releaseType": "release"}' --args "$DESCRIPTION" "v$TAG_VERSION.$ORIGINAL_BUILD_NUM")"
             curl -XPOST -f "https://minecraft.curseforge.com/api/projects/$PROJECT_ID/upload-file" -F "file=@$FILE" -F "metadata=$METADATA" -H "X-Api-Token: $CURSEFORGE_TOKEN"
 workflows:
   version: 2
