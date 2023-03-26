@@ -3,8 +3,9 @@ package com.tomboshoven.minecraft.magicmirror.items;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.DeferredRegister;
@@ -28,7 +29,7 @@ public final class Items {
     public static final RegistryObject<Item> MAGIC_MIRROR =
             ITEMS.register("magic_mirror", () -> new MagicMirrorBlockItem(
                     Blocks.MAGIC_MIRROR_INACTIVE.get(),
-                    new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)
+                    new Item.Properties()
             ));
 
     private Items() {
@@ -36,5 +37,12 @@ public final class Items {
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
+        eventBus.addListener(Items::registerCreativeTabs);
+    }
+
+    private static void registerCreativeTabs(CreativeModeTabEvent.BuildContents event) {
+        if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            event.accept(MAGIC_MIRROR);
+        }
     }
 }

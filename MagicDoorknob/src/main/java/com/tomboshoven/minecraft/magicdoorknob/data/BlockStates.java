@@ -6,7 +6,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayPartBaseBlock;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -20,8 +20,8 @@ import static com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayPartBas
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 class BlockStates extends BlockStateProvider {
-    BlockStates(DataGenerator gen, ExistingFileHelper existingFileHelper) {
-        super(gen, MagicDoorknobMod.MOD_ID, existingFileHelper);
+    BlockStates(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, MagicDoorknobMod.MOD_ID, existingFileHelper);
     }
 
     @Override

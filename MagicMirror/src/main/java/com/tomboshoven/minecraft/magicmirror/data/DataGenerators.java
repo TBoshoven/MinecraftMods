@@ -2,6 +2,7 @@ package com.tomboshoven.minecraft.magicmirror.data;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -24,10 +25,10 @@ public final class DataGenerators {
 
         boolean includeServer = event.includeServer();
         boolean includeClient = event.includeClient();
-        generator.addProvider(includeServer, new BlockStates(generator, existingFileHelper));
-        generator.addProvider(includeServer, new Language(generator));
-        generator.addProvider(includeServer, new LootTables(generator));
-        generator.addProvider(includeServer, new Recipes(generator));
-        generator.addProvider(includeClient, new ItemModels(generator, existingFileHelper));
+        generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) output -> new BlockStates(output, existingFileHelper));
+        generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) Language::new);
+        generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) LootTables::new);
+        generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) Recipes::new);
+        generator.addProvider(includeClient, (DataProvider.Factory<DataProvider>) output -> new ItemModels(output, existingFileHelper));
     }
 }

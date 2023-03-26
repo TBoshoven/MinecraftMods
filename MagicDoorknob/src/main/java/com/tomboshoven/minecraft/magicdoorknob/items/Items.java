@@ -5,12 +5,13 @@ import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.DeferredRegister;
@@ -31,7 +32,7 @@ public final class Items {
     /**
      * The magic doorknob items by type name.
      */
-    public static final Map<String, RegistryObject<MagicDoorknobItem>> DOORKNOBS = Maps.newHashMap();
+    public static final Map<String, RegistryObject<MagicDoorknobItem>> DOORKNOBS = Maps.newLinkedHashMap();
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MagicDoorknobMod.MOD_ID);
 
@@ -49,7 +50,7 @@ public final class Items {
      * @param ingredient  The ingredient used to build the doorknob
      */
     private static void addDoorknob(String typeName, Tier tier, ResourceLocation mainTexture, Supplier<Ingredient> ingredient) {
-        RegistryObject<MagicDoorknobItem> item = ITEMS.register(String.format("magic_doorknob_%s", typeName), () -> new MagicDoorknobItem(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS), typeName, tier, mainTexture, ingredient));
+        RegistryObject<MagicDoorknobItem> item = ITEMS.register(String.format("magic_doorknob_%s", typeName), () -> new MagicDoorknobItem(new Item.Properties(), typeName, tier, mainTexture, ingredient));
         DOORKNOBS.put(typeName, item);
     }
 
@@ -67,6 +68,13 @@ public final class Items {
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
+        eventBus.addListener(Items::registerCreativeTabs);
+    }
+
+    private static void registerCreativeTabs(CreativeModeTabEvent.BuildContents event) {
+        if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            DOORKNOBS.values().forEach(event::accept);
+        }
     }
 
     static {

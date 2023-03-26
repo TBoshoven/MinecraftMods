@@ -4,7 +4,7 @@ import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorInactiveBlock;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
@@ -17,8 +17,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 class BlockStates extends BlockStateProvider {
-    BlockStates(DataGenerator gen, ExistingFileHelper existingFileHelper) {
-        super(gen, MagicMirrorMod.MOD_ID, existingFileHelper);
+    BlockStates(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, MagicMirrorMod.MOD_ID, existingFileHelper);
     }
 
     @Override

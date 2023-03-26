@@ -9,7 +9,7 @@ import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.BannerReflecti
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -110,7 +110,7 @@ public class BannerMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntity
         Reflection reflection = blockEntity.getReflection();
         if (reflection != null) {
             List<Pair<Holder<BannerPattern>, DyeColor>> patternList = Lists.newArrayList();
-            Optional<Holder<BannerPattern>> base = Registry.BANNER_PATTERN.getHolder(BannerPatterns.BASE);
+            Optional<? extends Holder<BannerPattern>> base = BuiltInRegistries.BANNER_PATTERN.getHolder(BannerPatterns.BASE);
             base.ifPresent(bannerPatternHolder -> patternList.add(Pair.of(bannerPatternHolder, baseColor)));
             if (bannerNBT != null) {
                 // Get the patterns from the NBT data

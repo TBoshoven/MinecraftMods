@@ -2,8 +2,7 @@ package com.tomboshoven.minecraft.magicmirror.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClientUpdater;
@@ -12,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
 
 public abstract class BlockEntityMagicMirrorRendererBase {
     /**
@@ -64,7 +64,7 @@ public abstract class BlockEntityMagicMirrorRendererBase {
         matrixStack.translate(.5, .5, .5);
 
         // Draw on top of the model instead of in the center of the block
-        matrixStack.mulPose(Vector3f.YN.rotationDegrees(facing.toYRot()));
+        matrixStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
         matrixStack.translate(0, 0, -.4);
 
         VertexConsumer buffer = renderTypeBuffer.getBuffer(reflection.getRenderType());

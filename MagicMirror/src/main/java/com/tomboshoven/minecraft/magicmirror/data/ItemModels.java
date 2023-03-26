@@ -3,7 +3,7 @@ package com.tomboshoven.minecraft.magicmirror.data;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -15,8 +15,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 class ItemModels extends ItemModelProvider {
-    ItemModels(DataGenerator gen, ExistingFileHelper helper) {
-        super(gen, MagicMirrorMod.MOD_ID, helper);
+    ItemModels(PackOutput output, ExistingFileHelper helper) {
+        super(output, MagicMirrorMod.MOD_ID, helper);
     }
 
     @Override

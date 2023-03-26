@@ -5,7 +5,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,8 +15,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 class Language extends LanguageProvider {
-    Language(DataGenerator gen) {
-        super(gen, MagicDoorknobMod.MOD_ID, "en_us");
+    Language(PackOutput output) {
+        super(output, MagicDoorknobMod.MOD_ID, "en_us");
     }
 
     @Override

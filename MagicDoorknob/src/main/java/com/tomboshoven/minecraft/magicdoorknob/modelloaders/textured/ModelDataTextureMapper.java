@@ -24,7 +24,7 @@ class ModelDataTextureMapper implements ITextureMapper {
     @Override
     public Material mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable ModelData extraData) {
         if (extraData != null) {
-            ResourceLocation name = spriteToMap.getName();
+            ResourceLocation name = spriteToMap.contents().name();
             ModelProperty<Material> modelProperty = ModelTextureProperty.get(name);
             Material material = extraData.get(modelProperty);
             if (material != null) {

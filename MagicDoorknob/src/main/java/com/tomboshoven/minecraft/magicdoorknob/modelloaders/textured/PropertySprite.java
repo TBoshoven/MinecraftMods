@@ -1,15 +1,15 @@
 package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 
-import com.mojang.blaze3d.platform.NativeImage;
-import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
+import net.minecraft.client.resources.metadata.animation.FrameSize;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.textures.UnitTextureAtlasSprite;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -21,25 +21,29 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 class PropertySprite extends TextureAtlasSprite {
-    private final ResourceLocation name;
-
-    private static final TextureAtlas ATLAS_TEXTURE = new TextureAtlas(new ResourceLocation(MagicDoorknobMod.MOD_ID, "property_texture_atlas"));
-    private static final NativeImage NATIVE_IMAGE = new NativeImage(1, 1, false);
+    private final ResourceLocation property;
 
     /**
-     * @param name The location of the property
+     * @param property The identifier of the property
      */
-    PropertySprite(ResourceLocation name) {
-        super(ATLAS_TEXTURE, new Info(name, Integer.MAX_VALUE, Integer.MAX_VALUE, AnimationMetadataSection.EMPTY), 0, Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 0, NATIVE_IMAGE);
-        this.name = name;
+    PropertySprite(ResourceLocation property) {
+        // Hijack the atlas and native image from UnitTextureAtlasSprite, so we don't have to build our own.
+        super(UnitTextureAtlasSprite.LOCATION, new SpriteContents(property, new FrameSize(1, 1), UnitTextureAtlasSprite.INSTANCE.contents().getOriginalImage(), AnimationMetadataSection.EMPTY, null), 1, 1, 0, 0);
+        this.property = property;
+    }
+
+    public ResourceLocation getProperty() {
+        return this.property;
     }
 
     @Override
-    public ResourceLocation getName() {
-        return name;
+    public float uvShrinkRatio() {
+        // The default calculated value for this seriously explodes for tiny textures
+        // We should be fine without; if needed, we can apply this during re-texturing
+        return 0;
     }
 
     public String toString() {
-        return "PropertySprite{name='" + name + "'}";
+        return "PropertySprite{name='" + property + "'}";
     }
 }

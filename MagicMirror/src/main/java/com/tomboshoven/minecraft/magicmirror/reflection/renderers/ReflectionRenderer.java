@@ -2,13 +2,13 @@ package com.tomboshoven.minecraft.magicmirror.reflection.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Entity;
+import org.joml.Matrix4f;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -56,7 +56,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         // Re-initialize the projection matrix to keep full control over the perspective
         RenderSystem.backupProjectionMatrix();
         // Aspect is .5 to compensate for the rectangular mirror
-        RenderSystem.setProjectionMatrix(Matrix4f.perspective(90f, .5f, .05f, 50f));
+        RenderSystem.setProjectionMatrix(new Matrix4f().setPerspective((float)(Math.PI / 2), .5f, .05f, 50f));
     }
 
     @Override
@@ -74,11 +74,11 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         PoseStack reflectionMatrixStack = new PoseStack();
 
         // Head's up
-        reflectionMatrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
+        reflectionMatrixStack.mulPose(Axis.XP.rotationDegrees(180));
         // Position within the frame
         reflectionMatrixStack.translate(0, -1, 1.5);
         // Face toward the front of the mirror
-        reflectionMatrixStack.mulPose(Vector3f.YP.rotationDegrees(facing));
+        reflectionMatrixStack.mulPose(Axis.YP.rotationDegrees(facing));
 
         // The typing of these classes works out a little weird, so instead of complicating things too much, let's go
         // with the unchecked cast.

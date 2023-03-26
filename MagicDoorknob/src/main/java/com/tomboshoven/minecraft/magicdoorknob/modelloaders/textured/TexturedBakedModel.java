@@ -94,6 +94,7 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
     }
 
     private static BakedQuad retexture(BakedQuad quad, TextureAtlasSprite sprite) {
+        // Note: assumes original sprite is 1x1
         int[] vertexData = quad.getVertices().clone();
 
         // Offset between vertices
@@ -103,18 +104,19 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
 
         float minU = sprite.getU0();
         float maxU = sprite.getU1();
-        float uDiff = maxU - minU;
         float minV = sprite.getV0();
         float maxV = sprite.getV1();
-        float vDiff = maxV - minV;
 
         int idx = VERTEX_FORMAT_ELEMENT_UV_OFFSET;
         // Iterate over all 4 vertices
         for (int vertex = 0; vertex < 4; ++vertex) {
             float vertexU = Float.intBitsToFloat(getAtByteOffset(vertexData, idx));
             float vertexV = Float.intBitsToFloat(getAtByteOffset(vertexData, idx + eltOffset));
-            putAtByteOffset(vertexData, idx, Float.floatToRawIntBits(minU + uDiff * vertexU));
-            putAtByteOffset(vertexData, idx + eltOffset, Float.floatToRawIntBits(minV + vDiff * vertexV));
+            float newU = minU + (maxU - minU) * vertexU;
+            float newV = minV + (maxV - minV) * vertexV;
+            putAtByteOffset(vertexData, idx, Float.floatToRawIntBits(newU));
+            putAtByteOffset(vertexData, idx + eltOffset, Float.floatToRawIntBits(newV));
+
             idx += stride;
         }
 

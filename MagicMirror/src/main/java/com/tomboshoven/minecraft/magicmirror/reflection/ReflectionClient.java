@@ -61,7 +61,6 @@ public class ReflectionClient extends Reflection {
      */
     final RenderStateShard.EmptyTextureStateShard TEXTURE_STATE_SHARD = new RenderStateShard.EmptyTextureStateShard(() -> {
         if (frameBuffer != null) {
-            RenderSystem.enableTexture();
             RenderSystem.setShaderTexture(0, frameBuffer.getColorTextureId());
         }
     }, () -> {

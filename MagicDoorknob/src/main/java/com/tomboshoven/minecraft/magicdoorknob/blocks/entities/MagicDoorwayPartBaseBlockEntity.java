@@ -10,6 +10,9 @@ import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
@@ -17,13 +20,13 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.CompositeModel;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -82,7 +85,8 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     private void loadInternal(CompoundTag compound) {
-        baseBlockState = NbtUtils.readBlockState(compound.getCompound("baseBlock"));
+        HolderGetter<Block> holdergetter = this.level != null ? this.level.holderLookup(Registries.BLOCK) : BuiltInRegistries.BLOCK.asLookup();
+        baseBlockState = NbtUtils.readBlockState(holdergetter, compound.getCompound("baseBlock"));
         String doorknobType = compound.getString("doorknobType");
         doorknob = Items.DOORKNOBS.get(doorknobType).get();
     }
@@ -120,11 +124,11 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
         Level world = getLevel();
         TextureAtlasSprite blockTexture = world == null ? null : blockModelShapes.getTexture(baseBlockState, world, getBlockPos());
         Material blockMaterial;
-        if (blockTexture == null || blockTexture instanceof MissingTextureAtlasSprite) {
+        if (blockTexture == null || blockTexture == minecraft.getTextureAtlas(blockTexture.atlasLocation()).apply(MissingTextureAtlasSprite.getLocation())) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.
             blockMaterial = new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation(MOD_ID, "block/empty"));
         } else {
-            blockMaterial = new Material(blockTexture.atlas().location(), blockTexture.getName());
+            blockMaterial = new Material(blockTexture.atlasLocation(), blockTexture.contents().name());
         }
 
         // Get the highlight texture

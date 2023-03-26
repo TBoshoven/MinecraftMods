@@ -56,7 +56,7 @@ class OffModelPlayerRenderer<T extends LivingEntity, M extends EntityModel<T>> e
         }
         if (model instanceof HumanoidModel) {
             //noinspection unchecked,rawtypes
-            addLayer(new HumanoidArmorLayer(this, new HumanoidModel<>(renderContext.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)), new HumanoidModel<>(renderContext.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
+            addLayer(new HumanoidArmorLayer(this, new HumanoidModel<>(renderContext.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)), new HumanoidModel<>(renderContext.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)), renderContext.getModelManager()));
         }
         if (model instanceof PlayerModel) {
             //noinspection unchecked,rawtypes
