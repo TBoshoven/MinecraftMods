@@ -26,10 +26,10 @@ class BlockEntityMagicMirrorPartRenderer extends BlockEntityMagicMirrorRendererB
     }
 
     @Override
-    public void render(MagicMirrorPartBlockEntity magicMirrorPartBlockEntity, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLightIn, int combinedOverlayIn) {
+    public void render(MagicMirrorPartBlockEntity magicMirrorPartBlockEntity, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLight, int combinedOverlay) {
         MagicMirrorCoreBlockEntity core = magicMirrorPartBlockEntity.getCore();
         if (core != null) {
-            render(core.getReflection(), magicMirrorPartBlockEntity.getBlockPos(), core.getBlockState().getValue(HorizontalDirectionalBlock.FACING), poseStack, multiBufferSource);
+            render(core.getReflection(), magicMirrorPartBlockEntity.getBlockPos(), core.getBlockState().getValue(HorizontalDirectionalBlock.FACING), poseStack, multiBufferSource, combinedLight);
         }
     }
 
