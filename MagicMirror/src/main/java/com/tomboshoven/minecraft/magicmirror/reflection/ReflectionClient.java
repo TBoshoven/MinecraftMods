@@ -1,20 +1,14 @@
 package com.tomboshoven.minecraft.magicmirror.reflection;
 
-import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.pipeline.TextureTarget;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRenderer;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -22,8 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_COLOR_TEX;
-import static net.minecraft.client.Minecraft.ON_OSX;
+import java.util.Locale;
 
 /**
  * Client-side version of the reflection.
@@ -35,6 +28,12 @@ import static net.minecraft.client.Minecraft.ON_OSX;
 public class ReflectionClient extends Reflection {
     private static final int TEXTURE_WIDTH = 64;
     private static final int TEXTURE_HEIGHT = 128;
+
+    /**
+     * Incrementing ID for use in the texture name.
+     */
+    private static int texId = 0;
+
     /**
      * The renderer for the reflection.
      */
@@ -42,64 +41,22 @@ public class ReflectionClient extends Reflection {
     private ReflectionRendererBase reflectionRenderer;
 
     /**
-     * The frame buffer which is used for rendering the reflection to and subsequently rendering it into the world.
+     * Location of the texture. Since every reflection has a dynamic texture, we generate these.
      */
+    private final ResourceLocation textureLocation;
     @Nullable
-    private RenderTarget frameBuffer;
+    private ReflectionTexture reflectionTexture;
 
     /**
      * Render type for rendering this reflection to the screen.
      * Each reflection has its own texture, and therefore its own render type.
      */
-
     private final RenderType renderType;
 
-    RenderStateShard.ShaderStateShard SHADER_STATE_SHARD = new RenderStateShard.ShaderStateShard(GameRenderer::getBlockShader);
-
-    /**
-     * Texture state shard for the reflection.
-     */
-    RenderStateShard.EmptyTextureStateShard TEXTURE_STATE_SHARD = new RenderStateShard.EmptyTextureStateShard(() -> {
-        if (frameBuffer != null) {
-            RenderSystem.enableTexture();
-            RenderSystem.setShaderTexture(0, frameBuffer.getColorTextureId());
-        }
-    }, () -> {
-    });
-
-    /**
-     * Transparency state shard for the reflection.
-     */
-    RenderStateShard.TransparencyStateShard TRANSPARENCY_STATE_SHARD = new RenderStateShard.TransparencyStateShard(
-            "reflection_transparency",
-            () -> {
-                RenderSystem.enableBlend();
-
-                if (frameBuffer != null) {
-                    RenderSystem.defaultBlendFunc();
-                } else {
-                    // If we don't have a texture, just render nothing
-                    RenderSystem.blendFuncSeparate(SourceFactor.ZERO, DestFactor.ONE, SourceFactor.ZERO, DestFactor.ONE);
-                }
-            }, () -> {
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableBlend();
-    });
-
     public ReflectionClient() {
-        renderType = RenderType.create(
-                String.format("reflection[%d]", hashCode()),
-                POSITION_COLOR_TEX,
-                VertexFormat.Mode.QUADS,
-                64,
-                true,
-                true,
-                RenderType.CompositeState.builder()
-                        .setShaderState(SHADER_STATE_SHARD)
-                        .setTextureState(TEXTURE_STATE_SHARD)
-                        .setTransparencyState(TRANSPARENCY_STATE_SHARD)
-                        .createCompositeState(true)
-        );
+        textureLocation = new ResourceLocation(MagicMirrorMod.MOD_ID, String.format(Locale.ROOT, "reflection_%d", texId++));
+        // Use "text" render type, which is also what's used by the map renderer.
+        renderType = RenderType.text(textureLocation);
     }
 
     @Override
@@ -113,20 +70,23 @@ public class ReflectionClient extends Reflection {
     }
 
     @Override
-    void buildFrameBuffer() {
-        super.buildFrameBuffer();
+    void buildTexture() {
+        super.buildTexture();
 
-        frameBuffer = new TextureTarget(TEXTURE_WIDTH, TEXTURE_HEIGHT, true, ON_OSX);
-        frameBuffer.unbindWrite();
+        if (reflectionTexture == null) {
+            reflectionTexture = new ReflectionTexture(TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            Minecraft.getInstance().getTextureManager().register(textureLocation, reflectionTexture);
+        }
     }
 
     @Override
-    void cleanUpFrameBuffer() {
-        super.cleanUpFrameBuffer();
+    void cleanUpTexture() {
+        super.cleanUpTexture();
 
-        if (frameBuffer != null) {
-            frameBuffer.destroyBuffers();
-            frameBuffer = null;
+        if (reflectionTexture != null) {
+            reflectionTexture.close();
+            Minecraft.getInstance().getTextureManager().release(textureLocation);
+            reflectionTexture = null;
         }
     }
 
@@ -153,18 +113,18 @@ public class ReflectionClient extends Reflection {
         super.render(partialTicks);
 
         // Create or destroy the frame buffer if needed
-        if (reflectedEntity != null && frameBuffer == null) {
-            buildFrameBuffer();
-        } else if (reflectedEntity == null && frameBuffer != null) {
-            cleanUpFrameBuffer();
+        if (reflectedEntity != null && reflectionTexture == null) {
+            buildTexture();
+        } else if (reflectedEntity == null && reflectionTexture != null) {
+            cleanUpTexture();
         }
 
 
-        if (frameBuffer != null && reflectionRenderer != null) {
+        if (reflectionTexture != null && reflectionRenderer != null) {
             MultiBufferSource.BufferSource renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
 
-            frameBuffer.clear(ON_OSX);
-            frameBuffer.bindWrite(true);
+            reflectionTexture.clear();
+            reflectionTexture.bindWrite(true);
 
             reflectionRenderer.setUp();
 
@@ -174,8 +134,15 @@ public class ReflectionClient extends Reflection {
 
             reflectionRenderer.tearDown();
 
-            frameBuffer.unbindWrite();
+            reflectionTexture.unbindWrite();
         }
+    }
+
+    /**
+     * @return whether the reflection is available for rendering.
+     */
+    public boolean isAvailable() {
+        return reflectionTexture != null;
     }
 
     public RenderType getRenderType() {
