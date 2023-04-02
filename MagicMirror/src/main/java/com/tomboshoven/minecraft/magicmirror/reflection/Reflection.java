@@ -75,13 +75,13 @@ public class Reflection {
     /**
      * Construct a new frame buffer to render to.
      */
-    void buildFrameBuffer() {
+    void buildTexture() {
     }
 
     /**
      * Clean up the current frame buffer.
      */
-    void cleanUpFrameBuffer() {
+    void cleanUpTexture() {
     }
 
     /**
