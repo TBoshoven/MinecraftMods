@@ -6,6 +6,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
+import com.tomboshoven.minecraft.magicdoorknob.config.Config;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
@@ -46,6 +47,10 @@ public class MagicDoorknobItem extends Item {
     private final Tier tier;
     // The ingredient used to make doorknobs of this type
     private final Supplier<Ingredient> ingredient;
+    /**
+     * The maximum allowed length of a doorway.
+     */
+    public static final int MAX_DOORWAY_LENGTH = 128;
 
     /**
      * @param properties          The item properties
@@ -146,7 +151,7 @@ public class MagicDoorknobItem extends Item {
     private void placeDoorway(Level world, BlockPos pos, Direction facing, BlockPlaceContext useContext) {
         Direction doorwayFacing = facing.getOpposite();
         boolean isNorthSouth = facing == Direction.NORTH || facing == Direction.SOUTH;
-        float depth = tier.getSpeed();
+        double depth = getDepth();
         for (int i = 0; i < depth; ++i) {
             BlockPos elementPos = pos.relative(doorwayFacing, i);
             if (
@@ -239,6 +244,13 @@ public class MagicDoorknobItem extends Item {
      */
     public Tier getTier() {
         return tier;
+    }
+
+    /**
+     * @return The maximum size of the doorway created by this doorknob
+     */
+    public double getDepth() {
+        return Math.min(getTier().getSpeed() * Config.SERVER.doorwayMultiplier.get(), MAX_DOORWAY_LENGTH);
     }
 
     /**
