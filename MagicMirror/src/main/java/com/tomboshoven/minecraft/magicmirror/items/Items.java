@@ -5,7 +5,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.DeferredRegister;
@@ -40,8 +40,8 @@ public final class Items {
         eventBus.addListener(Items::registerCreativeTabs);
     }
 
-    private static void registerCreativeTabs(CreativeModeTabEvent.BuildContents event) {
-        if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+    private static void registerCreativeTabs(BuildCreativeModeTabContentsEvent event) {
+        if (CreativeModeTabs.FUNCTIONAL_BLOCKS.equals(event.getTabKey())) {
             event.accept(MAGIC_MIRROR);
         }
     }

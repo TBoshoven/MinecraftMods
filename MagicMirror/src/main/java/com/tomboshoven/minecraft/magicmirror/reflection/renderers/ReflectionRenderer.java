@@ -2,6 +2,7 @@ package com.tomboshoven.minecraft.magicmirror.reflection.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexSorting;
 import com.mojang.math.Axis;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
@@ -56,7 +57,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         // Re-initialize the projection matrix to keep full control over the perspective
         RenderSystem.backupProjectionMatrix();
         // Aspect is .5 to compensate for the rectangular mirror
-        RenderSystem.setProjectionMatrix(new Matrix4f().setPerspective((float)(Math.PI / 2), .5f, .05f, 50f));
+        RenderSystem.setProjectionMatrix(new Matrix4f().setPerspective((float)(Math.PI / 2), .5f, .05f, 50f), VertexSorting.DISTANCE_TO_ORIGIN);
     }
 
     @Override

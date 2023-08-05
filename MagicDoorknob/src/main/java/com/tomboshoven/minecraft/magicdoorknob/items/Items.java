@@ -11,7 +11,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.DeferredRegister;
@@ -71,8 +71,8 @@ public final class Items {
         eventBus.addListener(Items::registerCreativeTabs);
     }
 
-    private static void registerCreativeTabs(CreativeModeTabEvent.BuildContents event) {
-        if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+    private static void registerCreativeTabs(BuildCreativeModeTabContentsEvent event) {
+        if (CreativeModeTabs.TOOLS_AND_UTILITIES.equals(event.getTabKey())) {
             DOORKNOBS.values().forEach(event::accept);
         }
     }

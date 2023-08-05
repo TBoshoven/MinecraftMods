@@ -5,8 +5,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.DeferredRegister;
@@ -24,9 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public final class Blocks {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MagicMirrorMod.MOD_ID);
 
-    private static final BlockBehaviour.Properties MIRROR_PROPERTIES = Block.Properties.of(
-            new Material.Builder(MaterialColor.COLOR_GRAY).build()
-    ).strength(.8f).sound(SoundType.GLASS);
+    private static final BlockBehaviour.Properties MIRROR_PROPERTIES = Block.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(.8f).sound(SoundType.GLASS);
 
     /**
      * The core that has all the actual logic.
