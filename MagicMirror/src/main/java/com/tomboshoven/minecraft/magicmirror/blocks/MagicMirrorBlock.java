@@ -5,6 +5,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifie
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorPartTileEntity;
+import com.tomboshoven.minecraft.magicmirror.items.Items;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
@@ -15,8 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
@@ -42,6 +42,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 @SuppressWarnings("deprecation")
@@ -175,29 +176,56 @@ public class MagicMirrorBlock extends HorizontalBlock {
 
     @Override
     public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        // The mirror will only do anything if it's used from the front.
-        if (state.getValue(FACING) == hit.getDirection()) {
-            if (!worldIn.isClientSide) {
-                // First, see if we can add a modifier
-                ItemStack heldItem = player.getItemInHand(handIn);
-                if (!heldItem.isEmpty()) {
-                    for (MagicMirrorModifier modifier : MagicMirrorModifier.getModifiers()) {
-                        if (modifier.canModify(worldIn, pos, heldItem)) {
-                            attachModifier(worldIn, pos, heldItem, modifier);
+        if (state.getValue(COMPLETE)) {
+            // The mirror will only do anything if it's used from the front.
+            if (state.getValue(FACING) == hit.getDirection()) {
+                if (!worldIn.isClientSide) {
+                    // First, see if we can add a modifier
+                    ItemStack heldItem = player.getItemInHand(handIn);
+                    if (!heldItem.isEmpty()) {
+                        for (MagicMirrorModifier modifier : MagicMirrorModifier.getModifiers()) {
+                            if (modifier.canModify(worldIn, pos, heldItem)) {
+                                attachModifier(worldIn, pos, heldItem, modifier);
+                                return ActionResultType.SUCCESS;
+                            }
+                        }
+                    }
+
+                    // Then, see if any existing modifier can do something.
+                    TileEntity tileEntity = worldIn.getBlockEntity(pos);
+                    if (tileEntity instanceof MagicMirrorBaseTileEntity) {
+                        if (((MagicMirrorBaseTileEntity) tileEntity).tryActivate(player, handIn)) {
                             return ActionResultType.SUCCESS;
                         }
                     }
                 }
+                return ActionResultType.SUCCESS;
+            }
+        }
+        else {
+            ItemStack heldItemStack = player.getItemInHand(handIn);
+            Item heldItem = heldItemStack.getItem();
 
-                // Then, see if any existing modifier can do something.
-                TileEntity tileEntity = worldIn.getBlockEntity(pos);
-                if (tileEntity instanceof MagicMirrorBaseTileEntity) {
-                    if (((MagicMirrorBaseTileEntity) tileEntity).tryActivate(player, handIn)) {
-                        return ActionResultType.SUCCESS;
+            // Add the second part if possible
+            if (!heldItemStack.isEmpty() && heldItem == Items.MAGIC_MIRROR.get()) {
+                Direction ownDirection = state.getValue(FACING);
+
+                if (hit.getDirection() == ownDirection) {
+                    // Attempt to place above first, then below.
+                    for (Direction direction : new Direction[]{Direction.UP, Direction.DOWN}) {
+                        BlockItemUseContext ctx = new BlockItemUseContext(new ItemUseContext(player, handIn, new BlockRayTraceResult(hit.getLocation(), direction, pos, false)));
+                        // Only do this if the block can be replaced it wouldn't result in the new part being turned around
+                        if (Arrays.stream(ctx.getNearestLookingDirections()).filter(d -> d.getAxis().isHorizontal()).findFirst().orElse(ownDirection) == ownDirection.getOpposite()) {
+                            if (heldItem instanceof BlockItem) {
+                                ActionResultType result = ((BlockItem) heldItem).place(ctx);
+                                if (result.consumesAction()) {
+                                    return result;
+                                }
+                            }
+                        }
                     }
                 }
             }
-            return ActionResultType.SUCCESS;
         }
 
         return ActionResultType.PASS;
