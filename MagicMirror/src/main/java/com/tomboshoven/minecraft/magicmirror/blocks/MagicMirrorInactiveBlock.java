@@ -1,14 +1,26 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
+import com.tomboshoven.minecraft.magicmirror.items.Items;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -67,5 +79,33 @@ public class MagicMirrorInactiveBlock extends MagicMirrorBaseBlock {
             return null;
         }
         return state.setValue(PART, EnumPartType.BOTTOM);
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+        ItemStack heldItemStack = player.getItemInHand(handIn);
+        Item heldItem = heldItemStack.getItem();
+
+        // Add the second part if possible
+        if (!heldItemStack.isEmpty() && heldItem == Items.MAGIC_MIRROR.get()) {
+            Direction ownDirection = state.getValue(FACING);
+
+            if (hit.getDirection() == ownDirection) {
+                // Attempt to place above first, then below.
+                for (Direction direction : new Direction[]{Direction.UP, Direction.DOWN}) {
+                    BlockPlaceContext ctx = new BlockPlaceContext(worldIn, player, handIn, heldItemStack, new BlockHitResult(hit.getLocation(), direction, pos, false));
+                    // Only do this if the block can be replaced it wouldn't result in the new part being turned around
+                    if (Arrays.stream(ctx.getNearestLookingDirections()).filter(d -> d.getAxis().isHorizontal()).findFirst().orElse(ownDirection) == ownDirection.getOpposite()) {
+                        if (heldItem instanceof BlockItem) {
+                            InteractionResult result = ((BlockItem) heldItem).place(ctx);
+                            if (result.consumesAction()) {
+                                return result;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return InteractionResult.PASS;
     }
 }
