@@ -166,14 +166,14 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
-                BlockEntity te = world.getBlockEntity(message.mirrorPos);
-                if (te instanceof MagicMirrorCoreBlockEntity) {
+                BlockEntity blockEntity = world.getBlockEntity(message.mirrorPos);
+                if (blockEntity instanceof MagicMirrorCoreBlockEntity) {
                     MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
                     if (modifier == null) {
                         MagicMirrorMod.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
                         return;
                     }
-                    modifier.apply(world, message.mirrorPos, message.usedItemStack);
+                    modifier.apply((MagicMirrorCoreBlockEntity) blockEntity, message.usedItemStack);
                     world.playLocalSound(message.mirrorPos, SoundEvents.ARMOR_EQUIP_GENERIC, SoundSource.BLOCKS, .6f, .6f, true);
                 }
             }

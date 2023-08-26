@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.CreatureMagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -35,8 +36,8 @@ public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
     }
 
     @Override
-    public boolean canModify(Level worldIn, BlockPos pos, ItemStack heldItem) {
-        return isSupportedSkull(heldItem) && !hasModifierOfType(worldIn, pos);
+    public boolean canModify(ItemStack heldItem, MagicMirrorCoreBlockEntity blockEntity) {
+        return isSupportedSkull(heldItem) && !hasModifierOfType(blockEntity);
     }
 
     @Override

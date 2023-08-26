@@ -2,6 +2,7 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
 import com.google.common.collect.Maps;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorPartBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -71,23 +72,21 @@ public abstract class MagicMirrorModifier {
         if (blockEntity instanceof MagicMirrorCoreBlockEntity) {
             return (MagicMirrorCoreBlockEntity) blockEntity;
         }
+        if (blockEntity instanceof MagicMirrorPartBlockEntity) {
+            return ((MagicMirrorPartBlockEntity) blockEntity).getCore();
+        }
         return null;
     }
 
     /**
      * Find out whether the mirror at the given position already has a modifier of a given type.
      *
-     * @param world    The world in which to check the block.
-     * @param pos      The position of the mirror block to check.
+     * @param blockEntity The block entity of the mirror to check.
      * @param modifier The modifier to test for.
      * @return Whether the mirror at the given position has the given modifier.
      */
-    private static boolean hasModifierOfType(BlockGetter world, BlockPos pos, MagicMirrorModifier modifier) {
-        MagicMirrorCoreBlockEntity magicMirrorBlockEntity = getMagicMirrorBlockEntity(world, pos);
-        if (magicMirrorBlockEntity == null) {
-            return false;
-        }
-        return magicMirrorBlockEntity.getModifiers().stream().anyMatch(teModifier -> teModifier.getModifier() == modifier);
+    private static boolean hasModifierOfType(MagicMirrorCoreBlockEntity blockEntity, MagicMirrorModifier modifier) {
+        return blockEntity.getModifiers().stream().anyMatch(teModifier -> teModifier.getModifier() == modifier);
     }
 
     /**
@@ -100,29 +99,11 @@ public abstract class MagicMirrorModifier {
      * <p>
      * This should also check constraints such as not modifying the same block twice etc.
      *
-     * @param worldIn  The world containing the magic mirror.
-     * @param pos      The position in the world of the block.
      * @param heldItem The item used on the block.
+     * @param blockEntity The block entity of the mirror to check.
      * @return Whether the block can be modified in the given configuration.
      */
-    public abstract boolean canModify(Level worldIn, BlockPos pos, ItemStack heldItem);
-
-    /**
-     * Apply the modifier to the magic mirror.
-     * <p>
-     * This assumes that canModify(...) is true.
-     *
-     * @param worldIn  The world containing the magic mirror.
-     * @param pos      The position in the world of the block.
-     * @param heldItem The item used on the block.
-     */
-    public void apply(BlockGetter worldIn, BlockPos pos, ItemStack heldItem) {
-        MagicMirrorCoreBlockEntity magicMirrorBlockEntity = getMagicMirrorBlockEntity(worldIn, pos);
-        if (magicMirrorBlockEntity == null) {
-            return;
-        }
-        apply(magicMirrorBlockEntity, heldItem);
-    }
+    public abstract boolean canModify(ItemStack heldItem, MagicMirrorCoreBlockEntity blockEntity);
 
     /**
      * Apply the modifier to the magic mirror.
@@ -132,7 +113,7 @@ public abstract class MagicMirrorModifier {
      * @param blockEntity The magic mirror block entity to apply the modifier to.
      * @param heldItem    The item used on the block.
      */
-    private void apply(MagicMirrorCoreBlockEntity blockEntity, ItemStack heldItem) {
+    public void apply(MagicMirrorCoreBlockEntity blockEntity, ItemStack heldItem) {
         blockEntity.addModifier(createBlockEntityModifier(heldItem));
         heldItem.shrink(1);
     }
@@ -163,11 +144,10 @@ public abstract class MagicMirrorModifier {
     /**
      * Find out whether the mirror at the given position already has a modifier of the current type.
      *
-     * @param world The world in which to check the block.
-     * @param pos   The position of the mirror block to check.
+     * @param blockEntity The block entity of the mirror to check.
      * @return Whether the mirror at the given position has the current modifier.
      */
-    boolean hasModifierOfType(BlockGetter world, BlockPos pos) {
-        return hasModifierOfType(world, pos, this);
+    boolean hasModifierOfType(MagicMirrorCoreBlockEntity blockEntity) {
+        return hasModifierOfType(blockEntity, this);
     }
 }
