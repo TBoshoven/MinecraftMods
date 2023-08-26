@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -23,14 +24,14 @@ public class ArmorMagicMirrorModifier extends MagicMirrorModifier {
     }
 
     @Override
-    public boolean canModify(Level worldIn, BlockPos pos, ItemStack heldItem) {
+    public boolean canModify(ItemStack heldItem, MagicMirrorCoreBlockEntity blockEntity) {
         // Must be activated using an armor stand.
         if (heldItem.getItem() != Items.ARMOR_STAND) {
             return false;
         }
 
         // Must not have an armor modifier yet.
-        return !hasModifierOfType(worldIn, pos);
+        return !hasModifierOfType(blockEntity);
     }
 
     @Override
