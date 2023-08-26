@@ -57,21 +57,20 @@ public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implem
      * Attach a modifier to the mirror at the specified position (server version).
      * This sends a message to clients as well.
      *
-     * @param worldIn  The world containing the mirror.
-     * @param pos      The position of the mirror in the world.
      * @param heldItem The item used to attach the modifier to the mirror.
      * @param modifier The modifier to attach to the mirror.
+     * @param blockEntity The block entity of the mirror to apply the modifier to.
      */
-    private void attachModifier(Level worldIn, BlockPos pos, ItemStack heldItem, MagicMirrorModifier modifier) {
-        // Attaching happens in the core
-        BlockPos coreBlockPos = getCoreBlockPos(pos);
-
+    private void attachModifier(ItemStack heldItem, MagicMirrorModifier modifier, MagicMirrorCoreBlockEntity blockEntity) {
         // Item stack may change by attaching
         ItemStack originalHeldItem = heldItem.copy();
-        modifier.apply(worldIn, coreBlockPos, heldItem);
-        MagicMirrorCoreBlock.MessageAttachModifier message = new MagicMirrorCoreBlock.MessageAttachModifier(coreBlockPos, originalHeldItem, modifier);
-        PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_CHUNK.with(() -> worldIn.getChunkAt(coreBlockPos));
-        Network.CHANNEL.send(target, message);
+        modifier.apply(blockEntity, heldItem);
+        Level level = blockEntity.getLevel();
+        if (level != null) {
+            MagicMirrorCoreBlock.MessageAttachModifier message = new MagicMirrorCoreBlock.MessageAttachModifier(blockEntity.getBlockPos(), originalHeldItem, modifier);
+            PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockEntity.getBlockPos()));
+            Network.CHANNEL.send(target, message);
+        }
     }
 
     @Override
@@ -79,20 +78,21 @@ public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implem
         // The mirror will only do anything if it's used from the front.
         if (state.getValue(FACING) == hit.getDirection()) {
             if (!worldIn.isClientSide) {
-                // First, see if we can add a modifier
-                ItemStack heldItem = player.getItemInHand(handIn);
-                if (!heldItem.isEmpty()) {
-                    for (MagicMirrorModifier modifier : MagicMirrorModifier.getModifiers()) {
-                        if (modifier.canModify(worldIn, pos, heldItem)) {
-                            attachModifier(worldIn, pos, heldItem, modifier);
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
-                }
 
-                // Then, see if any existing modifier can do something.
                 MagicMirrorCoreBlockEntity coreBlockEntity = getCoreBlockEntity(worldIn, pos);
                 if (coreBlockEntity != null) {
+                    // First, see if we can add a modifier
+                    ItemStack heldItem = player.getItemInHand(handIn);
+                    if (!heldItem.isEmpty()) {
+                        for (MagicMirrorModifier modifier : MagicMirrorModifier.getModifiers()) {
+                            if (modifier.canModify(heldItem, coreBlockEntity)) {
+                                attachModifier(heldItem, modifier, coreBlockEntity);
+                                return InteractionResult.SUCCESS;
+                            }
+                        }
+                    }
+
+                    // Then, see if any existing modifier can do something.
                     if (coreBlockEntity.tryActivate(player, handIn)) {
                         return InteractionResult.SUCCESS;
                     }
