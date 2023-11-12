@@ -4,10 +4,10 @@ import com.tomboshoven.minecraft.magicmirror.blocks.entities.BlockEntities;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
-import net.neoforged.bus.api.IEventBus;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

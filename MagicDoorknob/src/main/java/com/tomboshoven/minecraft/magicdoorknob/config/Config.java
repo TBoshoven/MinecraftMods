@@ -1,8 +1,8 @@
 package com.tomboshoven.minecraft.magicdoorknob.config;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class Config {
     private static final ModConfigSpec.Builder SERVER_BUILDER;

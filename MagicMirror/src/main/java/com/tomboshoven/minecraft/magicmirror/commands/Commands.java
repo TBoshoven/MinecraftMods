@@ -3,8 +3,8 @@ package com.tomboshoven.minecraft.magicmirror.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.commands.CommandSourceStack;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

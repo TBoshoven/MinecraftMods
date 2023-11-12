@@ -3,8 +3,8 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedGeometryLoader;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.ModelEvent;
 
 /**
  * Collection of custom model loaders.

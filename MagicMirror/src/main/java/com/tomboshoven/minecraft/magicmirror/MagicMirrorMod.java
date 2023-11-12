@@ -14,11 +14,11 @@ import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClientUpdater;
 import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.DistExecutor;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

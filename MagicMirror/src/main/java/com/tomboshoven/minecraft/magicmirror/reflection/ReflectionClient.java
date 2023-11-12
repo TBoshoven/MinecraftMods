@@ -15,7 +15,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-
 import java.util.Locale;
 
 /**
