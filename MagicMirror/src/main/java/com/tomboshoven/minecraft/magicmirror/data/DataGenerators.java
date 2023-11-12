@@ -1,13 +1,15 @@
 package com.tomboshoven.minecraft.magicmirror.data;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.bus.api.IEventBus;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.concurrent.CompletableFuture;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -22,13 +24,14 @@ public final class DataGenerators {
     private static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
         boolean includeServer = event.includeServer();
         boolean includeClient = event.includeClient();
         generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) output -> new BlockStates(output, existingFileHelper));
         generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) Language::new);
         generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) LootTables::new);
-        generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) Recipes::new);
+        generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) output -> new Recipes(output, lookupProvider));
         generator.addProvider(includeClient, (DataProvider.Factory<DataProvider>) output -> new ItemModels(output, existingFileHelper));
     }
 }

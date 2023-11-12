@@ -2,12 +2,12 @@ package com.tomboshoven.minecraft.magicmirror.renderers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.BlockEntities;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.bus.api.IEventBus;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -23,7 +23,7 @@ public final class Renderers {
 
     public static void register(IEventBus eventBus) {
         eventBus.addListener(Renderers::registerRenderers);
-        MinecraftForge.EVENT_BUS.addListener(Renderers::registerReloadListeners);
+        NeoForge.EVENT_BUS.addListener(Renderers::registerReloadListeners);
     }
 
     /**

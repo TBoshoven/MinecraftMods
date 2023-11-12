@@ -32,8 +32,8 @@ public final class MagicDoorknobMod {
         BlockEntities.register(modEventBus);
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            modEventBus.register(BlockColorHandlers.class);
-            modEventBus.register(ModelLoaders.class);
+            BlockColorHandlers.register(modEventBus);
+            ModelLoaders.register(modEventBus);
         });
     }
 }

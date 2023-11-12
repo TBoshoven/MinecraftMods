@@ -13,12 +13,12 @@ import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClientUpdater;
 import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.DistExecutor;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,13 +41,13 @@ public final class MagicMirrorMod {
         BlockEntities.register(modEventBus);
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             Renderers.register(modEventBus);
-            MinecraftForge.EVENT_BUS.register(ReflectionClientUpdater.class);
+            NeoForge.EVENT_BUS.register(ReflectionClientUpdater.class);
         });
 
         // Register packets
         Network.registerMessages();
 
-        Commands.register(MinecraftForge.EVENT_BUS);
+        Commands.register(NeoForge.EVENT_BUS);
 
         // Register modifiers
         MagicMirrorModifier.register(new ArmorMagicMirrorModifier());

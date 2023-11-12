@@ -2,8 +2,8 @@ package com.tomboshoven.minecraft.magicmirror.reflection;
 
 import com.google.common.collect.Sets;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
 import java.util.Set;
 

@@ -6,7 +6,6 @@ import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.block.BlockColors;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.bus.api.IEventBus;
 
@@ -22,10 +21,13 @@ public final class BlockColorHandlers {
     private BlockColorHandlers() {
     }
 
+    public static void register(IEventBus eventBus) {
+        eventBus.addListener(BlockColorHandlers::registerBlockColorHandlers);
+    }
+
     /**
      * Register all color handlers.
      */
-    @SubscribeEvent
     private static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
         BlockColors blockColors = event.getBlockColors();
 

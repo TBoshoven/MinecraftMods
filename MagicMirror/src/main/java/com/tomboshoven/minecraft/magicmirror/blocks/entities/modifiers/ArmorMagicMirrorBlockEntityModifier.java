@@ -32,15 +32,14 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.DistExecutor;
+import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
-import java.util.function.Supplier;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -452,8 +451,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntityM
     /**
      * Handler for messages describing players equipping the mirror with armor.
      */
-    public static void onMessageEquip(MessageEquip message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
-        NetworkEvent.Context ctx = contextSupplier.get();
+    public static void onMessageEquip(MessageEquip message, NetworkEvent.Context ctx) {
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
@@ -474,8 +472,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntityM
     /**
      * Handler for messages describing players swapping armor with the mirror.
      */
-    public static void onMessageSwapMirror(MessageSwapMirror message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
-        NetworkEvent.Context ctx = contextSupplier.get();
+    public static void onMessageSwapMirror(MessageSwapMirror message, NetworkEvent.Context ctx) {
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
@@ -493,8 +490,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntityM
     /**
      * Handler for messages describing players swapping armor with the mirror.
      */
-    public static void onMessageSwapPlayer(MessageSwapPlayer message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
-        NetworkEvent.Context ctx = contextSupplier.get();
+    public static void onMessageSwapPlayer(MessageSwapPlayer message, NetworkEvent.Context ctx) {
         ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
