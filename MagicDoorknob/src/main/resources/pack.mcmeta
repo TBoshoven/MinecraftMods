@@ -1,6 +1,8 @@
 {
   "pack": {
-    "description": "Magic Doorknob Resources",
-    "pack_format": 3
+    "description": {
+      "text": "Magic Doorknob Resources"
+    },
+    "pack_format": 15
   }
 }

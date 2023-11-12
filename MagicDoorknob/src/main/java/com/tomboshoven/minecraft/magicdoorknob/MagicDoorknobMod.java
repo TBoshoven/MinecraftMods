@@ -8,12 +8,12 @@ import com.tomboshoven.minecraft.magicdoorknob.data.DataGenerators;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.ModelLoaders;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.DistExecutor;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -32,8 +32,8 @@ public final class MagicDoorknobMod {
         BlockEntities.register(modEventBus);
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            BlockColorHandlers.register(modEventBus);
-            ModelLoaders.register(modEventBus);
+            modEventBus.register(BlockColorHandlers.class);
+            modEventBus.register(ModelLoaders.class);
         });
     }
 }

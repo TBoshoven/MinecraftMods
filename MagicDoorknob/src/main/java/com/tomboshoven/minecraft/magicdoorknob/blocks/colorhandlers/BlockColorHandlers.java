@@ -4,10 +4,11 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.bus.api.IEventBus;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -21,13 +22,10 @@ public final class BlockColorHandlers {
     private BlockColorHandlers() {
     }
 
-    public static void register(IEventBus eventBus) {
-        eventBus.addListener(BlockColorHandlers::registerBlockColorHandlers);
-    }
-
     /**
      * Register all color handlers.
      */
+    @SubscribeEvent
     private static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
         BlockColors blockColors = event.getBlockColors();
 

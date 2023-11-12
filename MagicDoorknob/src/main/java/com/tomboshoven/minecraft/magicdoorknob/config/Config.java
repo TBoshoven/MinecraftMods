@@ -1,24 +1,24 @@
 package com.tomboshoven.minecraft.magicdoorknob.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.config.ModConfig;
 
 public class Config {
-    private static final ForgeConfigSpec.Builder SERVER_BUILDER;
+    private static final ModConfigSpec.Builder SERVER_BUILDER;
     public final static Server SERVER;
-    private final static ForgeConfigSpec SERVER_CONFIG;
+    private final static ModConfigSpec SERVER_CONFIG;
 
     static {
-        SERVER_BUILDER = new ForgeConfigSpec.Builder();
+        SERVER_BUILDER = new ModConfigSpec.Builder();
         SERVER = new Server(SERVER_BUILDER);
         SERVER_CONFIG = SERVER_BUILDER.build();
     }
 
     public static class Server {
-        public final ForgeConfigSpec.DoubleValue doorwayMultiplier;
+        public final ModConfigSpec.DoubleValue doorwayMultiplier;
 
-        private Server(ForgeConfigSpec.Builder builder) {
+        private Server(ModConfigSpec.Builder builder) {
             // Max value gives a maximum length, using Vanilla materials, of 12 * 8 = 96 blocks
             doorwayMultiplier = builder.comment("Multiplier for the doorway length")
                     .defineInRange("doorwayMultiplier", 1., 0, 8);

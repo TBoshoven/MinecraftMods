@@ -1,6 +1,6 @@
 {
   "loader": "magic_doorknob:textured",
-  "base_loader": "forge:composite",
+  "base_loader": "neoforge:composite",
   "textures": {
     "particle": "property:texture_main"
   },

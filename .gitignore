@@ -3,15 +3,11 @@
 build
 
 # Minecraft Runtime
-run
+/*/run
+/*/runs
 
 # Scratch folder
 scratch
-
-# IntelliJ IDEA project files
-*.iml
-*.ipr
-*.iws
 
 # Generated mod resources
 /*/src/generated

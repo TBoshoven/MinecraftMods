@@ -1,6 +1,8 @@
 {
   "pack": {
-    "description": "Magic Mirror Resources",
-    "pack_format": 3
+    "description": {
+      "text": "Magic Mirror Resources"
+    },
+    "pack_format": 15
   }
 }

@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.client.model.data.ModelProperty;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;

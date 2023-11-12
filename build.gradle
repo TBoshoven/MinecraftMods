@@ -4,58 +4,43 @@ In principle, building a mod is as simple as adding an empty build.gradle to the
 settings.gradle.
 */
 
-// For those who want the bleeding edge
 buildscript {
     repositories {
-        maven {
-            name = "forge"
-            url = "https://maven.neoforged.net/releases"
-        }
+        mavenLocal()
+        gradlePluginPortal()
+        maven { url = 'https://maven.neoforged.net/releases' }
     }
     dependencies {
-        classpath group: 'net.neoforged.gradle', name: 'net.neoforged.gradle.gradle.plugin', version: '[6.0.13, 6.2)', changing: true
+        classpath group: 'net.neoforged.gradle', name: 'userdev', version: '7.0.5'
     }
 }
 
 subprojects {
-    apply plugin: 'net.neoforged.gradle'
+    apply plugin: 'net.neoforged.gradle.userdev'
     apply plugin: 'idea'
 
     String modName = project.getName().replaceAll(/([a-z])([A-Z])/, /$1_$2/).toLowerCase()
 
-    version = "1.20.1-DEV.0"
+    version = "1.20.2-DEV.0"
     group = "com.tomboshoven.minecraft." + project.getName().toLowerCase()
     archivesBaseName = project.projectDir.name
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-    minecraft {
-        mappings channel: 'official', version: '1.20.1'
-
-        runs {
-            client {
-                properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-                properties 'forge.logging.console.level': 'debug'
-                workingDirectory project.file('run')
-                source sourceSets.main
-            }
-            server {
-                properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-                properties 'forge.logging.console.level': 'debug'
-                workingDirectory project.file('run')
-                source sourceSets.main
-            }
-            data {
-                properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-                properties 'forge.logging.console.level': 'debug'
-                properties 'fml.earlyprogresswindow': 'false'
-                args '--mod', modName, '--all',
-                        '--existing', file('src/main/resources/'),
-                        '--existing', file('src/generated/resources/'),
-                        '--output', file('src/generated/resources/')
-                workingDirectory project.file('run')
-                source sourceSets.main
-            }
+    runs {
+        configureEach {
+            systemProperty 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            systemProperty 'forge.logging.console.level', 'debug'
+            modSource project.sourceSets.main
+        }
+        client {}
+        server {}
+        data {
+            systemProperty 'fml.earlyprogresswindow', 'false'
+            programArguments.addAll '--mod', modName, '--all',
+                    '--existing', file('src/main/resources/').getAbsolutePath(),
+                    '--existing', file('src/generated/resources/').getAbsolutePath(),
+                    '--output', file('src/generated/resources/').getAbsolutePath()
         }
     }
 
@@ -66,7 +51,7 @@ subprojects {
     }
 
     dependencies {
-        minecraft "net.neoforged:forge:1.20.1-47.1.79"
+        implementation "net.neoforged:neoforge:20.2.47-beta"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }

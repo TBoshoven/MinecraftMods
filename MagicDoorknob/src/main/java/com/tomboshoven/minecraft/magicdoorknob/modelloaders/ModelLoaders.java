@@ -1,10 +1,11 @@
 package com.tomboshoven.minecraft.magicdoorknob.modelloaders;
 
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedGeometryLoader;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.bus.api.IEventBus;
 
 /**
  * Collection of custom model loaders.
@@ -14,10 +15,7 @@ public final class ModelLoaders {
     private ModelLoaders() {
     }
 
-    public static void register(IEventBus eventBus) {
-        eventBus.addListener(ModelLoaders::registerModelLoaders);
-    }
-
+    @SubscribeEvent
     private static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
         // Initialize textured model loader
         TexturedGeometryLoader modelLoader = new TexturedGeometryLoader();

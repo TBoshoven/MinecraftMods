@@ -4,12 +4,12 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
 import net.minecraft.client.resources.metadata.animation.FrameSize;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.textures.UnitTextureAtlasSprite;
+import net.minecraft.server.packs.resources.ResourceMetadata;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.textures.UnitTextureAtlasSprite;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -28,7 +28,7 @@ class PropertySprite extends TextureAtlasSprite {
      */
     PropertySprite(ResourceLocation property) {
         // Hijack the atlas and native image from UnitTextureAtlasSprite, so we don't have to build our own.
-        super(UnitTextureAtlasSprite.LOCATION, new SpriteContents(property, new FrameSize(1, 1), UnitTextureAtlasSprite.INSTANCE.contents().getOriginalImage(), AnimationMetadataSection.EMPTY, null), 1, 1, 0, 0);
+        super(UnitTextureAtlasSprite.LOCATION, new SpriteContents(property, new FrameSize(1, 1), UnitTextureAtlasSprite.INSTANCE.contents().getOriginalImage(), ResourceMetadata.EMPTY), 1, 1, 0, 0);
         this.property = property;
     }
 
