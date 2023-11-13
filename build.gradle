@@ -9,16 +9,16 @@ buildscript {
     repositories {
         maven {
             name = "forge"
-            url = "https://files.minecraftforge.net/maven"
+            url = "https://maven.neoforged.net/releases"
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '[6.0,6.2)', changing: true
+        classpath group: 'net.neoforged.gradle', name: 'net.neoforged.gradle.gradle.plugin', version: '[6.0.13, 6.2)', changing: true
     }
 }
 
 subprojects {
-    apply plugin: 'net.minecraftforge.gradle'
+    apply plugin: 'net.neoforged.gradle'
     apply plugin: 'idea'
 
     String modName = project.getName().replaceAll(/([a-z])([A-Z])/, /$1_$2/).toLowerCase()
@@ -66,7 +66,7 @@ subprojects {
     }
 
     dependencies {
-        minecraft "net.minecraftforge:forge:1.20.1-47.1.43"
+        minecraft "net.neoforged:forge:1.20.1-47.1.79"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
