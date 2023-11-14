@@ -13,3 +13,17 @@ authors="Tom Boshoven"
 description='''
 A doorknob that does not require a door.
 '''
+
+[[dependencies.magic_doorknob]]
+modId="neoforge"
+mandatory=true
+versionRange="[20.2,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.magic_doorknob]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.2,1.21)"
+ordering="NONE"
+side="BOTH"

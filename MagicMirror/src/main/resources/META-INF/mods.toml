@@ -14,3 +14,17 @@ description='''
 A mirror that has magic properties.
 It can be made to look like a skeleton, or you could even give it some armor and use it as a fancy armor stand.
 '''
+
+[[dependencies.magic_mirror]]
+modId="neoforge"
+mandatory=true
+versionRange="[20.2,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.magic_mirror]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.2,1.21)"
+ordering="NONE"
+side="BOTH"
