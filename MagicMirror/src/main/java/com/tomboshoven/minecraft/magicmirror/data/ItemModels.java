@@ -22,10 +22,8 @@ class ItemModels extends ItemModelProvider {
     @Override
     protected void registerModels() {
         ResourceLocation magicMirrorId = Items.MAGIC_MIRROR.getId();
-        if (magicMirrorId != null) {
-            getBuilder(magicMirrorId.getPath())
-                    .parent(new ModelFile.ExistingModelFile(modLoc("block/magic_mirror"), existingFileHelper));
-        }
+        getBuilder(magicMirrorId.getPath())
+                .parent(new ModelFile.ExistingModelFile(modLoc("block/magic_mirror"), existingFileHelper));
     }
 
     @Override

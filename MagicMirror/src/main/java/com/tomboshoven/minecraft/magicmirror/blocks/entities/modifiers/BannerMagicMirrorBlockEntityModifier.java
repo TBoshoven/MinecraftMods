@@ -24,7 +24,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.entity.BannerPatterns;
 import net.neoforged.fml.DistExecutor;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -72,7 +71,7 @@ public class BannerMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntity
         // BannerBlock.forColor is client-only.
         // Let's do a super-ugly workaround.
         // This will cause issues if dye colors are ever made extensible.
-        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(String.format("minecraft:%s_banner", baseColor.getName())));
+        Block block = BuiltInRegistries.BLOCK.get(new ResourceLocation(String.format("minecraft:%s_banner", baseColor.getName())));
         ItemStack itemStack = new ItemStack(block);
         if (bannerNBT != null) {
             itemStack.getOrCreateTag().put("BlockEntityTag", bannerNBT);

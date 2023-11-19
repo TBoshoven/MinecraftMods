@@ -3,13 +3,12 @@ package com.tomboshoven.minecraft.magicmirror.items;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -19,16 +18,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public final class Items {
-    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MagicMirrorMod.MOD_ID);
+    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MagicMirrorMod.MOD_ID);
 
     /**
      * The item version of the magic mirror block.
      */
-    public static final RegistryObject<Item> MAGIC_MIRROR =
-            ITEMS.register("magic_mirror", () -> new MagicMirrorBlockItem(
-                    Blocks.MAGIC_MIRROR_INACTIVE.get(),
-                    new Item.Properties()
-            ));
+    public static final DeferredItem<BlockItem> MAGIC_MIRROR =
+            ITEMS.registerBlockItem("magic_mirror", Blocks.MAGIC_MIRROR_INACTIVE);
 
     private Items() {
     }
@@ -40,7 +36,7 @@ public final class Items {
 
     private static void registerCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         if (CreativeModeTabs.FUNCTIONAL_BLOCKS.equals(event.getTabKey())) {
-            event.accept(MAGIC_MIRROR);
+            event.accept(MAGIC_MIRROR.get());
         }
     }
 }

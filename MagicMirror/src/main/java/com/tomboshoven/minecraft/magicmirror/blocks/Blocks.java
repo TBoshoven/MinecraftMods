@@ -8,10 +8,9 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.function.Supplier;
 
 /**
  * Collection of all blocks in the mod.
@@ -19,25 +18,25 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public final class Blocks {
-    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MagicMirrorMod.MOD_ID);
+    private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MagicMirrorMod.MOD_ID);
 
     private static final BlockBehaviour.Properties MIRROR_PROPERTIES = Block.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(.8f).sound(SoundType.GLASS);
 
     /**
      * The core that has all the actual logic.
      */
-    public static final RegistryObject<Block> MAGIC_MIRROR_CORE =
-            BLOCKS.register("magic_mirror_core", () -> new MagicMirrorCoreBlock(MIRROR_PROPERTIES));
+    public static final Supplier<Block> MAGIC_MIRROR_CORE =
+            BLOCKS.registerBlock("magic_mirror_core", MagicMirrorCoreBlock::new, MIRROR_PROPERTIES);
     /**
      * A part that refers all the logic to the core.
      */
-    public static final RegistryObject<Block> MAGIC_MIRROR_PART =
-            BLOCKS.register("magic_mirror_part", () -> new MagicMirrorPartBlock(MIRROR_PROPERTIES));
+    public static final Supplier<Block> MAGIC_MIRROR_PART =
+            BLOCKS.registerBlock("magic_mirror_part", MagicMirrorPartBlock::new, MIRROR_PROPERTIES);
     /**
      * An inactive mirror part.
      */
-    public static final RegistryObject<Block> MAGIC_MIRROR_INACTIVE =
-            BLOCKS.register("magic_mirror_inactive", () -> new MagicMirrorInactiveBlock(MIRROR_PROPERTIES));
+    public static final Supplier<Block> MAGIC_MIRROR_INACTIVE =
+            BLOCKS.registerBlock("magic_mirror_inactive", MagicMirrorInactiveBlock::new, MIRROR_PROPERTIES);
 
     private Blocks() {
     }

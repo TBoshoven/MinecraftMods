@@ -51,7 +51,7 @@ subprojects {
     }
 
     dependencies {
-        implementation "net.neoforged:neoforge:20.2.56-beta"
+        implementation "net.neoforged:neoforge:20.2.59-beta"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
