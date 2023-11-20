@@ -4,14 +4,12 @@ import com.google.common.collect.Maps;
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -57,10 +55,9 @@ public final class Items {
      * @param typeName   The type name of the item. Keep this stable, since it is used in NBT data.
      * @param tier       The material this doorknob is made of
      * @param blockName  The name of the block that provides the texture of the doorknob
-     * @param ingredient The ingredient used to build the doorknob
      */
-    private static void addDoorknob(String typeName, Tier tier, String blockName, Supplier<Ingredient> ingredient) {
-        addDoorknob(typeName, tier, new ResourceLocation("minecraft", String.format("block/%s", blockName)), ingredient);
+    private static void addDoorknob(String typeName, Tier tier, String blockName) {
+        addDoorknob(typeName, tier, new ResourceLocation("minecraft", String.format("block/%s", blockName)), tier::getRepairIngredient);
     }
 
     public static void register(IEventBus eventBus) {
@@ -76,11 +73,11 @@ public final class Items {
 
     static {
         // Add all Vanilla tool materials
-        addDoorknob("wood", Tiers.WOOD, "oak_planks", () -> Ingredient.of(ItemTags.PLANKS));
-        addDoorknob("stone", Tiers.STONE, "stone", () -> Ingredient.of(Tags.Items.COBBLESTONE));
-        addDoorknob("iron", Tiers.IRON, "iron_block", () -> Ingredient.of(Tags.Items.INGOTS_IRON));
-        addDoorknob("gold", Tiers.GOLD, "gold_block", () -> Ingredient.of(Tags.Items.INGOTS_GOLD));
-        addDoorknob("diamond", Tiers.DIAMOND, "diamond_block", () -> Ingredient.of(Tags.Items.GEMS_DIAMOND));
-        addDoorknob("netherite", Tiers.NETHERITE, "netherite_block", () -> Ingredient.of(Tags.Items.INGOTS_NETHERITE));
+        addDoorknob("wood", Tiers.WOOD, "oak_planks");
+        addDoorknob("stone", Tiers.STONE, "stone");
+        addDoorknob("iron", Tiers.IRON, "iron_block");
+        addDoorknob("gold", Tiers.GOLD, "gold_block");
+        addDoorknob("diamond", Tiers.DIAMOND, "diamond_block");
+        addDoorknob("netherite", Tiers.NETHERITE, "netherite_block");
     }
 }
