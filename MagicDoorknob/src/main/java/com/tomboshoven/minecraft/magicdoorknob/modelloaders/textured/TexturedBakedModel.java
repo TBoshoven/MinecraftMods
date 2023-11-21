@@ -9,12 +9,14 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,6 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -86,11 +89,14 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
             TextureAtlasSprite sprite = quad.getSprite();
             if (sprite instanceof PropertySprite) {
                 Material material = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
+                if (material == null) {
+                    return null;
+                }
                 TextureAtlasSprite actualSprite = bakedTextureGetter.apply(material);
                 return retexture(quad, actualSprite);
             }
             return quad;
-        }).collect(Collectors.toList());
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     private static BakedQuad retexture(BakedQuad quad, TextureAtlasSprite sprite) {
@@ -169,6 +175,9 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
         TextureAtlasSprite sprite = super.getParticleIcon(data);
         if (sprite instanceof PropertySprite) {
             Material spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, null, data);
+            if (spriteLocation == null) {
+                spriteLocation = new Material(InventoryMenu.BLOCK_ATLAS, MissingTextureAtlasSprite.getLocation());
+            }
             sprite = bakedTextureGetter.apply(spriteLocation);
         }
         return sprite;
