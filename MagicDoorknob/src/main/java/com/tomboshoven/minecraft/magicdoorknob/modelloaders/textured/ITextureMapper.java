@@ -23,5 +23,5 @@ public interface ITextureMapper {
      * @param extraData   Extra model data if available
      * @return The appropriate material
      */
-    Material mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable ModelData extraData);
+    @Nullable Material mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable ModelData extraData);
 }
