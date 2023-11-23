@@ -92,6 +92,28 @@ jobs:
             ORIGINAL_BUILD_NUM="$(echo "$FILE" | sed -E 's/^.*\.([0-9]+)\.jar$/\1/')"
             METADATA="$(jq -n '{"changelog": $ARGS.positional[0], "changelogType": "markdown", "displayName": $ARGS.positional[1], "gameVersions": [9776, 7498, 8326], "releaseType": "release"}' --args "$DESCRIPTION" "v$TAG_VERSION.$ORIGINAL_BUILD_NUM")"
             curl -XPOST -f "https://minecraft.curseforge.com/api/projects/$PROJECT_ID/upload-file" -F "file=@$FILE" -F "metadata=$METADATA" -H "X-Api-Token: $CURSEFORGE_TOKEN"
+  release-modrinth:
+    docker:
+      - image: tboshoven/ci:v1
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Upload assets to Modrinth
+          command: |
+            # Get release description
+            DESCRIPTION="$(github-release info -u "$CIRCLE_PROJECT_USERNAME" -r "$CIRCLE_PROJECT_REPONAME" -t "$CIRCLE_TAG" -j | jq -r .Releases[0].body)"
+
+            # Construct URL and upload file
+            TAG_BUILD="$(echo "$CIRCLE_TAG" | sed -E 's/-[0-9.-]+$//' | sed -E 's/(^|-)([^-])/\U\2/g')"
+            TAG_VERSION="$(echo "$CIRCLE_TAG" | sed -E 's/[^0-9]+//')"
+            PROJECT_ID="$(jq -r .projectId $TAG_BUILD/modrinth.json)"
+            FILE="$(ls /tmp/workspace/libs/*.jar | head -n 1)"
+            # Use the build number on the JAR to prevent confusion.
+            ORIGINAL_BUILD_NUM="$(echo "$FILE" | sed -E 's/^.*\.([0-9]+)\.jar$/\1/')"
+            DATA="$(jq -n '{"name": $ARGS.positional[1], "version_number": $ARGS.positional[2], "changelog": $ARGS.positional[0], "dependencies": [], "game_versions": ["1.19.4"], "version_type": "release", "loaders": ["forge"], "featured": true, "project_id": $ARGS.positional[3], "file_parts": ["file"]}' --args "$DESCRIPTION" "v$TAG_VERSION" "$TAG_VERSION.$ORIGINAL_BUILD_NUM" "$PROJECT_ID")"
+            curl -XPOST -f 'https://api.modrinth.com/v2/version' -F "data=$DATA" -F "file=@$FILE" -H "Authorization: $MODRINTH_TOKEN" -H 'User-Agent: TBoshoven/MinecraftMods'
 workflows:
   version: 2
   build:
@@ -123,3 +145,12 @@ workflows:
             tags:
               only: /.*/
           context: CurseForge Release
+      - release-modrinth:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
+          context: Modrinth Release
