@@ -153,4 +153,4 @@ workflows:
               ignore: /.*/
             tags:
               only: /.*/
-          context: Mondrinth Release
+          context: Modrinth Release
