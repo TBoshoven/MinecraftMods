@@ -7,6 +7,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -43,8 +44,21 @@ public abstract class ReflectionRendererBase {
     /**
      * Render the reflection.
      *
-     * @param facing       The rotation (in degrees) for the entity that is being rendered.
-     * @param partialTicks The partial ticks, for smooth rendering.
+     * @param facing           The rotation (in degrees) for the entity that is being rendered.
+     * @param partialTicks     The partial ticks, for smooth rendering.
+     * @param renderTypeBuffer The buffer to render to.
+     * @param colorize         If not null, render the entity in a specific color.
      */
-    public abstract void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer);
+    public abstract void render(float facing, float partialTicks, MultiBufferSource.BufferSource renderTypeBuffer, @Nullable float[] colorize);
+
+    /**
+     * Render the reflection.
+     *
+     * @param facing           The rotation (in degrees) for the entity that is being rendered.
+     * @param partialTicks     The partial ticks, for smooth rendering.
+     * @param renderTypeBuffer The buffer to render to.
+     */
+    public void render(float facing, float partialTicks, MultiBufferSource.BufferSource renderTypeBuffer) {
+        render(facing, partialTicks, renderTypeBuffer, null);
+    }
 }

@@ -9,6 +9,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -32,7 +33,7 @@ public class ArmorReflectionRendererModifier extends ReflectionRendererModifier 
     }
 
     @Override
-    public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
+    public void render(float facing, float partialTicks, MultiBufferSource.BufferSource renderTypeBuffer, @Nullable float[] colorize) {
         Entity entity = getEntity();
         if (entity instanceof Player) {
             NonNullList<ItemStack> inventoryToSwap = ((Player) entity).getInventory().armor;
@@ -40,7 +41,7 @@ public class ArmorReflectionRendererModifier extends ReflectionRendererModifier 
             // Simply swap out the armor inventory twice
             replacementArmor.swap(inventoryToSwap);
 
-            super.render(facing, partialTicks, renderTypeBuffer);
+            super.render(facing, partialTicks, renderTypeBuffer, colorize);
 
             replacementArmor.swap(inventoryToSwap);
         }

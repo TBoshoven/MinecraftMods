@@ -16,6 +16,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.Optional;
@@ -41,8 +42,8 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
     }
 
     @Override
-    public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
-        super.render(facing, partialTicks, renderTypeBuffer);
+    public void render(float facing, float partialTicks, MultiBufferSource.BufferSource renderTypeBuffer, @Nullable float[] colorize) {
+        super.render(facing, partialTicks, renderTypeBuffer, colorize);
 
         for (Pair<Holder<BannerPattern>, DyeColor> patternColor : patternColorList) {
             float[] rgb = patternColor.getRight().getTextureDiffuseColors();
