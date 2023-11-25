@@ -54,14 +54,6 @@ public abstract class MagicMirrorTileEntityModifier {
     }
 
     /**
-     * Load modifier data from an NBT tag.
-     *
-     * @param nbt The NBT tag compound to read from.
-     */
-    public void read(CompoundNBT nbt) {
-    }
-
-    /**
      * Called when the tile entity is removed.
      * Can be used for things like spawning contained items back into the world.
      *
