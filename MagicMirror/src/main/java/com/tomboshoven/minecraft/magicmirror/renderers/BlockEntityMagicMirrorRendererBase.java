@@ -63,7 +63,6 @@ public abstract class BlockEntityMagicMirrorRendererBase {
      * @return the alpha value to use when rendering
      */
     private static float getAlpha(Vec3 distance) {
-        // The further away the subject is, the more faint the reflection
         double horizontalDistanceSq = distance.x * distance.x + distance.z * distance.z;
         double verticalDistanceSq = distance.y * distance.y;
         return Math.max(0, Math.min(1, 1.2f - (float) (horizontalDistanceSq / MAX_HORIZONTAL_DISTANCE_SQ) - (float) (verticalDistanceSq / MAX_VERTICAL_DISTANCE_SQ)));
