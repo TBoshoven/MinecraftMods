@@ -2,7 +2,9 @@ package com.tomboshoven.minecraft.magicmirror.reflection.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -18,5 +20,18 @@ public abstract class ReflectionModifier {
      * @param reflectionRenderer The renderer to be changed.
      * @return The updated renderer.
      */
-    public abstract ReflectionRendererBase apply(ReflectionRendererBase reflectionRenderer);
+    public ReflectionRendererBase apply(ReflectionRendererBase reflectionRenderer) {
+        return reflectionRenderer;
+    }
+
+    /**
+     * Apply the modification to the name tag.
+     *
+     * @param nameTag The name tag to be changed.
+     * @return The updated name tag.
+     */
+    @Nullable
+    public Component applyNameTag(@Nullable Component nameTag) {
+        return nameTag;
+    }
 }

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nullable;
@@ -103,6 +104,18 @@ public class Reflection {
     @Nullable
     public Entity getReflectedEntity() {
         return reflectedEntity;
+    }
+
+    /**
+     * @return The name tag for the reflection, or null if none.
+     */
+    @Nullable
+    public Component getNameTag() {
+        Component nameTag = null;
+        for (ReflectionModifier modifier : modifiers) {
+            nameTag = modifier.applyNameTag(nameTag);
+        }
+        return nameTag;
     }
 
     /**
