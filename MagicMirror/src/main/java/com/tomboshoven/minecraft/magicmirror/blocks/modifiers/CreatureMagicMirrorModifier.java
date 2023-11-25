@@ -3,6 +3,7 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.CreatureMagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -40,13 +41,11 @@ public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
 
     @Override
     MagicMirrorTileEntityModifier createTileEntityModifier(CompoundNBT nbt) {
-        MagicMirrorTileEntityModifier teModifier = new CreatureMagicMirrorTileEntityModifier(this);
-        teModifier.read(nbt);
-        return teModifier;
+        return new CreatureMagicMirrorTileEntityModifier(this, nbt);
     }
 
     @Override
     MagicMirrorTileEntityModifier createTileEntityModifier(ItemStack usedItem) {
-        return new CreatureMagicMirrorTileEntityModifier(this);
+        return new CreatureMagicMirrorTileEntityModifier(this, usedItem, EntityType.SKELETON);
     }
 }

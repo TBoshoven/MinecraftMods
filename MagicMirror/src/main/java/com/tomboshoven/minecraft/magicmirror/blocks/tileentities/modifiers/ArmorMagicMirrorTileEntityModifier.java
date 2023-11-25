@@ -44,7 +44,7 @@ import java.util.function.Supplier;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityModifier {
+public class ArmorMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTileEntityModifier {
     /**
      * The number of ticks this modifier needs to cool down.
      */
@@ -64,8 +64,18 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     /**
      * @param modifier The modifier that applied this object to the tile entity.
      */
-    public ArmorMagicMirrorTileEntityModifier(MagicMirrorModifier modifier) {
-        super(modifier);
+    public ArmorMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, ItemStack item) {
+        super(modifier, item);
+    }
+
+    public ArmorMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, CompoundNBT nbt) {
+        super(modifier, nbt);
+        replacementArmor.read(nbt);
+    }
+
+    @Override
+    protected ItemStack getItemStackOldNbt(CompoundNBT nbt) {
+        return new ItemStack(Items.ARMOR_STAND);
     }
 
     @Override
@@ -74,14 +84,8 @@ public class ArmorMagicMirrorTileEntityModifier extends MagicMirrorTileEntityMod
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
-        super.read(nbt);
-        replacementArmor.read(nbt);
-    }
-
-    @Override
     public void remove(World world, BlockPos pos) {
-        InventoryHelper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.ARMOR_STAND));
+        super.remove(world, pos);
         replacementArmor.spawn(world, pos);
     }
 
