@@ -45,6 +45,6 @@ public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
 
     @Override
     MagicMirrorBlockEntityModifier createBlockEntityModifier(ItemStack usedItem) {
-        return new CreatureMagicMirrorBlockEntityModifier(this, usedItem, EntityType.SKELETON);
+        return new CreatureMagicMirrorBlockEntityModifier(this, usedItem.split(1), EntityType.SKELETON);
     }
 }
