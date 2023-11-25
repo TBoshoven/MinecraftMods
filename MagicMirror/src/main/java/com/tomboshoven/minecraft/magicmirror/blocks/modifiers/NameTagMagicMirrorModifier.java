@@ -1,8 +1,8 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.NameTagMagicMirrorBlockEntityModifier;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -11,20 +11,24 @@ import net.minecraft.world.item.Items;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A magic mirror modifier that allows it to be used as an armor stand for switching an entire set of armor.
+ * A magic mirror modifier that adds a name tag.
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ArmorMagicMirrorModifier extends MagicMirrorModifier {
+public class NameTagMagicMirrorModifier extends MagicMirrorModifier {
     @Override
     public String getName() {
-        return "armor";
+        return "name_tag";
     }
 
     @Override
     public boolean canModify(ItemStack heldItem, MagicMirrorCoreBlockEntity blockEntity) {
-        // Must be activated using an armor stand.
-        if (heldItem.getItem() != Items.ARMOR_STAND) {
+        // Must be activated using a name tag.
+        if (heldItem.getItem() != Items.NAME_TAG) {
+            return false;
+        }
+        // Name tag must have a custom name.
+        if (!heldItem.hasCustomHoverName()) {
             return false;
         }
 
@@ -34,13 +38,13 @@ public class ArmorMagicMirrorModifier extends MagicMirrorModifier {
 
     @Override
     MagicMirrorBlockEntityModifier createBlockEntityModifier(CompoundTag nbt) {
-        MagicMirrorBlockEntityModifier teModifier = new ArmorMagicMirrorBlockEntityModifier(this);
+        MagicMirrorBlockEntityModifier teModifier = new NameTagMagicMirrorBlockEntityModifier(this);
         teModifier.read(nbt);
         return teModifier;
     }
 
     @Override
     MagicMirrorBlockEntityModifier createBlockEntityModifier(ItemStack usedItem) {
-        return new ArmorMagicMirrorBlockEntityModifier(this);
+        return new NameTagMagicMirrorBlockEntityModifier(this, usedItem.getHoverName());
     }
 }

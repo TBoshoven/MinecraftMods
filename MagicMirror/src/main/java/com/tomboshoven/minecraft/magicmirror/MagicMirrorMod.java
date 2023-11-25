@@ -6,6 +6,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.ArmorMagicMirrorMo
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.BannerMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.NameTagMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
 import com.tomboshoven.minecraft.magicmirror.data.DataGenerators;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
@@ -53,5 +54,6 @@ public final class MagicMirrorMod {
         MagicMirrorModifier.register(new ArmorMagicMirrorModifier());
         MagicMirrorModifier.register(new BannerMagicMirrorModifier());
         MagicMirrorModifier.register(new CreatureMagicMirrorModifier());
+        MagicMirrorModifier.register(new NameTagMagicMirrorModifier());
     }
 }
