@@ -6,22 +6,22 @@ import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.CreatureReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.CreatureReflectionModifierClient;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.Containers;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CreatureMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntityModifier {
+public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlockEntityModifier {
     /**
      * The entity type to use for the reflection.
      */
@@ -33,17 +33,25 @@ public class CreatureMagicMirrorBlockEntityModifier extends MagicMirrorBlockEnti
     @Nullable
     private CreatureReflectionModifier reflectionModifier;
 
-    /**
-     * @param modifier The modifier that applied this object to the block entity.
-     */
-    public CreatureMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, EntityType<?> entityType) {
-        super(modifier);
+    public CreatureMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, ItemStack item, EntityType<?> entityType) {
+        super(modifier, item);
+        this.entityType = entityType;
+    }
+
+    public CreatureMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt) {
+        super(modifier, nbt);
+        ResourceLocation entityTypeKey = new ResourceLocation(nbt.getString("EntityType"));
+        EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(entityTypeKey);
+        if (entityType == null) {
+            // Backward compatibility
+            entityType = EntityType.SKELETON;
+        }
         this.entityType = entityType;
     }
 
     @Override
-    public void remove(Level world, BlockPos pos) {
-        Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.SKELETON_SKULL, 1));
+    protected ItemStack getItemStackOldNbt(CompoundTag nbt) {
+        return new ItemStack(Items.SKELETON_SKULL);
     }
 
     @Override
