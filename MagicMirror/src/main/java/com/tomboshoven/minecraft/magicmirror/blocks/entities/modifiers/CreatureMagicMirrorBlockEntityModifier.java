@@ -1,6 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.CreatureReflectionModifier;
@@ -40,11 +41,17 @@ public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirror
 
     public CreatureMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt) {
         super(modifier, nbt);
-        ResourceLocation entityTypeKey = new ResourceLocation(nbt.getString("EntityType"));
-        EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(entityTypeKey);
-        if (entityType == null) {
+        EntityType<?> entityType = null;
+        if (nbt.contains("EntityType", 8)) {
+            ResourceLocation entityTypeKey = new ResourceLocation(nbt.getString("EntityType"));
+            // Extra check to make sure we're not getting the default
+            if (ForgeRegistries.ENTITY_TYPES.containsKey(entityTypeKey)) {
+                entityType = ForgeRegistries.ENTITY_TYPES.getValue(entityTypeKey);
+            }
+        }
+        if (entityType == null || !CreatureMagicMirrorModifier.isSupportedEntityType(entityType)) {
             // Backward compatibility
-            entityType = EntityType.SKELETON;
+            entityType = CreatureMagicMirrorModifier.getDefaultEntityType();
         }
         this.entityType = entityType;
     }
