@@ -196,7 +196,7 @@ public class BlockMagicDoor extends BlockMagicDoorwayPartBase {
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState()
                 .withProperty(PART, (meta & 1) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP)
-                .withProperty(FACING, EnumFacing.byHorizontalIndex(meta >> 1));
+                .withProperty(FACING, EnumFacing.getHorizontal(meta >> 1));
     }
 
     @Override

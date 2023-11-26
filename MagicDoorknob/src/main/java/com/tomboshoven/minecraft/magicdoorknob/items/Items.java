@@ -50,7 +50,7 @@ public final class Items {
     private static void addDoorknob(String typeName, Item.ToolMaterial material, ResourceLocation mainTexture) {
         Item i = new ItemMagicDoorknob(typeName, material, mainTexture)
                 .setRegistryName(ModMagicDoorknob.MOD_ID, String.format("magic_doorknob_%s", typeName))
-                .setTranslationKey(String.format("%s.magic_doorknob.%s", ModMagicDoorknob.MOD_ID, typeName))
+                .setUnlocalizedName(String.format("%s.magic_doorknob.%s", ModMagicDoorknob.MOD_ID, typeName))
                 .setCreativeTab(CreativeTabs.MISC);
         itemDoorknobs.put(typeName, (ItemMagicDoorknob) i);
     }

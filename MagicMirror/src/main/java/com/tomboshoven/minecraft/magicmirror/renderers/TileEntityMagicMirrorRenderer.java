@@ -44,7 +44,7 @@ class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<TileEntity
                     EnumFacing facing = te.getFacing();
 
                     BlockPos tePos = te.getPos();
-                    Vec3d reflectedPos = reflected.getPositionVector().add(.5, .5, .5);
+                    Vec3d reflectedPos = reflected.getPositionVector().addVector(.5, .5, .5);
                     Vec3d distanceVector = reflectedPos.subtract(tePos.getX(), tePos.getY(), tePos.getZ());
 
                     renderReflection(reflection, x, y, z, partialTicks, alpha, part, facing, distanceVector);
