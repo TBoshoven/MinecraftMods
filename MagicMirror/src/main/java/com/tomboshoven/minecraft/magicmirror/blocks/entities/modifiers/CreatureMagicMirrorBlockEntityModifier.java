@@ -55,6 +55,16 @@ public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirror
     }
 
     @Override
+    public CompoundTag write(CompoundTag nbt) {
+        super.write(nbt);
+        ResourceLocation entityTypeKey = ForgeRegistries.ENTITY_TYPES.getKey(entityType);
+        if (entityTypeKey != null) {
+            nbt.putString("EntityType", entityTypeKey.toString());
+        }
+        return nbt;
+    }
+
+    @Override
     public void activate(MagicMirrorCoreBlockEntity blockEntity) {
         Reflection reflection = blockEntity.getReflection();
         if (reflection != null) {
