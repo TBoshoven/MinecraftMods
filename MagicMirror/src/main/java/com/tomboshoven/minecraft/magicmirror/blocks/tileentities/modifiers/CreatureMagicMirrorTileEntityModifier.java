@@ -55,6 +55,16 @@ public class CreatureMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorT
     }
 
     @Override
+    public CompoundNBT write(CompoundNBT nbt) {
+        super.write(nbt);
+        ResourceLocation entityTypeKey = ForgeRegistries.ENTITIES.getKey(entityType);
+        if (entityTypeKey != null) {
+            nbt.putString("EntityType", entityTypeKey.toString());
+        }
+        return nbt;
+    }
+
+    @Override
     public void activate(MagicMirrorBaseTileEntity tileEntity) {
         Reflection reflection = tileEntity.getReflection();
         if (reflection != null) {
