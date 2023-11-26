@@ -1,42 +1,74 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
 
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.CreatureReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.CreatureReflectionModifierClient;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CreatureMagicMirrorTileEntityModifier extends MagicMirrorTileEntityModifier {
+public class CreatureMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTileEntityModifier {
+    /**
+     * The entity type to use for the reflection.
+     */
+    private final EntityType<?> entityType;
+
     /**
      * The object that modifies the reflection in the mirror to show the replacement armor.
      */
     @Nullable
     private CreatureReflectionModifier reflectionModifier;
 
-    /**
-     * @param modifier The modifier that applied this object to the tile entity.
-     */
-    public CreatureMagicMirrorTileEntityModifier(MagicMirrorModifier modifier) {
-        super(modifier);
+    public CreatureMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, ItemStack item, EntityType<?> entityType) {
+        super(modifier, item);
+        this.entityType = entityType;
+    }
+
+    public CreatureMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, CompoundNBT nbt) {
+        super(modifier, nbt);
+        EntityType<?> entityType = null;
+        if (nbt.contains("EntityType", 8)) {
+            ResourceLocation entityTypeKey = new ResourceLocation(nbt.getString("EntityType"));
+            // Extra check to make sure we're not getting the default
+            if (ForgeRegistries.ENTITIES.containsKey(entityTypeKey)) {
+                entityType = ForgeRegistries.ENTITIES.getValue(entityTypeKey);
+            }
+        }
+        if (entityType == null || !CreatureMagicMirrorModifier.isSupportedEntityType(entityType)) {
+            // Backward compatibility
+            entityType = EntityType.SKELETON;
+        }
+        this.entityType = entityType;
     }
 
     @Override
-    public void remove(World world, BlockPos pos) {
-        InventoryHelper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.SKELETON_SKULL, 1));
+    protected ItemStack getItemStackOldNbt(CompoundNBT nbt) {
+        return new ItemStack(Items.SKELETON_SKULL);
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT nbt) {
+        super.write(nbt);
+        ResourceLocation entityTypeKey = ForgeRegistries.ENTITIES.getKey(entityType);
+        if (entityTypeKey != null) {
+            nbt.putString("EntityType", entityTypeKey.toString());
+        }
+        return nbt;
     }
 
     @Override

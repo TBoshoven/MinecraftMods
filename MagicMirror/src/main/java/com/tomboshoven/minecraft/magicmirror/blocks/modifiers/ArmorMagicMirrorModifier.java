@@ -35,13 +35,11 @@ public class ArmorMagicMirrorModifier extends MagicMirrorModifier {
 
     @Override
     MagicMirrorTileEntityModifier createTileEntityModifier(CompoundNBT nbt) {
-        MagicMirrorTileEntityModifier teModifier = new ArmorMagicMirrorTileEntityModifier(this);
-        teModifier.read(nbt);
-        return teModifier;
+        return new ArmorMagicMirrorTileEntityModifier(this, nbt);
     }
 
     @Override
     MagicMirrorTileEntityModifier createTileEntityModifier(ItemStack usedItem) {
-        return new ArmorMagicMirrorTileEntityModifier(this);
+        return new ArmorMagicMirrorTileEntityModifier(this, usedItem.split(1));
     }
 }
