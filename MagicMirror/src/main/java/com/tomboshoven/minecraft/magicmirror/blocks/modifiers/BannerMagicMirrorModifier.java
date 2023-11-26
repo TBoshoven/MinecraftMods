@@ -4,8 +4,6 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.Banne
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.BannerItem;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
@@ -37,20 +35,11 @@ public class BannerMagicMirrorModifier extends MagicMirrorModifier {
 
     @Override
     MagicMirrorTileEntityModifier createTileEntityModifier(CompoundNBT nbt) {
-        MagicMirrorTileEntityModifier teModifier = new BannerMagicMirrorTileEntityModifier(this);
-        teModifier.read(nbt);
-        return teModifier;
+        return new BannerMagicMirrorTileEntityModifier(this, nbt);
     }
 
     @Override
     MagicMirrorTileEntityModifier createTileEntityModifier(ItemStack usedItem) {
-        Item bannerType = usedItem.getItem();
-        DyeColor bannerColor = bannerType instanceof BannerItem ? ((BannerItem) bannerType).getColor() : DyeColor.BLACK;
-        CompoundNBT bannerTag = usedItem.getTag();
-        if (bannerTag != null) {
-            // Get the block tag instead of the item stack tag
-            bannerTag = bannerTag.getCompound("BlockEntityTag");
-        }
-        return new BannerMagicMirrorTileEntityModifier(this, bannerColor, bannerTag, usedItem.hasCustomHoverName() ? usedItem.getHoverName() : null);
+        return new BannerMagicMirrorTileEntityModifier(this, usedItem.split(1));
     }
 }
