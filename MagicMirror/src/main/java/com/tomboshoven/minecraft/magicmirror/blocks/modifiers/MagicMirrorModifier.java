@@ -114,7 +114,6 @@ public abstract class MagicMirrorModifier {
      */
     public void apply(MagicMirrorCoreBlockEntity blockEntity, ItemStack heldItem) {
         blockEntity.addModifier(createBlockEntityModifier(heldItem));
-        heldItem.shrink(1);
     }
 
     /**
