@@ -34,13 +34,11 @@ public class DyeMagicMirrorModifier extends MagicMirrorModifier {
 
     @Override
     MagicMirrorBlockEntityModifier createBlockEntityModifier(CompoundTag nbt) {
-        MagicMirrorBlockEntityModifier teModifier = new DyeMagicMirrorBlockEntityModifier(this);
-        teModifier.read(nbt);
-        return teModifier;
+        return new DyeMagicMirrorBlockEntityModifier(this, nbt);
     }
 
     @Override
     MagicMirrorBlockEntityModifier createBlockEntityModifier(ItemStack usedItem) {
-        return new DyeMagicMirrorBlockEntityModifier(this, (DyeItem) usedItem.getItem());
+        return new DyeMagicMirrorBlockEntityModifier(this, usedItem);
     }
 }
