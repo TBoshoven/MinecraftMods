@@ -24,11 +24,9 @@ class ItemModels extends ItemModelProvider {
         Items.DOORKNOBS.values().forEach(
                 doorknob -> {
                     ResourceLocation registryName = doorknob.getId();
-                    if (registryName != null) {
-                        getBuilder(registryName.getPath())
-                                .parent(new ModelFile.ExistingModelFile(modLoc("item/magic_doorknob"), existingFileHelper))
-                                .texture("main", doorknob.get().getMainMaterial().texture());
-                    }
+                    getBuilder(registryName.getPath())
+                            .parent(new ModelFile.ExistingModelFile(modLoc("item/magic_doorknob"), existingFileHelper))
+                            .texture("main", doorknob.get().getMainMaterial().texture());
                 }
         );
     }
