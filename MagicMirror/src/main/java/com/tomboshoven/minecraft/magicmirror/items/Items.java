@@ -24,7 +24,7 @@ public final class Items {
      * The item version of the magic mirror block.
      */
     public static final DeferredItem<BlockItem> MAGIC_MIRROR =
-            ITEMS.registerBlockItem("magic_mirror", Blocks.MAGIC_MIRROR_INACTIVE);
+            ITEMS.registerItem("magic_mirror", props -> new MagicMirrorBlockItem(Blocks.MAGIC_MIRROR_INACTIVE.get(), props));
 
     private Items() {
     }
