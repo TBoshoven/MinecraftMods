@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.client.color.block.BlockColors;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
@@ -29,10 +28,8 @@ public final class BlockColorHandlers {
      * Register all color handlers.
      */
     private static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
-        BlockColors blockColors = event.getBlockColors();
-
         BlockColor doorwayBlockColorHandler = new DoorwayBlockColorHandler();
-        blockColors.register(doorwayBlockColorHandler, Blocks.MAGIC_DOORWAY.get());
-        blockColors.register(doorwayBlockColorHandler, Blocks.MAGIC_DOOR.get());
+        event.register(doorwayBlockColorHandler, Blocks.MAGIC_DOORWAY.get());
+        event.register(doorwayBlockColorHandler, Blocks.MAGIC_DOOR.get());
     }
 }
