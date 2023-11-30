@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
-class PropertySprite extends TextureAtlasSprite {
+public class PropertySprite extends TextureAtlasSprite {
     private final ResourceLocation property;
 
     /**

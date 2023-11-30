@@ -21,7 +21,7 @@ import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.Text
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
-class TexturedUnbakedGeometry implements IUnbakedGeometry<TexturedUnbakedGeometry> {
+public class TexturedUnbakedGeometry implements IUnbakedGeometry<TexturedUnbakedGeometry> {
     // The original model
     private final IUnbakedGeometry<?> originalModelGeometry;
 
