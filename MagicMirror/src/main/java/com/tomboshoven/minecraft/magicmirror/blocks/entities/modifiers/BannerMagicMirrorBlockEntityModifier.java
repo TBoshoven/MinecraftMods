@@ -58,9 +58,6 @@ public class BannerMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBl
         // Let's do a super-ugly workaround.
         // This will cause issues if dye colors are ever made extensible.
         Block block = BuiltInRegistries.BLOCK.get(new ResourceLocation(String.format("minecraft:%s_banner", baseColor.getName())));
-        if (block == null) {
-            return super.getItemStackOldNbt(nbt);
-        }
         ItemStack itemStack = new ItemStack(block);
         itemStack.getOrCreateTag().put("BlockEntityTag", bannerData);
         if (name != null) {
