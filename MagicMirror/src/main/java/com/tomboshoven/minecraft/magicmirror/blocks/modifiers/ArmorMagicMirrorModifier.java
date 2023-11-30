@@ -34,13 +34,11 @@ public class ArmorMagicMirrorModifier extends MagicMirrorModifier {
 
     @Override
     MagicMirrorBlockEntityModifier createBlockEntityModifier(CompoundTag nbt) {
-        MagicMirrorBlockEntityModifier teModifier = new ArmorMagicMirrorBlockEntityModifier(this);
-        teModifier.read(nbt);
-        return teModifier;
+        return new ArmorMagicMirrorBlockEntityModifier(this, nbt);
     }
 
     @Override
     MagicMirrorBlockEntityModifier createBlockEntityModifier(ItemStack usedItem) {
-        return new ArmorMagicMirrorBlockEntityModifier(this);
+        return new ArmorMagicMirrorBlockEntityModifier(this, usedItem.split(1));
     }
 }

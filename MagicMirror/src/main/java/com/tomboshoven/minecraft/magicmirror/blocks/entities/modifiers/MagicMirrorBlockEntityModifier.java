@@ -54,14 +54,6 @@ public abstract class MagicMirrorBlockEntityModifier {
     }
 
     /**
-     * Load modifier data from an NBT tag.
-     *
-     * @param nbt The NBT tag compound to read from.
-     */
-    public void read(CompoundTag nbt) {
-    }
-
-    /**
      * Called when the block entity is removed.
      * Can be used for things like spawning contained items back into the world.
      *
