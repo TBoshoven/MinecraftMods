@@ -64,10 +64,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
 
     private CompoundTag writeInternal(CompoundTag compound) {
         CompoundTag result = super.save(compound);
-        ResourceLocation registryName = baseBlockState.getBlock().getRegistryName();
-        if (registryName != null) {
-            compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
-        }
+        compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
         if (doorknob != null) {
             result.putString("doorknobType", doorknob.getTypeName());
         }
