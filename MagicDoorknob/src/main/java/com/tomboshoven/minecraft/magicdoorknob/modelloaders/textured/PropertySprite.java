@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite.Info;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
-class PropertySprite extends TextureAtlasSprite {
+public class PropertySprite extends TextureAtlasSprite {
     private final ResourceLocation name;
 
     private static final AtlasTexture ATLAS_TEXTURE = new AtlasTexture(new ResourceLocation(MagicDoorknobMod.MOD_ID, "property_texture_atlas"));
