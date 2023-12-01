@@ -13,7 +13,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ItemBasedMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntityModifier {
-    ItemStack item;
+    final ItemStack item;
 
     /**
      * @param item The item that went into the mirror to create this modifier.
