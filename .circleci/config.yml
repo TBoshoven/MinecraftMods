@@ -30,7 +30,8 @@ jobs:
           command: |
             for SUBPROJECT_BUILD in */build.gradle; do
               SUBPROJECT=$(dirname "$SUBPROJECT_BUILD")
-              ./gradlew "$SUBPROJECT":runData || true
+              # Attempt runData twice, in case there was an issue acquiring the required packages
+              ./gradlew "$SUBPROJECT":runData || ./gradlew "$SUBPROJECT":runData || true
               ls "$SUBPROJECT/src/generated/resources/.cache"
             done
       - run:
