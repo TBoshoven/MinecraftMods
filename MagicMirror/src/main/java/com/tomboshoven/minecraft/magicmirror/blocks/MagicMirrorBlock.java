@@ -155,11 +155,6 @@ public class MagicMirrorBlock extends HorizontalBlock {
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
-        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
-    }
-
-    @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         // Make sure the mirror is facing the right way when placed
         Direction horizontalDirection = Direction.NORTH;
