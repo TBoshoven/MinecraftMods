@@ -3,10 +3,10 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
