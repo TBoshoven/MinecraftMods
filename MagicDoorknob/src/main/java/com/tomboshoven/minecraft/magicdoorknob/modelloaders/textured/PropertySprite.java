@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
-class PropertySprite extends TextureAtlasSprite {
+public class PropertySprite extends TextureAtlasSprite {
     private final ResourceLocation name;
 
     private static final TextureAtlas ATLAS_TEXTURE = new TextureAtlas(new ResourceLocation(MagicDoorknobMod.MOD_ID, "property_texture_atlas"));
