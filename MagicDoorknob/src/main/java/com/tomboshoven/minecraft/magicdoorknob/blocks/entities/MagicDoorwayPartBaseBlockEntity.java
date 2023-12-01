@@ -25,7 +25,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.CompositeModel;
 import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -66,10 +65,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     private void saveInternal(CompoundTag compound) {
-        ResourceLocation registryName = ForgeRegistries.BLOCKS.getKey(baseBlockState.getBlock());
-        if (registryName != null) {
-            compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
-        }
+        compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
         if (doorknob != null) {
             compound.putString("doorknobType", doorknob.getTypeName());
         }
