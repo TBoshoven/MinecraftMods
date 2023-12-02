@@ -2,7 +2,8 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/openjdk:8-jdk-buster
+    resource_class: large
     steps:
       - checkout
       - run:
@@ -29,7 +30,7 @@ jobs:
           command: |
             for SUBPROJECT_BUILD in */build.gradle; do
               SUBPROJECT=$(dirname "$SUBPROJECT_BUILD")
-              _JAVA_OPTIONS='-Xmx1G -Xms1G' ./gradlew "$SUBPROJECT":runData || true
+              ./gradlew "$SUBPROJECT":runData || true
               ls "$SUBPROJECT/src/generated/resources/.cache"
             done
       - run:
