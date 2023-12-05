@@ -2,14 +2,10 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
 import com.google.common.collect.Maps;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorPartBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -56,25 +52,6 @@ public abstract class MagicMirrorModifier {
     @Nullable
     public static MagicMirrorModifier getModifier(String name) {
         return MODIFIERS.get(name);
-    }
-
-    /**
-     * Helper method to get a magic mirror block entity at the given position.
-     *
-     * @param worldIn The world containing the magic mirror.
-     * @param pos     The position in the world of the block.
-     * @return The block entity, or null if it does not exist or is not a magic mirror block entity.
-     */
-    @Nullable
-    private static MagicMirrorCoreBlockEntity getMagicMirrorBlockEntity(BlockGetter worldIn, BlockPos pos) {
-        BlockEntity blockEntity = worldIn.getBlockEntity(pos);
-        if (blockEntity instanceof MagicMirrorCoreBlockEntity) {
-            return (MagicMirrorCoreBlockEntity) blockEntity;
-        }
-        if (blockEntity instanceof MagicMirrorPartBlockEntity) {
-            return ((MagicMirrorPartBlockEntity) blockEntity).getCore();
-        }
-        return null;
     }
 
     /**

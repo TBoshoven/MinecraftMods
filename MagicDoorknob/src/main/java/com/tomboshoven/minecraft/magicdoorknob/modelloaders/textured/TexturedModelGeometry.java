@@ -30,7 +30,7 @@ import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.Text
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
-class TexturedModelGeometry implements IModelGeometry<TexturedModelGeometry> {
+public class TexturedModelGeometry implements IModelGeometry<TexturedModelGeometry> {
     // The extra textures to include with this model; used to enable textures that are not already present in the game
     private final Set<? extends Material> extraTextures;
     // The original model
