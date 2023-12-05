@@ -63,10 +63,7 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
 
     private CompoundNBT writeInternal(CompoundNBT compound) {
         CompoundNBT result = super.save(compound);
-        ResourceLocation registryName = baseBlockState.getBlock().getRegistryName();
-        if (registryName != null) {
-            compound.put("baseBlock", NBTUtil.writeBlockState(baseBlockState));
-        }
+        compound.put("baseBlock", NBTUtil.writeBlockState(baseBlockState));
         if (doorknob != null) {
             result.putString("doorknobType", doorknob.getTypeName());
         }
