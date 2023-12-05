@@ -11,7 +11,7 @@ buildscript {
         maven { url = 'https://maven.neoforged.net/releases' }
     }
     dependencies {
-        classpath group: 'net.neoforged.gradle', name: 'userdev', version: '7.0.43'
+        classpath group: 'net.neoforged.gradle', name: 'userdev', version: '7.0.57'
     }
 }
 
@@ -51,7 +51,7 @@ subprojects {
     }
 
     dependencies {
-        implementation "net.neoforged:neoforge:20.2.59-beta"
+        implementation "net.neoforged:neoforge:20.2.86"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
