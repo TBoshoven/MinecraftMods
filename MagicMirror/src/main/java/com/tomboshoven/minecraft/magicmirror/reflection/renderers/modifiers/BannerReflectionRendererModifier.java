@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
@@ -53,8 +52,6 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
             Material material = Sheets.getBannerMaterial(key.get());
 
             VertexConsumer buffer = material.buffer(renderTypeBuffer, RenderType::entityNoOutline);
-
-            TextureAtlasSprite sprite = material.sprite();
 
             // Draw a simple quad
             // Perspective is 90 degrees, so width should be distance for a perfect fit
