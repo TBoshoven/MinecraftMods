@@ -14,7 +14,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * Collection of all block entities in the mod.
  */
-@SuppressWarnings("ConstantConditions")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public final class BlockEntities {
