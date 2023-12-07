@@ -25,7 +25,7 @@ jobs:
       - run:
           name: Data Generation
           # The runData command tends to stop the daemon unexpectedly, which causes error code 1
-          # Apparently this is expected behavior so we just work around it.
+          # Apparently this is expected behavior, so we just work around it.
           # We verify that the command ran by making sure the cache is present
           command: |
             for SUBPROJECT_BUILD in */build.gradle; do
@@ -51,7 +51,7 @@ jobs:
       - store_artifacts:
           path: build/libs
           destination: libs
-      # Save the Gradle cache so we don't have to redownload things all the time
+      # Save the Gradle cache, so we don't have to redownload things all the time
       - save_cache:
           paths:
             - ~/.gradle
