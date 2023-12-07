@@ -231,7 +231,7 @@ public class ArmorMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTile
 
         /**
          * Swap the current inventory with another.
-         * They inventories should have the same size.
+         * The inventories should have the same size.
          *
          * @param inventory The inventory to swap with.
          */
