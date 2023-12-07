@@ -62,7 +62,7 @@ subprojects {
     // Add generated resources
     sourceSets.main.resources {
         srcDir 'src/generated/resources'
-        include 'assets/**', 'data/**', 'META-INF/**', 'pack.mcmeta'
+        include 'assets/**', 'data/**', 'META-INF/**', 'logo.png', 'pack.mcmeta'
     }
 
     dependencies {
