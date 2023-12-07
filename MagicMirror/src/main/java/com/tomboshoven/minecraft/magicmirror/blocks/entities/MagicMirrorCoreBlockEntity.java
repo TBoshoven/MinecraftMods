@@ -185,7 +185,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     }
 
     /**
-     * Called when a player uses the magic mirror..
+     * Called when a player uses the magic mirror.
      *
      * @param playerIn The player that activated the mirror.
      * @param hand     The hand used by the player to activate the mirror.
