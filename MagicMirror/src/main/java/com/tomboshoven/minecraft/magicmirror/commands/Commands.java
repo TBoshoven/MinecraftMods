@@ -1,18 +1,13 @@
 package com.tomboshoven.minecraft.magicmirror.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * Collection of all commands in the mod.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class Commands {
     private static final MagicMirrorCommand MAGIC_MIRROR = new MagicMirrorCommand();
 

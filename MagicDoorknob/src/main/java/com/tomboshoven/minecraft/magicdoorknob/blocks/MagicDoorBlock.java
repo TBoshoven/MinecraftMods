@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -29,13 +28,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Top or bottom part of a magic door.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
     /**
      * Property describing which part of the door is being represented by this block.
