@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicdoorknob.data;
 
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
@@ -10,10 +9,6 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 class ItemModels extends ItemModelProvider {
     ItemModels(PackOutput output, ExistingFileHelper helper) {
         super(output, MagicDoorknobMod.MOD_ID, helper);

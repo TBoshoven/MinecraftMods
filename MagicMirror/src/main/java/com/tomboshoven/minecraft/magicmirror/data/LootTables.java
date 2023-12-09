@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicmirror.data;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
@@ -11,14 +10,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 class LootTables extends LootTableProvider {
     LootTables(PackOutput output) {
         super(output, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(BlockLoot::new, LootContextParamSets.BLOCK)));

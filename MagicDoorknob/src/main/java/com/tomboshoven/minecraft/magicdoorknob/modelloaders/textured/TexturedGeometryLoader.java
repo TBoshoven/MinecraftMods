@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -11,13 +10,9 @@ import net.minecraftforge.client.model.geometry.GeometryLoaderManager;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * A model loader that deals with dynamic properties that are used to determine textures at runtime.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public class TexturedGeometryLoader implements IGeometryLoader<TexturedUnbakedGeometry> {
     // The namespace of the properties; used in model definitions

@@ -4,7 +4,6 @@ import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRenderer;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -14,16 +13,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import java.util.Locale;
 
 /**
  * Client-side version of the reflection.
  * This version actually renders a reflection.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public class ReflectionClient extends Reflection {
     private static final int TEXTURE_WIDTH = 64;

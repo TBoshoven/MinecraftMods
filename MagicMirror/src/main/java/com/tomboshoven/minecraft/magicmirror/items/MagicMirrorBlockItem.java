@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.items;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.BlockItem;
@@ -12,14 +11,11 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Block item for the Magic Mirror.
  * Handles custom placement logic related to activating mirrors.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MagicMirrorBlockItem extends BlockItem {
     public MagicMirrorBlockItem(Block block, Properties properties) {
         super(block, properties);
