@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicmirror.data;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
@@ -10,15 +9,12 @@ import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapedRecipeBuilder;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
 
 import static net.minecraft.item.Items.ENDER_EYE;
 import static net.minecraftforge.common.Tags.Items.GLASS_PANES;
 import static net.minecraftforge.common.Tags.Items.RODS_WOODEN;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 class Recipes extends RecipeProvider {
     Recipes(DataGenerator generatorIn) {
         super(generatorIn);

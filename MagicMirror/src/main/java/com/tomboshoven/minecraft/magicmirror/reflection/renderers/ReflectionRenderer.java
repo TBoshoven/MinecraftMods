@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicmirror.reflection.renderers;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Matrix4f;
@@ -10,16 +9,12 @@ import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
 import static org.lwjgl.opengl.GL11.GL_PROJECTION;
 
 /**
  * Renderer for reflections in the mirror.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ReflectionRenderer extends ReflectionRendererBase {
     /**
      * The entity that is rendered.

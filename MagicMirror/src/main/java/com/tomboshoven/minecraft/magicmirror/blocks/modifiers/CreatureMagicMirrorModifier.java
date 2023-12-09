@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.CreatureMagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -10,13 +9,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * A magic mirror modifier that changes the appearance of the reflection to be another creature's.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
     /**
      * Return whether the given item is a skull that can be used to apply this modifier.
