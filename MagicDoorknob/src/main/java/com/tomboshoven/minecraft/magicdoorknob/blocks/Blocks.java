@@ -1,21 +1,17 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Supplier;
 
 /**
  * Collection of all blocks in the mod.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class Blocks {
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MagicDoorknobMod.MOD_ID);
 

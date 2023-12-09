@@ -7,7 +7,6 @@ import com.tomboshoven.minecraft.magicdoorknob.config.Config;
 import com.tomboshoven.minecraft.magicdoorknob.data.DataGenerators;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.ModelLoaders;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.DistExecutor;
@@ -15,10 +14,6 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @Mod(MagicDoorknobMod.MOD_ID)
 public final class MagicDoorknobMod {
     public static final String MOD_ID = "magic_doorknob";

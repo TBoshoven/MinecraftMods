@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.metadata.animation.FrameSize;
@@ -11,14 +10,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.textures.UnitTextureAtlasSprite;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * A sprite that does not link to a texture.
  * Instead, it describes a property that allows others to provide the texture (see ITextureMapper).
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public class PropertySprite extends TextureAtlasSprite {
     private final ResourceLocation property;

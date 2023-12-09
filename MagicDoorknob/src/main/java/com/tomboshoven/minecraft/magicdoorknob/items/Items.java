@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicdoorknob.items;
 
 import com.google.common.collect.Maps;
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -14,15 +13,12 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 import java.util.function.Supplier;
 
 /**
  * Collection of all items in the mod.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class Items {
     /**
      * The magic doorknob items by type name.

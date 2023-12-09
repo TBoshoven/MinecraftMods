@@ -1,16 +1,11 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.EntityType;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A reflection modifier that changes which entity model is rendered.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class CreatureReflectionModifier extends ReflectionModifier {
     /**
      * The type of entity to show in the reflection.

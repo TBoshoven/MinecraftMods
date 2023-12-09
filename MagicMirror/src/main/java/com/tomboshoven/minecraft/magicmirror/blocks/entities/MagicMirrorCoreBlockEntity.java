@@ -5,7 +5,6 @@ import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirr
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -25,7 +24,6 @@ import net.neoforged.fml.DistExecutor;
 import net.neoforged.neoforge.common.util.FakePlayer;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -36,8 +34,6 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 /**
  * The block that has all the reflection logic.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MagicMirrorCoreBlockEntity extends BlockEntity {
     /**
      * The list of all modifiers to the mirror.

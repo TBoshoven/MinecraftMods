@@ -1,20 +1,16 @@
 package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import com.google.common.collect.Maps;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 import java.util.Objects;
 
 /**
  * Model property pointing to a texture.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class ModelTextureProperty extends ModelProperty<Material> {
     // Lazily filled map of model texture properties.
     // Can't just use equality as they are used in an IdentityHashMap.
