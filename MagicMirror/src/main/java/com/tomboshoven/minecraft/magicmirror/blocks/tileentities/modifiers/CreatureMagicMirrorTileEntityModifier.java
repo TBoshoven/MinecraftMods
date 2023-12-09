@@ -6,7 +6,6 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBase
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.CreatureReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.CreatureReflectionModifierClient;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -18,10 +17,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class CreatureMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTileEntityModifier {
     /**
      * The entity type to use for the reflection.

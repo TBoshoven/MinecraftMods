@@ -2,21 +2,16 @@ package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * A magic mirror modifier as applied to a tile entity.
  * Instead of using this directly, apply it using a MagicMirrorModifier instance.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class MagicMirrorTileEntityModifier {
     /**
      * The modifier that applied this object to the tile entity.

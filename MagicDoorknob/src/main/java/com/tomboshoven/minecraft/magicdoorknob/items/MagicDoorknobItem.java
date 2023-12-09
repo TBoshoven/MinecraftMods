@@ -7,7 +7,6 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorTile
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayTileEntity;
 import com.tomboshoven.minecraft.magicdoorknob.config.Config;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.RenderMaterial;
@@ -29,14 +28,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Supplier;
 
 /**
  * A magic doorknob that allows you to open doors that don't exist.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MagicDoorknobItem extends Item {
     // The main material for rendering the item
     private final ResourceLocation mainTextureLocation;

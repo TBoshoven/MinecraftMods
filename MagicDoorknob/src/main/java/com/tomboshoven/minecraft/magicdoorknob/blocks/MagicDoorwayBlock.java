@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayTileEntity;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.BooleanProperty;
@@ -17,13 +16,10 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Part of a magic doorway.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
     /**
      * Property describing which part of the doorway is being represented by this block.

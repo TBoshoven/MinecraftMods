@@ -4,16 +4,12 @@ import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 class Language extends LanguageProvider {
     Language(DataGenerator gen) {
         super(gen, MagicDoorknobMod.MOD_ID, "en_us");

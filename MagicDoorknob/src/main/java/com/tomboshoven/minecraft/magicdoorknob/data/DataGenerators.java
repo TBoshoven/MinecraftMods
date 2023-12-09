@@ -1,15 +1,10 @@
 package com.tomboshoven.minecraft.magicdoorknob.data;
 
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class DataGenerators {
     private DataGenerators() {
     }

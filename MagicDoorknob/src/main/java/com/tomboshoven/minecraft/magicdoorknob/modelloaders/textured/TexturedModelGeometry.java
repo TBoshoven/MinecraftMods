@@ -2,13 +2,12 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,7 +15,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Function;
@@ -27,8 +25,6 @@ import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.Text
 /**
  * A model that has dynamic properties that are used to determine textures at runtime.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public class TexturedModelGeometry implements IModelGeometry<TexturedModelGeometry> {
     // The extra textures to include with this model; used to enable textures that are not already present in the game

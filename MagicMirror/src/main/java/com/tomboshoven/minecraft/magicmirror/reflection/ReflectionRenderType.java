@@ -2,13 +2,10 @@ package com.tomboshoven.minecraft.magicmirror.reflection;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR_TEX;
 import static org.lwjgl.opengl.GL11.GL_FLAT;
@@ -19,8 +16,6 @@ import static org.lwjgl.opengl.GL11.GL_SMOOTH;
 /**
  * Render type for rendering the reflection texture to the screen.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 class ReflectionRenderType extends RenderType {
     ReflectionRenderType(ReflectionClient reflection) {

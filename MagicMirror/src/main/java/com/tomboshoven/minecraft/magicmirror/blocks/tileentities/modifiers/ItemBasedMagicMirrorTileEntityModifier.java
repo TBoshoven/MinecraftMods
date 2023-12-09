@@ -1,17 +1,12 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class ItemBasedMagicMirrorTileEntityModifier extends MagicMirrorTileEntityModifier {
     final ItemStack item;
 

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRenderer;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -14,7 +13,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import static net.minecraft.client.Minecraft.ON_OSX;
 
@@ -22,8 +20,6 @@ import static net.minecraft.client.Minecraft.ON_OSX;
  * Client-side version of the reflection.
  * This version actually renders a reflection.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public class ReflectionClient extends Reflection {
     private static final int TEXTURE_WIDTH = 64;
