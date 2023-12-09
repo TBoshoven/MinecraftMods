@@ -7,18 +7,13 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.Armor
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier.MessageEquip;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier.MessageSwapMirror;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier.MessageSwapPlayer;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * Class managing custom networking, such as sending and registering of messages.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class Network {
     private static final String PROTOCOL_VERSION = "1";
 

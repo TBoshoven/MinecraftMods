@@ -7,7 +7,6 @@ import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifierClient;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -38,12 +37,9 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 import java.util.function.Supplier;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ArmorMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTileEntityModifier {
     /**
      * The number of ticks this modifier needs to cool down.

@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicmirror.items;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -12,15 +11,12 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
 /**
  * Collection of all items in the mod.
  */
 @EventBusSubscriber
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class Items {
     private static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, MagicMirrorMod.MOD_ID);
 

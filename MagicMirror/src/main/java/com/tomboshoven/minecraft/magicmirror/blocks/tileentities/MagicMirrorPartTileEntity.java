@@ -1,19 +1,15 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
 
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
 /**
  * The tile entity for the top mirror block; this tile entity has no reflection logic and simply uses whatever's in the
  * bottom block.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MagicMirrorPartTileEntity extends MagicMirrorBaseTileEntity {
     @Nullable
     private MagicMirrorCoreTileEntity core;

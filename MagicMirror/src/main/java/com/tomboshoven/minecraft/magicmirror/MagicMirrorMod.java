@@ -11,7 +11,6 @@ import com.tomboshoven.minecraft.magicmirror.data.DataGenerators;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -20,10 +19,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @Mod(MagicMirrorMod.MOD_ID)
 public final class MagicMirrorMod {
     public static final String MOD_ID = "magic_mirror";

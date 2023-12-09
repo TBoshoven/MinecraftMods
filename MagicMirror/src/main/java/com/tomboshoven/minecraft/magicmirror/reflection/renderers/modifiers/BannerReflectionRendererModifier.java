@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers;
 
 import com.google.common.collect.ImmutableList;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BannerTextures;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -14,7 +13,6 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,8 +22,6 @@ import static org.lwjgl.opengl.GL11.GL_QUADS;
 /**
  * A modifier for a reflection renderer which puts a banner pattern in the background of the reflection.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class BannerReflectionRendererModifier extends ReflectionRendererModifier {
     /**
      * The distance at which to render the background.
