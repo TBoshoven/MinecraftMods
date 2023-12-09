@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
@@ -12,14 +11,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * Collection of all blocks in the mod.
  */
 @EventBusSubscriber
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class Blocks {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MagicDoorknobMod.MOD_ID);
 

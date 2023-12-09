@@ -3,18 +3,13 @@ package com.tomboshoven.minecraft.magicmirror.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.TranslatableComponent;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Commands related to the mod.
  * Currently, this only features a debug command.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 final class MagicMirrorCommand {
     /**
      * Reply with some debugging information.

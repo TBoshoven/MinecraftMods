@@ -2,21 +2,16 @@ package com.tomboshoven.minecraft.magicmirror.reflection;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import static net.minecraft.client.Minecraft.ON_OSX;
 
 /**
  * Simple wrapper around a render target to a texture, so we can use it with the texture manager.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public class ReflectionTexture extends AbstractTexture {
     /**

@@ -2,15 +2,11 @@ package com.tomboshoven.minecraft.magicmirror.data;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 class Language extends LanguageProvider {
     Language(DataGenerator gen) {
         super(gen, MagicMirrorMod.MOD_ID, "en_us");
