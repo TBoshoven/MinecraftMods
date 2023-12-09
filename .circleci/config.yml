@@ -116,7 +116,7 @@ jobs:
             FILE="$(ls /tmp/workspace/libs/*.jar | head -n 1)"
             # Use the build number on the JAR to prevent confusion.
             ORIGINAL_BUILD_NUM="$(echo "$FILE" | sed -E 's/^.*\.([0-9]+)\.jar$/\1/')"
-            DATA="$(jq -n '{"name": $ARGS.positional[1], "version_number": $ARGS.positional[2], "changelog": $ARGS.positional[0], "dependencies": [], "game_versions": ["1.19.4"], "version_type": "release", "loaders": ["forge"], "featured": true, "project_id": $ARGS.positional[3], "file_parts": ["file"]}' --args "$DESCRIPTION" "v$TAG_VERSION" "$TAG_VERSION.$ORIGINAL_BUILD_NUM" "$PROJECT_ID")"
+            DATA="$(jq -n '{"name": $ARGS.positional[1], "version_number": $ARGS.positional[2], "changelog": $ARGS.positional[0], "dependencies": [], "game_versions": ["1.19.4"], "version_type": "release", "loaders": ["forge"], "featured": false, "project_id": $ARGS.positional[3], "file_parts": ["file"]}' --args "$DESCRIPTION" "v$TAG_VERSION" "$TAG_VERSION.$ORIGINAL_BUILD_NUM" "$PROJECT_ID")"
             curl -XPOST -f 'https://api.modrinth.com/v2/version' -F "data=$DATA" -F "file=@$FILE" -H "Authorization: $MODRINTH_TOKEN" -H 'User-Agent: TBoshoven/MinecraftMods'
 workflows:
   version: 2
