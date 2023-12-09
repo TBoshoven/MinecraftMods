@@ -24,14 +24,16 @@ jobs:
           key: circleci-minecraft-mods-gradle-{{ checksum "build.gradle.original" }}
       - run:
           name: Data Generation
-          # The runData command tends to stop the daemon unexpectedly, which causes error code 1
+          # The runData command tends to stop the daemon unexpectedly, which causes error code 1.
           # Apparently this is expected behavior, so we just work around it.
-          # We verify that the command ran by making sure the cache is present
+          # We verify that the command ran by making sure the cache is present.
+          # We also get some occasional network errors. Retries seem to fix this.
           command: |
             for SUBPROJECT_BUILD in */build.gradle; do
               SUBPROJECT=$(dirname "$SUBPROJECT_BUILD")
-              # Attempt runData twice, in case there was an issue acquiring the required packages
-              ./gradlew --info "$SUBPROJECT":runData || ./gradlew --info "$SUBPROJECT":runData || echo "Ignoring failure"
+              ./gradlew --info "$SUBPROJECT":runData || \
+              ls "$SUBPROJECT/src/generated/resources/.cache" || \
+              ./gradlew --info "$SUBPROJECT":runData || \
               ls "$SUBPROJECT/src/generated/resources/.cache"
             done
       - run:
