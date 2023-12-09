@@ -3,12 +3,10 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 import com.google.common.collect.Maps;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -19,8 +17,6 @@ import java.util.Map;
  * These are typically activated by right-clicking a mirror with an item.
  * In order to make a modifier available in the game, register it using the static register() method.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class MagicMirrorModifier {
     /**
      * A registry of all modifiers.
