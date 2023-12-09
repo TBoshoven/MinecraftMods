@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
@@ -25,14 +24,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Function;
 
 /**
  * A renderer to render a player using a different (biped) model.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 class OffModelPlayerRenderer<T extends LivingEntity, M extends EntityModel<T>> extends LivingEntityRenderer<T, M> {
     /**
      * The location of the texture to use.
