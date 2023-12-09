@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
 
 import com.tomboshoven.minecraft.magicdoorknob.items.ItemMagicDoorknob;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -15,13 +14,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Base class for tile entities that make up magic doorways.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class TileEntityMagicDoorwayPartBase extends TileEntity {
     // The block we're basing the appearance of this block on.
     private IBlockState baseBlockState = Blocks.AIR.getDefaultState();

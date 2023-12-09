@@ -10,7 +10,6 @@ import com.tomboshoven.minecraft.magicmirror.commands.Commands;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -19,10 +18,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @Mod(modid = ModMagicMirror.MOD_ID, name = ModMagicMirror.NAME, useMetadata = true)
 public class ModMagicMirror {
     public static final String MOD_ID = "magic_mirror";

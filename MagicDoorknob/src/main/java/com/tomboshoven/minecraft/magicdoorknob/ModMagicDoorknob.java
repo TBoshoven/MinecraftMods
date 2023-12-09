@@ -7,10 +7,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntityMag
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.ModelLoaders;
 import com.tomboshoven.minecraft.magicdoorknob.models.Models;
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -19,10 +16,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @Mod(modid = ModMagicDoorknob.MOD_ID, name = ModMagicDoorknob.NAME, useMetadata = true)
 public class ModMagicDoorknob {
     public static final String MOD_ID = "magic_doorknob";

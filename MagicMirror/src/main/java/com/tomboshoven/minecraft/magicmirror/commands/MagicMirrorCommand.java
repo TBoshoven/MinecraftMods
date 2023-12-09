@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.commands;
 
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -10,7 +9,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,8 +16,6 @@ import java.util.List;
  * Commands related to the mod.
  * Currently, this only features a debug command.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MagicMirrorCommand extends CommandBase {
 
     @Override

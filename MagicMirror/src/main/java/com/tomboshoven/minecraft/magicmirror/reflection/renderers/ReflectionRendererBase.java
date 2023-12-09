@@ -1,18 +1,13 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.renderers;
 
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * Base class for reflection renderers.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @SideOnly(Side.CLIENT)
 public abstract class ReflectionRendererBase {
     /**

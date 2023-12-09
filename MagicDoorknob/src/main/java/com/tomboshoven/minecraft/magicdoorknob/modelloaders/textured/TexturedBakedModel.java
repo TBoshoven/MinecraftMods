@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import com.google.common.collect.Lists;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BakedQuadRetextured;
@@ -21,7 +20,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import javax.vecmath.Matrix4f;
 import java.util.List;
 import java.util.function.Function;
@@ -30,8 +28,6 @@ import java.util.stream.Collectors;
 /**
  * A baked model that fills in the texture properties dynamically.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @SideOnly(Side.CLIENT)
 class TexturedBakedModel implements IBakedModel {
     // The original baked model

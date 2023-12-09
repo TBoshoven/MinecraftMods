@@ -7,7 +7,6 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagic
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorPart;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import io.netty.buffer.ByteBuf;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
@@ -44,11 +43,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @SuppressWarnings("deprecation")
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class BlockMagicMirror extends BlockHorizontal {
     /**
      * Property describing whether the mirror is completely constructed.
