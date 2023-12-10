@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
+import com.mojang.serialization.MapCodec;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -21,6 +23,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import java.util.Arrays;
 
 public class MagicMirrorInactiveBlock extends MagicMirrorBaseBlock {
+    private static final MapCodec<MagicMirrorCoreBlock> CODEC = simpleCodec(MagicMirrorCoreBlock::new);
 
     /**
      * Property describing which part of the mirror is being represented by this block.
@@ -60,6 +63,11 @@ public class MagicMirrorInactiveBlock extends MagicMirrorBaseBlock {
      */
     MagicMirrorInactiveBlock(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
     }
 
     @Override

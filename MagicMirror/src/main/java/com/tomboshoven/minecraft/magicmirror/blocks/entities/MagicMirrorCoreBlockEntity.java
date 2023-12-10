@@ -58,7 +58,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
      */
     private static List<Player> findReflectablePlayers(EntityGetter world, BlockPos ownPosition) {
         // TODO: Add facing limitations
-        AABB scanBB = new AABB(ownPosition.offset(-10, -4, -10), ownPosition.offset(10, 4, 10));
+        AABB scanBB = AABB.encapsulatingFullBlocks(ownPosition.offset(-10, -4, -10), ownPosition.offset(10, 4, 10));
         List<Player> playerEntities = world.getEntitiesOfClass(Player.class, scanBB);
         // Only return real players
         return playerEntities.stream().filter(player -> !(player instanceof FakePlayer)).collect(Collectors.toList());

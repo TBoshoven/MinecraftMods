@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
+import com.mojang.serialization.MapCodec;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.BlockEntities;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
@@ -25,6 +26,8 @@ import javax.annotation.Nullable;
 import static com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorInactiveBlock.EnumPartType.TOP;
 
 public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
+    private static final MapCodec<MagicMirrorCoreBlock> CODEC = simpleCodec(MagicMirrorCoreBlock::new);
+
     /**
      * Number of ticks between updating who we're reflecting
      */
@@ -35,6 +38,11 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
      */
     MagicMirrorCoreBlock(Block.Properties properties) {
         super(properties);
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
     }
 
     @Override

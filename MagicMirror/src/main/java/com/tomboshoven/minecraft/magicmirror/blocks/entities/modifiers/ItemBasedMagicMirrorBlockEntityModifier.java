@@ -43,7 +43,7 @@ public abstract class ItemBasedMagicMirrorBlockEntityModifier extends MagicMirro
     @Override
     public CompoundTag write(CompoundTag nbt) {
         super.write(nbt);
-        CompoundTag itemCompound = item.serializeNBT();
+        CompoundTag itemCompound = item.save(new CompoundTag());
         nbt.put("Item", itemCompound);
         return nbt;
     }

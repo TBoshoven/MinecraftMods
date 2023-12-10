@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
+import com.mojang.serialization.MapCodec;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorPartBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -12,11 +13,18 @@ import javax.annotation.Nullable;
 import static com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorInactiveBlock.EnumPartType.BOTTOM;
 
 public class MagicMirrorPartBlock extends MagicMirrorActiveBlock {
+    private static final MapCodec<MagicMirrorCoreBlock> CODEC = simpleCodec(MagicMirrorCoreBlock::new);
+
     /**
      * Create a new Magic Mirror block.
      */
     MagicMirrorPartBlock(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
     }
 
     @Override
