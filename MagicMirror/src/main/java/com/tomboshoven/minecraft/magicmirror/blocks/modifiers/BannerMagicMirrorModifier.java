@@ -3,18 +3,13 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.BannerMagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * A magic mirror modifier that changes the mirror's background to a banner image.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class BannerMagicMirrorModifier extends MagicMirrorModifier {
     @Override
     public String getName() {

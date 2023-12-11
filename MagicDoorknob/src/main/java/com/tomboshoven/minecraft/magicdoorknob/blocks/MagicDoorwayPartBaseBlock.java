@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.StringRepresentable;
@@ -19,14 +18,11 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.IBlockRenderProperties;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
 
 /**
  * Generic functionality for parts of the doorway.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class MagicDoorwayPartBaseBlock extends Block implements EntityBlock {
     MagicDoorwayPartBaseBlock(Block.Properties properties) {
         super(properties);

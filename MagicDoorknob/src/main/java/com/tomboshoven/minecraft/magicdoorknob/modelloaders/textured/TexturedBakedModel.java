@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -24,7 +23,6 @@ import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
@@ -33,8 +31,6 @@ import java.util.stream.Collectors;
 /**
  * A baked model that fills in the texture properties dynamically.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
     // The baked texture getter
