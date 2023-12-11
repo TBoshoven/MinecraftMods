@@ -6,8 +6,6 @@ import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRend
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -17,7 +15,6 @@ import static net.minecraft.client.Minecraft.ON_OSX;
  * Client-side version of the reflection.
  * This version actually renders a reflection.
  */
-@OnlyIn(Dist.CLIENT)
 public class ReflectionClient extends Reflection {
     private static final int TEXTURE_WIDTH = 64;
     private static final int TEXTURE_HEIGHT = 128;
