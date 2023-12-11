@@ -6,15 +6,12 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.metadata.animation.FrameSize;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceMetadata;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.textures.UnitTextureAtlasSprite;
 
 /**
  * A sprite that does not link to a texture.
  * Instead, it describes a property that allows others to provide the texture (see ITextureMapper).
  */
-@OnlyIn(Dist.CLIENT)
 public class PropertySprite extends TextureAtlasSprite {
     private final ResourceLocation property;
 

@@ -4,15 +4,12 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import static net.minecraft.client.Minecraft.ON_OSX;
 
 /**
  * Simple wrapper around a render target to a texture, so we can use it with the texture manager.
  */
-@OnlyIn(Dist.CLIENT)
 public class ReflectionTexture extends AbstractTexture {
     /**
      * The frame buffer which is used for rendering the reflection to and subsequently rendering it into the world.

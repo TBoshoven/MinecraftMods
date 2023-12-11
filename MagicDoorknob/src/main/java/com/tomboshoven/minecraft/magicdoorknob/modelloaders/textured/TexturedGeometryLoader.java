@@ -4,8 +4,6 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.model.geometry.GeometryLoaderManager;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
@@ -13,7 +11,6 @@ import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 /**
  * A model loader that deals with dynamic properties that are used to determine textures at runtime.
  */
-@OnlyIn(Dist.CLIENT)
 public class TexturedGeometryLoader implements IGeometryLoader<TexturedUnbakedGeometry> {
     // The namespace of the properties; used in model definitions
     public static final String PROPERTY_NAMESPACE = "property";

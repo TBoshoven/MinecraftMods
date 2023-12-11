@@ -25,8 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.TierSortingRegistry;
 
 import java.util.function.Supplier;
@@ -223,7 +221,6 @@ public class MagicDoorknobItem extends Item {
     /**
      * @return The location of the main texture of the doorknob
      */
-    @OnlyIn(Dist.CLIENT)
     public Material getMainMaterial() {
         return new Material(InventoryMenu.BLOCK_ATLAS, mainTextureLocation);
     }

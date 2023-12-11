@@ -3,13 +3,10 @@ package com.tomboshoven.minecraft.magicmirror.reflection.renderers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Base class for reflection renderers.
  */
-@OnlyIn(Dist.CLIENT)
 public abstract class ReflectionRendererBase {
     /**
      * @return The entity that is being rendered. This is used for chaining modifiers.
