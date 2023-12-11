@@ -4,8 +4,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR_TEX;
 import static org.lwjgl.opengl.GL11.GL_FLAT;
@@ -16,7 +14,6 @@ import static org.lwjgl.opengl.GL11.GL_SMOOTH;
 /**
  * Render type for rendering the reflection texture to the screen.
  */
-@OnlyIn(Dist.CLIENT)
 class ReflectionRenderType extends RenderType {
     ReflectionRenderType(ReflectionClient reflection) {
         // Builtin RenderType builders are incredibly annoying to use due to how they're set up, so we just roll our own
