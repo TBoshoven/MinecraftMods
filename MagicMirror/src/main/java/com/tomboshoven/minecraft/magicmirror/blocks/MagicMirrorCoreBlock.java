@@ -4,7 +4,6 @@ import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.BlockEntities;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -24,13 +23,9 @@ import net.neoforged.fml.DistExecutor;
 import net.neoforged.neoforge.network.NetworkEvent;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorInactiveBlock.EnumPartType.TOP;
 
-@SuppressWarnings("deprecation")
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
     /**
      * Number of ticks between updating who we're reflecting

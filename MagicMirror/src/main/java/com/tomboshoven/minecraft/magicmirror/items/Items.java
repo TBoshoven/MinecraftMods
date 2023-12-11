@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicmirror.items;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
@@ -10,13 +9,9 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * Collection of all items in the mod.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class Items {
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MagicMirrorMod.MOD_ID);
 
