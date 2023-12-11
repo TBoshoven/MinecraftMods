@@ -9,8 +9,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Locale;
@@ -19,7 +17,6 @@ import java.util.Locale;
  * Client-side version of the reflection.
  * This version actually renders a reflection.
  */
-@OnlyIn(Dist.CLIENT)
 public class ReflectionClient extends Reflection {
     private static final int TEXTURE_WIDTH = 64;
     private static final int TEXTURE_HEIGHT = 128;

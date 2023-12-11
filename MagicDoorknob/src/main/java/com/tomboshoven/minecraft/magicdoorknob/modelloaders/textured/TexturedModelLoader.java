@@ -6,8 +6,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
@@ -17,7 +15,6 @@ import java.util.Set;
 /**
  * A model loader that deals with dynamic properties that are used to determine textures at runtime.
  */
-@OnlyIn(Dist.CLIENT)
 public class TexturedModelLoader implements IModelLoader<TexturedModelGeometry> {
     // The namespace of the properties; used in model definitions
     public static final String PROPERTY_NAMESPACE = "property";

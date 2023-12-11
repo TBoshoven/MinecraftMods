@@ -15,8 +15,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
@@ -31,7 +29,6 @@ import java.util.stream.Collectors;
 /**
  * A baked model that fills in the texture properties dynamically.
  */
-@OnlyIn(Dist.CLIENT)
 class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
     // The baked texture getter
     private final Function<? super Material, ? extends TextureAtlasSprite> bakedTextureGetter;
