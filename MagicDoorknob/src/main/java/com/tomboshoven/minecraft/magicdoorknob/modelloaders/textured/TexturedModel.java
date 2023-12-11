@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBlock;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -14,7 +13,6 @@ import net.minecraftforge.common.model.animation.IClip;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
@@ -24,8 +22,6 @@ import java.util.stream.Collectors;
 /**
  * A model that has dynamic properties that are used to determine textures at runtime.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @SideOnly(Side.CLIENT)
 class TexturedModel implements IModel {
     // The namespace of the properties; used in model definitions

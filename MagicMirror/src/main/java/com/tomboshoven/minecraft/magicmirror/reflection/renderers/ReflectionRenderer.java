@@ -1,19 +1,14 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.renderers;
 
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import org.lwjgl.util.glu.Project;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * Renderer for reflections in the mirror.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ReflectionRenderer extends ReflectionRendererBase {
     /**
      * The entity that is rendered.

@@ -5,7 +5,6 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagic
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierCreature;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifierCreature.Factory;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryHelper;
@@ -16,10 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.SidedProxy;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MagicMirrorTileEntityModifierCreature extends MagicMirrorTileEntityModifier {
     /**
      * Factory for creating the reflection modifier.

@@ -5,7 +5,6 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifie
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection.ReflectionFactory;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,7 +22,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -32,8 +30,6 @@ import java.util.stream.Collectors;
 /**
  * The tile entity for the bottom mirror block; this is the block that has all the reflection logic.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class TileEntityMagicMirrorCore extends TileEntityMagicMirrorBase implements ITickable {
     /**
      * Number of ticks between updating who we're reflecting

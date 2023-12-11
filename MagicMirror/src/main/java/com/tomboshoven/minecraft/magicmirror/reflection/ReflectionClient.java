@@ -3,21 +3,17 @@ package com.tomboshoven.minecraft.magicmirror.reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRenderer;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Client-side version of the reflection.
  * This version actually renders a reflection.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @SideOnly(Side.CLIENT)
 public class ReflectionClient extends Reflection {
     /**

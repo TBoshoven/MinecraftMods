@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicdoorknob.items;
 
 import com.google.common.collect.Maps;
 import com.tomboshoven.minecraft.magicdoorknob.ModMagicDoorknob;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -11,15 +10,12 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 
 /**
  * Collection of all items in the mod.
  */
 @EventBusSubscriber
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class Items {
     /**
      * The magic doorknob items by type name.
