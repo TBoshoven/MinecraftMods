@@ -18,8 +18,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.DistExecutor;
 
@@ -229,7 +227,6 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
         return new ClientboundBlockEntityDataPacket(getBlockPos(), 1, getUpdateTag());
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         readInternal(pkt.getTag());
