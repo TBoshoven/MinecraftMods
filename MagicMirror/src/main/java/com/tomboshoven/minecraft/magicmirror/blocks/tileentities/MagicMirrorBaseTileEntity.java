@@ -4,7 +4,6 @@ import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartType;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -14,7 +13,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,8 +20,6 @@ import java.util.List;
  * Base class for magic mirror multiblock.
  * Provides a common interface to to the core tile entity.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class MagicMirrorBaseTileEntity extends TileEntity {
     MagicMirrorBaseTileEntity(TileEntityType<? extends MagicMirrorBaseTileEntity> tileEntityTypeIn) {
         super(tileEntityTypeIn);

@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -18,13 +17,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Generic functionality for parts of the doorway.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class MagicDoorwayPartBaseBlock extends Block {
     MagicDoorwayPartBaseBlock(Block.Properties properties) {
         super(properties);

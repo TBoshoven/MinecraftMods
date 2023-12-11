@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.LootTableProvider;
@@ -17,7 +16,6 @@ import net.minecraft.world.storage.loot.LootTableManager;
 import net.minecraft.world.storage.loot.ValidationResults;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,8 +24,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 class LootTables extends LootTableProvider {
     LootTables(DataGenerator dataGeneratorIn) {
         super(dataGeneratorIn);

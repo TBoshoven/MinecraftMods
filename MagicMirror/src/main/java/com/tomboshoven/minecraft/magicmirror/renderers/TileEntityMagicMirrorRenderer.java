@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartType;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -17,8 +16,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
@@ -27,8 +24,6 @@ import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
  * Renderer for the Magic Mirror tile entity.
  */
 @OnlyIn(Dist.CLIENT)
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTileEntity> {
     /**
      * Maximum distance for an entity to be rendered.
