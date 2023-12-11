@@ -1,6 +1,5 @@
 package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -8,13 +7,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An interface for getting a texture location for a property.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public interface ITextureMapper {
     /**

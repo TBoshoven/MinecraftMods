@@ -1,6 +1,5 @@
 package com.tomboshoven.minecraft.magicmirror.renderers;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.HumanoidModel;
@@ -16,12 +15,9 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.entity.EntityType;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Map;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class OffModelPlayerRenderers implements ResourceManagerReloadListener {
     /**
      * The map of entity types to off-model renderer provider.
