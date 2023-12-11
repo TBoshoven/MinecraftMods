@@ -7,7 +7,6 @@ import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBase
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClientUpdater;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -20,14 +19,10 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * Renderer for the Magic Mirror tile entity.
  */
 @OnlyIn(Dist.CLIENT)
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTileEntity> {
     /**
      * Maximum distance for an entity to be rendered.

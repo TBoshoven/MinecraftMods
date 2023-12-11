@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ModelTextureProperty;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -26,7 +25,6 @@ import net.minecraftforge.client.model.CompositeModel;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
 import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedModelLoader.PROPERTY_NAMESPACE;
@@ -34,8 +32,6 @@ import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.Text
 /**
  * Base class for tile entities that make up magic doorways.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     /**
      * The main texture of the doorway (based on base block).

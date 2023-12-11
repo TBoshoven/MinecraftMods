@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.BlockColors;
@@ -13,14 +12,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Handler for giving doorways more or less the color they should be.
  */
 @OnlyIn(Dist.CLIENT)
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 class DoorwayBlockColorHandler implements IBlockColor {
     @Override
     public int getColor(BlockState state, @Nullable IBlockDisplayReader worldIn, @Nullable BlockPos pos, int tintIndex) {
