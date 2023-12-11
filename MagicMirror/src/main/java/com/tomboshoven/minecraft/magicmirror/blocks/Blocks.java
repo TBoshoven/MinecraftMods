@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -13,14 +12,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * Collection of all blocks in the mod.
  */
 @EventBusSubscriber
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class Blocks {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MagicMirrorMod.MOD_ID);
 

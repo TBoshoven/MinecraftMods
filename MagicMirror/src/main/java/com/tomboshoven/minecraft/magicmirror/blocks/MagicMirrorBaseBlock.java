@@ -1,6 +1,5 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -13,10 +12,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class MagicMirrorBaseBlock extends HorizontalDirectionalBlock {
     /**
      * The bounding boxes of the various orientations of this block; should be indexed by facing.horizontalIndex()
