@@ -16,13 +16,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Renderer for the Magic Mirror tile entity.
  */
-@OnlyIn(Dist.CLIENT)
 class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTileEntity> {
     /**
      * Maximum distance for an entity to be rendered.

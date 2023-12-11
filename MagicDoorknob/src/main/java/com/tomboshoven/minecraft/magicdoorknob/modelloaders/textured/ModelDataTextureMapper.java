@@ -5,8 +5,6 @@ import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
@@ -15,7 +13,6 @@ import javax.annotation.Nullable;
 /**
  * Extract the texture location from extra model data.
  */
-@OnlyIn(Dist.CLIENT)
 class ModelDataTextureMapper implements ITextureMapper {
     @Override
     public RenderMaterial mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable IModelData extraData) {
