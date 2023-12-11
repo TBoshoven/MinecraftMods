@@ -5,7 +5,6 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayPartBaseBlock;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
@@ -13,12 +12,9 @@ import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ModelFile;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayPartBaseBlock.EnumPartType.TOP;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 class BlockStates extends BlockStateProvider {
     BlockStates(DataGenerator gen, ExistingFileHelper existingFileHelper) {
         super(gen, MagicDoorknobMod.MOD_ID, existingFileHelper);

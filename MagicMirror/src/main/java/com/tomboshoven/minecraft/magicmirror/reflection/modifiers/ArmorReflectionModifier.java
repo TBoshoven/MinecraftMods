@@ -2,15 +2,10 @@ package com.tomboshoven.minecraft.magicmirror.reflection.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier.ReplacementArmor;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
-import mcp.MethodsReturnNonnullByDefault;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A reflection modifier that changes the armor that the reflected character is wearing.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ArmorReflectionModifier extends ReflectionModifier {
     /**
      * The armor to show instead of the actual armor.
