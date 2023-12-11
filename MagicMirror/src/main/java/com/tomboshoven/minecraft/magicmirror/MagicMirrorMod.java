@@ -15,9 +15,9 @@ import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,10 +34,6 @@ public final class MagicMirrorMod {
         DataGenerators.register(modEventBus);
         Items.register(modEventBus);
         BlockEntities.register(modEventBus);
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            Renderers.register(modEventBus);
-            MinecraftForge.EVENT_BUS.register(ReflectionClientUpdater.class);
-        });
 
         // Register packets
         Network.registerMessages();
@@ -48,5 +44,17 @@ public final class MagicMirrorMod {
         MagicMirrorModifier.register(new ArmorMagicMirrorModifier());
         MagicMirrorModifier.register(new BannerMagicMirrorModifier());
         MagicMirrorModifier.register(new CreatureMagicMirrorModifier());
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            ClientEvents.init();
+        }
+    }
+
+    static class ClientEvents {
+        static void init() {
+            IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+            Renderers.register(modEventBus);
+            MinecraftForge.EVENT_BUS.register(ReflectionClientUpdater.class);
+        }
     }
 }
