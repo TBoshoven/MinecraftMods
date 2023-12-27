@@ -2,20 +2,15 @@ package com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier.ReplacementArmor;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * A modifier for a reflection renderer which replaces the armor that is worn by the reflected entity.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ArmorReflectionRendererModifier extends ReflectionRendererModifier {
     /**
      * The armor to show instead of the actual armor.

@@ -30,7 +30,7 @@ public abstract class BlockEntityMagicMirrorRendererBase {
      * @param poseStack         The pose stack to use for rendering.
      * @param multiBufferSource The buffer source to use for rendering.
      */
-    public void render(Reflection reflection, BlockPos pos, Direction facing, PoseStack poseStack, MultiBufferSource multiBufferSource) {
+    public void render(Reflection reflection, BlockPos pos, Direction facing, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLight) {
         if (reflection instanceof ReflectionClient) {
             Entity reflected = reflection.getReflectedEntity();
             if (reflected != null) {
@@ -39,7 +39,7 @@ public abstract class BlockEntityMagicMirrorRendererBase {
 
                 ReflectionClientUpdater.markViewed((ReflectionClient) reflection);
 
-                renderReflection((ReflectionClient) reflection, poseStack, multiBufferSource, facing, distanceVector);
+                renderReflection((ReflectionClient) reflection, poseStack, multiBufferSource, facing, distanceVector, combinedLight);
             }
         }
     }
@@ -55,7 +55,11 @@ public abstract class BlockEntityMagicMirrorRendererBase {
      * @param facing           The direction in which the mirror part is facing.
      * @param distance         The distance between the mirror and the reflected subject; used for fading.
      */
-    private void renderReflection(ReflectionClient reflection, PoseStack matrixStack, MultiBufferSource renderTypeBuffer, Direction facing, Vec3 distance) {
+    private void renderReflection(ReflectionClient reflection, PoseStack matrixStack, MultiBufferSource renderTypeBuffer, Direction facing, Vec3 distance, int combinedLight) {
+        if (!reflection.isAvailable()) {
+            return;
+        }
+
         // The further away the subject is, the more faint the reflection
         double horizontalDistanceSq = distance.x * distance.x + distance.z * distance.z;
         double verticalDistanceSq = distance.y * distance.y;
@@ -76,9 +80,9 @@ public abstract class BlockEntityMagicMirrorRendererBase {
         Matrix4f matrix = matrixStack.last().pose();
 
         // Draw a simple quad
-        buffer.vertex(matrix, -.5f, -.5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(0, texBottom).endVertex();
-        buffer.vertex(matrix, .5f, -.5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(1, texBottom).endVertex();
-        buffer.vertex(matrix, .5f, .5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(1, texTop).endVertex();
-        buffer.vertex(matrix, -.5f, .5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(0, texTop).endVertex();
+        buffer.vertex(matrix, -.5f, -.5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(0, texBottom).uv2(combinedLight).endVertex();
+        buffer.vertex(matrix, .5f, -.5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(1, texBottom).uv2(combinedLight).endVertex();
+        buffer.vertex(matrix, .5f, .5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(1, texTop).uv2(combinedLight).endVertex();
+        buffer.vertex(matrix, -.5f, .5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(0, texTop).uv2(combinedLight).endVertex();
     }
 }

@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.entities;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ModelTextureProperty;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -25,11 +24,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.CompositeModel;
 import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
 import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedGeometryLoader.PROPERTY_NAMESPACE;
@@ -37,8 +34,6 @@ import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.Text
 /**
  * Base class for block entities that make up magic doorways.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     /**
      * The main texture of the doorway (based on base block).
@@ -66,10 +61,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     private void saveInternal(CompoundTag compound) {
-        ResourceLocation registryName = ForgeRegistries.BLOCKS.getKey(baseBlockState.getBlock());
-        if (registryName != null) {
-            compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
-        }
+        compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
         if (doorknob != null) {
             compound.putString("doorknobType", doorknob.getTypeName());
         }

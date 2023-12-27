@@ -3,19 +3,15 @@ package com.tomboshoven.minecraft.magicmirror.reflection;
 import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 /**
  * A reflection of an entity.
  * This class is mainly responsible for rendering this reflection and making it available as a texture.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class Reflection {
     /**
      * The number of currently active reflections on the client side.
@@ -75,13 +71,13 @@ public class Reflection {
     /**
      * Construct a new frame buffer to render to.
      */
-    void buildFrameBuffer() {
+    void buildTexture() {
     }
 
     /**
      * Clean up the current frame buffer.
      */
-    void cleanUpFrameBuffer() {
+    void cleanUpTexture() {
     }
 
     /**

@@ -4,19 +4,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Entity;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * Renderer for reflections in the mirror.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ReflectionRenderer extends ReflectionRendererBase {
     /**
      * The entity that is rendered.

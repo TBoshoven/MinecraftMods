@@ -7,7 +7,6 @@ import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifierClient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -38,13 +37,10 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 import java.util.function.Supplier;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public class ArmorMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntityModifier {
+public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlockEntityModifier {
     /**
      * The number of ticks this modifier needs to cool down.
      */
@@ -64,8 +60,18 @@ public class ArmorMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntityM
     /**
      * @param modifier The modifier that applied this object to the block entity.
      */
-    public ArmorMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier) {
-        super(modifier);
+    public ArmorMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, ItemStack item) {
+        super(modifier, item);
+    }
+
+    public ArmorMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt) {
+        super(modifier, nbt);
+        replacementArmor.read(nbt);
+    }
+
+    @Override
+    protected ItemStack getItemStackOldNbt(CompoundTag nbt) {
+        return new ItemStack(Items.ARMOR_STAND);
     }
 
     @Override
@@ -74,14 +80,8 @@ public class ArmorMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntityM
     }
 
     @Override
-    public void read(CompoundTag nbt) {
-        super.read(nbt);
-        replacementArmor.read(nbt);
-    }
-
-    @Override
     public void remove(Level world, BlockPos pos) {
-        Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.ARMOR_STAND));
+        super.remove(world, pos);
         replacementArmor.spawn(world, pos);
     }
 
@@ -226,7 +226,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntityM
 
         /**
          * Swap the current inventory with another.
-         * They inventories should have the same size.
+         * The inventories should have the same size.
          *
          * @param inventory The inventory to swap with.
          */
