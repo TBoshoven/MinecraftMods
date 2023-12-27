@@ -16,8 +16,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 @OnlyIn(Dist.CLIENT)
 public class PropertySprite extends TextureAtlasSprite {
-    private final ResourceLocation name;
-
     private static final TextureAtlas ATLAS_TEXTURE = new TextureAtlas(new ResourceLocation(MagicDoorknobMod.MOD_ID, "property_texture_atlas"));
     private static final NativeImage NATIVE_IMAGE = new NativeImage(1, 1, false);
 
@@ -26,15 +24,9 @@ public class PropertySprite extends TextureAtlasSprite {
      */
     PropertySprite(ResourceLocation name) {
         super(ATLAS_TEXTURE, new Info(name, Integer.MAX_VALUE, Integer.MAX_VALUE, AnimationMetadataSection.EMPTY), 0, Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 0, NATIVE_IMAGE);
-        this.name = name;
-    }
-
-    @Override
-    public ResourceLocation getName() {
-        return name;
     }
 
     public String toString() {
-        return "PropertySprite{name='" + name + "'}";
+        return "PropertySprite{name='" + getName() + "'}";
     }
 }
