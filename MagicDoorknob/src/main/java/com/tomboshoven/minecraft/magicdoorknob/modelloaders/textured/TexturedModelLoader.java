@@ -33,7 +33,7 @@ public class TexturedModelLoader implements ICustomModelLoader {
     @Override
     public boolean accepts(ResourceLocation modelLocation) {
         // Check to see if we know about the given model
-        return baseModels.containsKey(new ResourceLocation(modelLocation.getNamespace(), modelLocation.getPath()));
+        return baseModels.containsKey(new ResourceLocation(modelLocation.getResourceDomain(), modelLocation.getResourcePath()));
     }
 
     /**
@@ -59,7 +59,7 @@ public class TexturedModelLoader implements ICustomModelLoader {
     @Override
     public IModel loadModel(ResourceLocation modelLocation) throws Exception {
         ModelResourceLocation modelResourceLocation = (ModelResourceLocation) modelLocation;
-        ResourceLocation baseResourceLocation = new ResourceLocation(modelLocation.getNamespace(), modelLocation.getPath());
+        ResourceLocation baseResourceLocation = new ResourceLocation(modelLocation.getResourceDomain(), modelLocation.getResourcePath());
         ResourceLocation baseModelLocation = baseModels.getOrDefault(baseResourceLocation, ModelBakery.MODEL_MISSING);
         ResourceLocation augmentedBaseModelLocation = new ModelResourceLocation(baseModelLocation, modelResourceLocation.getVariant());
         // FIXME: This causes the untextured model to be cached and dummy textures to be requested

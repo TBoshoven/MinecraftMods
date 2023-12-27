@@ -50,7 +50,7 @@ class TexturedModel implements IModel {
     public Collection<ResourceLocation> getTextures() {
         // Filter out the property textures since they don't get filled in until runtime
         Set<ResourceLocation> textures = wrappedModel.getTextures().stream()
-                .filter(location -> !PROPERTY_NAMESPACE.equals(location.getNamespace()))
+                .filter(location -> !PROPERTY_NAMESPACE.equals(location.getResourceDomain()))
                 .collect(Collectors.toSet());
         return Sets.union(textures, extraTextures);
     }
@@ -59,8 +59,8 @@ class TexturedModel implements IModel {
     public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
         // Use a custom texture getter and baked model
         Function<ResourceLocation, TextureAtlasSprite> augmentedTextureGetter = resourceLocation -> {
-            if (PROPERTY_NAMESPACE.equals(resourceLocation.getNamespace())) {
-                return new PropertySprite(resourceLocation.getPath());
+            if (PROPERTY_NAMESPACE.equals(resourceLocation.getResourceDomain())) {
+                return new PropertySprite(resourceLocation.getResourcePath());
             }
             return bakedTextureGetter.apply(resourceLocation);
         };

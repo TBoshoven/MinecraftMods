@@ -10,42 +10,55 @@ buildscript {
         jcenter()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net/"
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
     }
 }
 
 subprojects {
-    apply plugin: 'net.minecraftforge.gradle.forge'
+    apply plugin: 'net.minecraftforge.gradle'
+    apply plugin: 'idea'
 
     version = "1.12.2-DEV.0"
-    group = "com.tomboshoven.minecraft.magicmirror"
+    group = "com.tomboshoven.minecraft." + project.getName().toLowerCase()
     archivesBaseName = project.projectDir.name
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
     minecraft {
-        version = "1.12.2-14.23.5.2838"
-        runDir = new File(rootProject.projectDir.path, 'run')
+        mappings channel: 'snapshot', version: '20171003-1.12'
 
-        mappings = "stable_39"
+        runs {
+            client {
+                properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+                properties 'forge.logging.console.level': 'debug'
+                workingDirectory project.file('run')
+                source sourceSets.main
+            }
+            server {
+                properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+                properties 'forge.logging.console.level': 'debug'
+                workingDirectory project.file('run')
+                source sourceSets.main
+            }
+        }
     }
 
     processResources {
         // This will ensure that this task is redone when the versions change.
         inputs.property "version", project.version
-        inputs.property "mc_version", project.minecraft.version
+        inputs.property "mc_version", '1.12.2'
 
         // Replace stuff in mcmod.info, nothing else
         from(sourceSets.main.resources.srcDirs) {
             include 'mcmod.info'
 
             // Replace version and mcversion
-            expand 'version': project.version, 'mc_version': project.minecraft.version
+            expand 'version': project.version, 'mc_version': '1.12.2'
         }
 
         // Copy everything else that's not the mcmod.info
@@ -53,4 +66,11 @@ subprojects {
             exclude 'mcmod.info'
         }
     }
+
+    dependencies {
+        minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
+        implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    }
+
+    jar.finalizedBy('reobfJar')
 }
