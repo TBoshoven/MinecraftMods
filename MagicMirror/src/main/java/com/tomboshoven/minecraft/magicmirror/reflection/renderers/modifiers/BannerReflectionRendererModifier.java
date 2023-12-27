@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -15,12 +14,9 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.Optional;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class BannerReflectionRendererModifier extends ReflectionRendererModifier {
     /**
      * The distance at which to render the background.

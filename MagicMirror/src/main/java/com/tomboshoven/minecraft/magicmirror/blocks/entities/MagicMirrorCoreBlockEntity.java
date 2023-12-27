@@ -5,7 +5,6 @@ import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirr
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -25,7 +24,6 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.DistExecutor;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -36,8 +34,6 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 /**
  * The block that has all the reflection logic.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MagicMirrorCoreBlockEntity extends BlockEntity {
     /**
      * The list of all modifiers to the mirror.
@@ -184,7 +180,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     }
 
     /**
-     * Called when a player uses the magic mirror..
+     * Called when a player uses the magic mirror.
      *
      * @param playerIn The player that activated the mirror.
      * @param hand     The hand used by the player to activate the mirror.

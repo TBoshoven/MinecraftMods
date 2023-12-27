@@ -7,7 +7,6 @@ import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifierClient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -38,12 +37,9 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 import java.util.function.Supplier;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlockEntityModifier {
     /**
      * The number of ticks this modifier needs to cool down.
@@ -230,7 +226,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
 
         /**
          * Swap the current inventory with another.
-         * They inventories should have the same size.
+         * The inventories should have the same size.
          *
          * @param inventory The inventory to swap with.
          */

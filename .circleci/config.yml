@@ -24,14 +24,16 @@ jobs:
           key: circleci-minecraft-mods-gradle-{{ checksum "build.gradle.original" }}
       - run:
           name: Data Generation
-          # The runData command tends to stop the daemon unexpectedly, which causes error code 1
-          # Apparently this is expected behavior so we just work around it.
-          # We verify that the command ran by making sure the cache is present
+          # The runData command tends to stop the daemon unexpectedly, which causes error code 1.
+          # Apparently this is expected behavior, so we just work around it.
+          # We verify that the command ran by making sure the cache is present.
+          # We also get some occasional network errors. Retries seem to fix this.
           command: |
             for SUBPROJECT_BUILD in */build.gradle; do
               SUBPROJECT=$(dirname "$SUBPROJECT_BUILD")
-              # Attempt runData twice, in case there was an issue acquiring the required packages
-              ./gradlew "$SUBPROJECT":runData || ./gradlew "$SUBPROJECT":runData || true
+              ./gradlew --info "$SUBPROJECT":runData || \
+              ls "$SUBPROJECT/src/generated/resources/.cache" || \
+              ./gradlew --info "$SUBPROJECT":runData || \
               ls "$SUBPROJECT/src/generated/resources/.cache"
             done
       - run:
@@ -51,7 +53,7 @@ jobs:
       - store_artifacts:
           path: build/libs
           destination: libs
-      # Save the Gradle cache so we don't have to redownload things all the time
+      # Save the Gradle cache, so we don't have to redownload things all the time
       - save_cache:
           paths:
             - ~/.gradle
@@ -114,7 +116,7 @@ jobs:
             FILE="$(ls /tmp/workspace/libs/*.jar | head -n 1)"
             # Use the build number on the JAR to prevent confusion.
             ORIGINAL_BUILD_NUM="$(echo "$FILE" | sed -E 's/^.*\.([0-9]+)\.jar$/\1/')"
-            DATA="$(jq -n '{"name": $ARGS.positional[1], "version_number": $ARGS.positional[2], "changelog": $ARGS.positional[0], "dependencies": [], "game_versions": ["1.20.1"], "version_type": "release", "loaders": ["forge", "neoforge"], "featured": true, "project_id": $ARGS.positional[3], "file_parts": ["file"]}' --args "$DESCRIPTION" "v$TAG_VERSION" "$TAG_VERSION.$ORIGINAL_BUILD_NUM" "$PROJECT_ID")"
+            DATA="$(jq -n '{"name": $ARGS.positional[1], "version_number": $ARGS.positional[2], "changelog": $ARGS.positional[0], "dependencies": [], "game_versions": ["1.20.1"], "version_type": "release", "loaders": ["forge", "neoforge"], "featured": false, "project_id": $ARGS.positional[3], "file_parts": ["file"]}' --args "$DESCRIPTION" "v$TAG_VERSION" "$TAG_VERSION.$ORIGINAL_BUILD_NUM" "$PROJECT_ID")"
             curl -XPOST -f 'https://api.modrinth.com/v2/version' -F "data=$DATA" -F "file=@$FILE" -H "Authorization: $MODRINTH_TOKEN" -H 'User-Agent: TBoshoven/MinecraftMods'
 workflows:
   version: 2
