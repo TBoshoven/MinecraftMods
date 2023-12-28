@@ -53,18 +53,25 @@ public class OffModelPlayerRenderers implements ResourceManagerReloadListener {
         return INSTANCE;
     }
 
-    @Override
-    public void onResourceManagerReload(ResourceManager resourceManager) {
+    private OffModelPlayerRenderers() {
         Minecraft minecraft = Minecraft.getInstance();
-        EntityRenderDispatcher entityRenderDispatcher = minecraft.getEntityRenderDispatcher();
-        ItemRenderer itemRenderer = minecraft.getItemRenderer();
-        EntityModelSet entityModels = minecraft.getEntityModels();
-        BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
+        loadRenderers(minecraft.getResourceManager(), minecraft.getEntityRenderDispatcher(), minecraft.getItemRenderer(), minecraft.getEntityModels(), minecraft.getBlockRenderer(), minecraft.font);
+    }
+
+    /**
+     * Load or reload the renderers.
+     */
+    private void loadRenderers(ResourceManager resourceManager, EntityRenderDispatcher entityRenderDispatcher, ItemRenderer itemRenderer, EntityModelSet entityModels, BlockRenderDispatcher blockRenderer, Font font) {
         ItemInHandRenderer itemInHandRenderer = entityRenderDispatcher.getItemInHandRenderer();
-        Font font = minecraft.font;
         EntityRendererProvider.Context context = new EntityRendererProvider.Context(entityRenderDispatcher, itemRenderer, blockRenderer, itemInHandRenderer, resourceManager, entityModels, font);
 
         RENDERER_PROVIDERS.forEach((entityType, rendererProvider) -> RENDERERS.put(entityType, rendererProvider.create(context)));
+    }
+
+    @Override
+    public void onResourceManagerReload(ResourceManager resourceManager) {
+        Minecraft minecraft = Minecraft.getInstance();
+        loadRenderers(resourceManager, minecraft.getEntityRenderDispatcher(), minecraft.getItemRenderer(), minecraft.getEntityModels(), minecraft.getBlockRenderer(), minecraft.font);
     }
 
     /**
