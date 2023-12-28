@@ -30,22 +30,22 @@ For instructions on how to use the mods, take a look at the [wiki](https://githu
 
 | Minecraft Version                                                 | Mod Loaders         | Support Level | Build                                                                                                                                                                        |
 |-------------------------------------------------------------------|---------------------|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [1.12.2](https://github.com//TBoshoven/MinecraftMods/tree/1.12.2) | [Forge]             | Stable        | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.12.2.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.12.2) |
-| [1.14.4](https://github.com//TBoshoven/MinecraftMods/tree/1.14.4) | [Forge]             | Active        | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.14.4.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.14.2) |
-| [1.15.2](https://github.com//TBoshoven/MinecraftMods/tree/1.15.2) | [Forge]             | Active        | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.15.2.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.15.2) |
-| [1.16.1](https://github.com//TBoshoven/MinecraftMods/tree/1.16.1) | [Forge]             | None          | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.16.1.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.16.1) |
-| [1.16.2](https://github.com//TBoshoven/MinecraftMods/tree/1.16.2) | [Forge]             | None          | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.16.2.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.16.2) |
-| [1.16.3](https://github.com//TBoshoven/MinecraftMods/tree/1.16.3) | [Forge]             | None          | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.16.3.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.16.3) |
-| [1.16.4](https://github.com//TBoshoven/MinecraftMods/tree/1.16.4) | [Forge]             | None          | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.16.4.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.16.4) |
-| [1.16.5](https://github.com//TBoshoven/MinecraftMods/tree/1.16.5) | [Forge]             | Active        | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.16.5.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.16.5) |
-| [1.17.1](https://github.com//TBoshoven/MinecraftMods/tree/1.17.1) | [Forge]             | Active        | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.17.1.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.17.1) |
-| [1.18](https://github.com//TBoshoven/MinecraftMods/tree/1.18.0)   | [Forge]             | None          | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.18.0.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.18.0) |
-| [1.18.2](https://github.com//TBoshoven/MinecraftMods/tree/1.18.2) | [Forge]             | Active        | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.18.2.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.18.2) |
-| [1.19](https://github.com//TBoshoven/MinecraftMods/tree/1.19.0)   | [Forge]             | None          | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.19.0.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.19.0) |
-| [1.19.2](https://github.com//TBoshoven/MinecraftMods/tree/1.19.2) | [Forge]             | Active        | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.19.2.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.19.2) |
-| [1.19.4](https://github.com//TBoshoven/MinecraftMods/tree/1.19.4) | [Forge]             | Active        | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.19.4.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.19.4) |
-| [1.20.1](https://github.com//TBoshoven/MinecraftMods/tree/1.20.1) | [Forge], [NeoForge] | Active        | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.20.1.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.20.1) |
-| [1.20.2](https://github.com//TBoshoven/MinecraftMods/tree/1.20.2) | [NeoForge]          | Current       | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.20.2.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.20.2) |
+| [1.12.2](https://github.com//TBoshoven/MinecraftMods/tree/1.12.2) | [Forge]             | 🟡 Stable     | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.12.2.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.12.2) |
+| [1.14.4](https://github.com//TBoshoven/MinecraftMods/tree/1.14.4) | [Forge]             | 🟢 Active     | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.14.4.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.14.2) |
+| [1.15.2](https://github.com//TBoshoven/MinecraftMods/tree/1.15.2) | [Forge]             | 🟢 Active     | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.15.2.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.15.2) |
+| [1.16.1](https://github.com//TBoshoven/MinecraftMods/tree/1.16.1) | [Forge]             | 🔴 None       | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.16.1.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.16.1) |
+| [1.16.2](https://github.com//TBoshoven/MinecraftMods/tree/1.16.2) | [Forge]             | 🔴 None       | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.16.2.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.16.2) |
+| [1.16.3](https://github.com//TBoshoven/MinecraftMods/tree/1.16.3) | [Forge]             | 🔴 None       | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.16.3.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.16.3) |
+| [1.16.4](https://github.com//TBoshoven/MinecraftMods/tree/1.16.4) | [Forge]             | 🔴 None       | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.16.4.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.16.4) |
+| [1.16.5](https://github.com//TBoshoven/MinecraftMods/tree/1.16.5) | [Forge]             | 🟢 Active     | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.16.5.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.16.5) |
+| [1.17.1](https://github.com//TBoshoven/MinecraftMods/tree/1.17.1) | [Forge]             | 🟢 Active     | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.17.1.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.17.1) |
+| [1.18](https://github.com//TBoshoven/MinecraftMods/tree/1.18.0)   | [Forge]             | 🔴 None       | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.18.0.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.18.0) |
+| [1.18.2](https://github.com//TBoshoven/MinecraftMods/tree/1.18.2) | [Forge]             | 🟢 Active     | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.18.2.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.18.2) |
+| [1.19](https://github.com//TBoshoven/MinecraftMods/tree/1.19.0)   | [Forge]             | 🔴 None       | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.19.0.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.19.0) |
+| [1.19.2](https://github.com//TBoshoven/MinecraftMods/tree/1.19.2) | [Forge]             | 🟢 Active     | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.19.2.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.19.2) |
+| [1.19.4](https://github.com//TBoshoven/MinecraftMods/tree/1.19.4) | [Forge]             | 🟢 Active     | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.19.4.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.19.4) |
+| [1.20.1](https://github.com//TBoshoven/MinecraftMods/tree/1.20.1) | [Forge], [NeoForge] | 🟢 Active     | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.20.1.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.20.1) |
+| [1.20.2](https://github.com//TBoshoven/MinecraftMods/tree/1.20.2) | [NeoForge]          | 🔵 Current    | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.20.2.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.20.2) |
 
 [Forge]: https://minecraftforge.net/
 [NeoForge]: https://neoforged.net/
@@ -55,12 +55,12 @@ For instructions on how to use the mods, take a look at the [wiki](https://githu
 I try to maintain my mods across as many versions of Minecraft as I can, but due to significant changes in the Minecraft
 and mod loader code across versions, this is not always trivial.
 
-* **None**: This is a deprecated version that will not receive any updates. Upgrade to a later Minecraft version for 
-            more support.
-* **Stable**: This is a stable version that will likely only receive fixes for high-impact bugs
-* **Active**: This is a stable version that is actively supported. These versions will receive most bug fixes and may
-              receive new features.
-* **Current**: This is the version I currently develop against. This version will receive all new fixes and features.
+* 🔴 **None**: This is a deprecated version that will not receive any updates. Upgrade to a later Minecraft version for
+               more support.
+* 🟡 **Stable**: This is a stable version that will likely only receive fixes for high-impact bugs
+* 🟢 **Active**: This is a stable version that is actively supported. These versions will receive most bug fixes and may
+                 receive new features.
+* 🔵 **Current**: This is the version I currently develop against. This version will receive all new fixes and features.
 
 
 Code
