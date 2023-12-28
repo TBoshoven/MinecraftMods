@@ -21,7 +21,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.entity.BannerPatterns;
-import net.neoforged.fml.DistExecutor;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -95,10 +96,7 @@ public class BannerMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBl
     }
 
     private static BannerReflectionModifier createReflectionModifier(List<? extends Pair<Holder<BannerPattern>, DyeColor>> patternList) {
-        return DistExecutor.runForDist(
-                () -> () -> new BannerReflectionModifierClient(patternList),
-                () -> () -> new BannerReflectionModifier(patternList)
-        );
+        return FMLEnvironment.dist == Dist.CLIENT ? new BannerReflectionModifierClient(patternList) : new BannerReflectionModifier(patternList);
     }
 
     @Override

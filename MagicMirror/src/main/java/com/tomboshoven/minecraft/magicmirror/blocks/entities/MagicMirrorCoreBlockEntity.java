@@ -18,7 +18,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.fml.DistExecutor;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.util.FakePlayer;
 
 import javax.annotation.Nullable;
@@ -45,7 +46,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     public MagicMirrorCoreBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntities.MAGIC_MIRROR_CORE.get(), pos, state);
 
-        reflection = DistExecutor.unsafeRunForDist(() -> ReflectionClient::new, () -> Reflection::new);
+        reflection = FMLEnvironment.dist == Dist.CLIENT ? new ReflectionClient() : new Reflection();
     }
 
     /**

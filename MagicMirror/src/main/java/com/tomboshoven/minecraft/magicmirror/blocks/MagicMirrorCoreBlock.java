@@ -18,8 +18,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.DistExecutor;
 import net.neoforged.neoforge.network.NetworkEvent;
 
 import javax.annotation.Nullable;
@@ -156,7 +154,7 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
      * Handler for messages describing modifiers being attached to mirrors.
      */
     public static void onMessageAttachModifier(MessageAttachModifier message, NetworkEvent.Context ctx) {
-        ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        ctx.enqueueWork(() -> {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
                 BlockEntity blockEntity = world.getBlockEntity(message.mirrorPos);
@@ -170,7 +168,7 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
                     world.playLocalSound(message.mirrorPos, SoundEvents.ARMOR_EQUIP_GENERIC, SoundSource.BLOCKS, .6f, .6f, true);
                 }
             }
-        }));
+        });
         ctx.setPacketHandled(true);
     }
 }
