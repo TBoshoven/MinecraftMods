@@ -51,17 +51,26 @@ public class OffModelPlayerRenderers implements ResourceManagerReloadListener {
         return INSTANCE;
     }
 
-    @Override
-    public void onResourceManagerReload(ResourceManager resourceManager) {
-        EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        EntityModelSet entityModels = Minecraft.getInstance().getEntityModels();
-        Font font = Minecraft.getInstance().font;
+    private OffModelPlayerRenderers() {
+        Minecraft minecraft = Minecraft.getInstance();
+        loadRenderers(minecraft.getResourceManager(), minecraft.getEntityRenderDispatcher(), minecraft.getItemRenderer(), minecraft.getEntityModels(), minecraft.font);
+    }
+
+    /**
+     * Load or reload the renderers.
+     */
+    private void loadRenderers(ResourceManager resourceManager, EntityRenderDispatcher entityRenderDispatcher, ItemRenderer itemRenderer, EntityModelSet entityModels, Font font) {
         EntityRendererProvider.Context context = new EntityRendererProvider.Context(entityRenderDispatcher, itemRenderer, resourceManager, entityModels, font);
 
         RENDERER_PROVIDERS.forEach((entityType, rendererProvider) -> {
             RENDERERS.put(entityType, rendererProvider.create(context));
         });
+    }
+
+    @Override
+    public void onResourceManagerReload(ResourceManager resourceManager) {
+        Minecraft minecraft = Minecraft.getInstance();
+        loadRenderers(resourceManager, minecraft.getEntityRenderDispatcher(), minecraft.getItemRenderer(), minecraft.getEntityModels(), minecraft.font);
     }
 
     /**
