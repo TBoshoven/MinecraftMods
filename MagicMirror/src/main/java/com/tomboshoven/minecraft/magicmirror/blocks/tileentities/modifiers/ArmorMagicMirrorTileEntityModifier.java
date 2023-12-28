@@ -32,7 +32,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -95,10 +95,7 @@ public class ArmorMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTile
     }
 
     private ArmorReflectionModifier createReflectionModifier() {
-        return DistExecutor.runForDist(
-                () -> () -> new ArmorReflectionModifierClient(replacementArmor),
-                () -> () -> new ArmorReflectionModifier(replacementArmor)
-        );
+        return FMLEnvironment.dist == Dist.CLIENT ? new ArmorReflectionModifierClient(replacementArmor) : new ArmorReflectionModifier(replacementArmor);
     }
 
     @Override
@@ -455,7 +452,7 @@ public class ArmorMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTile
      */
     public static void onMessageEquip(MessageEquip message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
-        ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        ctx.enqueueWork(() -> {
             ClientWorld world = Minecraft.getInstance().level;
             if (world != null) {
                 TileEntity te = world.getBlockEntity(message.mirrorPos);
@@ -468,7 +465,7 @@ public class ArmorMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTile
                     world.playLocalSound(message.mirrorPos, item.getMaterial().getEquipSound(), SoundCategory.BLOCKS, 1, 1, false);
                 }
             }
-        }));
+        });
         ctx.setPacketHandled(true);
     }
 
@@ -477,7 +474,7 @@ public class ArmorMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTile
      */
     public static void onMessageSwapMirror(MessageSwapMirror message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
-        ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        ctx.enqueueWork(() -> {
             ClientWorld world = Minecraft.getInstance().level;
             if (world != null) {
                 TileEntity te = world.getBlockEntity(message.mirrorPos);
@@ -487,7 +484,7 @@ public class ArmorMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTile
                             .ifPresent(modifier -> message.armor.swap((ArmorMagicMirrorTileEntityModifier) modifier));
                 }
             }
-        }));
+        });
         ctx.setPacketHandled(true);
     }
 
@@ -496,7 +493,7 @@ public class ArmorMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTile
      */
     public static void onMessageSwapPlayer(MessageSwapPlayer message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
-        ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        ctx.enqueueWork(() -> {
             ClientWorld world = Minecraft.getInstance().level;
             if (world != null) {
                 Entity entity = world.getEntity(message.entityId);
@@ -519,7 +516,7 @@ public class ArmorMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTile
                     }
                 }
             }
-        }));
+        });
         ctx.setPacketHandled(true);
     }
 }

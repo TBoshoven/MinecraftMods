@@ -13,7 +13,8 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -76,11 +77,8 @@ public class CreatureMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorT
         }
     }
 
-    private static CreatureReflectionModifier createReflectionModifier() {
-        return DistExecutor.runForDist(
-                () -> CreatureReflectionModifierClient::new,
-                () -> CreatureReflectionModifier::new
-        );
+    private CreatureReflectionModifier createReflectionModifier() {
+        return FMLEnvironment.dist == Dist.CLIENT ? new CreatureReflectionModifierClient() : new CreatureReflectionModifier();
     }
 
     @Override
