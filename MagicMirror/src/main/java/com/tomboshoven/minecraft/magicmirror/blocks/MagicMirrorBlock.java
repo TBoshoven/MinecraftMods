@@ -37,8 +37,6 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -335,7 +333,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
      */
     public static void onMessageAttachModifier(MessageAttachModifier message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
-        ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        ctx.enqueueWork(() -> {
             ClientWorld world = Minecraft.getInstance().level;
             if (world != null) {
                 TileEntity te = world.getBlockEntity(message.mirrorPos);
@@ -349,7 +347,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
                     world.playLocalSound(message.mirrorPos, SoundEvents.ARMOR_EQUIP_GENERIC, SoundCategory.BLOCKS, .6f, .6f, true);
                 }
             }
-        }));
+        });
         ctx.setPacketHandled(true);
     }
 }
