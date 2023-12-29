@@ -46,7 +46,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     public MagicMirrorCoreBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntities.MAGIC_MIRROR_CORE.get(), pos, state);
 
-        reflection = FMLEnvironment.dist == Dist.CLIENT ? new ReflectionClient() : new Reflection();
+        reflection = FMLEnvironment.dist == Dist.CLIENT ? new ReflectionClient(state.getValue(HORIZONTAL_FACING).toYRot()) : new Reflection(state.getValue(HORIZONTAL_FACING).toYRot());
     }
 
     /**
@@ -87,11 +87,6 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
         Level world = getLevel();
 
         if (world != null) {
-            // Update the reflection angle.
-            // It's impractical to do this while loading because we need access to the blockstate.
-            BlockState blockState = getBlockState();
-            reflection.setAngle(blockState.getValue(HORIZONTAL_FACING).toYRot());
-
             Player playerToReflect = findPlayerToReflect(world, getBlockPos());
 
             if (playerToReflect == null) {
