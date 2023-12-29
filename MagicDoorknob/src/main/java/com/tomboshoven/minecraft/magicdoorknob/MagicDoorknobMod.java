@@ -9,10 +9,10 @@ import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.modelloaders.ModelLoaders;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 @Mod(MagicDoorknobMod.MOD_ID)
 public final class MagicDoorknobMod {
@@ -26,9 +26,16 @@ public final class MagicDoorknobMod {
         Items.register(modEventBus);
         BlockEntities.register(modEventBus);
 
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            ClientEvents.init();
+        }
+    }
+
+    static class ClientEvents {
+        static void init() {
+            IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
             BlockColorHandlers.register(modEventBus);
             ModelLoaders.register(modEventBus);
-        });
+        }
     }
 }
