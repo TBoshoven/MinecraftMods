@@ -13,7 +13,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -77,10 +78,7 @@ public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirror
     }
 
     private CreatureReflectionModifier createReflectionModifier() {
-        return DistExecutor.runForDist(
-                () -> () -> new CreatureReflectionModifierClient(entityType),
-                () -> () -> new CreatureReflectionModifier(entityType)
-        );
+        return FMLEnvironment.dist == Dist.CLIENT ? new CreatureReflectionModifierClient(entityType) : new CreatureReflectionModifier(entityType);
     }
 
     @Override
