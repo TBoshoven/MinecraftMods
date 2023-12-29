@@ -33,11 +33,11 @@ public class ReflectionTexture extends AbstractTexture {
     @Override
     public void close() {
         renderTarget.destroyBuffers();
-        this.releaseId();
     }
 
     @Override
     public void releaseId() {
+        super.releaseId();
         renderTarget.destroyBuffers();
     }
 
