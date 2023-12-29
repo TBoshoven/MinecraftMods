@@ -2,8 +2,6 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
@@ -12,7 +10,6 @@ import javax.annotation.Nullable;
 /**
  * Extract the texture location from extra model data.
  */
-@OnlyIn(Dist.CLIENT)
 class ModelDataTextureMapper implements ITextureMapper {
     @Override
     public ResourceLocation mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable IModelData extraData) {

@@ -3,8 +3,6 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
@@ -22,7 +20,6 @@ public final class BlockColorHandlers {
     /**
      * Register all color handlers.
      */
-    @OnlyIn(Dist.CLIENT)
     private static void registerBlockColorHandlers(ColorHandlerEvent.Block event) {
         BlockColors blockColors = event.getBlockColors();
 
