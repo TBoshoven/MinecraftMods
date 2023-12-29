@@ -17,7 +17,8 @@ import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -97,10 +98,7 @@ public class BannerMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTil
     }
 
     private static BannerReflectionModifier createReflectionModifier(List<? extends Pair<BannerPattern, DyeColor>> patternList) {
-        return DistExecutor.runForDist(
-                () -> () -> new BannerReflectionModifierClient(patternList),
-                () -> () -> new BannerReflectionModifier(patternList)
-        );
+        return FMLEnvironment.dist == Dist.CLIENT ? new BannerReflectionModifierClient(patternList) : new BannerReflectionModifier(patternList);
     }
 
     @Override

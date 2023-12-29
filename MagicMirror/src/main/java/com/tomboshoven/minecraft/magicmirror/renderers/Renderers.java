@@ -1,8 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.renderers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntities;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -10,7 +8,6 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 /**
  * Manager of all renderers in the mod.
  */
-@OnlyIn(Dist.CLIENT)
 public final class Renderers {
     private Renderers() {
     }
