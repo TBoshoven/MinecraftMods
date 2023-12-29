@@ -8,8 +8,6 @@ import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
@@ -20,7 +18,6 @@ import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.Text
 /**
  * A model that has dynamic properties that are used to determine textures at runtime.
  */
-@OnlyIn(Dist.CLIENT)
 public class TexturedUnbakedGeometry implements IUnbakedGeometry<TexturedUnbakedGeometry> {
     // The original model
     private final IUnbakedGeometry<?> originalModelGeometry;
