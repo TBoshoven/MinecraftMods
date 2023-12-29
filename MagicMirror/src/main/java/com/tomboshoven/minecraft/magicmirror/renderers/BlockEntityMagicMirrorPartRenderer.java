@@ -7,13 +7,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Renderer for the Magic Mirror block entity.
  */
-@OnlyIn(Dist.CLIENT)
 class BlockEntityMagicMirrorPartRenderer extends BlockEntityMagicMirrorRendererBase implements BlockEntityRenderer<MagicMirrorPartBlockEntity> {
 
     BlockEntityMagicMirrorPartRenderer(BlockEntityRendererProvider.Context context) {
