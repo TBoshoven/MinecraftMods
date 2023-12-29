@@ -35,6 +35,13 @@ public class Reflection {
     float angle;
 
     /**
+     * @param angle The absolute angle of the reflection, based on the direction the mirror is facing in.
+     */
+    public Reflection(float angle) {
+        this.angle = angle;
+    }
+
+    /**
      * Get the total number of active reflections in this instance's client thread; used for debugging leaks.
      */
     public static int getActiveReflectionsClient() {
@@ -144,14 +151,5 @@ public class Reflection {
      * @param partialTicks The partial ticks, used for rendering smooth animations.
      */
     public void render(float partialTicks) {
-    }
-
-    /**
-     * Change the angle of the reflection.
-     *
-     * @param angle The angle in degrees over the Y axis that the reflection should be rotated.
-     */
-    public void setAngle(float angle) {
-        this.angle = angle;
     }
 }
