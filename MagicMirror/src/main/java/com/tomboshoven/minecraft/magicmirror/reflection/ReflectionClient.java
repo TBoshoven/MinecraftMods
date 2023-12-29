@@ -76,7 +76,6 @@ public class ReflectionClient extends Reflection {
         super.cleanUpTexture();
 
         if (reflectionTexture != null) {
-            reflectionTexture.close();
             Minecraft.getInstance().getTextureManager().release(textureLocation);
             reflectionTexture = null;
         }
