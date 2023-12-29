@@ -20,8 +20,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.CompositeModel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -93,7 +91,6 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
         return new SUpdateTileEntityPacket(getBlockPos(), 1, getUpdateTag());
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         load(pkt.getTag());
@@ -101,7 +98,6 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public IModelData getModelData() {
         Minecraft minecraft = Minecraft.getInstance();
         BlockModelShapes blockModelShapes = minecraft.getBlockRenderer().getBlockModelShaper();

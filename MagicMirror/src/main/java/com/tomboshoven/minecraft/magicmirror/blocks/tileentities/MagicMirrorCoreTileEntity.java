@@ -19,9 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IEntityReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -53,7 +52,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     public MagicMirrorCoreTileEntity() {
         super(TileEntities.MAGIC_MIRROR_CORE.get());
 
-        reflection = DistExecutor.runForDist(() -> ReflectionClient::new, () -> Reflection::new);
+        reflection = FMLEnvironment.dist == Dist.CLIENT ? new ReflectionClient() : new Reflection();
     }
 
     /**
@@ -220,7 +219,6 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
         return new SUpdateTileEntityPacket(getBlockPos(), 1, getUpdateTag());
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         load(pkt.getTag());

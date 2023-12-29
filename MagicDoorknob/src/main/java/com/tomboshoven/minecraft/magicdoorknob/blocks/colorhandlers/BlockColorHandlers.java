@@ -3,15 +3,12 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.colorhandlers;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 /**
  * Class for registering color handlers in the clients.
  */
-@OnlyIn(Dist.CLIENT)
 public final class BlockColorHandlers {
     private BlockColorHandlers() {
     }

@@ -25,8 +25,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.function.Supplier;
 
@@ -226,7 +224,6 @@ public class MagicDoorknobItem extends Item {
     /**
      * @return The location of the main texture of the doorknob
      */
-    @OnlyIn(Dist.CLIENT)
     public Material getMainMaterial() {
         return new Material(PlayerContainer.BLOCK_ATLAS, mainTextureLocation);
     }

@@ -8,15 +8,12 @@ import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
 /**
  * Handler for giving doorways more or less the color they should be.
  */
-@OnlyIn(Dist.CLIENT)
 class DoorwayBlockColorHandler implements IBlockColor {
     @Override
     public int getColor(BlockState state, @Nullable ILightReader worldIn, @Nullable BlockPos pos, int tintIndex) {
