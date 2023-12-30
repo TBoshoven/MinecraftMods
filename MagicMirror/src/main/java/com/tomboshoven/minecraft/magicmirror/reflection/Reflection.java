@@ -6,6 +6,8 @@ import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nullable;
 
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
+
 /**
  * A reflection of an entity.
  * This class is mainly responsible for rendering this reflection and making it available as a texture.
@@ -33,12 +35,15 @@ public class Reflection {
     float angle;
 
     /**
-     * @param angle The absolute angle of the reflection, based on the direction the mirror is facing in.
      * @param blockEntity The block entity corresponding to the mirror that displays the reflection.
      */
-    public Reflection(float angle, MagicMirrorCoreBlockEntity blockEntity) {
-        this.angle = angle;
+    public Reflection(MagicMirrorCoreBlockEntity blockEntity) {
+        angle = blockEntity.getBlockState().getValue(HORIZONTAL_FACING).toYRot();
         this.blockEntity = blockEntity;
+        Entity entity = blockEntity.getReflectedEntity();
+        if (entity != null) {
+            setReflectedEntity(entity);
+        }
     }
 
     /**

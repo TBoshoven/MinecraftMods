@@ -3,8 +3,8 @@ package com.tomboshoven.minecraft.magicmirror.blocks.entities;
 import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
+import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorModifiersUpdatedEvent;
+import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorReflectedEntityEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -12,23 +12,21 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.EntityGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 /**
  * The block that has all the reflection logic.
@@ -38,15 +36,15 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
      * The list of all modifiers to the mirror.
      */
     private final List<MagicMirrorBlockEntityModifier> modifiers = Lists.newArrayList();
+
     /**
-     * The reflection object, used for keeping track of who is being reflected and rendering.
+     * The currently reflected entity, if any.
      */
-    private final Reflection reflection;
+    @Nullable
+    private Entity reflectedEntity = null;
 
     public MagicMirrorCoreBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntities.MAGIC_MIRROR_CORE.get(), pos, state);
-
-        reflection = FMLEnvironment.dist == Dist.CLIENT ? new ReflectionClient(state.getValue(HORIZONTAL_FACING).toYRot(), this) : new Reflection(state.getValue(HORIZONTAL_FACING).toYRot(), this);
     }
 
     /**
@@ -87,14 +85,18 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
         Level world = getLevel();
 
         if (world != null) {
-            Player playerToReflect = findPlayerToReflect(world, getBlockPos());
-
-            if (playerToReflect == null) {
-                reflection.stopReflecting();
-            } else {
-                reflection.setReflectedEntity(playerToReflect);
-            }
+            reflectedEntity = findPlayerToReflect(world, getBlockPos());
+            postReflectedEntityEvent(reflectedEntity);
         }
+    }
+
+    /**
+     * Post an event indicating a change to which entity is reflected.
+     *
+     * @param reflectedEntity the new reflected entity.
+     */
+    private void postReflectedEntityEvent(@Nullable Entity reflectedEntity) {
+        MinecraftForge.EVENT_BUS.post(new MagicMirrorReflectedEntityEvent(this, reflectedEntity));
     }
 
     /**
@@ -102,20 +104,6 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
      */
     public void coolDown() {
         modifiers.forEach(MagicMirrorBlockEntityModifier::coolDown);
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        // Stop reflecting to unload the textures and frame buffer
-        reflection.stopReflecting();
-    }
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        // We need to make sure that we stop reflecting when the block entity is destroyed, so we don't leak any frame
-        // buffers and textures
-        reflection.stopReflecting();
     }
 
     @Override
@@ -157,15 +145,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
                 }
             }
         }
-        reflection.update();
-    }
-
-    /**
-     * @return The reflection in the mirror.
-     */
-    @Nullable
-    public Reflection getReflection() {
-        return reflection;
+        postModifiersUpdate();
     }
 
     /**
@@ -195,7 +175,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
         modifiers.add(modifier);
         modifier.activate(this);
         setChanged();
-        reflection.update();
+        postModifiersUpdate();
     }
 
     /**
@@ -212,7 +192,14 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
             modifier.remove(worldIn, pos);
         }
         modifiers.clear();
-        reflection.update();
+        postModifiersUpdate();
+    }
+
+    /**
+     * Post an event indicating a change to the set of modifiers on the mirror.
+     */
+    private void postModifiersUpdate() {
+        MinecraftForge.EVENT_BUS.post(new MagicMirrorModifiersUpdatedEvent(this));
     }
 
     @Override
@@ -229,5 +216,13 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         readInternal(pkt.getTag());
+    }
+
+    /**
+     * @return the current reflected entity, if any.
+     */
+    @Nullable
+    public Entity getReflectedEntity() {
+        return reflectedEntity;
     }
 }
