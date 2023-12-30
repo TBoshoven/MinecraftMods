@@ -18,7 +18,7 @@ class Language extends LanguageProvider {
         add(Blocks.MAGIC_MIRROR_PART.get(), "Magic Mirror");
         add(Blocks.MAGIC_MIRROR_INACTIVE.get(), "Magic Mirror (inactive)");
 
-        add("commands.magic_mirror.debug.reflections", "Total number of reflections: %d");
+        add("commands.magic_mirror.debug.reflections", "Total number of reflections: %d\nActive reflections: %d");
     }
 
     @Nonnull
