@@ -49,11 +49,10 @@ public class ReflectionClient extends Reflection {
     private final RenderType renderType;
 
     /**
-     * @param angle The absolute angle of the reflection, based on the direction the mirror is facing in.
      * @param blockEntity The block entity corresponding to the mirror that displays the reflection.
      */
-    public ReflectionClient(float angle, MagicMirrorCoreBlockEntity blockEntity) {
-        super(angle, blockEntity);
+    public ReflectionClient(MagicMirrorCoreBlockEntity blockEntity) {
+        super(blockEntity);
         textureLocation = new ResourceLocation(MagicMirrorMod.MOD_ID, String.format(Locale.ROOT, "reflection_%d", texId++));
         // Use "text" render type, which is also what's used by the map renderer.
         renderType = RenderType.text(textureLocation);
