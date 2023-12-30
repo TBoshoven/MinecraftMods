@@ -1,12 +1,10 @@
 package com.tomboshoven.minecraft.magicmirror.reflection;
 
-import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
-import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import net.minecraft.entity.Entity;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * A reflection of an entity.
@@ -19,9 +17,9 @@ public class Reflection {
     static int activeReflectionsClient;
 
     /**
-     * An ordered list of all the modifiers.
+     * The block entity to base the reflection on.
      */
-    final List<ReflectionModifier> modifiers = Lists.newArrayList();
+    MagicMirrorCoreTileEntity blockEntity;
 
     /**
      * The entity that is currently being reflected, if any.
@@ -33,6 +31,13 @@ public class Reflection {
      * The angle in degrees over the Y axis that the reflection should be rotated.
      */
     float angle;
+
+    /**
+     * @param blockEntity The block entity corresponding to the mirror that displays the reflection.
+     */
+    public Reflection(MagicMirrorCoreTileEntity blockEntity) {
+        this.blockEntity = blockEntity;
+    }
 
     /**
      * Get the total number of active reflections in this instance's client thread; used for debugging leaks.
@@ -118,32 +123,19 @@ public class Reflection {
     }
 
     /**
-     * Add a new modifier to the reflection.
-     *
-     * @param modifier The modifier to be added. Must be valid in combination with the existing ones.
-     */
-    public void addModifier(ReflectionModifier modifier) {
-        modifiers.add(modifier);
-        rebuildRenderer();
-    }
-
-    /**
-     * Remove an existing modifier from the reflection.
-     *
-     * @param modifier The modifier to be removed. Must be one of the current modifiers of this reflection.
-     */
-    public void removeModifier(ReflectionModifier modifier) {
-        modifiers.remove(modifier);
-        rebuildRenderer();
-    }
-
-    /**
      * Render the reflection of the entity to the texture.
      * This operation unbinds the frame buffer, so rebinding may be required afterward.
      *
      * @param partialTicks The partial ticks, used for rendering smooth animations.
      */
     public void render(float partialTicks) {
+    }
+
+    /**
+     * Update the reflection based on changes in the block entity.
+     */
+    public void update() {
+        rebuildRenderer();
     }
 
     /**

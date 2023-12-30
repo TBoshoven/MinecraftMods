@@ -1,7 +1,10 @@
 package com.tomboshoven.minecraft.magicmirror.reflection;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
+import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifiers;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRenderer;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import net.minecraft.client.Minecraft;
@@ -40,7 +43,12 @@ public class ReflectionClient extends Reflection {
 
     private final RenderType renderType;
 
-    public ReflectionClient() {
+    /**
+     * @param blockEntity The block entity corresponding to the mirror that displays the reflection.
+     */
+    public ReflectionClient(MagicMirrorCoreTileEntity blockEntity) {
+        super(blockEntity);
+        // Use "text" render type, which is also what's used by the map renderer.
         renderType = new ReflectionRenderType(this);
     }
 
@@ -79,8 +87,11 @@ public class ReflectionClient extends Reflection {
         Entity reflectedEntity = getReflectedEntity();
         if (reflectedEntity != null) {
             reflectionRenderer = new ReflectionRenderer(reflectedEntity);
-            for (ReflectionModifier modifier : modifiers) {
-                reflectionRenderer = modifier.apply(reflectionRenderer);
+            for (MagicMirrorTileEntityModifier modifier : blockEntity.getModifiers()) {
+                ReflectionModifier reflectionModifier = ReflectionModifiers.MODIFIERS.get(modifier.getName());
+                if (reflectionModifier != null) {
+                    reflectionRenderer = reflectionModifier.apply(modifier, reflectionRenderer);
+                }
             }
         }
     }
