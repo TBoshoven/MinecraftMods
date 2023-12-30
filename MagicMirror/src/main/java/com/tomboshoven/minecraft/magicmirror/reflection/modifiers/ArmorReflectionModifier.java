@@ -1,27 +1,19 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier.ReplacementArmor;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
+import com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers.ArmorReflectionRendererModifier;
 
 /**
  * A reflection modifier that changes the armor that the reflected character is wearing.
  */
-public class ArmorReflectionModifier extends ReflectionModifier {
-    /**
-     * The armor to show instead of the actual armor.
-     */
-    final ReplacementArmor replacementArmor;
-
-    /**
-     * @param replacementArmor The armor to show instead of the actual armor.
-     */
-    public ArmorReflectionModifier(ReplacementArmor replacementArmor) {
-        this.replacementArmor = replacementArmor;
-    }
-
+public final class ArmorReflectionModifier extends ReflectionModifier {
     @Override
-    public ReflectionRendererBase apply(ReflectionRendererBase reflectionRenderer) {
-        // Nothing to do on the server side
+    public ReflectionRendererBase apply(MagicMirrorBlockEntityModifier modifier, ReflectionRendererBase reflectionRenderer) {
+        if (modifier instanceof ArmorMagicMirrorBlockEntityModifier armorModifier) {
+            return new ArmorReflectionRendererModifier(reflectionRenderer, armorModifier.getReplacementArmor());
+        }
         return reflectionRenderer;
     }
 }
