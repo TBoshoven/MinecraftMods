@@ -56,6 +56,11 @@ public class ReflectionManager {
         }
     }
 
+    /**
+     * Render all reflections that were requested during the previous frame.
+     * We're always one second late like this, but it saves us the trouble of making sure we only render the reflections
+     * in the frustrum.
+     */
     @SubscribeEvent
     public static void renderReflections(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START && !Minecraft.getInstance().noRender) {
@@ -67,6 +72,7 @@ public class ReflectionManager {
 
             // Swap out the reflection maps
             Map<MagicMirrorCoreTileEntity, ReflectionClient> oldReflections = reflections;
+            // Deactivate all reflections we no longer need.
             oldReflections.entrySet().stream().filter(entry -> !reflectionNext.containsKey(entry.getKey())).forEach(entry -> entry.getValue().stopReflecting());
             oldReflections.clear();
             reflections = reflectionNext;
