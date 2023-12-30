@@ -20,7 +20,7 @@ final class MagicMirrorCommand {
      */
     private static int debug(CommandContext<? extends CommandSourceStack> context) {
         int reflectionCount = ReflectionManager.countReflections();
-        int activeCount = Reflection.getActiveReflections();
+        int activeCount = Reflection.countActiveReflections();
         context.getSource().sendSuccess(() -> Component.translatable("commands.magic_mirror.debug.reflections", reflectionCount, activeCount), true);
         return activeCount;
     }
