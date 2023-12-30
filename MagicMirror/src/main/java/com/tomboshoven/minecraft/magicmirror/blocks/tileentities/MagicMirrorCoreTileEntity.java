@@ -3,9 +3,10 @@ package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
 import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
-import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
+import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorModifiersUpdatedEvent;
+import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorReflectedEntityEvent;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -18,17 +19,14 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IEntityReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 /**
  * The tile entity for the bottom mirror block; this is the block that has all the reflection logic.
@@ -42,17 +40,17 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
      * The list of all modifiers to the mirror.
      */
     private final List<MagicMirrorTileEntityModifier> modifiers = Lists.newArrayList();
+
     /**
-     * The reflection object, used for keeping track of who is being reflected and rendering.
+     * The currently reflected entity, if any.
      */
-    private final Reflection reflection;
+    @Nullable
+    private Entity reflectedEntity = null;
     // Start the update counter at its max, so we update on the first tick.
     private int reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
 
     public MagicMirrorCoreTileEntity() {
         super(TileEntities.MAGIC_MIRROR_CORE.get());
-
-        reflection = FMLEnvironment.dist == Dist.CLIENT ? new ReflectionClient(this) : new Reflection(this);
     }
 
     /**
@@ -88,7 +86,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
 
     @Nullable
     @Override
-    protected MagicMirrorCoreTileEntity getCore() {
+    public MagicMirrorCoreTileEntity getCore() {
         return this;
     }
 
@@ -99,19 +97,18 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
         World world = getLevel();
 
         if (world != null) {
-            // Update the reflection angle.
-            // It's impractical to do this while loading because we need access to the blockstate.
-            BlockState blockState = getBlockState();
-            reflection.setAngle(blockState.getValue(HORIZONTAL_FACING).toYRot());
-
-            PlayerEntity playerToReflect = findPlayerToReflect(world, getBlockPos());
-
-            if (playerToReflect == null) {
-                reflection.stopReflecting();
-            } else {
-                reflection.setReflectedEntity(playerToReflect);
-            }
+            reflectedEntity = findPlayerToReflect(world, getBlockPos());
+            postReflectedEntityEvent(reflectedEntity);
         }
+    }
+
+    /**
+     * Post an event indicating a change to which entity is reflected.
+     *
+     * @param reflectedEntity the new reflected entity.
+     */
+    private void postReflectedEntityEvent(@Nullable Entity reflectedEntity) {
+        MinecraftForge.EVENT_BUS.post(new MagicMirrorReflectedEntityEvent(this, reflectedEntity));
     }
 
     @Override
@@ -121,22 +118,6 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
             updateReflection();
         }
         modifiers.forEach(MagicMirrorTileEntityModifier::coolDown);
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        // Stop reflecting to unload the textures and frame buffer
-        reflection.stopReflecting();
-    }
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        // Stop reflecting, but prepare to restart the next tick, in case we get validated again
-        // We need to make sure that we stop reflecting when the tile entity is destroyed, so we don't leak any frame
-        // buffers and textures
-        reflection.stopReflecting();
-        reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
     }
 
     @Override
@@ -174,13 +155,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
                 }
             }
         }
-        reflection.update();
-    }
-
-    @Nullable
-    @Override
-    public Reflection getReflection() {
-        return reflection;
+        postModifiersUpdate();
     }
 
     @Override
@@ -198,7 +173,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
         modifiers.add(modifier);
         modifier.activate(this);
         setChanged();
-        reflection.update();
+        postModifiersUpdate();
     }
 
     @Override
@@ -208,7 +183,14 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
             modifier.remove(worldIn, pos);
         }
         modifiers.clear();
-        reflection.update();
+        postModifiersUpdate();
+    }
+
+    /**
+     * Post an event indicating a change to the set of modifiers on the mirror.
+     */
+    private void postModifiersUpdate() {
+        MinecraftForge.EVENT_BUS.post(new MagicMirrorModifiersUpdatedEvent(this));
     }
 
     @Override
@@ -225,5 +207,13 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         load(pkt.getTag());
+    }
+
+    /**
+     * @return the current reflected entity, if any.
+     */
+    @Nullable
+    public Entity getReflectedEntity() {
+        return reflectedEntity;
     }
 }
