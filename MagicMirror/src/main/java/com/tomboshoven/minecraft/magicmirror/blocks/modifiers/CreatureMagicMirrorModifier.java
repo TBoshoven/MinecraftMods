@@ -14,6 +14,12 @@ import net.minecraft.world.World;
  */
 public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
     /**
+     * The name of the modifier.
+     * This should be stable as it gets written with save data.
+     */
+    public static String NAME = "creature";
+
+    /**
      * Return whether the given item is a skull that can be used to apply this modifier.
      *
      * @param item The item to test.
@@ -48,7 +54,7 @@ public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
 
     @Override
     public String getName() {
-        return "creature";
+        return NAME;
     }
 
     @Override

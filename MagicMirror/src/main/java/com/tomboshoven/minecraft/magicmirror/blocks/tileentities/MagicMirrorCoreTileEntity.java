@@ -50,7 +50,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     public MagicMirrorCoreTileEntity() {
         super(Objects.requireNonNull(TileEntities.MAGIC_MIRROR_CORE.get()));
 
-        reflection = FMLEnvironment.dist == Dist.CLIENT ? new ReflectionClient() : new Reflection();
+        reflection = FMLEnvironment.dist == Dist.CLIENT ? new ReflectionClient(this) : new Reflection(this);
     }
 
     /**
@@ -169,6 +169,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
                 }
             }
         }
+        reflection.update();
     }
 
     @Nullable
@@ -192,6 +193,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
         modifiers.add(modifier);
         modifier.activate(this);
         setChanged();
+        reflection.update();
     }
 
     @Override
@@ -201,6 +203,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
             modifier.remove(worldIn, pos);
         }
         modifiers.clear();
+        reflection.update();
     }
 
     @Override
