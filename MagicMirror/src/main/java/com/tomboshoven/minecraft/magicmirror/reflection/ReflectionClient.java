@@ -1,7 +1,10 @@
 package com.tomboshoven.minecraft.magicmirror.reflection;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
+import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifiers;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRenderer;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import net.minecraft.client.Minecraft;
@@ -47,9 +50,10 @@ public class ReflectionClient extends Reflection {
 
     /**
      * @param angle The absolute angle of the reflection, based on the direction the mirror is facing in.
+     * @param blockEntity The block entity corresponding to the mirror that displays the reflection.
      */
-    public ReflectionClient(float angle) {
-        super(angle);
+    public ReflectionClient(float angle, MagicMirrorCoreBlockEntity blockEntity) {
+        super(angle, blockEntity);
         textureLocation = new ResourceLocation(MagicMirrorMod.MOD_ID, String.format(Locale.ROOT, "reflection_%d", texId++));
         // Use "text" render type, which is also what's used by the map renderer.
         renderType = RenderType.text(textureLocation);
@@ -92,8 +96,11 @@ public class ReflectionClient extends Reflection {
         Entity reflectedEntity = getReflectedEntity();
         if (reflectedEntity != null) {
             reflectionRenderer = new ReflectionRenderer(reflectedEntity);
-            for (ReflectionModifier modifier : modifiers) {
-                reflectionRenderer = modifier.apply(reflectionRenderer);
+            for (MagicMirrorBlockEntityModifier modifier : blockEntity.getModifiers()) {
+                ReflectionModifier reflectionModifier = ReflectionModifiers.MODIFIERS.get(modifier.getName());
+                if (reflectionModifier != null) {
+                    reflectionRenderer = reflectionModifier.apply(modifier, reflectionRenderer);
+                }
             }
         }
     }
