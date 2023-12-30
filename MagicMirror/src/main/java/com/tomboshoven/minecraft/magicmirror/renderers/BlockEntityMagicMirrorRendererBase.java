@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,13 +29,13 @@ public abstract class BlockEntityMagicMirrorRendererBase {
      * @param multiBufferSource The buffer source to use for rendering.
      */
     public void render(Reflection reflection, BlockPos pos, Direction facing, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLight) {
-        if (reflection instanceof ReflectionClient) {
+        if (reflection instanceof Reflection) {
             Entity reflected = reflection.getReflectedEntity();
             if (reflected != null) {
                 Vec3 reflectedPos = reflected.position().add(.5, .5, .5);
                 Vec3 distanceVector = reflectedPos.subtract(pos.getX(), pos.getY(), pos.getZ());
 
-                renderReflection((ReflectionClient) reflection, poseStack, multiBufferSource, facing, distanceVector, combinedLight);
+                renderReflection(reflection, poseStack, multiBufferSource, facing, distanceVector, combinedLight);
             }
         }
     }
@@ -52,7 +51,7 @@ public abstract class BlockEntityMagicMirrorRendererBase {
      * @param facing           The direction in which the mirror part is facing.
      * @param distance         The distance between the mirror and the reflected subject; used for fading.
      */
-    private void renderReflection(ReflectionClient reflection, PoseStack matrixStack, MultiBufferSource renderTypeBuffer, Direction facing, Vec3 distance, int combinedLight) {
+    private void renderReflection(Reflection reflection, PoseStack matrixStack, MultiBufferSource renderTypeBuffer, Direction facing, Vec3 distance, int combinedLight) {
         if (!reflection.isAvailable()) {
             return;
         }
