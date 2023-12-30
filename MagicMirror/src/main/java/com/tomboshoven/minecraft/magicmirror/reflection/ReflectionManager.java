@@ -79,4 +79,11 @@ public class ReflectionManager {
             reflectionNext = oldReflections;
         }
     }
+
+    /**
+     * @return the number of tracked reflections.
+     */
+    public static int countReflections() {
+        return reflections.size();
+    }
 }
