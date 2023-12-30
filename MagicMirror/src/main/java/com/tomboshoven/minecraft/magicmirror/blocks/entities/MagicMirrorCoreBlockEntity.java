@@ -85,8 +85,11 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
         Level world = getLevel();
 
         if (world != null) {
-            reflectedEntity = findPlayerToReflect(world, getBlockPos());
-            postReflectedEntityEvent(reflectedEntity);
+            Entity newEntity = findPlayerToReflect(world, getBlockPos());
+            if (newEntity != reflectedEntity) {
+                reflectedEntity = newEntity;
+                postReflectedEntityEvent(reflectedEntity);
+            }
         }
     }
 
