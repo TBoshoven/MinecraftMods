@@ -5,7 +5,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartTyp
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
+import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -39,7 +39,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
         MagicMirrorCoreTileEntity core = tileEntityIn.getCore();
 
         if (core != null) {
-            ReflectionClient reflection = ReflectionManager.reflectionForRendering(core);
+            Reflection reflection = ReflectionManager.reflectionForRendering(core);
             Entity reflected = reflection.getReflectedEntity();
             if (reflected != null) {
                 EnumPartType part = tileEntityIn.getPart();
@@ -79,7 +79,6 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
 
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
         // The further away the subject is, the more faint the reflection
         double horizontalDistanceSq = distance.x * distance.x + distance.z * distance.z;
         double verticalDistanceSq = distance.y * distance.y;
