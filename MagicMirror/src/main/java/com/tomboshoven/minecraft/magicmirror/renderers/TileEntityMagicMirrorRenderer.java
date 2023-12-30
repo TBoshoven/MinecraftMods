@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartType;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
-import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
+import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionManager;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -37,7 +37,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
         MagicMirrorCoreTileEntity core = tileEntityIn.getCore();
 
         if (core != null) {
-            ReflectionClient reflection = ReflectionManager.reflectionForRendering(core);
+            Reflection reflection = ReflectionManager.reflectionForRendering(core);
             Entity reflected = reflection.getReflectedEntity();
             if (reflected != null) {
                 EnumPartType part = tileEntityIn.getPart();
@@ -63,7 +63,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
      * @param facing           The direction in which the mirror part is facing.
      * @param distance         The distance between the mirror and the reflected subject; used for fading.
      */
-    private static void renderReflection(ReflectionClient reflection, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, EnumPartType part, Direction facing, Vector3d distance) {
+    private static void renderReflection(Reflection reflection, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, EnumPartType part, Direction facing, Vector3d distance) {
         // The further away the subject is, the more faint the reflection
         double horizontalDistanceSq = distance.x * distance.x + distance.z * distance.z;
         double verticalDistanceSq = distance.y * distance.y;
