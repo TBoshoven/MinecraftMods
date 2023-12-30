@@ -46,7 +46,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     public MagicMirrorCoreBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntities.MAGIC_MIRROR_CORE.get(), pos, state);
 
-        reflection = FMLEnvironment.dist == Dist.CLIENT ? new ReflectionClient(state.getValue(HORIZONTAL_FACING).toYRot()) : new Reflection(state.getValue(HORIZONTAL_FACING).toYRot());
+        reflection = FMLEnvironment.dist == Dist.CLIENT ? new ReflectionClient(state.getValue(HORIZONTAL_FACING).toYRot(), this) : new Reflection(state.getValue(HORIZONTAL_FACING).toYRot(), this);
     }
 
     /**
@@ -156,6 +156,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
                 }
             }
         }
+        reflection.update();
     }
 
     /**
@@ -193,6 +194,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
         modifiers.add(modifier);
         modifier.activate(this);
         setChanged();
+        reflection.update();
     }
 
     /**
@@ -209,6 +211,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
             modifier.remove(worldIn, pos);
         }
         modifiers.clear();
+        reflection.update();
     }
 
     @Override
