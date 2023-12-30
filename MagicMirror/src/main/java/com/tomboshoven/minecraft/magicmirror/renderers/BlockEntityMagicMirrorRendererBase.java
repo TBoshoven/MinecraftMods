@@ -6,7 +6,6 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
-import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClientUpdater;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,8 +35,6 @@ public abstract class BlockEntityMagicMirrorRendererBase {
             if (reflected != null) {
                 Vec3 reflectedPos = reflected.position().add(.5, .5, .5);
                 Vec3 distanceVector = reflectedPos.subtract(pos.getX(), pos.getY(), pos.getZ());
-
-                ReflectionClientUpdater.markViewed((ReflectionClient) reflection);
 
                 renderReflection((ReflectionClient) reflection, poseStack, multiBufferSource, facing, distanceVector, combinedLight);
             }
