@@ -39,7 +39,7 @@ public class Reflection {
     /**
      * The number of currently active reflections on the client side.
      */
-    static int activeReflections;
+    static int numActiveReflections;
 
     /**
      * The block entity to base the reflection on.
@@ -73,8 +73,8 @@ public class Reflection {
     /**
      * Get the total number of active reflections in this instance's client thread; used for debugging leaks.
      */
-    public static int getActiveReflections() {
-        return activeReflections;
+    public static int countActiveReflections() {
+        return numActiveReflections;
     }
 
     /**
@@ -86,7 +86,7 @@ public class Reflection {
             MagicMirrorMod.LOGGER.debug("No longer reflecting {}", reflectedEntity.getName());
             cleanUpRenderer();
             reflectedEntity = null;
-            --activeReflections;
+            --numActiveReflections;
         }
     }
 
@@ -149,7 +149,7 @@ public class Reflection {
         if (this.reflectedEntity != reflectedEntity) {
             MagicMirrorMod.LOGGER.debug("Reflecting {}", reflectedEntity.getName());
             if (this.reflectedEntity == null) {
-                ++activeReflections;
+                ++numActiveReflections;
             }
             this.reflectedEntity = reflectedEntity;
             rebuildRenderer();
