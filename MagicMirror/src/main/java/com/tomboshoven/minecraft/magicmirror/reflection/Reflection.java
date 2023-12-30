@@ -139,7 +139,6 @@ public class Reflection {
      * Used when a new modifier is introduced.
      */
     void rebuildRenderer() {
-        Entity reflectedEntity = getReflectedEntity();
         if (reflectedEntity != null) {
             reflectionRenderer = new ReflectionRenderer(reflectedEntity);
             for (MagicMirrorBlockEntityModifier modifier : blockEntity.getModifiers()) {
