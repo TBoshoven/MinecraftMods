@@ -4,9 +4,9 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartType;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
-import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
-import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClientUpdater;
+import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionManager;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -34,9 +34,10 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
 
     @Override
     public void render(MagicMirrorBaseTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
-        Reflection reflection = tileEntityIn.getReflection();
+        MagicMirrorCoreTileEntity core = tileEntityIn.getCore();
 
-        if (reflection instanceof ReflectionClient) {
+        if (core != null) {
+            ReflectionClient reflection = ReflectionManager.reflectionForRendering(core);
             Entity reflected = reflection.getReflectedEntity();
             if (reflected != null) {
                 EnumPartType part = tileEntityIn.getPart();
@@ -47,9 +48,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
                 Vector3d reflectedPos = reflected.position().add(.5, .5, .5);
                 Vector3d distanceVector = reflectedPos.subtract(tePos.getX(), tePos.getY(), tePos.getZ());
 
-                ReflectionClientUpdater.markViewed((ReflectionClient) reflection);
-
-                renderReflection((ReflectionClient) reflection, matrixStackIn, bufferIn, part, facing, distanceVector);
+                renderReflection(reflection, matrixStackIn, bufferIn, part, facing, distanceVector);
             }
         }
     }

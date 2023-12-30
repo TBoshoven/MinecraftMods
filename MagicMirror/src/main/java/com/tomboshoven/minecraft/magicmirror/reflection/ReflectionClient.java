@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import javax.annotation.Nullable;
 
 import static net.minecraft.client.Minecraft.ON_OSX;
+import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 /**
  * Client-side version of the reflection.
@@ -48,6 +49,7 @@ public class ReflectionClient extends Reflection {
      */
     public ReflectionClient(MagicMirrorCoreTileEntity blockEntity) {
         super(blockEntity);
+        angle = blockEntity.getBlockState().getValue(HORIZONTAL_FACING).toYRot();
         // Use "text" render type, which is also what's used by the map renderer.
         renderType = new ReflectionRenderType(this);
     }

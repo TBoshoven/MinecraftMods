@@ -37,6 +37,10 @@ public class Reflection {
      */
     public Reflection(MagicMirrorCoreTileEntity blockEntity) {
         this.blockEntity = blockEntity;
+        Entity entity = blockEntity.getReflectedEntity();
+        if (entity != null) {
+            setReflectedEntity(entity);
+        }
     }
 
     /**
