@@ -3,7 +3,10 @@ package com.tomboshoven.minecraft.magicmirror.renderers;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartType;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
+import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClient;
+import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -33,9 +36,10 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
     public void render(MagicMirrorBaseTileEntity tileEntityIn, double x, double y, double z, float partialTicks, int destroyStage) {
         super.render(tileEntityIn, x, y, z, partialTicks, destroyStage);
 
-        Reflection reflection = tileEntityIn.getReflection();
+        MagicMirrorCoreTileEntity core = tileEntityIn.getCore();
 
-        if (reflection != null) {
+        if (core != null) {
+            ReflectionClient reflection = ReflectionManager.reflectionForRendering(core);
             Entity reflected = reflection.getReflectedEntity();
             if (reflected != null) {
                 EnumPartType part = tileEntityIn.getPart();
@@ -65,7 +69,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
      */
     private static void renderReflection(Reflection reflection, double x, double y, double z, float partialTicks, EnumPartType part, Direction facing, Vec3d distance) {
         // Render the reflection.
-        reflection.render(facing, partialTicks);
+        reflection.render(partialTicks);
 
         // Rebind original frame buffer.
         // This could be done in a nicer way, but I don't think a frame buffer stacking mechanism is available.

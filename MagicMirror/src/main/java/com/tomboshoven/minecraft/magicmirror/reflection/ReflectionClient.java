@@ -8,7 +8,6 @@ import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRend
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.Direction;
 
 import javax.annotation.Nullable;
 
@@ -32,13 +31,6 @@ public class ReflectionClient extends Reflection {
      */
     @Nullable
     private Framebuffer frameBuffer;
-
-    /**
-     * The previous value of partialTicks.
-     * Because this value is monotonically increasing between ticks, we can use it to prevent re-rendering the
-     * reflection when multiple blocks request it.
-     */
-    private float lastRenderPartialTicks = -1f;
 
     /**
      * @param blockEntity The block entity corresponding to the mirror that displays the reflection.
@@ -97,8 +89,8 @@ public class ReflectionClient extends Reflection {
     }
 
     @Override
-    public void render(Direction facing, float partialTicks) {
-        super.render(facing, partialTicks);
+    public void render(float partialTicks) {
+        super.render(partialTicks);
 
         // Create or destroy the framebuffer if needed
         if (reflectedEntity != null && frameBuffer == null) {
@@ -107,30 +99,16 @@ public class ReflectionClient extends Reflection {
             cleanUpFrameBuffer();
         }
 
-        // Don't render twice per partial tick; this is a simple hack for multiblock optimization.
-        // This requires that forceRerender() is called each tick.
-        if (lastRenderPartialTicks >= partialTicks) {
-            return;
-        }
-        lastRenderPartialTicks = partialTicks;
-
         if (frameBuffer != null && reflectionRenderer != null) {
             frameBuffer.clear(ON_OSX);
             frameBuffer.bindWrite(true);
 
             reflectionRenderer.setUp();
-            reflectionRenderer.render(facing.toYRot(), partialTicks);
+            reflectionRenderer.render(angle, partialTicks);
             reflectionRenderer.tearDown();
 
             frameBuffer.unbindWrite();
         }
-    }
-
-    @Override
-    public void forceRerender() {
-        super.forceRerender();
-
-        lastRenderPartialTicks = -1f;
     }
 
     @Override

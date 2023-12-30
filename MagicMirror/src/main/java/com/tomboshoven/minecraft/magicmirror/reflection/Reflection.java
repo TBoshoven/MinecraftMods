@@ -3,9 +3,10 @@ package com.tomboshoven.minecraft.magicmirror.reflection;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.Direction;
 
 import javax.annotation.Nullable;
+
+import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 /**
  * A reflection of an entity.
@@ -29,10 +30,21 @@ public class Reflection {
     Entity reflectedEntity;
 
     /**
+     * The angle in degrees over the Y axis that the reflection should be rotated.
+     * The angle in degrees over the Y axis that the reflection should be rotated.
+     */
+    float angle;
+
+    /**
      * @param blockEntity The block entity corresponding to the mirror that displays the reflection.
      */
     public Reflection(MagicMirrorCoreTileEntity blockEntity) {
         this.blockEntity = blockEntity;
+        angle = blockEntity.getBlockState().getValue(HORIZONTAL_FACING).toYRot();
+        Entity entity = blockEntity.getReflectedEntity();
+        if (entity != null) {
+            setReflectedEntity(entity);
+        }
     }
 
     /**
@@ -122,18 +134,9 @@ public class Reflection {
      * Render the reflection of the entity to the texture.
      * This operation unbinds the frame buffer, so rebinding may be required afterward.
      *
-     * @param facing       The direction the mirror is facing in; used for determining which side of the reflection to
-     *                     draw.
      * @param partialTicks The partial ticks, used for rendering smooth animations.
      */
-    public void render(Direction facing, float partialTicks) {
-    }
-
-    /**
-     * Force the next render operation to re-render the texture.
-     * Because of partialTick optimization, this should be called each tick, before starting to render.
-     */
-    public void forceRerender() {
+    public void render(float partialTicks) {
     }
 
     /**

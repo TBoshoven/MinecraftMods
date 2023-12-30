@@ -10,8 +10,10 @@ import com.tomboshoven.minecraft.magicmirror.commands.Commands;
 import com.tomboshoven.minecraft.magicmirror.data.DataGenerators;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
+import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionManager;
 import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -52,6 +54,7 @@ public final class MagicMirrorMod {
         static void init() {
             IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
             Renderers.register(modEventBus);
+            MinecraftForge.EVENT_BUS.register(ReflectionManager.class);
         }
     }
 }
