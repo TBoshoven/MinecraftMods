@@ -62,14 +62,16 @@ public abstract class MagicMirrorBlockEntityModifier {
      *
      * @param blockEntity The block entity that is being modified.
      */
-    public abstract void activate(MagicMirrorCoreBlockEntity blockEntity);
+    public void activate(MagicMirrorCoreBlockEntity blockEntity) {
+    }
 
     /**
      * Called when the modifier is detached from the block entity.
      *
      * @param blockEntity The block entity that is being modified.
      */
-    public abstract void deactivate(MagicMirrorCoreBlockEntity blockEntity);
+    public void deactivate(MagicMirrorCoreBlockEntity blockEntity) {
+    }
 
     /**
      * Called when the player activates a magic mirror that is modified by this modifier.
