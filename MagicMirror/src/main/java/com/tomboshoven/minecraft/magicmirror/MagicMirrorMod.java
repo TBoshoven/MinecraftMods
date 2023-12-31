@@ -6,16 +6,14 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.ArmorMagicMirrorMo
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.BannerMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.client.ClientEvents;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
 import com.tomboshoven.minecraft.magicmirror.data.DataGenerators;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
-import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionManager;
-import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
@@ -27,9 +25,7 @@ public final class MagicMirrorMod {
 
     public static final Logger LOGGER = LogManager.getLogger();
 
-    public MagicMirrorMod() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
+    public MagicMirrorMod(IEventBus modEventBus) {
         Blocks.register(modEventBus);
         DataGenerators.register(modEventBus);
         Items.register(modEventBus);
@@ -46,15 +42,7 @@ public final class MagicMirrorMod {
         MagicMirrorModifier.register(new CreatureMagicMirrorModifier());
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            ClientEvents.init();
-        }
-    }
-
-    static class ClientEvents {
-        static void init() {
-            IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-            Renderers.register(modEventBus);
-            NeoForge.EVENT_BUS.register(ReflectionManager.class);
+            ClientEvents.init(modEventBus);
         }
     }
 }
