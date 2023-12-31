@@ -54,7 +54,6 @@ public class Reflection {
 
     /**
      * The angle in degrees over the Y axis that the reflection should be rotated.
-     * The angle in degrees over the Y axis that the reflection should be rotated.
      */
     float angle;
 
