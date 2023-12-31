@@ -1,27 +1,60 @@
 package com.tomboshoven.minecraft.magicmirror.reflection;
 
-import com.google.common.collect.Lists;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifier;
+import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ReflectionModifiers;
+import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRenderer;
+import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 
 import javax.annotation.Nullable;
-import java.util.List;
+
+import static net.minecraft.client.Minecraft.ON_OSX;
+import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 /**
  * A reflection of an entity.
  * This class is mainly responsible for rendering this reflection and making it available as a texture.
  */
 public class Reflection {
+    // The dimensions of the texture we render the reflection to.
+    private static final int TEXTURE_WIDTH = 64;
+    private static final int TEXTURE_HEIGHT = 128;
+
+    /**
+     * The frame buffer which is used for rendering the reflection to and subsequently rendering it into the world.
+     */
+    @Nullable
+    private Framebuffer frameBuffer;
+
+    /**
+     * Render type for rendering this reflection to the screen.
+     * Each reflection has its own texture, and therefore its own render type.
+     */
+    private final RenderType renderType;
+
+    /**
+     * The renderer for the reflection.
+     */
+    @Nullable
+    private ReflectionRendererBase reflectionRenderer;
+
     /**
      * The number of currently active reflections on the client side.
      */
-    static int activeReflectionsClient;
+    static int numActiveReflections;
 
     /**
-     * An ordered list of all the modifiers.
+     * The block entity to base the reflection on.
      */
-    final List<ReflectionModifier> modifiers = Lists.newArrayList();
+    MagicMirrorCoreTileEntity blockEntity;
 
     /**
      * The entity that is currently being reflected, if any.
@@ -35,10 +68,25 @@ public class Reflection {
     float angle;
 
     /**
+     * @param blockEntity The block entity corresponding to the mirror that displays the reflection.
+     */
+    public Reflection(MagicMirrorCoreTileEntity blockEntity) {
+        angle = blockEntity.getBlockState().getValue(HORIZONTAL_FACING).toYRot();
+        this.blockEntity = blockEntity;
+
+        Entity entity = blockEntity.getReflectedEntity();
+        if (entity != null) {
+            setReflectedEntity(entity);
+        }
+
+        renderType = new ReflectionRenderType(this);
+    }
+
+    /**
      * Get the total number of active reflections in this instance's client thread; used for debugging leaks.
      */
-    public static int getActiveReflectionsClient() {
-        return activeReflectionsClient;
+    public static int countActiveReflections() {
+        return numActiveReflections;
     }
 
     /**
@@ -50,34 +98,26 @@ public class Reflection {
             MagicMirrorMod.LOGGER.debug("No longer reflecting {}", reflectedEntity.getName());
             cleanUpRenderer();
             reflectedEntity = null;
-            decrementActiveReflections();
+            --numActiveReflections;
         }
-    }
-
-    /**
-     * Increment the variable that keeps track of the number of active reflections on the client side.
-     */
-    void incrementActiveClientReflections() {
-        // Nothing to do, since we're server-side.
-    }
-
-    /**
-     * Decrement the variable that keeps track of the number of active reflections on the client side.
-     */
-    void decrementActiveReflections() {
-        // Nothing to do, since we're server-side.
     }
 
     /**
      * Construct a new frame buffer to render to.
      */
     void buildFrameBuffer() {
+        frameBuffer = new Framebuffer(TEXTURE_WIDTH, TEXTURE_HEIGHT, true, ON_OSX);
+        frameBuffer.unbindWrite();
     }
 
     /**
      * Clean up the current frame buffer.
      */
     void cleanUpFrameBuffer() {
+        if (frameBuffer != null) {
+            frameBuffer.destroyBuffers();
+            frameBuffer = null;
+        }
     }
 
     /**
@@ -85,12 +125,22 @@ public class Reflection {
      * Used when a new modifier is introduced.
      */
     void rebuildRenderer() {
+        if (reflectedEntity != null) {
+            reflectionRenderer = new ReflectionRenderer(reflectedEntity);
+            for (MagicMirrorTileEntityModifier modifier : blockEntity.getModifiers()) {
+                ReflectionModifier reflectionModifier = ReflectionModifiers.MODIFIERS.get(modifier.getName());
+                if (reflectionModifier != null) {
+                    reflectionRenderer = reflectionModifier.apply(modifier, reflectionRenderer);
+                }
+            }
+        }
     }
 
     /**
      * Clean up the current reflection renderer.
      */
     void cleanUpRenderer() {
+        reflectionRenderer = null;
     }
 
     /**
@@ -110,31 +160,11 @@ public class Reflection {
         if (this.reflectedEntity != reflectedEntity) {
             MagicMirrorMod.LOGGER.debug("Reflecting {}", reflectedEntity.getName());
             if (this.reflectedEntity == null) {
-                incrementActiveClientReflections();
+                ++numActiveReflections;
             }
             this.reflectedEntity = reflectedEntity;
             rebuildRenderer();
         }
-    }
-
-    /**
-     * Add a new modifier to the reflection.
-     *
-     * @param modifier The modifier to be added. Must be valid in combination with the existing ones.
-     */
-    public void addModifier(ReflectionModifier modifier) {
-        modifiers.add(modifier);
-        rebuildRenderer();
-    }
-
-    /**
-     * Remove an existing modifier from the reflection.
-     *
-     * @param modifier The modifier to be removed. Must be one of the current modifiers of this reflection.
-     */
-    public void removeModifier(ReflectionModifier modifier) {
-        modifiers.remove(modifier);
-        rebuildRenderer();
     }
 
     /**
@@ -144,14 +174,59 @@ public class Reflection {
      * @param partialTicks The partial ticks, used for rendering smooth animations.
      */
     public void render(float partialTicks) {
+        // Create or destroy the framebuffer if needed
+        if (reflectedEntity != null && frameBuffer == null) {
+            buildFrameBuffer();
+        } else if (reflectedEntity == null && frameBuffer != null) {
+            cleanUpFrameBuffer();
+        }
+
+
+        if (frameBuffer != null && reflectionRenderer != null) {
+            IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
+
+            frameBuffer.clear(ON_OSX);
+            frameBuffer.bindWrite(true);
+
+            reflectionRenderer.setUp();
+
+            reflectionRenderer.render(angle, partialTicks, renderTypeBuffer);
+
+            renderTypeBuffer.endBatch();
+
+            reflectionRenderer.tearDown();
+
+            frameBuffer.unbindWrite();
+        }
     }
 
     /**
-     * Change the angle of the reflection.
-     *
-     * @param angle The angle in degrees over the Y axis that the reflection should be rotated.
+     * Update the reflection based on changes in the block entity.
      */
-    public void setAngle(float angle) {
-        this.angle = angle;
+    public void update() {
+        rebuildRenderer();
+    }
+
+    /**
+     * @return the render type for rendering the actual reflection.
+     */
+    public RenderType getRenderType() {
+        return renderType;
+    }
+
+    /**
+     * Bind the reflection texture, if it's there.
+     *
+     * @return Whether the texture was successfully bound.
+     */
+    boolean bind() {
+        if (frameBuffer != null) {
+            frameBuffer.bindRead();
+            return true;
+        }
+        else {
+            RenderSystem.bindTexture(0);
+            return false;
+        }
     }
 }

@@ -4,9 +4,6 @@ import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
-import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifier;
-import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifierClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -31,12 +28,9 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
-import javax.annotation.Nullable;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -51,11 +45,6 @@ public class ArmorMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTile
     private static final int SWAP_PARTICLE_COUNT = 64;
 
     private final ReplacementArmor replacementArmor = new ReplacementArmor();
-    /**
-     * The object that modifies the reflection in the mirror to show the replacement armor.
-     */
-    @Nullable
-    private ArmorReflectionModifier reflectionModifier;
 
     /**
      * @param modifier The modifier that applied this object to the tile entity.
@@ -83,29 +72,6 @@ public class ArmorMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTile
     public void remove(World world, BlockPos pos) {
         super.remove(world, pos);
         replacementArmor.spawn(world, pos);
-    }
-
-    @Override
-    public void activate(MagicMirrorBaseTileEntity tileEntity) {
-        Reflection reflection = tileEntity.getReflection();
-        if (reflection != null) {
-            reflectionModifier = createReflectionModifier();
-            reflection.addModifier(reflectionModifier);
-        }
-    }
-
-    private ArmorReflectionModifier createReflectionModifier() {
-        return FMLEnvironment.dist == Dist.CLIENT ? new ArmorReflectionModifierClient(replacementArmor) : new ArmorReflectionModifier(replacementArmor);
-    }
-
-    @Override
-    public void deactivate(MagicMirrorBaseTileEntity tileEntity) {
-        if (reflectionModifier != null) {
-            Reflection reflection = tileEntity.getReflection();
-            if (reflection != null) {
-                reflection.removeModifier(reflectionModifier);
-            }
-        }
     }
 
     @Override
@@ -195,7 +161,7 @@ public class ArmorMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTile
     /**
      * The replacement armor as stored in the mirror.
      */
-    private ReplacementArmor getReplacementArmor() {
+    public ReplacementArmor getReplacementArmor() {
         return replacementArmor;
     }
 
