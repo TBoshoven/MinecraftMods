@@ -15,7 +15,6 @@ import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
@@ -27,9 +26,7 @@ public final class MagicMirrorMod {
 
     public static final Logger LOGGER = LogManager.getLogger();
 
-    public MagicMirrorMod() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
+    public MagicMirrorMod(IEventBus modEventBus) {
         Blocks.register(modEventBus);
         DataGenerators.register(modEventBus);
         Items.register(modEventBus);
@@ -46,13 +43,12 @@ public final class MagicMirrorMod {
         MagicMirrorModifier.register(new CreatureMagicMirrorModifier());
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            ClientEvents.init();
+            ClientEvents.init(modEventBus);
         }
     }
 
     static class ClientEvents {
-        static void init() {
-            IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        static void init(IEventBus modEventBus) {
             Renderers.register(modEventBus);
             NeoForge.EVENT_BUS.register(ReflectionClientUpdater.class);
         }

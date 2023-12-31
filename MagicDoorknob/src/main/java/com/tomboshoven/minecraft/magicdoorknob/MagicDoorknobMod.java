@@ -11,15 +11,13 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 
 @Mod(MagicDoorknobMod.MOD_ID)
 public final class MagicDoorknobMod {
     public static final String MOD_ID = "magic_doorknob";
 
-    public MagicDoorknobMod() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    public MagicDoorknobMod(IEventBus modEventBus) {
         Config.register(ModLoadingContext.get());
         Blocks.register(modEventBus);
         DataGenerators.register(modEventBus);
@@ -27,13 +25,12 @@ public final class MagicDoorknobMod {
         BlockEntities.register(modEventBus);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            ClientEvents.init();
+            ClientEvents.init(modEventBus);
         }
     }
 
     static class ClientEvents {
-        static void init() {
-            IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        static void init(IEventBus modEventBus) {
             BlockColorHandlers.register(modEventBus);
             ModelLoaders.register(modEventBus);
         }
