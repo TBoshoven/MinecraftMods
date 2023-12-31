@@ -62,14 +62,16 @@ public abstract class MagicMirrorTileEntityModifier {
      *
      * @param tileEntity The tile entity that is being modified.
      */
-    public abstract void activate(MagicMirrorBaseTileEntity tileEntity);
+    public void activate(MagicMirrorBaseTileEntity tileEntity) {
+    }
 
     /**
      * Called when the modifier is detached from the tile entity.
      *
      * @param tileEntity The tile entity that is being modified.
      */
-    public abstract void deactivate(MagicMirrorBaseTileEntity tileEntity);
+    public void deactivate(MagicMirrorBaseTileEntity tileEntity) {
+    }
 
     /**
      * Called when the player activates a magic mirror that is modified by this modifier.
