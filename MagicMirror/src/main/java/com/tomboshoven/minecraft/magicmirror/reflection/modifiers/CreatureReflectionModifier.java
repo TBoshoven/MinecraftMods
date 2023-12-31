@@ -1,34 +1,19 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.modifiers;
 
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.CreatureMagicMirrorBlockEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
-import net.minecraft.world.entity.EntityType;
+import com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers.CreatureReflectionRendererModifier;
 
 /**
- * A reflection modifier that changes which entity model is rendered.
+ * A reflection modifier that changes the armor that the entity used to represent the character.
  */
 public class CreatureReflectionModifier extends ReflectionModifier {
-    /**
-     * The type of entity to show in the reflection.
-     */
-    private final EntityType<?> entityType;
-
-    /**
-     * @param entityType The type of entity to show in the reflection.
-     */
-    public CreatureReflectionModifier(EntityType<?> entityType) {
-        this.entityType = entityType;
-    }
-
     @Override
-    public ReflectionRendererBase apply(ReflectionRendererBase reflectionRenderer) {
-        // Nothing to do on the server side
+    public ReflectionRendererBase apply(MagicMirrorBlockEntityModifier modifier, ReflectionRendererBase reflectionRenderer) {
+        if (modifier instanceof CreatureMagicMirrorBlockEntityModifier creatureModifier) {
+            return new CreatureReflectionRendererModifier(reflectionRenderer, creatureModifier.getEntityType());
+        }
         return reflectionRenderer;
-    }
-
-    /**
-     * @return The type of entity to show in the reflection.
-     */
-    protected EntityType<?> getEntityType() {
-        return entityType;
     }
 }
