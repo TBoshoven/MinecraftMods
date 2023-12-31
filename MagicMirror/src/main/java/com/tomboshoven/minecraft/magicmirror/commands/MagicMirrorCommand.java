@@ -2,8 +2,8 @@ package com.tomboshoven.minecraft.magicmirror.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionManager;
+import com.tomboshoven.minecraft.magicmirror.client.reflection.Reflection;
+import com.tomboshoven.minecraft.magicmirror.client.reflection.ReflectionManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 
