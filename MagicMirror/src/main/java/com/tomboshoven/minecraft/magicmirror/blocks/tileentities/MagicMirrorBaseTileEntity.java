@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartType;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
-import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -30,19 +29,7 @@ public abstract class MagicMirrorBaseTileEntity extends TileEntity {
      * @return The core block, if it exists.
      */
     @Nullable
-    protected abstract MagicMirrorCoreTileEntity getCore();
-
-    /**
-     * @return The reflection in the mirror.
-     */
-    @Nullable
-    public Reflection getReflection() {
-        MagicMirrorCoreTileEntity core = getCore();
-        if (core != null) {
-            return core.getReflection();
-        }
-        return null;
-    }
+    public abstract MagicMirrorCoreTileEntity getCore();
 
     /**
      * @return A list of all the current modifiers of the mirror.
