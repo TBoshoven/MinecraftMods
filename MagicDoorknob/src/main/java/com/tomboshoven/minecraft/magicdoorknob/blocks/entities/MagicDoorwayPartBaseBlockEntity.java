@@ -2,7 +2,7 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.entities;
 
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
-import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ModelTextureProperty;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 
 import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
-import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedGeometryLoader.PROPERTY_NAMESPACE;
+import static com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty.PROPERTY_NAMESPACE;
 
 /**
  * Base class for block entities that make up magic doorways.
