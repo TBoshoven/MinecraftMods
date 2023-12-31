@@ -38,7 +38,7 @@ public final class MagicMirrorMod {
         // Register packets
         Network.registerMessages();
 
-        Commands.register(modEventBus);
+        Commands.register(MinecraftForge.EVENT_BUS);
 
         // Register modifiers
         MagicMirrorModifier.register(new ArmorMagicMirrorModifier());
