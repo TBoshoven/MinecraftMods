@@ -29,14 +29,12 @@ public abstract class BlockEntityMagicMirrorRendererBase {
      * @param multiBufferSource The buffer source to use for rendering.
      */
     public void render(Reflection reflection, BlockPos pos, Direction facing, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLight) {
-        if (reflection instanceof Reflection) {
-            Entity reflected = reflection.getReflectedEntity();
-            if (reflected != null) {
-                Vec3 reflectedPos = reflected.position().add(.5, .5, .5);
-                Vec3 distanceVector = reflectedPos.subtract(pos.getX(), pos.getY(), pos.getZ());
+        Entity reflected = reflection.getReflectedEntity();
+        if (reflected != null) {
+            Vec3 reflectedPos = reflected.position().add(.5, .5, .5);
+            Vec3 distanceVector = reflectedPos.subtract(pos.getX(), pos.getY(), pos.getZ());
 
-                renderReflection(reflection, poseStack, multiBufferSource, facing, distanceVector, combinedLight);
-            }
+            renderReflection(reflection, poseStack, multiBufferSource, facing, distanceVector, combinedLight);
         }
     }
 
