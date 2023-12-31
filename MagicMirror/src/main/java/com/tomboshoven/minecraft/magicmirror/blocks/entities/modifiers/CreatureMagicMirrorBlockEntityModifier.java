@@ -3,9 +3,6 @@ package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.CreatureReflectionModifier;
-import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.CreatureReflectionModifierClient;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -14,22 +11,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.loading.FMLEnvironment;
-
-import javax.annotation.Nullable;
 
 public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlockEntityModifier {
     /**
      * The entity type to use for the reflection.
      */
     private final EntityType<?> entityType;
-
-    /**
-     * The object that modifies the reflection in the mirror to show the replacement armor.
-     */
-    @Nullable
-    private CreatureReflectionModifier reflectionModifier;
 
     public CreatureMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, ItemStack item, EntityType<?> entityType) {
         super(modifier, item);
@@ -67,31 +54,15 @@ public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirror
     }
 
     @Override
-    public void activate(MagicMirrorCoreBlockEntity blockEntity) {
-        Reflection reflection = blockEntity.getReflection();
-        if (reflection != null) {
-            reflectionModifier = createReflectionModifier();
-            reflection.addModifier(reflectionModifier);
-        }
-    }
-
-    private CreatureReflectionModifier createReflectionModifier() {
-        return FMLEnvironment.dist == Dist.CLIENT ? new CreatureReflectionModifierClient(entityType) : new CreatureReflectionModifier(entityType);
-    }
-
-    @Override
-    public void deactivate(MagicMirrorCoreBlockEntity blockEntity) {
-        if (reflectionModifier != null) {
-            Reflection reflection = blockEntity.getReflection();
-            if (reflection != null) {
-                reflection.removeModifier(reflectionModifier);
-            }
-        }
-    }
-
-    @Override
     public boolean tryPlayerActivate(MagicMirrorCoreBlockEntity blockEntity, Player playerIn, InteractionHand hand) {
         // No behavior right now.
         return false;
+    }
+
+    /**
+     * @return the entity type to change the reflection to.
+     */
+    public EntityType<?> getEntityType() {
+        return entityType;
     }
 }
