@@ -1,41 +1,37 @@
 package com.tomboshoven.minecraft.magicmirror.packets;
 
-import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorCoreBlock;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorCoreBlock.MessageAttachModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier.MessageEquip;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier.MessageSwapMirror;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier.MessageSwapPlayer;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.NetworkRegistry;
-import net.neoforged.neoforge.network.simple.SimpleChannel;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+
+import static com.tomboshoven.minecraft.magicmirror.MagicMirrorMod.MOD_ID;
 
 /**
  * Class managing custom networking, such as sending and registering of messages.
  */
 public final class Network {
-    private static final String PROTOCOL_VERSION = "1";
-
-    public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(MagicMirrorMod.MOD_ID, "channel"),
-            () -> PROTOCOL_VERSION,
-            PROTOCOL_VERSION::equals,
-            PROTOCOL_VERSION::equals
-    );
-
     private Network() {
+    }
+
+    public static void register(IEventBus eventBus) {
+        eventBus.addListener(Network::registerPayloadHandlers);
     }
 
     /**
      * Register all messages.
      */
-    @SuppressWarnings("UnusedAssignment")
-    public static void registerMessages() {
-        int id = 0;
-        CHANNEL.registerMessage(id++, MessageEquip.class, MessageEquip::encode, MessageEquip::decode, ArmorMagicMirrorBlockEntityModifier::onMessageEquip);
-        CHANNEL.registerMessage(id++, MessageSwapMirror.class, MessageSwapMirror::encode, MessageSwapMirror::decode, ArmorMagicMirrorBlockEntityModifier::onMessageSwapMirror);
-        CHANNEL.registerMessage(id++, MessageSwapPlayer.class, MessageSwapPlayer::encode, MessageSwapPlayer::decode, ArmorMagicMirrorBlockEntityModifier::onMessageSwapPlayer);
-        CHANNEL.registerMessage(id++, MessageAttachModifier.class, MessageAttachModifier::encode, MessageAttachModifier::decode, MagicMirrorCoreBlock::onMessageAttachModifier);
+    public static void registerPayloadHandlers(final RegisterPayloadHandlerEvent event) {
+        final IPayloadRegistrar registrar = event.registrar(MOD_ID);
+
+        registrar.play(MessageEquip.ID, MessageEquip::new, handler -> handler.client(ArmorMagicMirrorBlockEntityModifier::onMessageEquip));
+        registrar.play(MessageSwapMirror.ID, MessageSwapMirror::new, handler -> handler.client(ArmorMagicMirrorBlockEntityModifier::onMessageSwapMirror));
+        registrar.play(MessageSwapPlayer.ID, MessageSwapPlayer::new, handler -> handler.client(ArmorMagicMirrorBlockEntityModifier::onMessageSwapPlayer));
+        registrar.play(MessageAttachModifier.ID, MessageAttachModifier::new, handler -> handler.client(MagicMirrorCoreBlock::onMessageAttachModifier));
     }
 }

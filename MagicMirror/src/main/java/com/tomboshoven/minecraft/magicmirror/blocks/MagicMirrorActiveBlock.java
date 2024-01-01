@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicmirror.blocks;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -64,8 +63,8 @@ public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implem
         Level level = blockEntity.getLevel();
         if (level != null) {
             MagicMirrorCoreBlock.MessageAttachModifier message = new MagicMirrorCoreBlock.MessageAttachModifier(blockEntity.getBlockPos(), originalHeldItem, modifier);
-            PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockEntity.getBlockPos()));
-            Network.CHANNEL.send(target, message);
+            PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(blockEntity.getBlockPos()));
+            target.send(message);
         }
     }
 

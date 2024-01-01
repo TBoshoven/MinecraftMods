@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -11,7 +10,9 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -28,10 +29,13 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.network.NetworkEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 import java.util.Random;
+import java.util.stream.IntStream;
+
+import static com.tomboshoven.minecraft.magicmirror.MagicMirrorMod.MOD_ID;
 
 public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlockEntityModifier {
     /**
@@ -112,8 +116,8 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                     Level world = blockEntity.getLevel();
                     if (world != null) {
                         MessageEquip message = new MessageEquip(pos, slotIndex, heldItem);
-                        PacketDistributor.PacketTarget mirrorTarget = PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos));
-                        Network.CHANNEL.send(mirrorTarget, message);
+                        PacketDistributor.PacketTarget mirrorTarget = PacketDistributor.TRACKING_CHUNK.with(world.getChunkAt(pos));
+                        mirrorTarget.send(message);
                     }
 
                     // Server side
@@ -141,12 +145,12 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
         Level world = blockEntity.getLevel();
         if (world != null) {
             MessageSwapMirror mirrorMessage = new MessageSwapMirror(blockEntity, playerIn);
-            PacketDistributor.PacketTarget mirrorTarget = PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos));
-            Network.CHANNEL.send(mirrorTarget, mirrorMessage);
+            PacketDistributor.PacketTarget mirrorTarget = PacketDistributor.TRACKING_CHUNK.with(world.getChunkAt(pos));
+            mirrorTarget.send(mirrorMessage);
         }
         MessageSwapPlayer playerMessage = new MessageSwapPlayer(this, playerIn);
-        PacketDistributor.PacketTarget playerTarget = PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> playerIn);
-        Network.CHANNEL.send(playerTarget, playerMessage);
+        PacketDistributor.PacketTarget playerTarget = PacketDistributor.TRACKING_ENTITY_AND_SELF.with(playerIn);
+        playerTarget.send(playerMessage);
 
         // Swap on the server side.
         replacementArmor.swap(playerIn);
@@ -273,149 +277,102 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
     /**
      * Message describing players equipping the mirror with armor.
      */
-    public static class MessageEquip {
-        final int slotIdx;
-        final ItemStack armor;
-        final BlockPos mirrorPos;
-
-        MessageEquip(BlockPos mirrorPos, int slotIdx, ItemStack armor) {
-            this.mirrorPos = mirrorPos;
-            this.slotIdx = slotIdx;
-            this.armor = armor.copy();
-        }
+    public record MessageEquip(BlockPos mirrorPos, int slotIdx, ItemStack armor) implements CustomPacketPayload {
+        public static final ResourceLocation ID = new ResourceLocation(MOD_ID, "equip");
 
         /**
          * Decode a packet into an instance of the message.
          *
          * @param buf The buffer to read from.
-         * @return The created message instance.
          */
-        public static MessageEquip decode(FriendlyByteBuf buf) {
-            return new MessageEquip(buf.readBlockPos(), buf.readInt(), buf.readItem());
+        public MessageEquip(final FriendlyByteBuf buf) {
+            this(buf.readBlockPos(), buf.readInt(), buf.readItem());
         }
 
-        /**
-         * Encode the message into a packet buffer.
-         *
-         * @param buf The buffer to write to.
-         */
-        public void encode(FriendlyByteBuf buf) {
+        @Override
+        public void write(final FriendlyByteBuf buf) {
             buf.writeBlockPos(mirrorPos);
             buf.writeInt(slotIdx);
             buf.writeItem(armor);
         }
-    }
 
-    /**
-     * Base class for messages describing players swapping armor with the mirror.
-     */
-    static class MessageSwap {
-        final ReplacementArmor armor;
-
-        MessageSwap() {
-            armor = new ReplacementArmor();
-        }
-
-        MessageSwap(Iterable<ItemStack> armor) {
-            this.armor = new ReplacementArmor(armor);
-        }
-
-        void decodeArmor(FriendlyByteBuf buf) {
-            for (int i = 0; i < 4; ++i) {
-                armor.set(i, buf.readItem());
-            }
-        }
-
-        void encodeArmor(FriendlyByteBuf buf) {
-            for (ItemStack stack : armor.replacementInventory) {
-                buf.writeItem(stack);
-            }
+        @Override
+        public ResourceLocation id() {
+            return ID;
         }
     }
 
     /**
      * Message describing players swapping armor with the mirror (mirror side).
      */
-    public static class MessageSwapMirror extends MessageSwap {
-        BlockPos mirrorPos;
-
-        @SuppressWarnings({"unused", "WeakerAccess"})
-        public MessageSwapMirror() {
-        }
+    public record MessageSwapMirror(ReplacementArmor armor, BlockPos mirrorPos) implements CustomPacketPayload {
+        public static final ResourceLocation ID = new ResourceLocation(MOD_ID, "swap_mirror");
 
         MessageSwapMirror(MagicMirrorCoreBlockEntity magicMirrorBase, Player player) {
-            super(player.getArmorSlots());
-            mirrorPos = magicMirrorBase.getBlockPos();
+            this(new ReplacementArmor(player.getArmorSlots()), magicMirrorBase.getBlockPos());
         }
 
         /**
          * Decode a packet into an instance of the message.
          *
          * @param buf The buffer to read from.
-         * @return The created message instance.
          */
-        public static MessageSwapMirror decode(FriendlyByteBuf buf) {
-            MessageSwapMirror result = new MessageSwapMirror();
-            result.decodeArmor(buf);
-            result.mirrorPos = buf.readBlockPos();
-            return result;
+        public MessageSwapMirror(FriendlyByteBuf buf) {
+            this(new ReplacementArmor(() -> IntStream.range(0, 4).mapToObj(i -> buf.readItem()).iterator()), buf.readBlockPos());
         }
 
-        /**
-         * Encode the message into a packet buffer.
-         *
-         * @param buf The buffer to write to.
-         */
-        public void encode(FriendlyByteBuf buf) {
-            encodeArmor(buf);
+        @Override
+        public void write(FriendlyByteBuf buf) {
+            for (ItemStack stack : armor.replacementInventory) {
+                buf.writeItem(stack);
+            }
             buf.writeBlockPos(mirrorPos);
+        }
+
+        @Override
+        public ResourceLocation id() {
+            return ID;
         }
     }
 
     /**
      * Message describing players swapping armor with the mirror (player side).
      */
-    public static class MessageSwapPlayer extends MessageSwap {
-        int entityId;
-
-        @SuppressWarnings({"unused", "WeakerAccess"})
-        public MessageSwapPlayer() {
-        }
+    public record MessageSwapPlayer(ReplacementArmor armor, int entityId) implements CustomPacketPayload {
+        public static final ResourceLocation ID = new ResourceLocation(MOD_ID, "swap_player");
 
         MessageSwapPlayer(ArmorMagicMirrorBlockEntityModifier armorModifier, Player player) {
-            super(armorModifier.getReplacementArmor().replacementInventory);
-            entityId = player.getId();
+            this(new ReplacementArmor(armorModifier.getReplacementArmor().replacementInventory), player.getId());
         }
 
         /**
          * Decode a packet into an instance of the message.
          *
          * @param buf The buffer to read from.
-         * @return The created message instance.
          */
-        public static MessageSwapPlayer decode(FriendlyByteBuf buf) {
-            MessageSwapPlayer result = new MessageSwapPlayer();
-            result.decodeArmor(buf);
-            result.entityId = buf.readInt();
-            return result;
+        public MessageSwapPlayer(FriendlyByteBuf buf) {
+            this(new ReplacementArmor(() -> IntStream.range(0, 4).mapToObj(i -> buf.readItem()).iterator()), buf.readInt());
         }
 
-        /**
-         * Encode the message into a packet buffer.
-         *
-         * @param buf The buffer to write to.
-         */
-        public void encode(FriendlyByteBuf buf) {
-            encodeArmor(buf);
+        @Override
+        public void write(FriendlyByteBuf buf) {
+            for (ItemStack stack : armor.replacementInventory) {
+                buf.writeItem(stack);
+            }
             buf.writeInt(entityId);
+        }
+
+        @Override
+        public ResourceLocation id() {
+            return ID;
         }
     }
 
     /**
      * Handler for messages describing players equipping the mirror with armor.
      */
-    public static void onMessageEquip(MessageEquip message, NetworkEvent.Context ctx) {
-        ctx.enqueueWork(() -> {
+    public static void onMessageEquip(MessageEquip message, PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
                 BlockEntity te = world.getBlockEntity(message.mirrorPos);
@@ -429,14 +386,13 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                 }
             }
         });
-        ctx.setPacketHandled(true);
     }
 
     /**
      * Handler for messages describing players swapping armor with the mirror.
      */
-    public static void onMessageSwapMirror(MessageSwapMirror message, NetworkEvent.Context ctx) {
-        ctx.enqueueWork(() -> {
+    public static void onMessageSwapMirror(MessageSwapMirror message, PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
                 BlockEntity te = world.getBlockEntity(message.mirrorPos);
@@ -447,14 +403,13 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                 }
             }
         });
-        ctx.setPacketHandled(true);
     }
 
     /**
      * Handler for messages describing players swapping armor with the mirror.
      */
-    public static void onMessageSwapPlayer(MessageSwapPlayer message, NetworkEvent.Context ctx) {
-        ctx.enqueueWork(() -> {
+    public static void onMessageSwapPlayer(MessageSwapPlayer message, PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
                 Entity entity = world.getEntity(message.entityId);
@@ -478,6 +433,5 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                 }
             }
         });
-        ctx.setPacketHandled(true);
     }
 }

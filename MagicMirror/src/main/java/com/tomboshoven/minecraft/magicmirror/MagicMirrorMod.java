@@ -32,7 +32,7 @@ public final class MagicMirrorMod {
         BlockEntities.register(modEventBus);
 
         // Register packets
-        Network.registerMessages();
+        Network.register(modEventBus);
 
         Commands.register(NeoForge.EVENT_BUS);
 

@@ -9,6 +9,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
@@ -19,10 +21,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 import javax.annotation.Nullable;
 
+import static com.tomboshoven.minecraft.magicmirror.MagicMirrorMod.MOD_ID;
 import static com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorInactiveBlock.EnumPartType.TOP;
 
 public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
@@ -102,23 +105,8 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
     /**
      * Message describing the action of attaching a new modifier to a mirror.
      */
-    public static class MessageAttachModifier {
-        /**
-         * The position of the mirror in the world.
-         */
-        BlockPos mirrorPos;
-        /**
-         * The item used to attach the modifier to the mirror.
-         */
-        ItemStack usedItemStack;
-        /**
-         * The name of the modifier this is being attached.
-         */
-        String modifierName;
-
-        @SuppressWarnings({"unused", "WeakerAccess"})
-        public MessageAttachModifier() {
-        }
+    public record MessageAttachModifier(BlockPos mirrorPos, ItemStack usedItemStack, String modifierName) implements CustomPacketPayload {
+        public static final ResourceLocation ID = new ResourceLocation(MOD_ID, "attach_modifier");
 
         /**
          * @param mirrorPos     The position of the mirror in the world.
@@ -126,43 +114,36 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
          * @param modifier      The modifier this is being attached.
          */
         MessageAttachModifier(BlockPos mirrorPos, ItemStack usedItemStack, MagicMirrorModifier modifier) {
-            this.mirrorPos = mirrorPos;
-            this.usedItemStack = usedItemStack;
-            modifierName = modifier.getName();
+            this(mirrorPos, usedItemStack, modifier.getName());
         }
 
         /**
          * Decode a packet into an instance of the message.
          *
          * @param buf The buffer to read from.
-         * @return The created message instance.
          */
-        public static MessageAttachModifier decode(FriendlyByteBuf buf) {
-            MessageAttachModifier result = new MessageAttachModifier();
-            result.mirrorPos = buf.readBlockPos();
-            result.usedItemStack = buf.readItem();
-            result.modifierName = buf.readUtf();
-            return result;
+        public MessageAttachModifier(FriendlyByteBuf buf) {
+            this(buf.readBlockPos(), buf.readItem(), buf.readUtf());
         }
 
-
-        /**
-         * Encode the message into a packet buffer.
-         *
-         * @param buf The buffer to write to.
-         */
-        public void encode(FriendlyByteBuf buf) {
+        @Override
+        public void write(FriendlyByteBuf buf) {
             buf.writeBlockPos(mirrorPos);
             buf.writeItem(usedItemStack);
             buf.writeUtf(modifierName);
+        }
+
+        @Override
+        public ResourceLocation id() {
+            return ID;
         }
     }
 
     /**
      * Handler for messages describing modifiers being attached to mirrors.
      */
-    public static void onMessageAttachModifier(MessageAttachModifier message, NetworkEvent.Context ctx) {
-        ctx.enqueueWork(() -> {
+    public static void onMessageAttachModifier(MessageAttachModifier message, PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
                 BlockEntity blockEntity = world.getBlockEntity(message.mirrorPos);
@@ -177,6 +158,5 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
                 }
             }
         });
-        ctx.setPacketHandled(true);
     }
 }
