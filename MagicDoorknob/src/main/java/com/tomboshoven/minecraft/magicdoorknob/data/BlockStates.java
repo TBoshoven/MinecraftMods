@@ -13,8 +13,6 @@ import net.minecraftforge.client.model.generators.ModelFile;
 
 import javax.annotation.Nonnull;
 
-import static com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayPartBaseBlock.EnumPartType.TOP;
-
 class BlockStates extends BlockStateProvider {
     BlockStates(DataGenerator gen, ExistingFileHelper existingFileHelper) {
         super(gen, MagicDoorknobMod.MOD_ID, existingFileHelper);
@@ -29,7 +27,7 @@ class BlockStates extends BlockStateProvider {
     private void registerDoor() {
         ModelFile doorBottom = new ModelFile.ExistingModelFile(modLoc("block/magic_door_bottom"), existingFileHelper);
         ModelFile doorTop = new ModelFile.ExistingModelFile(modLoc("block/magic_door_top"), existingFileHelper);
-        horizontalBlock(Blocks.MAGIC_DOOR.get(), blockState -> blockState.getValue(MagicDoorBlock.PART) == TOP ? doorTop : doorBottom, 270);
+        horizontalBlock(Blocks.MAGIC_DOOR.get(), blockState -> blockState.getValue(MagicDoorBlock.PART) == MagicDoorwayPartBaseBlock.EnumPartType.TOP ? doorTop : doorBottom, 270);
     }
 
     private void registerDoorway() {
@@ -48,18 +46,18 @@ class BlockStates extends BlockStateProvider {
                     ConfiguredModel.Builder<?> builder = ConfiguredModel.builder();
                     if (openEastWest) {
                         if (openNorthSouth) {
-                            builder = builder.modelFile(part == TOP ? doorwayOpenTop : doorwayOpenBottom);
+                            builder = builder.modelFile(part == MagicDoorwayPartBaseBlock.EnumPartType.TOP ? doorwayOpenTop : doorwayOpenBottom);
                         }
                         else {
-                            builder = builder.modelFile(part == TOP ? doorwayHalfOpenTop : doorwayHalfOpenBottom);
+                            builder = builder.modelFile(part == MagicDoorwayPartBaseBlock.EnumPartType.TOP ? doorwayHalfOpenTop : doorwayHalfOpenBottom);
                         }
                     }
                     else {
                         if (openNorthSouth) {
-                            builder = builder.modelFile(part == TOP ? doorwayHalfOpenTop : doorwayHalfOpenBottom).rotationY(90);
+                            builder = builder.modelFile(part == MagicDoorwayPartBaseBlock.EnumPartType.TOP ? doorwayHalfOpenTop : doorwayHalfOpenBottom).rotationY(90);
                         }
                         else {
-                            builder = builder.modelFile(part == TOP ? doorwayClosedTop : doorwayClosedBottom);
+                            builder = builder.modelFile(part == MagicDoorwayPartBaseBlock.EnumPartType.TOP ? doorwayClosedTop : doorwayClosedBottom);
                         }
                     }
                     return builder.build();
