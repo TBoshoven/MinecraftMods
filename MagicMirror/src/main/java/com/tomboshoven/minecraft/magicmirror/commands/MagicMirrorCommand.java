@@ -2,19 +2,15 @@ package com.tomboshoven.minecraft.magicmirror.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.tomboshoven.minecraft.magicmirror.client.reflection.Reflection;
+import com.tomboshoven.minecraft.magicmirror.client.reflection.ReflectionManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Commands related to the mod.
  * Currently, this only features a debug command.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 final class MagicMirrorCommand {
     /**
      * Reply with some debugging information.
@@ -23,9 +19,10 @@ final class MagicMirrorCommand {
      * @return Currently, the number of active reflections.
      */
     private static int debug(CommandContext<? extends CommandSourceStack> context) {
-        int reflectionCount = Reflection.getActiveReflectionsClient();
-        context.getSource().sendSuccess(() -> Component.translatable("commands.magic_mirror.debug.reflections", reflectionCount), true);
-        return reflectionCount;
+        int reflectionCount = ReflectionManager.countReflections();
+        int activeCount = Reflection.countActiveReflections();
+        context.getSource().sendSuccess(() -> Component.translatable("commands.magic_mirror.debug.reflections", reflectionCount, activeCount), true);
+        return activeCount;
     }
 
     /**

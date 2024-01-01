@@ -7,7 +7,6 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorBlockEnt
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.config.Config;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,18 +25,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.TierSortingRegistry;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Supplier;
 
 /**
  * A magic doorknob that allows you to open doors that don't exist.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MagicDoorknobItem extends Item {
     // The main material for rendering the item
     private final ResourceLocation mainTextureLocation;
@@ -227,7 +221,6 @@ public class MagicDoorknobItem extends Item {
     /**
      * @return The location of the main texture of the doorknob
      */
-    @OnlyIn(Dist.CLIENT)
     public Material getMainMaterial() {
         return new Material(InventoryMenu.BLOCK_ATLAS, mainTextureLocation);
     }

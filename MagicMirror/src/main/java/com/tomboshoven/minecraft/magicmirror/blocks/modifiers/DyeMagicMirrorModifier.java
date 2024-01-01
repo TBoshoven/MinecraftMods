@@ -16,9 +16,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class DyeMagicMirrorModifier extends MagicMirrorModifier {
+    /**
+     * The name of the modifier.
+     * This should be stable as it gets written with save data.
+     */
+    public static final String NAME = "dye";
+
     @Override
     public String getName() {
-        return "dye";
+        return NAME;
     }
 
     @Override

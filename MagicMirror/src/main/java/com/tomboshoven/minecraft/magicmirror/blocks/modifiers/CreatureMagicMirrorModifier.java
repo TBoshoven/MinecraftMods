@@ -3,20 +3,21 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.CreatureMagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * A magic mirror modifier that changes the appearance of the reflection to be another creature's.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
+    /**
+     * The name of the modifier.
+     * This should be stable as it gets written with save data.
+     */
+    public static String NAME = "creature";
+
     /**
      * Return whether the given item is a skull that can be used to apply this modifier.
      *
@@ -52,7 +53,7 @@ public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
 
     @Override
     public String getName() {
-        return "creature";
+        return NAME;
     }
 
     @Override

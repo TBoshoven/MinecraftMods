@@ -2,21 +2,15 @@ package com.tomboshoven.minecraft.magicmirror.blocks.entities;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * Collection of all block entities in the mod.
  */
-@SuppressWarnings("ConstantConditions")
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class BlockEntities {
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MagicMirrorMod.MOD_ID);
 

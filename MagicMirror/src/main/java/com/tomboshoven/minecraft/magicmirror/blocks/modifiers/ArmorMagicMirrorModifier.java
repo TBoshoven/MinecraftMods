@@ -3,22 +3,23 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * A magic mirror modifier that allows it to be used as an armor stand for switching an entire set of armor.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ArmorMagicMirrorModifier extends MagicMirrorModifier {
+    /**
+     * The name of the modifier.
+     * This should be stable as it gets written with save data.
+     */
+    public static String NAME = "armor";
+
     @Override
     public String getName() {
-        return "armor";
+        return NAME;
     }
 
     @Override

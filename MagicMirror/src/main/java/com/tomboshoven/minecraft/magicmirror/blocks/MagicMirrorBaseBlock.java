@@ -1,6 +1,5 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -8,16 +7,11 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class MagicMirrorBaseBlock extends HorizontalDirectionalBlock {
     /**
      * The bounding boxes of the various orientations of this block; should be indexed by facing.horizontalIndex()
@@ -61,11 +55,6 @@ public abstract class MagicMirrorBaseBlock extends HorizontalDirectionalBlock {
             }
         }
         return defaultBlockState().setValue(FACING, horizontalDirection.getOpposite());
-    }
-
-    @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
-        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override

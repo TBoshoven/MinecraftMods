@@ -4,7 +4,6 @@ import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.BlockEntities;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -19,19 +18,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Supplier;
 
 import static com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorInactiveBlock.EnumPartType.TOP;
 
-@SuppressWarnings("deprecation")
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
     /**
      * Number of ticks between updating who we're reflecting
@@ -163,7 +156,7 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
      */
     public static void onMessageAttachModifier(MessageAttachModifier message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
-        ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        ctx.enqueueWork(() -> {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
                 BlockEntity blockEntity = world.getBlockEntity(message.mirrorPos);
@@ -177,7 +170,7 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
                     world.playLocalSound(message.mirrorPos, SoundEvents.ARMOR_EQUIP_GENERIC, SoundSource.BLOCKS, .6f, .6f, true);
                 }
             }
-        }));
+        });
         ctx.setPacketHandled(true);
     }
 }

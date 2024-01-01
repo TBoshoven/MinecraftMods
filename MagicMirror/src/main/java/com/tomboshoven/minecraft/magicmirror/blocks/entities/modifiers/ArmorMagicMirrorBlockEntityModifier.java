@@ -4,10 +4,6 @@ import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
-import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifier;
-import com.tomboshoven.minecraft.magicmirror.reflection.modifiers.ArmorReflectionModifierClient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -32,18 +28,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 import java.util.function.Supplier;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlockEntityModifier {
     /**
      * The number of ticks this modifier needs to cool down.
@@ -55,11 +45,6 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
     private static final int SWAP_PARTICLE_COUNT = 64;
 
     private final ReplacementArmor replacementArmor = new ReplacementArmor();
-    /**
-     * The object that modifies the reflection in the mirror to show the replacement armor.
-     */
-    @Nullable
-    private ArmorReflectionModifier reflectionModifier;
 
     /**
      * @param modifier The modifier that applied this object to the block entity.
@@ -87,32 +72,6 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
     public void remove(Level world, BlockPos pos) {
         super.remove(world, pos);
         replacementArmor.spawn(world, pos);
-    }
-
-    @Override
-    public void activate(MagicMirrorCoreBlockEntity blockEntity) {
-        Reflection reflection = blockEntity.getReflection();
-        if (reflection != null) {
-            reflectionModifier = createReflectionModifier();
-            reflection.addModifier(reflectionModifier);
-        }
-    }
-
-    private ArmorReflectionModifier createReflectionModifier() {
-        return DistExecutor.runForDist(
-                () -> () -> new ArmorReflectionModifierClient(replacementArmor),
-                () -> () -> new ArmorReflectionModifier(replacementArmor)
-        );
-    }
-
-    @Override
-    public void deactivate(MagicMirrorCoreBlockEntity blockEntity) {
-        if (reflectionModifier != null) {
-            Reflection reflection = blockEntity.getReflection();
-            if (reflection != null) {
-                reflection.removeModifier(reflectionModifier);
-            }
-        }
     }
 
     @Override
@@ -201,7 +160,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
     /**
      * The replacement armor as stored in the mirror.
      */
-    private ReplacementArmor getReplacementArmor() {
+    public ReplacementArmor getReplacementArmor() {
         return replacementArmor;
     }
 
@@ -230,7 +189,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
 
         /**
          * Swap the current inventory with another.
-         * They inventories should have the same size.
+         * The inventories should have the same size.
          *
          * @param inventory The inventory to swap with.
          */
@@ -458,7 +417,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
      */
     public static void onMessageEquip(MessageEquip message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
-        ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        ctx.enqueueWork(() -> {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
                 BlockEntity te = world.getBlockEntity(message.mirrorPos);
@@ -471,7 +430,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                     world.playLocalSound(message.mirrorPos, item.getMaterial().getEquipSound(), SoundSource.BLOCKS, 1, 1, false);
                 }
             }
-        }));
+        });
         ctx.setPacketHandled(true);
     }
 
@@ -480,7 +439,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
      */
     public static void onMessageSwapMirror(MessageSwapMirror message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
-        ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        ctx.enqueueWork(() -> {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
                 BlockEntity te = world.getBlockEntity(message.mirrorPos);
@@ -490,7 +449,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                             .ifPresent(modifier -> message.armor.swap((ArmorMagicMirrorBlockEntityModifier) modifier));
                 }
             }
-        }));
+        });
         ctx.setPacketHandled(true);
     }
 
@@ -499,7 +458,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
      */
     public static void onMessageSwapPlayer(MessageSwapPlayer message, Supplier<? extends NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context ctx = contextSupplier.get();
-        ctx.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        ctx.enqueueWork(() -> {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
                 Entity entity = world.getEntity(message.entityId);
@@ -522,7 +481,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                     }
                 }
             }
-        }));
+        });
         ctx.setPacketHandled(true);
     }
 }

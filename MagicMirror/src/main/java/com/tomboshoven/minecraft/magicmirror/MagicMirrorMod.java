@@ -7,26 +7,20 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.BannerMagicMirrorM
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.DyeMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.client.ClientEvents;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
 import com.tomboshoven.minecraft.magicmirror.data.DataGenerators;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
-import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionClientUpdater;
-import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @Mod(MagicMirrorMod.MOD_ID)
 public final class MagicMirrorMod {
     public static final String MOD_ID = "magic_mirror";
@@ -40,10 +34,6 @@ public final class MagicMirrorMod {
         DataGenerators.register(modEventBus);
         Items.register(modEventBus);
         BlockEntities.register(modEventBus);
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            Renderers.register(modEventBus);
-            MinecraftForge.EVENT_BUS.register(ReflectionClientUpdater.class);
-        });
 
         // Register packets
         Network.registerMessages();
@@ -55,5 +45,9 @@ public final class MagicMirrorMod {
         MagicMirrorModifier.register(new BannerMagicMirrorModifier());
         MagicMirrorModifier.register(new CreatureMagicMirrorModifier());
         MagicMirrorModifier.register(new DyeMagicMirrorModifier());
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            ClientEvents.init(modEventBus);
+        }
     }
 }

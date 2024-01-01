@@ -2,8 +2,7 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.entities;
 
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
-import com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.ModelTextureProperty;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -25,23 +24,17 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
-import static com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured.TexturedGeometryLoader.PROPERTY_NAMESPACE;
+import static com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty.PROPERTY_NAMESPACE;
 
 /**
  * Base class for block entities that make up magic doorways.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     /**
      * The main texture of the doorway (based on base block).
@@ -69,10 +62,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     private void saveInternal(CompoundTag compound) {
-        ResourceLocation registryName = ForgeRegistries.BLOCKS.getKey(baseBlockState.getBlock());
-        if (registryName != null) {
-            compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
-        }
+        compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
         if (doorknob != null) {
             compound.putString("doorknobType", doorknob.getTypeName());
         }
@@ -104,7 +94,6 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         CompoundTag tag = pkt.getTag();
@@ -115,7 +104,6 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public @NotNull ModelData getModelData() {
         Minecraft minecraft = Minecraft.getInstance();
         BlockModelShaper blockModelShapes = minecraft.getBlockRenderer().getBlockModelShaper();

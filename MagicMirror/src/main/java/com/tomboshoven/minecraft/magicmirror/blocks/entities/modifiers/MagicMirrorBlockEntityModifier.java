@@ -2,21 +2,16 @@ package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * A magic mirror modifier as applied to a block entity.
  * Instead of using this directly, apply it using a MagicMirrorModifier instance.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class MagicMirrorBlockEntityModifier {
     /**
      * The modifier that applied this object to the block entity.
@@ -67,14 +62,16 @@ public abstract class MagicMirrorBlockEntityModifier {
      *
      * @param blockEntity The block entity that is being modified.
      */
-    public abstract void activate(MagicMirrorCoreBlockEntity blockEntity);
+    public void activate(MagicMirrorCoreBlockEntity blockEntity) {
+    }
 
     /**
      * Called when the modifier is detached from the block entity.
      *
      * @param blockEntity The block entity that is being modified.
      */
-    public abstract void deactivate(MagicMirrorCoreBlockEntity blockEntity);
+    public void deactivate(MagicMirrorCoreBlockEntity blockEntity) {
+    }
 
     /**
      * Called when the player activates a magic mirror that is modified by this modifier.
