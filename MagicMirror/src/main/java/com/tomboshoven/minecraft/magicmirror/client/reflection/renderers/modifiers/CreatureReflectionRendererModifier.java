@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
+import javax.annotation.Nullable;
+
 /**
  * Reflection renderer modifier that replaces the rendered entity by a different one.
  * <p>
@@ -24,13 +26,13 @@ public class CreatureReflectionRendererModifier extends ReflectionRendererModifi
     }
 
     @Override
-    public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
+    public void render(float facing, float partialTicks, MultiBufferSource.BufferSource renderTypeBuffer, @Nullable float[] colorize) {
         EntityRenderer<? extends Entity> originalRenderer = getRenderer();
         EntityRenderer<?> replacementRenderer = OffModelPlayerRenderers.getInstance().get(entityType);
         if (replacementRenderer != null) {
             setRenderer(replacementRenderer);
         }
-        super.render(facing, partialTicks, renderTypeBuffer);
+        super.render(facing, partialTicks, renderTypeBuffer, colorize);
         setRenderer(originalRenderer);
     }
 }

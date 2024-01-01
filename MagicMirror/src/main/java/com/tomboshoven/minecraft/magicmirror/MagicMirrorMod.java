@@ -5,6 +5,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.entities.BlockEntities;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.ArmorMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.BannerMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.DyeMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.client.ClientEvents;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
@@ -40,6 +41,7 @@ public final class MagicMirrorMod {
         MagicMirrorModifier.register(new ArmorMagicMirrorModifier());
         MagicMirrorModifier.register(new BannerMagicMirrorModifier());
         MagicMirrorModifier.register(new CreatureMagicMirrorModifier());
+        MagicMirrorModifier.register(new DyeMagicMirrorModifier());
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             ClientEvents.init(modEventBus);
