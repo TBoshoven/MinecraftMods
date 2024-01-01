@@ -40,6 +40,6 @@ public class DyeMagicMirrorModifier extends MagicMirrorModifier {
 
     @Override
     MagicMirrorBlockEntityModifier createBlockEntityModifier(ItemStack usedItem) {
-        return new DyeMagicMirrorBlockEntityModifier(this, usedItem);
+        return new DyeMagicMirrorBlockEntityModifier(this, usedItem.split(1));
     }
 }
