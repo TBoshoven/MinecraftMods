@@ -6,12 +6,11 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.ArmorMagicMirrorMo
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.BannerMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.client.ClientEvents;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
 import com.tomboshoven.minecraft.magicmirror.data.DataGenerators;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
-import com.tomboshoven.minecraft.magicmirror.reflection.ReflectionManager;
-import com.tomboshoven.minecraft.magicmirror.renderers.Renderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -46,15 +45,7 @@ public final class MagicMirrorMod {
         MagicMirrorModifier.register(new CreatureMagicMirrorModifier());
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            ClientEvents.init();
-        }
-    }
-
-    static class ClientEvents {
-        static void init() {
-            IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-            Renderers.register(modEventBus);
-            MinecraftForge.EVENT_BUS.register(ReflectionManager.class);
+            ClientEvents.init(modEventBus);
         }
     }
 }
