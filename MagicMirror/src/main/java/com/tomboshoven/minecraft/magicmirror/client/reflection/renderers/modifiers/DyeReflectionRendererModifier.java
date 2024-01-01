@@ -1,17 +1,13 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRendererBase;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.MultiBufferSource;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A modifier for a reflection renderer which colorizes the reflected entity.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class DyeReflectionRendererModifier extends ReflectionRendererModifier {
     /**
      * The color for the reflection.
