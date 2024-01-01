@@ -31,6 +31,9 @@ public class DyeMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlock
         return false;
     }
 
+    /**
+     * @return the color of the dye that was used.
+     */
     public float[] getColor() {
         float[] color;
         if (item.getItem() instanceof DyeItem dyeItem) {
