@@ -115,7 +115,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                     BlockPos pos = blockEntity.getBlockPos();
                     Level world = blockEntity.getLevel();
                     if (world != null) {
-                        MessageEquip message = new MessageEquip(pos, slotIndex, heldItem);
+                        MessageEquip message = new MessageEquip(pos, slotIndex, heldItem.copy());
                         PacketDistributor.PacketTarget mirrorTarget = PacketDistributor.TRACKING_CHUNK.with(world.getChunkAt(pos));
                         mirrorTarget.send(message);
                     }
