@@ -11,9 +11,15 @@ import net.minecraft.world.item.Items;
  * A magic mirror modifier that allows it to be used as an armor stand for switching an entire set of armor.
  */
 public class ArmorMagicMirrorModifier extends MagicMirrorModifier {
+    /**
+     * The name of the modifier.
+     * This should be stable as it gets written with save data.
+     */
+    public static String NAME = "armor";
+
     @Override
     public String getName() {
-        return "armor";
+        return NAME;
     }
 
     @Override
