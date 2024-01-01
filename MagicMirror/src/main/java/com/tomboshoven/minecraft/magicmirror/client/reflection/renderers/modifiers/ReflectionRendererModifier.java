@@ -5,6 +5,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Entity;
 
+import javax.annotation.Nullable;
+
 /**
  * Modifier for how the reflection is rendered.
  * Contains some basic functionality for overriding part of the rendering behavior.
@@ -48,7 +50,7 @@ class ReflectionRendererModifier extends ReflectionRendererBase {
     }
 
     @Override
-    public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
-        baseRenderer.render(facing, partialTicks, renderTypeBuffer);
+    public void render(float facing, float partialTicks, MultiBufferSource.BufferSource renderTypeBuffer, @Nullable float[] colorize) {
+        baseRenderer.render(facing, partialTicks, renderTypeBuffer, colorize);
     }
 }
