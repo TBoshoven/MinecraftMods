@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -78,6 +79,16 @@ public class ReflectionManager {
             reflections = reflectionNext;
             reflectionNext = oldReflections;
         }
+    }
+
+    /**
+     * When our level is unloaded, we should remove queued-up reflection renderers.
+     */
+    @SubscribeEvent
+    public static void unloadLevel(LevelEvent.Unload event) {
+        // Deactivate all reflections we no longer need.
+        reflections.forEach((key, value) -> value.stopReflecting());
+        reflections.clear();
     }
 
     /**
