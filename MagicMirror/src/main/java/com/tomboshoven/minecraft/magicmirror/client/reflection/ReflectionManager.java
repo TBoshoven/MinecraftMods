@@ -6,7 +6,7 @@ import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorReflectedEntityEv
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.Map;
@@ -85,7 +85,7 @@ public class ReflectionManager {
      * When our level is unloaded, we should remove queued-up reflection renderers.
      */
     @SubscribeEvent
-    public static void unloadLevel(LevelEvent.Unload event) {
+    public static void unloadLevel(WorldEvent.Unload event) {
         // Deactivate all reflections we no longer need.
         reflections.forEach((key, value) -> value.stopReflecting());
         reflections.clear();
