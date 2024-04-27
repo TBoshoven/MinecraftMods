@@ -7,6 +7,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.BannerMagicMirrorM
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.client.ClientEvents;
+import com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers.ReflectionModifiers;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
 import com.tomboshoven.minecraft.magicmirror.data.DataGenerators;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
@@ -43,6 +44,7 @@ public final class MagicMirrorMod {
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             ClientEvents.init(modEventBus);
+            ReflectionModifiers.register(modEventBus);
         }
     }
 }

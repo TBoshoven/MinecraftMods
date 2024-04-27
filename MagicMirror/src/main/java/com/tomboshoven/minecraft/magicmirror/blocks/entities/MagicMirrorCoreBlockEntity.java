@@ -6,14 +6,17 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifie
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorModifiersUpdatedEvent;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorReflectedEntityEvent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.EntityGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -110,40 +113,41 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound) {
-        super.saveAdditional(compound);
-        saveInternal(compound);
+    public void saveAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
+        super.saveAdditional(compound, lookupProvider);
+        saveInternal(compound, lookupProvider);
     }
 
     /**
      * Write out the data for the magic mirror core to an NBT compound.
      *
-     * @param compound The NBT compound to write to.
+     * @param compound       The NBT compound to write to.
+     * @param lookupProvider The holder lookup provider for serializing the state.
      */
-    private void saveInternal(CompoundTag compound) {
+    private void saveInternal(CompoundTag compound, HolderLookup.Provider lookupProvider) {
         ListTag modifierList = new ListTag();
         for (MagicMirrorBlockEntityModifier modifier : modifiers) {
             CompoundTag modifierCompound = new CompoundTag();
             modifierCompound.putString("name", modifier.getName());
-            modifierList.add(modifier.write(modifierCompound));
+            modifierList.add(modifier.write(modifierCompound, lookupProvider));
         }
         compound.put("modifiers", modifierList);
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
-        loadInternal(compound);
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider holderLookupProvider) {
+        super.loadAdditional(compound, holderLookupProvider);
+        loadInternal(compound, holderLookupProvider);
     }
 
-    private void loadInternal(CompoundTag compound) {
+    private void loadInternal(CompoundTag compound, HolderLookup.Provider holderLookupProvider) {
         ListTag modifiers = compound.getList("modifiers", 10);
         for (Tag modifierCompound : modifiers) {
             if (modifierCompound instanceof CompoundTag) {
                 String name = ((CompoundTag) modifierCompound).getString("name");
                 MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(name);
                 if (modifier != null) {
-                    modifier.apply(this, (CompoundTag) modifierCompound);
+                    modifier.apply(this, (CompoundTag) modifierCompound, holderLookupProvider);
                 }
             }
         }
@@ -160,12 +164,34 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     /**
      * Called when a player uses the magic mirror.
      *
-     * @param playerIn The player that activated the mirror.
-     * @param hand     The hand used by the player to activate the mirror.
+     * @param player The player that activated the mirror.
      * @return Whether activation was successful.
      */
-    public boolean tryActivate(Player playerIn, InteractionHand hand) {
-        return modifiers.stream().anyMatch(modifier -> modifier.tryPlayerActivate(this, playerIn, hand));
+    public InteractionResult useWithoutItem(Player player) {
+        for (MagicMirrorBlockEntityModifier modifier : modifiers) {
+            InteractionResult result = modifier.useWithoutItem(this, player);
+            if (result != InteractionResult.PASS) {
+                return result;
+            }
+        }
+        return InteractionResult.PASS;
+    }
+
+    /**
+     * Called when a player uses the magic mirror with an item.
+     *
+     * @param player   The player that activated the mirror.
+     * @param heldItem The item held by the player.
+     * @return Whether activation was successful.
+     */
+    public ItemInteractionResult useWithItem(Player player, ItemStack heldItem) {
+        for (MagicMirrorBlockEntityModifier modifier : modifiers) {
+            ItemInteractionResult result = modifier.useWithItem(this, player, heldItem);
+            if (result != ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION) {
+                return result;
+            }
+        }
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     /**
@@ -205,9 +231,9 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag updateTag = super.getUpdateTag();
-        saveInternal(updateTag);
+    public CompoundTag getUpdateTag(HolderLookup.Provider lookupProvider) {
+        CompoundTag updateTag = super.getUpdateTag(lookupProvider);
+        saveInternal(updateTag, lookupProvider);
         return updateTag;
     }
 
@@ -218,11 +244,8 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        CompoundTag tag = pkt.getTag();
-        if (tag != null) {
-            loadInternal(tag);
-        }
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
+        loadInternal(pkt.getTag(), lookupProvider);
     }
 
     /**

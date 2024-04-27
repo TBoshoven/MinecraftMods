@@ -3,9 +3,12 @@ package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 /**
@@ -44,7 +47,7 @@ public abstract class MagicMirrorBlockEntityModifier {
      * @param nbt The NBT tag compound to write to.
      * @return The input compound, for chaining.
      */
-    public CompoundTag write(CompoundTag nbt) {
+    public CompoundTag write(CompoundTag nbt, HolderLookup.Provider lookupProvider) {
         return nbt;
     }
 
@@ -77,11 +80,24 @@ public abstract class MagicMirrorBlockEntityModifier {
      * Called when the player activates a magic mirror that is modified by this modifier.
      *
      * @param blockEntity The block entity of the magic mirror that is being activated.
-     * @param playerIn    The player that is activating the magic mirror.
-     * @param hand        The hand that the player is using to activate the magic mirror.
+     * @param player      The player that is activating the magic mirror.
      * @return Whether it was activated. If true, no other modifiers are evaluated.
      */
-    public abstract boolean tryPlayerActivate(MagicMirrorCoreBlockEntity blockEntity, Player playerIn, InteractionHand hand);
+    public InteractionResult useWithoutItem(MagicMirrorCoreBlockEntity blockEntity, Player player) {
+        return InteractionResult.PASS;
+    }
+
+    /**
+     * Called when the player activates a magic mirror that is modified by this modifier.
+     *
+     * @param blockEntity The block entity of the magic mirror that is being activated.
+     * @param player      The player that is activating the magic mirror.
+     * @param heldItem    The item held by the player while activating the mirror.
+     * @return Whether it was activated. If true, no other modifiers are evaluated.
+     */
+    public ItemInteractionResult useWithItem(MagicMirrorCoreBlockEntity blockEntity, Player player, ItemStack heldItem) {
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
 
     /**
      * When the modifier is used, this can be used to easily cool down, so it can't be activated all the time.

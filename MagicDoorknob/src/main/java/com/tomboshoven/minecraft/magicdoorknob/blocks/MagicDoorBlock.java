@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Containers;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -91,7 +90,6 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
         return null;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         breakDoorway(worldIn, pos, state.getValue(HORIZONTAL_FACING));
@@ -136,7 +134,6 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPES[state.getValue(HORIZONTAL_FACING).get2DDataValue()];
@@ -153,11 +150,10 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
         return new MagicDoorBlockEntity(pos, state);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        if (!worldIn.isClientSide) {
-            worldIn.destroyBlock(pos, false);
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (!level.isClientSide) {
+            level.destroyBlock(pos, false);
         }
         return InteractionResult.SUCCESS;
     }

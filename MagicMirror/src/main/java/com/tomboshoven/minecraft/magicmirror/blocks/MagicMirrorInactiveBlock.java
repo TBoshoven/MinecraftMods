@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -86,30 +87,44 @@ public class MagicMirrorInactiveBlock extends MagicMirrorBaseBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        ItemStack heldItemStack = player.getItemInHand(handIn);
-        Item heldItem = heldItemStack.getItem();
+    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        Item item = itemStack.getItem();
 
         // Add the second part if possible
-        if (!heldItemStack.isEmpty() && heldItem == Items.MAGIC_MIRROR.get()) {
+        if (item == Items.MAGIC_MIRROR.get()) {
             Direction ownDirection = state.getValue(FACING);
 
             if (hit.getDirection() == ownDirection) {
                 // Attempt to place above first, then below.
                 for (Direction direction : new Direction[]{Direction.UP, Direction.DOWN}) {
-                    BlockPlaceContext ctx = new BlockPlaceContext(worldIn, player, handIn, heldItemStack, new BlockHitResult(hit.getLocation(), direction, pos, false));
+                    BlockPlaceContext ctx = new BlockPlaceContext(level, player, hand, itemStack, new BlockHitResult(hit.getLocation(), direction, pos, false));
                     // Only do this if the block can be replaced it wouldn't result in the new part being turned around
                     if (Arrays.stream(ctx.getNearestLookingDirections()).filter(d -> d.getAxis().isHorizontal()).findFirst().orElse(ownDirection) == ownDirection.getOpposite()) {
-                        if (heldItem instanceof BlockItem) {
-                            InteractionResult result = ((BlockItem) heldItem).place(ctx);
-                            if (result.consumesAction()) {
-                                return result;
+                        if (item instanceof BlockItem blockItem) {
+                            InteractionResult result = blockItem.place(ctx);
+                            switch (result) {
+                                case SUCCESS, SUCCESS_NO_ITEM_USED -> {
+                                    return ItemInteractionResult.SUCCESS;
+                                }
+                                case CONSUME -> {
+                                    return ItemInteractionResult.CONSUME;
+                                }
+                                case CONSUME_PARTIAL -> {
+                                    return ItemInteractionResult.CONSUME_PARTIAL;
+                                }
+                                case PASS -> {
+                                    return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                                }
+                                case FAIL -> {
+                                    return ItemInteractionResult.FAIL;
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        return InteractionResult.PASS;
+
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 }

@@ -8,7 +8,9 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifie
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -21,11 +23,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import javax.annotation.Nullable;
 
-import static com.tomboshoven.minecraft.magicmirror.MagicMirrorMod.MOD_ID;
 import static com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorInactiveBlock.EnumPartType.TOP;
 
 public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
@@ -106,7 +107,7 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
      * Message describing the action of attaching a new modifier to a mirror.
      */
     public record MessageAttachModifier(BlockPos mirrorPos, ItemStack usedItemStack, String modifierName) implements CustomPacketPayload {
-        public static final ResourceLocation ID = new ResourceLocation(MOD_ID, "attach_modifier");
+        public static final CustomPacketPayload.Type<MessageAttachModifier> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(MagicMirrorMod.MOD_ID, "attach_modifier"));
 
         /**
          * @param mirrorPos     The position of the mirror in the world.
@@ -117,33 +118,19 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
             this(mirrorPos, usedItemStack, modifier.getName());
         }
 
-        /**
-         * Decode a packet into an instance of the message.
-         *
-         * @param buf The buffer to read from.
-         */
-        public MessageAttachModifier(FriendlyByteBuf buf) {
-            this(buf.readBlockPos(), buf.readItem(), buf.readUtf());
-        }
+        public static final StreamCodec<RegistryFriendlyByteBuf, MessageAttachModifier> STREAM_CODEC = StreamCodec.composite(BlockPos.STREAM_CODEC, MessageAttachModifier::mirrorPos, ItemStack.STREAM_CODEC, MessageAttachModifier::usedItemStack, ByteBufCodecs.STRING_UTF8, MessageAttachModifier::modifierName, MessageAttachModifier::new);
 
         @Override
-        public void write(FriendlyByteBuf buf) {
-            buf.writeBlockPos(mirrorPos);
-            buf.writeItem(usedItemStack);
-            buf.writeUtf(modifierName);
-        }
-
-        @Override
-        public ResourceLocation id() {
-            return ID;
+        public CustomPacketPayload.Type<MessageAttachModifier> type() {
+            return TYPE;
         }
     }
 
     /**
      * Handler for messages describing modifiers being attached to mirrors.
      */
-    public static void onMessageAttachModifier(MessageAttachModifier message, PlayPayloadContext ctx) {
-        ctx.workHandler().submitAsync(() -> {
+    public static void onMessageAttachModifier(MessageAttachModifier message, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
                 BlockEntity blockEntity = world.getBlockEntity(message.mirrorPos);
@@ -154,7 +141,7 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
                         return;
                     }
                     modifier.apply((MagicMirrorCoreBlockEntity) blockEntity, message.usedItemStack);
-                    world.playLocalSound(message.mirrorPos, SoundEvents.ARMOR_EQUIP_GENERIC, SoundSource.BLOCKS, .6f, .6f, true);
+                    world.playLocalSound(message.mirrorPos, SoundEvents.ARMOR_EQUIP_GENERIC.value(), SoundSource.BLOCKS, .6f, .6f, true);
                 }
             }
         });

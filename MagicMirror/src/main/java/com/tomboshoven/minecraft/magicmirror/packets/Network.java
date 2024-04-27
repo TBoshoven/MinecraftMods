@@ -7,8 +7,8 @@ import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagi
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier.MessageSwapMirror;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier.MessageSwapPlayer;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 import static com.tomboshoven.minecraft.magicmirror.MagicMirrorMod.MOD_ID;
 
@@ -26,12 +26,12 @@ public final class Network {
     /**
      * Register all messages.
      */
-    public static void registerPayloadHandlers(final RegisterPayloadHandlerEvent event) {
-        final IPayloadRegistrar registrar = event.registrar(MOD_ID);
+    public static void registerPayloadHandlers(final RegisterPayloadHandlersEvent event) {
+        final PayloadRegistrar registrar = event.registrar(MOD_ID);
 
-        registrar.play(MessageEquip.ID, MessageEquip::new, handler -> handler.client(ArmorMagicMirrorBlockEntityModifier::onMessageEquip));
-        registrar.play(MessageSwapMirror.ID, MessageSwapMirror::new, handler -> handler.client(ArmorMagicMirrorBlockEntityModifier::onMessageSwapMirror));
-        registrar.play(MessageSwapPlayer.ID, MessageSwapPlayer::new, handler -> handler.client(ArmorMagicMirrorBlockEntityModifier::onMessageSwapPlayer));
-        registrar.play(MessageAttachModifier.ID, MessageAttachModifier::new, handler -> handler.client(MagicMirrorCoreBlock::onMessageAttachModifier));
+        registrar.playToClient(MessageEquip.TYPE, MessageEquip.STREAM_CODEC, ArmorMagicMirrorBlockEntityModifier::onMessageEquip);
+        registrar.playToClient(MessageSwapMirror.TYPE, MessageSwapMirror.STREAM_CODEC, ArmorMagicMirrorBlockEntityModifier::onMessageSwapMirror);
+        registrar.playToClient(MessageSwapPlayer.TYPE, MessageSwapPlayer.STREAM_CODEC, ArmorMagicMirrorBlockEntityModifier::onMessageSwapPlayer);
+        registrar.playToClient(MessageAttachModifier.TYPE, MessageAttachModifier.STREAM_CODEC, MagicMirrorCoreBlock::onMessageAttachModifier);
     }
 }

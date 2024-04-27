@@ -3,6 +3,7 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 import com.google.common.collect.Maps;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
@@ -92,19 +93,21 @@ public abstract class MagicMirrorModifier {
     /**
      * Apply the modifier to the magic mirror as specified in an NBT tag.
      *
-     * @param blockEntity The magic mirror block entity to apply the modifier to.
-     * @param nbt         The NBT tag to use for the modifier.
+     * @param blockEntity          The magic mirror block entity to apply the modifier to.
+     * @param nbt                  The NBT tag to use for the modifier.
+     * @param holderLookupProvider The lookup provider for resolving holders.
      */
-    public void apply(MagicMirrorCoreBlockEntity blockEntity, CompoundTag nbt) {
-        MagicMirrorBlockEntityModifier magicMirrorBlockEntityModifier = createBlockEntityModifier(nbt);
+    public void apply(MagicMirrorCoreBlockEntity blockEntity, CompoundTag nbt, HolderLookup.Provider holderLookupProvider) {
+        MagicMirrorBlockEntityModifier magicMirrorBlockEntityModifier = createBlockEntityModifier(nbt, holderLookupProvider);
         blockEntity.addModifier(magicMirrorBlockEntityModifier);
     }
 
     /**
-     * @param nbt The NBT tag of the modifier.
+     * @param nbt                  The NBT tag of the modifier.
+     * @param holderLookupProvider The lookup provider for resolving holders.
      * @return A new instance of the block entity modifier.
      */
-    abstract MagicMirrorBlockEntityModifier createBlockEntityModifier(CompoundTag nbt);
+    abstract MagicMirrorBlockEntityModifier createBlockEntityModifier(CompoundTag nbt, HolderLookup.Provider holderLookupProvider);
 
     /**
      * @param usedItem The item used to attach the modifier.

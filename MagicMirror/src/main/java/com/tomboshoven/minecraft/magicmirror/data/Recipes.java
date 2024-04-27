@@ -2,19 +2,22 @@ package com.tomboshoven.minecraft.magicmirror.data;
 
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 
+import java.util.concurrent.CompletableFuture;
+
 import static net.minecraft.world.item.Items.ENDER_EYE;
 import static net.neoforged.neoforge.common.Tags.Items.GLASS_PANES;
 import static net.neoforged.neoforge.common.Tags.Items.RODS_WOODEN;
 
 class Recipes extends RecipeProvider {
-    Recipes(PackOutput output) {
-        super(output);
+    Recipes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider);
     }
 
     @Override

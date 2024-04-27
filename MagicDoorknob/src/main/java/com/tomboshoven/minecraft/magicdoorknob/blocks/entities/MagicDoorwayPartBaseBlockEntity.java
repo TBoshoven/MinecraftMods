@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -56,8 +57,8 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound) {
-        super.saveAdditional(compound);
+    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
+        super.saveAdditional(compound, lookupProvider);
         saveInternal(compound);
     }
 
@@ -69,8 +70,8 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
+        super.loadAdditional(compound, lookupProvider);
         loadInternal(compound);
     }
 
@@ -82,8 +83,8 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag updateTag = super.getUpdateTag();
+    public CompoundTag getUpdateTag(HolderLookup.Provider lookupProvider) {
+        CompoundTag updateTag = super.getUpdateTag(lookupProvider);
         saveInternal(updateTag);
         return updateTag;
     }
@@ -95,12 +96,9 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        CompoundTag tag = pkt.getTag();
-        if (tag != null) {
-            loadInternal(tag);
-            requestModelDataUpdate();
-        }
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
+        loadInternal(pkt.getTag());
+        requestModelDataUpdate();
     }
 
     @Override

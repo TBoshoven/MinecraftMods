@@ -25,7 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.TierSortingRegistry;
 
 import java.util.function.Supplier;
 
@@ -215,7 +214,7 @@ public class MagicDoorknobItem extends Item {
         if (blockState.getDestroySpeed(world, pos) < 0) {
             return false;
         }
-        return TierSortingRegistry.isCorrectTierForDrops(tier, blockState);
+        return !blockState.is(tier.getIncorrectBlocksForDrops());
     }
 
     /**

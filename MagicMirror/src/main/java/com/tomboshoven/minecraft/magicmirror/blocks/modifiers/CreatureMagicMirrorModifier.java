@@ -3,6 +3,7 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.CreatureMagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
@@ -62,8 +63,8 @@ public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
     }
 
     @Override
-    MagicMirrorBlockEntityModifier createBlockEntityModifier(CompoundTag nbt) {
-        return new CreatureMagicMirrorBlockEntityModifier(this, nbt);
+    MagicMirrorBlockEntityModifier createBlockEntityModifier(CompoundTag nbt, HolderLookup.Provider holderLookupProvider) {
+        return new CreatureMagicMirrorBlockEntityModifier(this, nbt, holderLookupProvider);
     }
 
     @Override

@@ -1,94 +1,63 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
-import com.google.common.collect.Lists;
-import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BannerItem;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.block.BannerBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BannerPattern;
-import net.minecraft.world.level.block.entity.BannerPatterns;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.world.level.block.entity.BannerPatternLayers;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Optional;
 
 public class BannerMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlockEntityModifier {
     public BannerMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, ItemStack item) {
         super(modifier, item);
     }
 
-    public BannerMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt) {
-        super(modifier, nbt);
+    public BannerMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt, HolderLookup.Provider lookupProvider) {
+        super(modifier, nbt, lookupProvider);
     }
 
     @Override
-    protected ItemStack getItemStackOldNbt(CompoundTag nbt) {
+    protected ItemStack getItemStackOldNbt(CompoundTag nbt, HolderLookup.Provider lookupProvider) {
         DyeColor baseColor = DyeColor.byId(nbt.getInt("BannerColor"));
         CompoundTag bannerData = nbt.getCompound("BannerData");
-        Component name = Component.Serializer.fromJson(nbt.getString("BannerName"));
+        Component name = Component.Serializer.fromJson(nbt.getString("BannerName"), lookupProvider);
 
-        // BannerBlock.forColor is client-only.
-        // Let's do a super-ugly workaround.
-        // This will cause issues if dye colors are ever made extensible.
-        Block block = BuiltInRegistries.BLOCK.get(new ResourceLocation(String.format("minecraft:%s_banner", baseColor.getName())));
+        Block block = BannerBlock.byColor(baseColor);
         ItemStack itemStack = new ItemStack(block);
-        itemStack.getOrCreateTag().put("BlockEntityTag", bannerData);
+        itemStack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(bannerData));
         if (name != null) {
-            itemStack.setHoverName(name);
+            itemStack.set(DataComponents.CUSTOM_NAME, name);
         }
         return itemStack;
     }
 
-    @Override
-    public boolean tryPlayerActivate(MagicMirrorCoreBlockEntity blockEntity, Player playerIn, InteractionHand hand) {
-        // No activation behavior
-        return false;
+    /**
+     * @return the base color of the banner.
+     */
+    @Nullable
+    public DyeColor getBaseColor() {
+        if (item.getItem() instanceof BannerItem bannerItem) {
+            return bannerItem.getColor();
+        }
+        return null;
     }
 
     /**
-     * Get a copy of the "pattern list" for this banner.
-     * This list contains a series of patterns and the colors to draw them in.
+     * Get a copy of the pattern layers for this banner.
+     * Does not include the base color.
      *
-     * @return the pattern list to use when rendering this banner.
+     * @return the patterns to use when rendering this banner.
      */
     @Nullable
-    public List<Pair<Holder<BannerPattern>, DyeColor>> getPatternList() {
-        if (item.getItem() instanceof BannerItem bannerItem) {
-            DyeColor baseColor = bannerItem.getColor();
-            CompoundTag bannerNBT = BlockItem.getBlockEntityData(item);
-
-            List<Pair<Holder<BannerPattern>, DyeColor>> patternList = Lists.newArrayList();
-            Optional<? extends Holder<BannerPattern>> base = BuiltInRegistries.BANNER_PATTERN.getHolder(BannerPatterns.BASE);
-            base.ifPresent(bannerPatternHolder -> patternList.add(Pair.of(bannerPatternHolder, baseColor)));
-            if (bannerNBT != null) {
-                // Get the patterns from the NBT data
-                ListTag patterns = bannerNBT.getList("Patterns", 10);
-                int size = patterns.size();
-                for (int i = 0; i < size; ++i) {
-                    CompoundTag pattern = patterns.getCompound(i);
-                    String patternHash = pattern.getString("Pattern");
-                    Holder<BannerPattern> bannerPattern = BannerPattern.byHash(patternHash);
-                    if (bannerPattern != null) {
-                        DyeColor bannerPatternColor = DyeColor.byId(pattern.getInt("Color"));
-                        patternList.add(Pair.of(bannerPattern, bannerPatternColor));
-                    }
-                }
-            }
-
-            return patternList;
-        }
-        return null;
+    public BannerPatternLayers getPatterns() {
+        return item.get(DataComponents.BANNER_PATTERNS);
     }
 }

@@ -1,14 +1,12 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -23,8 +21,8 @@ public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirror
         this.entityType = entityType;
     }
 
-    public CreatureMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt) {
-        super(modifier, nbt);
+    public CreatureMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt, HolderLookup.Provider holderLookupProvider) {
+        super(modifier, nbt, holderLookupProvider);
         EntityType<?> entityType = null;
         if (nbt.contains("EntityType", 8)) {
             ResourceLocation entityTypeKey = new ResourceLocation(nbt.getString("EntityType"));
@@ -41,22 +39,16 @@ public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirror
     }
 
     @Override
-    protected ItemStack getItemStackOldNbt(CompoundTag nbt) {
+    protected ItemStack getItemStackOldNbt(CompoundTag nbt, HolderLookup.Provider lookupProvider) {
         return new ItemStack(Items.SKELETON_SKULL);
     }
 
     @Override
-    public CompoundTag write(CompoundTag nbt) {
-        super.write(nbt);
+    public CompoundTag write(CompoundTag nbt, HolderLookup.Provider lookupProvider) {
+        super.write(nbt, lookupProvider);
         ResourceLocation entityTypeKey = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
         nbt.putString("EntityType", entityTypeKey.toString());
         return nbt;
-    }
-
-    @Override
-    public boolean tryPlayerActivate(MagicMirrorCoreBlockEntity blockEntity, Player playerIn, InteractionHand hand) {
-        // No behavior right now.
-        return false;
     }
 
     /**

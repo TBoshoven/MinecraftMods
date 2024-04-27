@@ -142,7 +142,7 @@ public class Reflection {
         if (reflectedEntity != null) {
             reflectionRenderer = new ReflectionRenderer(reflectedEntity);
             for (MagicMirrorBlockEntityModifier modifier : blockEntity.getModifiers()) {
-                ReflectionModifier reflectionModifier = ReflectionModifiers.MODIFIERS.get(modifier.getName());
+                ReflectionModifier reflectionModifier = ReflectionModifiers.REFLECTION_MODIFIER_REGISTRY.get(new ResourceLocation(MagicMirrorMod.MOD_ID, modifier.getName()));
                 if (reflectionModifier != null) {
                     reflectionRenderer = reflectionModifier.apply(modifier, reflectionRenderer);
                 }

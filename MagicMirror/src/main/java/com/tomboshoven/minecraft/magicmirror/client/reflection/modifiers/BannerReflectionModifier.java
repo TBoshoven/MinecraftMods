@@ -4,20 +4,17 @@ import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.BannerMag
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRendererBase;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.modifiers.BannerReflectionRendererModifier;
-import net.minecraft.core.Holder;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.entity.BannerPattern;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.List;
+import net.minecraft.world.level.block.entity.BannerPatternLayers;
 
 public class BannerReflectionModifier extends ReflectionModifier {
     @Override
     public ReflectionRendererBase apply(MagicMirrorBlockEntityModifier modifier, ReflectionRendererBase reflectionRenderer) {
         if (modifier instanceof BannerMagicMirrorBlockEntityModifier bannerModifier) {
-            List<Pair<Holder<BannerPattern>, DyeColor>> patternList = bannerModifier.getPatternList();
-            if (patternList != null) {
-                return new BannerReflectionRendererModifier(reflectionRenderer, patternList);
+            DyeColor baseColor = bannerModifier.getBaseColor();
+            BannerPatternLayers patterns = bannerModifier.getPatterns();
+            if (baseColor != null && patterns != null) {
+                return new BannerReflectionRendererModifier(reflectionRenderer, baseColor, patterns);
             }
         }
         return reflectionRenderer;
