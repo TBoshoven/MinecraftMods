@@ -1,7 +1,9 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
 
 import com.google.common.collect.Lists;
+import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorModifiersUpdatedEvent;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorReflectedEntityEvent;
@@ -14,6 +16,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IEntityReader;
@@ -137,8 +140,12 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     private CompoundNBT writeInternal(CompoundNBT compound) {
         ListNBT modifierList = new ListNBT();
         for (MagicMirrorTileEntityModifier modifier : modifiers) {
+            ResourceLocation modifierId = modifier.getModifier().getRegistryName();
+            if (modifierId == null) {
+                continue;
+            }
             CompoundNBT modifierCompound = new CompoundNBT();
-            modifierCompound.putString("name", modifier.getName());
+            modifierCompound.putString("id", modifierId.toString());
             modifierList.add(modifier.write(modifierCompound));
         }
         compound.put("modifiers", modifierList);
@@ -149,12 +156,24 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     public void load(CompoundNBT compound) {
         super.load(compound);
         ListNBT modifiers = compound.getList("modifiers", 10);
-        for (INBT modifierCompound : modifiers) {
-            if (modifierCompound instanceof CompoundNBT) {
-                String name = ((CompoundNBT) modifierCompound).getString("name");
-                MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(name);
+        for (INBT modifierTag : modifiers) {
+            if (modifierTag instanceof CompoundNBT) {
+                CompoundNBT modifierCompound = (CompoundNBT) modifierTag;
+                String idStr = modifierCompound.getString("id");
+                ResourceLocation id;
+                if (idStr.isEmpty()) {
+                    // Fall back on old "name" field
+                    // TODO: Remove fallback
+                    String name = modifierCompound.getString("name");
+                    id = new ResourceLocation(MagicMirrorMod.MOD_ID, name);
+                }
+                else {
+                    id = ResourceLocation.tryParse(idStr);
+                }
+
+                MagicMirrorModifier modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.getValue(id);
                 if (modifier != null) {
-                    modifier.apply(this, (CompoundNBT) modifierCompound);
+                    modifier.apply(this, modifierCompound);
                 }
             }
         }
