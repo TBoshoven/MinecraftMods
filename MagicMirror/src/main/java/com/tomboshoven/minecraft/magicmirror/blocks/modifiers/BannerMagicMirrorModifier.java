@@ -12,17 +12,6 @@ import net.minecraft.world.World;
  * A magic mirror modifier that changes the mirror's background to a banner image.
  */
 public class BannerMagicMirrorModifier extends MagicMirrorModifier {
-    /**
-     * The name of the modifier.
-     * This should be stable as it gets written with save data.
-     */
-    public static String NAME = "banner";
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
     @Override
     public boolean canModify(World worldIn, BlockPos pos, ItemStack heldItem) {
         // Must be activated using a banner.

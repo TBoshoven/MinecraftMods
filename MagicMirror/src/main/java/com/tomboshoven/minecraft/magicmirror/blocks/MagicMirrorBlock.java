@@ -2,6 +2,7 @@ package com.tomboshoven.minecraft.magicmirror.blocks;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorPartTileEntity;
@@ -29,6 +30,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -42,6 +44,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 @SuppressWarnings("deprecation")
@@ -97,9 +100,12 @@ public class MagicMirrorBlock extends HorizontalBlock {
         // Item stack may change by attaching
         ItemStack originalHeldItem = heldItem.copy();
         modifier.apply(worldIn, pos, heldItem);
-        MessageAttachModifier message = new MessageAttachModifier(pos, originalHeldItem, modifier);
-        PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_CHUNK.with(() -> worldIn.getChunkAt(pos));
-        Network.CHANNEL.send(target, message);
+        ResourceLocation key = modifier.getRegistryName();
+        if (key != null) {
+            MessageAttachModifier message = new MessageAttachModifier(pos, originalHeldItem, key);
+            PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_CHUNK.with(() -> worldIn.getChunkAt(pos));
+            Network.CHANNEL.send(target, message);
+        }
     }
 
     @Override
@@ -175,11 +181,11 @@ public class MagicMirrorBlock extends HorizontalBlock {
                     // First, see if we can add a modifier
                     ItemStack heldItem = player.getItemInHand(handIn);
                     if (!heldItem.isEmpty()) {
-                        for (MagicMirrorModifier modifier : MagicMirrorModifier.getModifiers()) {
-                            if (modifier.canModify(worldIn, pos, heldItem)) {
-                                attachModifier(worldIn, pos, heldItem, modifier);
-                                return ActionResultType.SUCCESS;
-                            }
+                        Optional<MagicMirrorModifier> modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.get().getValues().stream().filter(m -> m.canModify(worldIn, pos, heldItem)).findFirst();
+
+                        if (modifier.isPresent()) {
+                            attachModifier(worldIn, pos, heldItem, modifier.get());
+                            return ActionResultType.SUCCESS;
                         }
                     }
 
@@ -284,7 +290,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
         /**
          * The name of the modifier this is being attached.
          */
-        String modifierName;
+        ResourceLocation modifier;
 
         @SuppressWarnings({"unused", "WeakerAccess"})
         public MessageAttachModifier() {
@@ -295,10 +301,10 @@ public class MagicMirrorBlock extends HorizontalBlock {
          * @param usedItemStack The item used to attach the modifier to the mirror.
          * @param modifier      The modifier this is being attached.
          */
-        MessageAttachModifier(BlockPos mirrorPos, ItemStack usedItemStack, MagicMirrorModifier modifier) {
+        MessageAttachModifier(BlockPos mirrorPos, ItemStack usedItemStack, ResourceLocation modifier) {
             this.mirrorPos = mirrorPos;
             this.usedItemStack = usedItemStack;
-            modifierName = modifier.getName();
+            this.modifier = modifier;
         }
 
         /**
@@ -311,7 +317,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
             MessageAttachModifier result = new MessageAttachModifier();
             result.mirrorPos = buf.readBlockPos();
             result.usedItemStack = buf.readItem();
-            result.modifierName = buf.readUtf();
+            result.modifier = buf.readResourceLocation();
             return result;
         }
 
@@ -324,7 +330,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
         public void encode(PacketBuffer buf) {
             buf.writeBlockPos(mirrorPos);
             buf.writeItem(usedItemStack);
-            buf.writeUtf(modifierName);
+            buf.writeResourceLocation(modifier);
         }
     }
 
@@ -338,9 +344,9 @@ public class MagicMirrorBlock extends HorizontalBlock {
             if (world != null) {
                 TileEntity te = world.getBlockEntity(message.mirrorPos);
                 if (te instanceof MagicMirrorBaseTileEntity) {
-                    MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
+                    MagicMirrorModifier modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.get().getValue(message.modifier);
                     if (modifier == null) {
-                        MagicMirrorMod.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
+                        MagicMirrorMod.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifier);
                         return;
                     }
                     modifier.apply(world, message.mirrorPos, message.usedItemStack);
