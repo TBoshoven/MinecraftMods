@@ -2,12 +2,13 @@ package com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRendererBase;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 /**
  * A modification of the reflection, used for changing what the reflection looks like when combined with the
  * ReflectionRendererModifier.
  */
-public abstract class ReflectionModifier {
+public abstract class ReflectionModifier extends ForgeRegistryEntry<ReflectionModifier> {
     /**
      * Apply the modification to the reflection renderer.
      *
