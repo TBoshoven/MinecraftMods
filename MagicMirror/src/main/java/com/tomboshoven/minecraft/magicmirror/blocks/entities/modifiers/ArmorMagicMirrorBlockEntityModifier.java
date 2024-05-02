@@ -27,6 +27,7 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
@@ -38,6 +39,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.Random;
 
 public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlockEntityModifier {
@@ -176,12 +179,14 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
      * Container class for a swapped-out inventory.
      */
     public static class ReplacementArmor {
+        private static final int NUM_SLOTS = Arrays.stream(Inventory.ALL_ARMOR_SLOTS).max().orElse(3) + 1;
+
         public static final StreamCodec<RegistryFriendlyByteBuf, ReplacementArmor> STREAM_CODEC = new StreamCodec<>() {
             @Override
             public ReplacementArmor decode(RegistryFriendlyByteBuf byteBuf) {
-                NonNullList<ItemStack> inventory = NonNullList.create();
-                for (int i = 0; i < 4; ++i) {
-                    inventory.add(ItemStack.STREAM_CODEC.decode(byteBuf));
+                NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
+                for (int i : Inventory.ALL_ARMOR_SLOTS) {
+                    ByteBufCodecs.optional(ItemStack.STREAM_CODEC).decode(byteBuf).ifPresent(itemStack -> inventory.set(i, itemStack));
                 }
                 return new ReplacementArmor(inventory);
             }
@@ -189,7 +194,8 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
             @Override
             public void encode(RegistryFriendlyByteBuf o, ReplacementArmor replacementArmor) {
                 for (ItemStack itemStack : replacementArmor.replacementInventory) {
-                    ItemStack.STREAM_CODEC.encode(o, itemStack);
+                    Optional<ItemStack> optionalStack = itemStack.isEmpty() ? Optional.empty() : Optional.of(itemStack);
+                    ByteBufCodecs.optional(ItemStack.STREAM_CODEC).encode(o, optionalStack);
                 }
             }
         };
@@ -197,7 +203,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
         private final NonNullList<ItemStack> replacementInventory;
 
         ReplacementArmor() {
-            replacementInventory = NonNullList.withSize(4, ItemStack.EMPTY);
+            replacementInventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
         }
 
         ReplacementArmor(Iterable<ItemStack> armor) {
@@ -220,7 +226,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
          * @param inventory The inventory to swap with.
          */
         public void swap(NonNullList<ItemStack> inventory) {
-            for (int i = 0; i < 4; ++i) {
+            for (int i : Inventory.ALL_ARMOR_SLOTS) {
                 ItemStack original = inventory.get(i);
                 ItemStack replacement = replacementInventory.get(i);
                 if (EnchantmentHelper.hasBindingCurse(original) || EnchantmentHelper.hasBindingCurse(replacement)) {
