@@ -5,11 +5,11 @@ import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.BlockEntities;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -106,19 +106,10 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
     /**
      * Message describing the action of attaching a new modifier to a mirror.
      */
-    public record MessageAttachModifier(BlockPos mirrorPos, ItemStack usedItemStack, String modifierName) implements CustomPacketPayload {
+    public record MessageAttachModifier(BlockPos mirrorPos, ItemStack usedItemStack, ResourceLocation modifier) implements CustomPacketPayload {
         public static final CustomPacketPayload.Type<MessageAttachModifier> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(MagicMirrorMod.MOD_ID, "attach_modifier"));
 
-        /**
-         * @param mirrorPos     The position of the mirror in the world.
-         * @param usedItemStack The item used to attach the modifier to the mirror.
-         * @param modifier      The modifier this is being attached.
-         */
-        MessageAttachModifier(BlockPos mirrorPos, ItemStack usedItemStack, MagicMirrorModifier modifier) {
-            this(mirrorPos, usedItemStack, modifier.getName());
-        }
-
-        public static final StreamCodec<RegistryFriendlyByteBuf, MessageAttachModifier> STREAM_CODEC = StreamCodec.composite(BlockPos.STREAM_CODEC, MessageAttachModifier::mirrorPos, ItemStack.STREAM_CODEC, MessageAttachModifier::usedItemStack, ByteBufCodecs.STRING_UTF8, MessageAttachModifier::modifierName, MessageAttachModifier::new);
+        public static final StreamCodec<RegistryFriendlyByteBuf, MessageAttachModifier> STREAM_CODEC = StreamCodec.composite(BlockPos.STREAM_CODEC, MessageAttachModifier::mirrorPos, ItemStack.STREAM_CODEC, MessageAttachModifier::usedItemStack, ResourceLocation.STREAM_CODEC, MessageAttachModifier::modifier, MessageAttachModifier::new);
 
         @Override
         public CustomPacketPayload.Type<MessageAttachModifier> type() {
@@ -135,9 +126,9 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
             if (world != null) {
                 BlockEntity blockEntity = world.getBlockEntity(message.mirrorPos);
                 if (blockEntity instanceof MagicMirrorCoreBlockEntity) {
-                    MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
+                    MagicMirrorModifier modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.get(message.modifier);
                     if (modifier == null) {
-                        MagicMirrorMod.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
+                        MagicMirrorMod.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifier);
                         return;
                     }
                     modifier.apply((MagicMirrorCoreBlockEntity) blockEntity, message.usedItemStack);

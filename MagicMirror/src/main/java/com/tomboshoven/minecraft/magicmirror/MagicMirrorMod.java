@@ -2,10 +2,7 @@ package com.tomboshoven.minecraft.magicmirror;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.BlockEntities;
-import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.ArmorMagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.BannerMagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
 import com.tomboshoven.minecraft.magicmirror.client.ClientEvents;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers.ReflectionModifiers;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
@@ -31,16 +28,12 @@ public final class MagicMirrorMod {
         DataGenerators.register(modEventBus);
         Items.register(modEventBus);
         BlockEntities.register(modEventBus);
+        MagicMirrorModifiers.register(modEventBus);
 
         // Register packets
         Network.register(modEventBus);
 
         Commands.register(NeoForge.EVENT_BUS);
-
-        // Register modifiers
-        MagicMirrorModifier.register(new ArmorMagicMirrorModifier());
-        MagicMirrorModifier.register(new BannerMagicMirrorModifier());
-        MagicMirrorModifier.register(new CreatureMagicMirrorModifier());
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             ClientEvents.init(modEventBus);

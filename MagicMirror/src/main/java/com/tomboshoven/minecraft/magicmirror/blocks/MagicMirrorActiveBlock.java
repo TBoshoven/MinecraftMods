@@ -2,7 +2,9 @@ package com.tomboshoven.minecraft.magicmirror.blocks;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -18,6 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implements EntityBlock {
     /**
@@ -55,17 +58,17 @@ public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implem
      * Attach a modifier to the mirror at the specified position (server version).
      * This sends a message to clients as well.
      *
-     * @param heldItem The item used to attach the modifier to the mirror.
-     * @param modifier The modifier to attach to the mirror.
+     * @param heldItem    The item used to attach the modifier to the mirror.
+     * @param modifier    The modifier to attach to the mirror.
      * @param blockEntity The block entity of the mirror to apply the modifier to.
      */
-    private void attachModifier(ItemStack heldItem, MagicMirrorModifier modifier, MagicMirrorCoreBlockEntity blockEntity) {
+    private void attachModifier(ItemStack heldItem, Holder.Reference<MagicMirrorModifier> modifier, MagicMirrorCoreBlockEntity blockEntity) {
         // Item stack may change by attaching
         ItemStack originalHeldItem = heldItem.copy();
-        modifier.apply(blockEntity, heldItem);
+        modifier.value().apply(blockEntity, heldItem);
         Level level = blockEntity.getLevel();
         if (level instanceof ServerLevel serverLevel) {
-            MagicMirrorCoreBlock.MessageAttachModifier message = new MagicMirrorCoreBlock.MessageAttachModifier(blockEntity.getBlockPos(), originalHeldItem, modifier);
+            MagicMirrorCoreBlock.MessageAttachModifier message = new MagicMirrorCoreBlock.MessageAttachModifier(blockEntity.getBlockPos(), originalHeldItem, modifier.key().location());
             PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(blockEntity.getBlockPos()), message);
         }
     }
@@ -92,11 +95,10 @@ public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implem
             MagicMirrorCoreBlockEntity coreBlockEntity = getCoreBlockEntity(level, pos);
             if (coreBlockEntity != null) {
                 // First, see if we can add a modifier
-                for (MagicMirrorModifier modifier : MagicMirrorModifier.getModifiers()) {
-                    if (modifier.canModify(heldItem, coreBlockEntity)) {
-                        attachModifier(heldItem, modifier, coreBlockEntity);
-                        return ItemInteractionResult.sidedSuccess(level.isClientSide);
-                    }
+                Optional<Holder.Reference<MagicMirrorModifier>> modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.holders().filter(m -> m.value().canModify(heldItem, coreBlockEntity)).findFirst();
+                if (modifier.isPresent()) {
+                    attachModifier(heldItem, modifier.get(), coreBlockEntity);
+                    return ItemInteractionResult.sidedSuccess(level.isClientSide);
                 }
 
                 // Then, see if any existing modifier can do something.
