@@ -4,10 +4,12 @@ import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.BlockEntities;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
@@ -105,9 +107,9 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
          */
         ItemStack usedItemStack;
         /**
-         * The name of the modifier this is being attached.
+         * The type of modifier that is being attached.
          */
-        String modifierName;
+        ResourceLocation modifier;
 
         @SuppressWarnings({"unused", "WeakerAccess"})
         public MessageAttachModifier() {
@@ -116,12 +118,12 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
         /**
          * @param mirrorPos     The position of the mirror in the world.
          * @param usedItemStack The item used to attach the modifier to the mirror.
-         * @param modifier      The modifier this is being attached.
+         * @param modifier      The modifier that is being attached.
          */
-        MessageAttachModifier(BlockPos mirrorPos, ItemStack usedItemStack, MagicMirrorModifier modifier) {
+        MessageAttachModifier(BlockPos mirrorPos, ItemStack usedItemStack, ResourceLocation modifier) {
             this.mirrorPos = mirrorPos;
             this.usedItemStack = usedItemStack;
-            modifierName = modifier.getName();
+            this.modifier = modifier;
         }
 
         /**
@@ -134,7 +136,7 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
             MessageAttachModifier result = new MessageAttachModifier();
             result.mirrorPos = buf.readBlockPos();
             result.usedItemStack = buf.readItem();
-            result.modifierName = buf.readUtf();
+            result.modifier = buf.readResourceLocation();
             return result;
         }
 
@@ -147,7 +149,7 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
         public void encode(FriendlyByteBuf buf) {
             buf.writeBlockPos(mirrorPos);
             buf.writeItem(usedItemStack);
-            buf.writeUtf(modifierName);
+            buf.writeResourceLocation(modifier);
         }
     }
 
@@ -161,9 +163,9 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
             if (world != null) {
                 BlockEntity blockEntity = world.getBlockEntity(message.mirrorPos);
                 if (blockEntity instanceof MagicMirrorCoreBlockEntity) {
-                    MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(message.modifierName);
+                    MagicMirrorModifier modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.get().getValue(message.modifier);
                     if (modifier == null) {
-                        MagicMirrorMod.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifierName);
+                        MagicMirrorMod.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifier);
                         return;
                     }
                     modifier.apply((MagicMirrorCoreBlockEntity) blockEntity, message.usedItemStack);

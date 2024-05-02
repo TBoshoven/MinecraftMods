@@ -14,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nullable;
-
 import java.util.Locale;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
@@ -142,7 +141,7 @@ public class Reflection {
         if (reflectedEntity != null) {
             reflectionRenderer = new ReflectionRenderer(reflectedEntity);
             for (MagicMirrorBlockEntityModifier modifier : blockEntity.getModifiers()) {
-                ReflectionModifier reflectionModifier = ReflectionModifiers.MODIFIERS.get(modifier.getName());
+                ReflectionModifier reflectionModifier = ReflectionModifiers.forMirrorModifier(modifier.getModifier());
                 if (reflectionModifier != null) {
                     reflectionRenderer = reflectionModifier.apply(modifier, reflectionRenderer);
                 }

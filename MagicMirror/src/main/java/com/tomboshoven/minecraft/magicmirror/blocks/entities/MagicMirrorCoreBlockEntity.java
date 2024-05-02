@@ -1,8 +1,10 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.entities;
 
 import com.google.common.collect.Lists;
+import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorModifiersUpdatedEvent;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorReflectedEntityEvent;
 import net.minecraft.core.BlockPos;
@@ -11,6 +13,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -123,8 +126,12 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     private void saveInternal(CompoundTag compound) {
         ListTag modifierList = new ListTag();
         for (MagicMirrorBlockEntityModifier modifier : modifiers) {
+            ResourceLocation modifierId = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.get().getKey(modifier.getModifier());
+            if (modifierId == null) {
+                continue;
+            }
             CompoundTag modifierCompound = new CompoundTag();
-            modifierCompound.putString("name", modifier.getName());
+            modifierCompound.putString("id", modifierId.toString());
             modifierList.add(modifier.write(modifierCompound));
         }
         compound.put("modifiers", modifierList);
@@ -138,12 +145,23 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
 
     private void loadInternal(CompoundTag compound) {
         ListTag modifiers = compound.getList("modifiers", 10);
-        for (Tag modifierCompound : modifiers) {
-            if (modifierCompound instanceof CompoundTag) {
-                String name = ((CompoundTag) modifierCompound).getString("name");
-                MagicMirrorModifier modifier = MagicMirrorModifier.getModifier(name);
+        for (Tag modifierTag : modifiers) {
+            if (modifierTag instanceof CompoundTag modifierCompound) {
+                String idStr = modifierCompound.getString("id");
+                ResourceLocation id;
+                if (idStr.isEmpty()) {
+                    // Fall back on old "name" field
+                    // TODO: Remove fallback
+                    String name = modifierCompound.getString("name");
+                    id = new ResourceLocation(MagicMirrorMod.MOD_ID, name);
+                }
+                else {
+                    id = ResourceLocation.tryParse(idStr);
+                }
+
+                MagicMirrorModifier modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.get().getValue(id);
                 if (modifier != null) {
-                    modifier.apply(this, (CompoundTag) modifierCompound);
+                    modifier.apply(this, modifierCompound);
                 }
             }
         }
