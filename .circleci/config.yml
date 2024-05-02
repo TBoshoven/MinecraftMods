@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:17-jdk-buster
+      - image: cimg/openjdk:21.0
     resource_class: large
     steps:
       - checkout
