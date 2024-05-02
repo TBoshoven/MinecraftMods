@@ -6,7 +6,7 @@ import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorReflectedEntityEv
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
 import java.util.Map;
@@ -63,10 +63,10 @@ public class ReflectionManager {
      * in the frustrum.
      */
     @SubscribeEvent
-    public static void renderReflections(TickEvent.RenderTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && !Minecraft.getInstance().noRender) {
+    public static void renderReflections(RenderFrameEvent.Pre event) {
+        if (!Minecraft.getInstance().noRender) {
             for (Reflection reflection : reflections.values()) {
-                reflection.render(event.renderTickTime);
+                reflection.render(event.getPartialTick());
             }
             // Restore the regular frame buffer
             Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
