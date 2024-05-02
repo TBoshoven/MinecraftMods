@@ -31,13 +31,6 @@ public abstract class MagicMirrorTileEntityModifier {
     }
 
     /**
-     * @return The name of this tile entity modifier. This should probably match the name of the modifier.
-     */
-    public String getName() {
-        return modifier.getName();
-    }
-
-    /**
      * Write the modifier out to an NBT tag compound.
      * Including the name of the modifier is not necessary.
      *
