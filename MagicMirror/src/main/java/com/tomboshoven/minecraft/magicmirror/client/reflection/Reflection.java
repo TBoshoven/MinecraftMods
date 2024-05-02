@@ -15,7 +15,6 @@ import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 
 import javax.annotation.Nullable;
-
 import static net.minecraft.client.Minecraft.ON_OSX;
 import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
@@ -128,7 +127,7 @@ public class Reflection {
         if (reflectedEntity != null) {
             reflectionRenderer = new ReflectionRenderer(reflectedEntity);
             for (MagicMirrorTileEntityModifier modifier : blockEntity.getModifiers()) {
-                ReflectionModifier reflectionModifier = ReflectionModifiers.MODIFIERS.get(modifier.getName());
+                ReflectionModifier reflectionModifier = ReflectionModifiers.forMirrorModifier(modifier.getModifier());
                 if (reflectionModifier != null) {
                     reflectionRenderer = reflectionModifier.apply(modifier, reflectionRenderer);
                 }
