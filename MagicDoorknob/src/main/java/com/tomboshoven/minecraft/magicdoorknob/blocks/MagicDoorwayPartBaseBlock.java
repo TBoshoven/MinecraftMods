@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -35,8 +35,8 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
     public SoundType getSoundType(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity entity) {
         // Use the base block's sound type.
         TileEntity tileEntity = world.getBlockEntity(pos);
-        if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
-            BlockState baseBlock = ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState();
+        if (tileEntity instanceof MagicDoorwayPartBaseBlockEntity) {
+            BlockState baseBlock = ((MagicDoorwayPartBaseBlockEntity) tileEntity).getBaseBlockState();
             return baseBlock.getBlock().getSoundType(baseBlock, world, pos, null);
         }
         return super.getSoundType(state, world, pos, entity);
@@ -46,8 +46,8 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
     public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
         // Use the base block's light value.
         TileEntity tileEntity = world.getBlockEntity(pos);
-        if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
-            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getLightValue(world, pos);
+        if (tileEntity instanceof MagicDoorwayPartBaseBlockEntity) {
+            return ((MagicDoorwayPartBaseBlockEntity) tileEntity).getBaseBlockState().getLightValue(world, pos);
         }
         return super.getLightValue(state, world, pos);
     }
@@ -57,8 +57,8 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
     public int getLightBlock(BlockState state, IBlockReader worldIn, BlockPos pos) {
         // Use the base block's light opacity.
         TileEntity tileEntity = worldIn.getBlockEntity(pos);
-        if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
-            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getLightBlock(worldIn, pos);
+        if (tileEntity instanceof MagicDoorwayPartBaseBlockEntity) {
+            return ((MagicDoorwayPartBaseBlockEntity) tileEntity).getBaseBlockState().getLightBlock(worldIn, pos);
         }
         return super.getLightBlock(state, worldIn, pos);
     }
@@ -67,8 +67,8 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
     public float getSlipperiness(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity entity) {
         // Use the base block's slipperiness.
         TileEntity tileEntity = world.getBlockEntity(pos);
-        if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
-            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getSlipperiness(world, pos, entity);
+        if (tileEntity instanceof MagicDoorwayPartBaseBlockEntity) {
+            return ((MagicDoorwayPartBaseBlockEntity) tileEntity).getBaseBlockState().getSlipperiness(world, pos, entity);
         }
         return super.getSlipperiness(state, world, pos, entity);
     }
@@ -78,8 +78,8 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
     public float getDestroyProgress(BlockState state, PlayerEntity player, IBlockReader worldIn, BlockPos pos) {
         // Use the base block's hardness.
         TileEntity tileEntity = worldIn.getBlockEntity(pos);
-        if (tileEntity instanceof MagicDoorwayPartBaseTileEntity) {
-            return ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState().getDestroyProgress(player, worldIn, pos);
+        if (tileEntity instanceof MagicDoorwayPartBaseBlockEntity) {
+            return ((MagicDoorwayPartBaseBlockEntity) tileEntity).getBaseBlockState().getDestroyProgress(player, worldIn, pos);
         }
         return super.getDestroyProgress(state, player, worldIn, pos);
     }

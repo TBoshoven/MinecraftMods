@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.CreatureMagicMirrorTileEntityModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.CreatureMagicMirrorBlockEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -52,14 +52,14 @@ public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
     }
 
     @Override
-    MagicMirrorTileEntityModifier createTileEntityModifier(CompoundNBT nbt) {
-        return new CreatureMagicMirrorTileEntityModifier(this, nbt);
+    MagicMirrorBlockEntityModifier createTileEntityModifier(CompoundNBT nbt) {
+        return new CreatureMagicMirrorBlockEntityModifier(this, nbt);
     }
 
     @Override
-    MagicMirrorTileEntityModifier createTileEntityModifier(ItemStack usedItem) {
+    MagicMirrorBlockEntityModifier createTileEntityModifier(ItemStack usedItem) {
         // Only one entity type is supported for now
         EntityType<?> entityType = getDefaultEntityType();
-        return new CreatureMagicMirrorTileEntityModifier(this, usedItem.split(1), entityType);
+        return new CreatureMagicMirrorBlockEntityModifier(this, usedItem.split(1), entityType);
     }
 }

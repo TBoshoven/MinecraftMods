@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.events;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -10,14 +10,14 @@ import javax.annotation.Nullable;
  * An event indicating that the reflected entity in a mirror is changed.
  */
 public class MagicMirrorReflectedEntityEvent extends Event {
-    private final MagicMirrorCoreTileEntity blockEntity;
+    private final MagicMirrorCoreBlockEntity blockEntity;
     private final Entity reflectedEntity;
 
     /**
      * @param blockEntity The block entity of the updated mirror.
      * @param reflectedEntity The new reflected entity. May be null, indicating no reflected entity.
      */
-    public MagicMirrorReflectedEntityEvent(MagicMirrorCoreTileEntity blockEntity, @Nullable Entity reflectedEntity) {
+    public MagicMirrorReflectedEntityEvent(MagicMirrorCoreBlockEntity blockEntity, @Nullable Entity reflectedEntity) {
         this.blockEntity = blockEntity;
         this.reflectedEntity = reflectedEntity;
     }
@@ -25,7 +25,7 @@ public class MagicMirrorReflectedEntityEvent extends Event {
     /**
      * @return the block entity of the updated mirror.
      */
-    public MagicMirrorCoreTileEntity getBlockEntity() {
+    public MagicMirrorCoreBlockEntity getBlockEntity() {
         return blockEntity;
     }
 

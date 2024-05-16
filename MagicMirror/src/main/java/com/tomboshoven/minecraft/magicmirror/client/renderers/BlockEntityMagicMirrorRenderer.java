@@ -3,8 +3,8 @@ package com.tomboshoven.minecraft.magicmirror.client.renderers;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartType;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorBaseBlockEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.ReflectionManager;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -20,7 +20,7 @@ import net.minecraft.util.math.vector.Vector3f;
 /**
  * Renderer for the Magic Mirror tile entity.
  */
-class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTileEntity> {
+class BlockEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseBlockEntity> {
     /**
      * Maximum distance for an entity to be rendered.
      * Used for fading the mirror image.
@@ -28,13 +28,13 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseTi
     private static final double MAX_HORIZONTAL_DISTANCE_SQ = 8 * 8;
     private static final double MAX_VERTICAL_DISTANCE_SQ = 3 * 3;
 
-    TileEntityMagicMirrorRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+    BlockEntityMagicMirrorRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(MagicMirrorBaseTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
-        MagicMirrorCoreTileEntity core = tileEntityIn.getCore();
+    public void render(MagicMirrorBaseBlockEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+        MagicMirrorCoreBlockEntity core = tileEntityIn.getCore();
 
         if (core != null) {
             Reflection reflection = ReflectionManager.reflectionForRendering(core);
