@@ -1,5 +1,5 @@
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
 import mcp.MethodsReturnNonnullByDefault;
