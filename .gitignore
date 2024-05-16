@@ -1,13 +1,12 @@
 # Gradle stuff
-.gradle
-build
+/.gradle
+/*/.gradle
+/build
+/*/build
 
 # Minecraft Runtime
 /*/run
 /*/runs
-
-# Scratch folder
-scratch
 
 # Generated mod resources
 /*/src/generated
