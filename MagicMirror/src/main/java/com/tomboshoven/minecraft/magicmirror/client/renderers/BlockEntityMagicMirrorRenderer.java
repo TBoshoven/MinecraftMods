@@ -23,7 +23,7 @@ import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 /**
  * Renderer for the Magic Mirror tile entity.
  */
-class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseBlockEntity> {
+class BlockEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseBlockEntity> {
     /**
      * Maximum distance for an entity to be rendered.
      * Used for fading the mirror image.

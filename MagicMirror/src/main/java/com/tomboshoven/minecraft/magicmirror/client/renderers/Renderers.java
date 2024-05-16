@@ -18,7 +18,7 @@ public final class Renderers {
     }
 
     private static void registerRenderers(ModelRegistryEvent event) {
-        TileEntityMagicMirrorRenderer renderer = new TileEntityMagicMirrorRenderer();
+        BlockEntityMagicMirrorRenderer renderer = new BlockEntityMagicMirrorRenderer();
         ClientRegistry.bindTileEntitySpecialRenderer(MagicMirrorCoreBlockEntity.class, renderer);
         ClientRegistry.bindTileEntitySpecialRenderer(MagicMirrorPartBlockEntity.class, renderer);
     }
