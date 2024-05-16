@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.events;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreTileEntity;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.eventbus.api.Event;
 
