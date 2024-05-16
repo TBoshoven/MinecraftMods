@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorTileEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRendererBase;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -16,5 +16,5 @@ public abstract class ReflectionModifier extends ForgeRegistryEntry<ReflectionMo
      * @param reflectionRenderer The renderer to be changed.
      * @return The updated renderer.
      */
-    public abstract ReflectionRendererBase apply(MagicMirrorTileEntityModifier modifier, ReflectionRendererBase reflectionRenderer);
+    public abstract ReflectionRendererBase apply(MagicMirrorBlockEntityModifier modifier, ReflectionRendererBase reflectionRenderer);
 }

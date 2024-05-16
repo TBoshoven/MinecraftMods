@@ -2,8 +2,8 @@ package com.tomboshoven.minecraft.magicmirror.client.reflection;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
-import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreTileEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorTileEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers.ReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers.ReflectionModifiers;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRenderer;
@@ -54,7 +54,7 @@ public class Reflection {
     /**
      * The block entity to base the reflection on.
      */
-    MagicMirrorCoreTileEntity blockEntity;
+    MagicMirrorCoreBlockEntity blockEntity;
 
     /**
      * The entity that is currently being reflected, if any.
@@ -70,7 +70,7 @@ public class Reflection {
     /**
      * @param blockEntity The block entity corresponding to the mirror that displays the reflection.
      */
-    public Reflection(MagicMirrorCoreTileEntity blockEntity) {
+    public Reflection(MagicMirrorCoreBlockEntity blockEntity) {
         angle = blockEntity.getBlockState().getValue(HORIZONTAL_FACING).toYRot();
         this.blockEntity = blockEntity;
 
@@ -127,7 +127,7 @@ public class Reflection {
     void rebuildRenderer() {
         if (reflectedEntity != null) {
             reflectionRenderer = new ReflectionRenderer(reflectedEntity);
-            for (MagicMirrorTileEntityModifier modifier : blockEntity.getModifiers()) {
+            for (MagicMirrorBlockEntityModifier modifier : blockEntity.getModifiers()) {
                 ReflectionModifier reflectionModifier = ReflectionModifiers.forMirrorModifier(modifier.getModifier());
                 if (reflectionModifier != null) {
                     reflectionRenderer = reflectionModifier.apply(modifier, reflectionRenderer);

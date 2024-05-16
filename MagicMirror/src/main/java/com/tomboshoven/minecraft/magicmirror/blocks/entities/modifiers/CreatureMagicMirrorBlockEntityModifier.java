@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorBaseTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorBaseBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import net.minecraft.entity.EntityType;
@@ -12,18 +12,18 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class CreatureMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTileEntityModifier {
+public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlockEntityModifier {
     /**
      * The entity type to use for the reflection.
      */
     private final EntityType<?> entityType;
 
-    public CreatureMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, ItemStack item, EntityType<?> entityType) {
+    public CreatureMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, ItemStack item, EntityType<?> entityType) {
         super(modifier, item);
         this.entityType = entityType;
     }
 
-    public CreatureMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, CompoundNBT nbt) {
+    public CreatureMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundNBT nbt) {
         super(modifier, nbt);
         EntityType<?> entityType = null;
         if (nbt.contains("EntityType", 8)) {
@@ -56,7 +56,7 @@ public class CreatureMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorT
     }
 
     @Override
-    public boolean tryPlayerActivate(MagicMirrorBaseTileEntity tileEntity, PlayerEntity playerIn, Hand hand) {
+    public boolean tryPlayerActivate(MagicMirrorBaseBlockEntity tileEntity, PlayerEntity playerIn, Hand hand) {
         // No behavior right now.
         return false;
     }
