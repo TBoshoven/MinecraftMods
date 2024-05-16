@@ -1,4 +1,4 @@
-package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
+package com.tomboshoven.minecraft.magicdoorknob.blocks.entities;
 
 import com.mojang.datafixers.Dynamic;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
@@ -29,7 +29,7 @@ import static com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProp
 /**
  * Base class for tile entities that make up magic doorways.
  */
-public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
+public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
     /**
      * The main texture of the doorway (based on base block).
      */
@@ -45,7 +45,7 @@ public abstract class MagicDoorwayPartBaseTileEntity extends TileEntity {
     // The doorknob that caused this block to be created.
     private MagicDoorknobItem doorknob;
 
-    MagicDoorwayPartBaseTileEntity(TileEntityType<? extends MagicDoorwayPartBaseTileEntity> tileEntityType) {
+    MagicDoorwayPartBaseBlockEntity(TileEntityType<? extends MagicDoorwayPartBaseBlockEntity> tileEntityType) {
         super(tileEntityType);
     }
 

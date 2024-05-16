@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.CreatureMagicMirrorTileEntityModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.CreatureMagicMirrorBlockEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRendererBase;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.modifiers.CreatureReflectionRendererModifier;
 
@@ -10,8 +10,8 @@ import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.modifie
  */
 public class CreatureReflectionModifier extends ReflectionModifier {
     @Override
-    public ReflectionRendererBase apply(MagicMirrorTileEntityModifier modifier, ReflectionRendererBase reflectionRenderer) {
-        if (modifier instanceof CreatureMagicMirrorTileEntityModifier) {
+    public ReflectionRendererBase apply(MagicMirrorBlockEntityModifier modifier, ReflectionRendererBase reflectionRenderer) {
+        if (modifier instanceof CreatureMagicMirrorBlockEntityModifier) {
             return new CreatureReflectionRendererModifier(reflectionRenderer);
         }
         return reflectionRenderer;

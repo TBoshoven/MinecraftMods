@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayTileEntity;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlockEntity;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.BooleanProperty;
@@ -92,8 +92,8 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
         if (newState.isAir(worldIn, pos)) {
             // When this block is destroyed (manually or by closing the door), replace it by its base block.
             TileEntity tileEntity = worldIn.getBlockEntity(pos);
-            if (tileEntity instanceof MagicDoorwayTileEntity) {
-                worldIn.setBlockAndUpdate(pos, ((MagicDoorwayPartBaseTileEntity) tileEntity).getBaseBlockState());
+            if (tileEntity instanceof MagicDoorwayBlockEntity) {
+                worldIn.setBlockAndUpdate(pos, ((MagicDoorwayPartBaseBlockEntity) tileEntity).getBaseBlockState());
             }
         }
 
@@ -108,6 +108,6 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new MagicDoorwayTileEntity();
+        return new MagicDoorwayBlockEntity();
     }
 }

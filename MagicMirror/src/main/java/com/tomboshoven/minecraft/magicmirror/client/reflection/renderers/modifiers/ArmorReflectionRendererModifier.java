@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier.ReplacementArmor;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier.ReplacementArmor;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRendererBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;

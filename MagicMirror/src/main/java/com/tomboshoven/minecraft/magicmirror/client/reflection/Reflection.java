@@ -1,8 +1,8 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers.ReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers.ReflectionModifiers;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRenderer;
@@ -11,6 +11,7 @@ import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 
 import javax.annotation.Nullable;
+
 import static net.minecraft.client.Minecraft.ON_OSX;
 import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
@@ -43,7 +44,7 @@ public class Reflection {
     /**
      * The block entity to base the reflection on.
      */
-    MagicMirrorCoreTileEntity blockEntity;
+    MagicMirrorCoreBlockEntity blockEntity;
 
     /**
      * The entity that is currently being reflected, if any.
@@ -59,7 +60,7 @@ public class Reflection {
     /**
      * @param blockEntity The block entity corresponding to the mirror that displays the reflection.
      */
-    public Reflection(MagicMirrorCoreTileEntity blockEntity) {
+    public Reflection(MagicMirrorCoreBlockEntity blockEntity) {
         this.blockEntity = blockEntity;
         angle = blockEntity.getBlockState().getValue(HORIZONTAL_FACING).toYRot();
         Entity entity = blockEntity.getReflectedEntity();
@@ -113,7 +114,7 @@ public class Reflection {
     void rebuildRenderer() {
         if (reflectedEntity != null) {
             reflectionRenderer = new ReflectionRenderer(reflectedEntity);
-            for (MagicMirrorTileEntityModifier modifier : blockEntity.getModifiers()) {
+            for (MagicMirrorBlockEntityModifier modifier : blockEntity.getModifiers()) {
                 ReflectionModifier reflectionModifier = ReflectionModifiers.forMirrorModifier(modifier.getModifier());
                 if (reflectionModifier != null) {
                     reflectionRenderer = reflectionModifier.apply(modifier, reflectionRenderer);

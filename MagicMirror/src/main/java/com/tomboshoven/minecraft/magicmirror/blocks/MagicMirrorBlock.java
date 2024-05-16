@@ -1,11 +1,11 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorBaseBlockEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorPartBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorPartTileEntity;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import net.minecraft.block.Block;
@@ -154,9 +154,9 @@ public class MagicMirrorBlock extends HorizontalBlock {
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         // The bottom part is the core of the mirror which has all the logic; the top part just uses the results.
         if (state.getValue(PART) == EnumPartType.BOTTOM) {
-            return new MagicMirrorCoreTileEntity();
+            return new MagicMirrorCoreBlockEntity();
         }
-        return new MagicMirrorPartTileEntity();
+        return new MagicMirrorPartBlockEntity();
     }
 
     @Override
@@ -191,8 +191,8 @@ public class MagicMirrorBlock extends HorizontalBlock {
 
                     // Then, see if any existing modifier can do something.
                     TileEntity tileEntity = worldIn.getBlockEntity(pos);
-                    if (tileEntity instanceof MagicMirrorBaseTileEntity) {
-                        if (((MagicMirrorBaseTileEntity) tileEntity).tryActivate(player, handIn)) {
+                    if (tileEntity instanceof MagicMirrorBaseBlockEntity) {
+                        if (((MagicMirrorBaseBlockEntity) tileEntity).tryActivate(player, handIn)) {
                             return true;
                         }
                     }
@@ -232,8 +232,8 @@ public class MagicMirrorBlock extends HorizontalBlock {
     public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getValue(COMPLETE)) {
             TileEntity tileEntity = worldIn.getBlockEntity(pos);
-            if (tileEntity instanceof MagicMirrorBaseTileEntity) {
-                ((MagicMirrorBaseTileEntity) tileEntity).removeModifiers(worldIn, pos);
+            if (tileEntity instanceof MagicMirrorBaseBlockEntity) {
+                ((MagicMirrorBaseBlockEntity) tileEntity).removeModifiers(worldIn, pos);
             }
 
             // Change the other part to incomplete
@@ -341,7 +341,7 @@ public class MagicMirrorBlock extends HorizontalBlock {
         ctx.enqueueWork(() -> {
             ClientWorld world = Minecraft.getInstance().level;
             TileEntity te = world.getBlockEntity(message.mirrorPos);
-            if (te instanceof MagicMirrorBaseTileEntity) {
+            if (te instanceof MagicMirrorBaseBlockEntity) {
                 MagicMirrorModifier modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.getValue(message.modifier);
                 if (modifier == null) {
                     MagicMirrorMod.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifier);

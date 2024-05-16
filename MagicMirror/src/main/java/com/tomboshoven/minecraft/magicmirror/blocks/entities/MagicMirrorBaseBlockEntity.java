@@ -1,8 +1,8 @@
-package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
+package com.tomboshoven.minecraft.magicmirror.blocks.entities;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartType;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -19,8 +19,8 @@ import java.util.List;
  * Base class for magic mirror multiblock.
  * Provides a common interface to to the core tile entity.
  */
-public abstract class MagicMirrorBaseTileEntity extends TileEntity {
-    MagicMirrorBaseTileEntity(TileEntityType<? extends MagicMirrorBaseTileEntity> tileEntityTypeIn) {
+public abstract class MagicMirrorBaseBlockEntity extends TileEntity {
+    MagicMirrorBaseBlockEntity(TileEntityType<? extends MagicMirrorBaseBlockEntity> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -28,13 +28,13 @@ public abstract class MagicMirrorBaseTileEntity extends TileEntity {
      * @return The core block, if it exists.
      */
     @Nullable
-    public abstract MagicMirrorCoreTileEntity getCore();
+    public abstract MagicMirrorCoreBlockEntity getCore();
 
     /**
      * @return A list of all the current modifiers of the mirror.
      */
-    public List<MagicMirrorTileEntityModifier> getModifiers() {
-        MagicMirrorCoreTileEntity core = getCore();
+    public List<MagicMirrorBlockEntityModifier> getModifiers() {
+        MagicMirrorCoreBlockEntity core = getCore();
         if (core != null) {
             return core.getModifiers();
         }
@@ -46,8 +46,8 @@ public abstract class MagicMirrorBaseTileEntity extends TileEntity {
      *
      * @param modifier The modifier to add. Must be verified to be applicable.
      */
-    public void addModifier(MagicMirrorTileEntityModifier modifier) {
-        MagicMirrorCoreTileEntity core = getCore();
+    public void addModifier(MagicMirrorBlockEntityModifier modifier) {
+        MagicMirrorCoreBlockEntity core = getCore();
         if (core != null) {
             core.addModifier(modifier);
         }
@@ -62,7 +62,7 @@ public abstract class MagicMirrorBaseTileEntity extends TileEntity {
      * @param pos     The position of the block that was removed.
      */
     public void removeModifiers(World worldIn, BlockPos pos) {
-        MagicMirrorCoreTileEntity core = getCore();
+        MagicMirrorCoreBlockEntity core = getCore();
         if (core != null) {
             core.removeModifiers(worldIn, pos);
         }
@@ -76,7 +76,7 @@ public abstract class MagicMirrorBaseTileEntity extends TileEntity {
      * @return Whether activation of the modifier was successful.
      */
     public boolean tryActivate(PlayerEntity playerIn, Hand hand) {
-        MagicMirrorCoreTileEntity core = getCore();
+        MagicMirrorCoreBlockEntity core = getCore();
         if (core != null) {
             return core.tryActivate(playerIn, hand);
         }
