@@ -7,7 +7,6 @@ settings.gradle.
 // For those who want the bleeding edge
 buildscript {
     repositories {
-        jcenter()
         maven {
             name = "forge"
             url = "https://maven.minecraftforge.net"
