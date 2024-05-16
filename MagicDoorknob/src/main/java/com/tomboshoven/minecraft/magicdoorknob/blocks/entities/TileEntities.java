@@ -1,4 +1,4 @@
-package com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities;
+package com.tomboshoven.minecraft.magicdoorknob.blocks.entities;
 
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;

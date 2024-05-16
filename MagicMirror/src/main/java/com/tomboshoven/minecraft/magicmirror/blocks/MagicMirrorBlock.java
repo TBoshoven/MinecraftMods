@@ -1,11 +1,11 @@
 package com.tomboshoven.minecraft.magicmirror.blocks;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorBaseTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorPartTileEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorPartTileEntity;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import com.tomboshoven.minecraft.magicmirror.packets.Network;
 import net.minecraft.block.Block;

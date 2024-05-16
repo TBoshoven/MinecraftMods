@@ -1,8 +1,8 @@
 package com.tomboshoven.minecraft.magicmirror;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.TileEntities;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntities;
 import com.tomboshoven.minecraft.magicmirror.client.ClientEvents;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers.ReflectionModifiers;
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;

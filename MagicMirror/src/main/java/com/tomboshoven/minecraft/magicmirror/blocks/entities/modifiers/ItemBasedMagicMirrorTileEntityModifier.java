@@ -1,4 +1,4 @@
-package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
+package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import net.minecraft.inventory.InventoryHelper;

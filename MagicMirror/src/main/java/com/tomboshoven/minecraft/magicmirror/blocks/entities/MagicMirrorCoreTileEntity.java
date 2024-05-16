@@ -1,10 +1,10 @@
-package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
+package com.tomboshoven.minecraft.magicmirror.blocks.entities;
 
 import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorModifiersUpdatedEvent;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorReflectedEntityEvent;
 import net.minecraft.entity.Entity;

@@ -2,8 +2,8 @@ package com.tomboshoven.minecraft.magicmirror.client.renderers;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorBlock.EnumPartType;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorBaseTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreTileEntity;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.Reflection;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.ReflectionManager;
 import net.minecraft.client.Minecraft;

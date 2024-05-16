@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.blockcolorhandlers;
 
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.BlockColors;

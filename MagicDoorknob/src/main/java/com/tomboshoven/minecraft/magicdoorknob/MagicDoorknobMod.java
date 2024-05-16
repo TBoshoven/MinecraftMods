@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.TileEntities;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.TileEntities;
 import com.tomboshoven.minecraft.magicdoorknob.client.ClientEvents;
 import com.tomboshoven.minecraft.magicdoorknob.config.Config;
 import com.tomboshoven.minecraft.magicdoorknob.data.DataGenerators;

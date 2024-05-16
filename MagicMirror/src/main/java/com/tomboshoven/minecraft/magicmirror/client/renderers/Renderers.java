@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.client.renderers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorPartTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorPartTileEntity;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.client.registry.ClientRegistry;

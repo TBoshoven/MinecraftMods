@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.BannerMagicMirrorTileEntityModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.BannerMagicMirrorTileEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorTileEntityModifier;
 import net.minecraft.item.BannerItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreTileEntity;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorModifiersUpdatedEvent;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorReflectedEntityEvent;
 import net.minecraft.client.Minecraft;

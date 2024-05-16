@@ -1,7 +1,7 @@
-package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
+package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorBaseTileEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
