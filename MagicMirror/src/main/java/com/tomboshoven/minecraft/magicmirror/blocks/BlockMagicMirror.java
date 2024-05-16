@@ -162,7 +162,7 @@ public class BlockMagicMirror extends BlockHorizontal {
     @Override
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState()
-                .withProperty(FACING, EnumFacing.byHorizontalIndex(meta & 3))
+                .withProperty(FACING, EnumFacing.getHorizontal(meta & 3))
                 .withProperty(COMPLETE, (meta & 1 << 2) != 0)
                 .withProperty(PART, (meta & 1 << 3) == 0 ? EnumPartType.BOTTOM : EnumPartType.TOP);
     }

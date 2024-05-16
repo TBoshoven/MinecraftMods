@@ -17,7 +17,7 @@ public final class Blocks {
      */
     public static final Block blockMagicDoorway = new BlockMagicDoorway()
             .setRegistryName(ModMagicDoorknob.MOD_ID, "magic_doorway")
-            .setTranslationKey(String.format("%s.magic_doorway", ModMagicDoorknob.MOD_ID))
+            .setUnlocalizedName(String.format("%s.magic_doorway", ModMagicDoorknob.MOD_ID))
             .setCreativeTab(CreativeTabs.MISC);
 
     /**
@@ -25,7 +25,7 @@ public final class Blocks {
      */
     public static final Block blockMagicDoor = new BlockMagicDoor()
             .setRegistryName(ModMagicDoorknob.MOD_ID, "magic_door")
-            .setTranslationKey(String.format("%s.magic_door", ModMagicDoorknob.MOD_ID))
+            .setUnlocalizedName(String.format("%s.magic_door", ModMagicDoorknob.MOD_ID))
             .setCreativeTab(CreativeTabs.MISC);
 
     private Blocks() {

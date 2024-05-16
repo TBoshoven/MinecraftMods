@@ -17,7 +17,7 @@ public final class Blocks {
      */
     public static final Block blockMagicMirror = new BlockMagicMirror()
             .setRegistryName(ModMagicMirror.MOD_ID, "magic_mirror")
-            .setTranslationKey(String.format("%s.magic_mirror", ModMagicMirror.MOD_ID))
+            .setUnlocalizedName(String.format("%s.magic_mirror", ModMagicMirror.MOD_ID))
             .setCreativeTab(CreativeTabs.MISC);
 
     private Blocks() {
