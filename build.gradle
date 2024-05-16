@@ -13,7 +13,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.neoforged.gradle', name: 'net.neoforged.gradle.gradle.plugin', version: '[6.0.13, 6.2)', changing: true
+        classpath group: 'net.neoforged', name: 'NeoGradle', version: '[6.0.21, 6.2)', changing: true
     }
 }
 
@@ -66,7 +66,7 @@ subprojects {
     }
 
     dependencies {
-        minecraft "net.neoforged:forge:1.20.1-47.1.79"
+        minecraft "net.neoforged:forge:1.20.1-47.1.105"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
