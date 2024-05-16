@@ -1,17 +1,11 @@
 # Gradle stuff
-.gradle
-build
+/.gradle
+/*/.gradle
+/build
+/*/build
 
 # Minecraft Runtime
 run
-
-# Scratch folder
-scratch
-
-# IntelliJ IDEA project files
-*.iml
-*.ipr
-*.iws
 
 # Generated mod resources
 /*/src/generated
