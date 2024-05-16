@@ -20,7 +20,7 @@ import net.minecraft.util.math.vector.Vector3f;
 /**
  * Renderer for the Magic Mirror tile entity.
  */
-class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseBlockEntity> {
+class BlockEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseBlockEntity> {
     /**
      * Maximum distance for an entity to be rendered.
      * Used for fading the mirror image.
@@ -28,7 +28,7 @@ class TileEntityMagicMirrorRenderer extends TileEntityRenderer<MagicMirrorBaseBl
     private static final double MAX_HORIZONTAL_DISTANCE_SQ = 8 * 8;
     private static final double MAX_VERTICAL_DISTANCE_SQ = 3 * 3;
 
-    TileEntityMagicMirrorRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+    BlockEntityMagicMirrorRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
