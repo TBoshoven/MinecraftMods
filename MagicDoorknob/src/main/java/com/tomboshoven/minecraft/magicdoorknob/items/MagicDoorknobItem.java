@@ -3,9 +3,9 @@ package com.tomboshoven.minecraft.magicdoorknob.items;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayBlock;
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorTileEntity;
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayPartBaseTileEntity;
-import com.tomboshoven.minecraft.magicdoorknob.blocks.tileentities.MagicDoorwayTileEntity;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorBlockEntity;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlockEntity;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.config.Config;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -118,9 +118,9 @@ public class MagicDoorknobItem extends Item {
                         .setValue(MagicDoorBlock.PART, MagicDoorBlock.EnumPartType.TOP)
         );
         TileEntity topTileEntity = world.getBlockEntity(doorPos);
-        if (topTileEntity instanceof MagicDoorTileEntity) {
-            ((MagicDoorwayPartBaseTileEntity) topTileEntity).setBaseBlockState(world.getBlockState(pos));
-            ((MagicDoorwayPartBaseTileEntity) topTileEntity).setDoorknob(this);
+        if (topTileEntity instanceof MagicDoorBlockEntity) {
+            ((MagicDoorwayPartBaseBlockEntity) topTileEntity).setBaseBlockState(world.getBlockState(pos));
+            ((MagicDoorwayPartBaseBlockEntity) topTileEntity).setDoorknob(this);
         }
         world.setBlockAndUpdate(
                 doorPos.below(),
@@ -129,9 +129,9 @@ public class MagicDoorknobItem extends Item {
                         .setValue(MagicDoorBlock.PART, MagicDoorBlock.EnumPartType.BOTTOM)
         );
         TileEntity bottomTileEntity = world.getBlockEntity(doorPos.below());
-        if (bottomTileEntity instanceof MagicDoorTileEntity) {
-            ((MagicDoorwayPartBaseTileEntity) bottomTileEntity).setBaseBlockState(world.getBlockState(pos.below()));
-            ((MagicDoorwayPartBaseTileEntity) bottomTileEntity).setDoorknob(this);
+        if (bottomTileEntity instanceof MagicDoorBlockEntity) {
+            ((MagicDoorwayPartBaseBlockEntity) bottomTileEntity).setBaseBlockState(world.getBlockState(pos.below()));
+            ((MagicDoorwayPartBaseBlockEntity) bottomTileEntity).setDoorknob(this);
         }
         world.playSound(null, doorPos, SoundEvents.WOODEN_DOOR_OPEN, SoundCategory.BLOCKS, 1, 1);
     }
@@ -179,9 +179,9 @@ public class MagicDoorknobItem extends Item {
             world.setBlockAndUpdate(pos, block.defaultBlockState().setValue(MagicDoorwayBlock.OPEN_NORTH_SOUTH, isNorthSouth).setValue(MagicDoorwayBlock.OPEN_EAST_WEST, !isNorthSouth).setValue(MagicDoorwayBlock.PART, part));
 
             TileEntity tileEntity = world.getBlockEntity(pos);
-            if (tileEntity instanceof MagicDoorwayTileEntity) {
-                ((MagicDoorwayPartBaseTileEntity) tileEntity).setBaseBlockState(state);
-                ((MagicDoorwayPartBaseTileEntity) tileEntity).setDoorknob(this);
+            if (tileEntity instanceof MagicDoorwayBlockEntity) {
+                ((MagicDoorwayPartBaseBlockEntity) tileEntity).setBaseBlockState(state);
+                ((MagicDoorwayPartBaseBlockEntity) tileEntity).setDoorknob(this);
             }
         }
     }

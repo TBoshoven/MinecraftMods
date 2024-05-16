@@ -1,13 +1,12 @@
-package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
+package com.tomboshoven.minecraft.magicmirror.blocks.entities;
 
 import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorModifiersUpdatedEvent;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorReflectedEntityEvent;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -34,7 +33,7 @@ import java.util.stream.Collectors;
 /**
  * The tile entity for the bottom mirror block; this is the block that has all the reflection logic.
  */
-public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity implements ITickableTileEntity {
+public class MagicMirrorCoreBlockEntity extends MagicMirrorBaseBlockEntity implements ITickableTileEntity {
     /**
      * Number of ticks between updating who we're reflecting
      */
@@ -42,7 +41,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     /**
      * The list of all modifiers to the mirror.
      */
-    private final List<MagicMirrorTileEntityModifier> modifiers = Lists.newArrayList();
+    private final List<MagicMirrorBlockEntityModifier> modifiers = Lists.newArrayList();
 
     /**
      * The currently reflected entity, if any.
@@ -52,8 +51,8 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     // Start the update counter at its max, so we update on the first tick.
     private int reflectionUpdateCounter = REFLECTION_UPDATE_INTERVAL;
 
-    public MagicMirrorCoreTileEntity() {
-        super(TileEntities.MAGIC_MIRROR_CORE.get());
+    public MagicMirrorCoreBlockEntity() {
+        super(BlockEntities.MAGIC_MIRROR_CORE.get());
     }
 
     /**
@@ -89,7 +88,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
 
     @Nullable
     @Override
-    public MagicMirrorCoreTileEntity getCore() {
+    public MagicMirrorCoreBlockEntity getCore() {
         return this;
     }
 
@@ -123,7 +122,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
             reflectionUpdateCounter = 0;
             updateReflection();
         }
-        modifiers.forEach(MagicMirrorTileEntityModifier::coolDown);
+        modifiers.forEach(MagicMirrorBlockEntityModifier::coolDown);
     }
 
     @Override
@@ -139,7 +138,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
      */
     private CompoundNBT writeInternal(CompoundNBT compound) {
         ListNBT modifierList = new ListNBT();
-        for (MagicMirrorTileEntityModifier modifier : modifiers) {
+        for (MagicMirrorBlockEntityModifier modifier : modifiers) {
             ResourceLocation modifierId = modifier.getModifier().getRegistryName();
             if (modifierId == null) {
                 continue;
@@ -181,7 +180,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     }
 
     @Override
-    public List<MagicMirrorTileEntityModifier> getModifiers() {
+    public List<MagicMirrorBlockEntityModifier> getModifiers() {
         return Collections.unmodifiableList(modifiers);
     }
 
@@ -191,7 +190,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
     }
 
     @Override
-    public void addModifier(MagicMirrorTileEntityModifier modifier) {
+    public void addModifier(MagicMirrorBlockEntityModifier modifier) {
         modifiers.add(modifier);
         modifier.activate(this);
         setChanged();
@@ -200,7 +199,7 @@ public class MagicMirrorCoreTileEntity extends MagicMirrorBaseTileEntity impleme
 
     @Override
     public void removeModifiers(World worldIn, BlockPos pos) {
-        for (MagicMirrorTileEntityModifier modifier : modifiers) {
+        for (MagicMirrorBlockEntityModifier modifier : modifiers) {
             modifier.deactivate(this);
             modifier.remove(worldIn, pos);
         }

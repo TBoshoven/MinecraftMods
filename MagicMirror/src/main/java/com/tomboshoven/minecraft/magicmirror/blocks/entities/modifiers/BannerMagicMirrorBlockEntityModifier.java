@@ -1,8 +1,8 @@
-package com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers;
+package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
 import com.google.common.collect.Lists;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorBaseBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorBaseTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BannerItem;
@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class BannerMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTileEntityModifier {
-    public BannerMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, ItemStack item) {
+public class BannerMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlockEntityModifier {
+    public BannerMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, ItemStack item) {
         super(modifier, item);
     }
 
-    public BannerMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, CompoundNBT nbt) {
+    public BannerMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundNBT nbt) {
         super(modifier, nbt);
     }
 
@@ -54,7 +54,7 @@ public class BannerMagicMirrorTileEntityModifier extends ItemBasedMagicMirrorTil
     }
 
     @Override
-    public boolean tryPlayerActivate(MagicMirrorBaseTileEntity blockEntity, PlayerEntity playerIn, Hand hand) {
+    public boolean tryPlayerActivate(MagicMirrorBaseBlockEntity blockEntity, PlayerEntity playerIn, Hand hand) {
         // No activation behavior
         return false;
     }

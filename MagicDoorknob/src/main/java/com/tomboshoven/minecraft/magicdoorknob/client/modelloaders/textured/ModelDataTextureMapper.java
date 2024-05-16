@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
-import net.minecraft.block.BlockState;
 import com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.inventory.container.PlayerContainer;

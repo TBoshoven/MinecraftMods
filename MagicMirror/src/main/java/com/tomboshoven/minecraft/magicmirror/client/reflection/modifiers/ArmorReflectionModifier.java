@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.ArmorMagicMirrorTileEntityModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRendererBase;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.modifiers.ArmorReflectionRendererModifier;
 
@@ -10,9 +10,9 @@ import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.modifie
  */
 public final class ArmorReflectionModifier extends ReflectionModifier {
     @Override
-    public ReflectionRendererBase apply(MagicMirrorTileEntityModifier modifier, ReflectionRendererBase reflectionRenderer) {
-        if (modifier instanceof ArmorMagicMirrorTileEntityModifier) {
-            ArmorMagicMirrorTileEntityModifier armorModifier = (ArmorMagicMirrorTileEntityModifier) modifier;
+    public ReflectionRendererBase apply(MagicMirrorBlockEntityModifier modifier, ReflectionRendererBase reflectionRenderer) {
+        if (modifier instanceof ArmorMagicMirrorBlockEntityModifier) {
+            ArmorMagicMirrorBlockEntityModifier armorModifier = (ArmorMagicMirrorBlockEntityModifier) modifier;
             return new ArmorReflectionRendererModifier(reflectionRenderer, armorModifier.getReplacementArmor());
         }
         return reflectionRenderer;

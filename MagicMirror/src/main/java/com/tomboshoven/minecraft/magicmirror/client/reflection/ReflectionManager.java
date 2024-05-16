@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorModifiersUpdatedEvent;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorReflectedEntityEvent;
 import net.minecraft.client.Minecraft;
@@ -16,13 +16,13 @@ public class ReflectionManager {
     /**
      * All current reflections.
      */
-    private static Map<MagicMirrorCoreTileEntity, Reflection> reflections = new ConcurrentHashMap<>();
+    private static Map<MagicMirrorCoreBlockEntity, Reflection> reflections = new ConcurrentHashMap<>();
     /**
      * The reflections to maintain in the next iteration.
      */
-    private static Map<MagicMirrorCoreTileEntity, Reflection> reflectionNext = new ConcurrentHashMap<>();
+    private static Map<MagicMirrorCoreBlockEntity, Reflection> reflectionNext = new ConcurrentHashMap<>();
 
-    public static Reflection reflectionForRendering(MagicMirrorCoreTileEntity blockEntity) {
+    public static Reflection reflectionForRendering(MagicMirrorCoreBlockEntity blockEntity) {
         Reflection reflection = reflections.computeIfAbsent(blockEntity, Reflection::new);
         reflectionNext.put(blockEntity, reflection);
         return reflection;
@@ -33,7 +33,7 @@ public class ReflectionManager {
      */
     @SubscribeEvent
     public static void handleMirrorUpdates(MagicMirrorModifiersUpdatedEvent event) {
-        MagicMirrorCoreTileEntity blockEntity = event.getBlockEntity();
+        MagicMirrorCoreBlockEntity blockEntity = event.getBlockEntity();
         Reflection reflection = reflections.get(blockEntity);
         if (reflection != null) {
             reflection.update();
@@ -45,7 +45,7 @@ public class ReflectionManager {
      */
     @SubscribeEvent
     public static void handleMirrorUpdates(MagicMirrorReflectedEntityEvent event) {
-        MagicMirrorCoreTileEntity blockEntity = event.getBlockEntity();
+        MagicMirrorCoreBlockEntity blockEntity = event.getBlockEntity();
         Reflection reflection = reflections.get(blockEntity);
         Entity reflectedEntity = event.getReflectedEntity();
         if (reflection != null) {
@@ -72,7 +72,7 @@ public class ReflectionManager {
             Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
 
             // Swap out the reflection maps
-            Map<MagicMirrorCoreTileEntity, Reflection> oldReflections = reflections;
+            Map<MagicMirrorCoreBlockEntity, Reflection> oldReflections = reflections;
             // Deactivate all reflections we no longer need.
             oldReflections.entrySet().stream().filter(entry -> !reflectionNext.containsKey(entry.getKey())).forEach(entry -> entry.getValue().stopReflecting());
             oldReflections.clear();
