@@ -23,7 +23,7 @@ import static com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProp
 /**
  * A model that has dynamic properties that are used to determine textures at runtime.
  */
-public class TexturedModelGeometry implements IModelGeometry<TexturedModelGeometry> {
+public class TexturedUnbakedGeometry implements IModelGeometry<TexturedUnbakedGeometry> {
     // The extra textures to include with this model; used to enable textures that are not already present in the game
     private final Set<? extends Material> extraTextures;
     // The original model
@@ -34,7 +34,7 @@ public class TexturedModelGeometry implements IModelGeometry<TexturedModelGeomet
      * @param extraTextures         The extra textures to include with this model; used to enable textures that are not
      *                              already present in the game
      */
-    TexturedModelGeometry(IModelGeometry<?> originalModelGeometry, Set<? extends Material> extraTextures) {
+    TexturedUnbakedGeometry(IModelGeometry<?> originalModelGeometry, Set<? extends Material> extraTextures) {
         this.originalModelGeometry = originalModelGeometry;
         this.extraTextures = extraTextures;
     }
