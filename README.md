@@ -47,6 +47,8 @@ For instructions on how to use the mods, take a look at the [wiki](https://githu
 | [1.20.1](https://github.com//TBoshoven/MinecraftMods/tree/1.20.1) | [Forge] / [NeoForge] | 🟢 Active     | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.20.1.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.20.1) |
 | [1.20.2](https://github.com//TBoshoven/MinecraftMods/tree/1.20.2) | [NeoForge]           | 🔴 None       | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.20.2.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.20.2) |
 | [1.20.4](https://github.com//TBoshoven/MinecraftMods/tree/1.20.4) | [NeoForge]           | 🔵 Current    | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.20.4.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.20.4) |
+| [1.20.5](https://github.com//TBoshoven/MinecraftMods/tree/1.20.5) | [NeoForge]           | 🔴 None       | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.20.5.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.20.5) |
+| [1.20.6](https://github.com//TBoshoven/MinecraftMods/tree/1.20.6) | [NeoForge]           | 🟠 Beta       | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.20.6.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.20.6) |
 
 [Forge]: https://minecraftforge.net/
 [NeoForge]: https://neoforged.net/
@@ -62,6 +64,7 @@ and mod loader code across versions, this is not always trivial.
 * 🟢 **Active**: This is a stable version that is actively supported. These versions will receive most bug fixes and may
                  receive new features.
 * 🔵 **Current**: This is the version I currently develop against. This version will receive all new fixes and features.
+* 🟠 **Beta**: This is a beta version, in line to be the next "current" version once the mod loaders and mods are stable.
 
 
 Code
