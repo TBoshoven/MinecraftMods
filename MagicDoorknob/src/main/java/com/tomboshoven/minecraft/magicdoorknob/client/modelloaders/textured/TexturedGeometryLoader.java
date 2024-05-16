@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * A model loader that deals with dynamic properties that are used to determine textures at runtime.
  */
-public class TexturedModelLoader implements IModelLoader<TexturedModelGeometry> {
+public class TexturedGeometryLoader implements IModelLoader<TexturedUnbakedGeometry> {
     // All extra textures that were requested.
     private final Set<Material> extraTextures = Sets.newHashSet();
 
@@ -34,10 +34,10 @@ public class TexturedModelLoader implements IModelLoader<TexturedModelGeometry> 
     }
 
     @Override
-    public TexturedModelGeometry read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
+    public TexturedUnbakedGeometry read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
         // Load the original model through its configured base loader
         ResourceLocation baseLoader = new ResourceLocation(modelContents.get("base_loader").getAsString());
         IModelGeometry<?> modelGeometry = ModelLoaderRegistry.getModel(baseLoader, deserializationContext, modelContents);
-        return new TexturedModelGeometry(modelGeometry, extraTextures);
+        return new TexturedUnbakedGeometry(modelGeometry, extraTextures);
     }
 }
