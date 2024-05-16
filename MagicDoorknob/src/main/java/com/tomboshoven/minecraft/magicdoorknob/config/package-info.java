@@ -1,5 +1,5 @@
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 package com.tomboshoven.minecraft.magicdoorknob.config;
 
 import mcp.MethodsReturnNonnullByDefault;
