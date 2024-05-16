@@ -10,7 +10,7 @@ buildscript {
         jcenter()
         maven {
             name = "forge"
-            url = "https://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net"
         }
     }
     dependencies {
@@ -67,7 +67,7 @@ subprojects {
     }
 
     dependencies {
-        minecraft "net.minecraftforge:forge:1.18.2-40.1.60"
+        minecraft "net.minecraftforge:forge:1.18.2-40.2.21"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
