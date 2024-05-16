@@ -7,18 +7,18 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class ItemBasedMagicMirrorTileEntityModifier extends MagicMirrorTileEntityModifier {
+public abstract class ItemBasedMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntityModifier {
     final ItemStack item;
 
     /**
      * @param item The item that went into the mirror to create this modifier.
      */
-    public ItemBasedMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, ItemStack item) {
+    public ItemBasedMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, ItemStack item) {
         super(modifier);
         this.item = item;
     }
 
-    public ItemBasedMagicMirrorTileEntityModifier(MagicMirrorModifier modifier, CompoundNBT nbt) {
+    public ItemBasedMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundNBT nbt) {
         super(modifier);
         CompoundNBT itemCompound = nbt.getCompound("Item");
         if (itemCompound.isEmpty()) {

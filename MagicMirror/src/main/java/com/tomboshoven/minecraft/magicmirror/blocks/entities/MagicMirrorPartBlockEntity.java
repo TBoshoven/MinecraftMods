@@ -9,23 +9,23 @@ import javax.annotation.Nullable;
  * The tile entity for the top mirror block; this tile entity has no reflection logic and simply uses whatever's in the
  * bottom block.
  */
-public class MagicMirrorPartTileEntity extends MagicMirrorBaseTileEntity {
+public class MagicMirrorPartBlockEntity extends MagicMirrorBaseBlockEntity {
     @Nullable
-    private MagicMirrorCoreTileEntity core;
+    private MagicMirrorCoreBlockEntity core;
 
-    public MagicMirrorPartTileEntity() {
-        super(TileEntities.MAGIC_MIRROR_PART.get());
+    public MagicMirrorPartBlockEntity() {
+        super(BlockEntities.MAGIC_MIRROR_PART.get());
     }
 
     @Nullable
     @Override
-    public MagicMirrorCoreTileEntity getCore() {
+    public MagicMirrorCoreBlockEntity getCore() {
         if (core == null) {
             World world = getLevel();
             if (world != null) {
                 TileEntity teBelow = world.getBlockEntity(getBlockPos().below());
-                if (teBelow instanceof MagicMirrorCoreTileEntity) {
-                    core = (MagicMirrorCoreTileEntity) teBelow;
+                if (teBelow instanceof MagicMirrorCoreBlockEntity) {
+                    core = (MagicMirrorCoreBlockEntity) teBelow;
                 }
             }
         }

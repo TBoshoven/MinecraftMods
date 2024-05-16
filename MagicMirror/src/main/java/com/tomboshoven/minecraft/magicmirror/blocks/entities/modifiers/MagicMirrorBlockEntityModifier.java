@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorBaseTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorBaseBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -12,7 +12,7 @@ import net.minecraft.world.World;
  * A magic mirror modifier as applied to a tile entity.
  * Instead of using this directly, apply it using a MagicMirrorModifier instance.
  */
-public abstract class MagicMirrorTileEntityModifier {
+public abstract class MagicMirrorBlockEntityModifier {
     /**
      * The modifier that applied this object to the tile entity.
      */
@@ -26,7 +26,7 @@ public abstract class MagicMirrorTileEntityModifier {
     /**
      * @param modifier The modifier that applied this object to the tile entity.
      */
-    MagicMirrorTileEntityModifier(MagicMirrorModifier modifier) {
+    MagicMirrorBlockEntityModifier(MagicMirrorModifier modifier) {
         this.modifier = modifier;
     }
 
@@ -55,7 +55,7 @@ public abstract class MagicMirrorTileEntityModifier {
      *
      * @param tileEntity The tile entity that is being modified.
      */
-    public void activate(MagicMirrorBaseTileEntity tileEntity) {
+    public void activate(MagicMirrorBaseBlockEntity tileEntity) {
     }
 
     /**
@@ -63,7 +63,7 @@ public abstract class MagicMirrorTileEntityModifier {
      *
      * @param tileEntity The tile entity that is being modified.
      */
-    public void deactivate(MagicMirrorBaseTileEntity tileEntity) {
+    public void deactivate(MagicMirrorBaseBlockEntity tileEntity) {
     }
 
     /**
@@ -74,7 +74,7 @@ public abstract class MagicMirrorTileEntityModifier {
      * @param hand       The hand that the player is using to activate the magic mirror.
      * @return Whether it was activated. If true, no other modifiers are evaluated.
      */
-    public abstract boolean tryPlayerActivate(MagicMirrorBaseTileEntity tileEntity, PlayerEntity playerIn, Hand hand);
+    public abstract boolean tryPlayerActivate(MagicMirrorBaseBlockEntity tileEntity, PlayerEntity playerIn, Hand hand);
 
     /**
      * When the modifier is used, this can be used to easily cool down, so it can't be activated all the time.

@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
-import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.BannerMagicMirrorTileEntityModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorTileEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.BannerMagicMirrorBlockEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import net.minecraft.item.BannerItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -24,12 +24,12 @@ public class BannerMagicMirrorModifier extends MagicMirrorModifier {
     }
 
     @Override
-    MagicMirrorTileEntityModifier createTileEntityModifier(CompoundNBT nbt) {
-        return new BannerMagicMirrorTileEntityModifier(this, nbt);
+    MagicMirrorBlockEntityModifier createTileEntityModifier(CompoundNBT nbt) {
+        return new BannerMagicMirrorBlockEntityModifier(this, nbt);
     }
 
     @Override
-    MagicMirrorTileEntityModifier createTileEntityModifier(ItemStack usedItem) {
-        return new BannerMagicMirrorTileEntityModifier(this, usedItem.split(1));
+    MagicMirrorBlockEntityModifier createTileEntityModifier(ItemStack usedItem) {
+        return new BannerMagicMirrorBlockEntityModifier(this, usedItem.split(1));
     }
 }
