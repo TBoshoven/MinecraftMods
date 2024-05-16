@@ -1,4 +1,4 @@
-package com.tomboshoven.minecraft.magicmirror.blocks.tileentities;
+package com.tomboshoven.minecraft.magicmirror.blocks.entities;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

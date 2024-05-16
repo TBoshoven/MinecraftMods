@@ -2,8 +2,8 @@ package com.tomboshoven.minecraft.magicmirror.client.reflection;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.MagicMirrorCoreTileEntity;
-import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreTileEntity;
+import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers.ReflectionModifier;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers.ReflectionModifiers;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRenderer;
@@ -15,6 +15,7 @@ import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 
 import javax.annotation.Nullable;
+
 import static net.minecraft.client.Minecraft.ON_OSX;
 import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
