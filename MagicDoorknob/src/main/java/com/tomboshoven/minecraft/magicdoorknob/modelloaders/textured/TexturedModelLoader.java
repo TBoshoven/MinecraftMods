@@ -2,7 +2,6 @@ package com.tomboshoven.minecraft.magicdoorknob.modelloaders.textured;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.IResourceManager;
@@ -13,7 +12,6 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -21,8 +19,6 @@ import java.util.Set;
 /**
  * A model loader that deals with dynamic properties that are used to determine textures at runtime.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @SideOnly(Side.CLIENT)
 public class TexturedModelLoader implements ICustomModelLoader {
     // A mapping from configured textured models to the models they're based on

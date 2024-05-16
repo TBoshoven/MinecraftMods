@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.reflection.renderers.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.reflection.renderers.ReflectionRendererBase;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
@@ -21,15 +20,12 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Reflection renderer modifier that replaces the rendered entity by a different one.
  * <p>
  * Currently, only skeletons are supported.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ReflectionRendererModifierCreature extends ReflectionRendererModifier {
     /**
      * The renderer to use instead of the default one.
@@ -55,8 +51,6 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
     /**
      * A renderer to render a player using a different (biped) model.
      */
-    @ParametersAreNonnullByDefault
-    @MethodsReturnNonnullByDefault
     private static class RenderOffModelPlayer extends RenderLivingBase<AbstractClientPlayer> {
         /**
          * The location of the texture to use.
@@ -128,8 +122,6 @@ public class ReflectionRendererModifierCreature extends ReflectionRendererModifi
      * A player model that renders a skeleton.
      * Skeletons don't use the default biped model, but the actual skeleton model requires a skeleton entity.
      */
-    @ParametersAreNonnullByDefault
-    @MethodsReturnNonnullByDefault
     private static class ModelSkeletonPlayer extends ModelBiped {
         @SuppressWarnings("AssignmentToSuperclassField")
         ModelSkeletonPlayer() {

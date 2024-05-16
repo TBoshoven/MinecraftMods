@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicmirror.renderers;
 import com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror.EnumPartType;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.TileEntityMagicMirrorBase;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,13 +14,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * Renderer for the Magic Mirror tile entity.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 class TileEntityMagicMirrorRenderer extends TileEntitySpecialRenderer<TileEntityMagicMirrorBase> {
     /**
      * Maximum distance for an entity to be rendered.

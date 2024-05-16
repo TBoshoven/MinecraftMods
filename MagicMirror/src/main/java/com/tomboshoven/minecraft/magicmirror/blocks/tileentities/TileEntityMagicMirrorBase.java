@@ -5,7 +5,6 @@ import com.tomboshoven.minecraft.magicmirror.blocks.BlockMagicMirror.EnumPartTyp
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
 import com.tomboshoven.minecraft.magicmirror.blocks.tileentities.modifiers.MagicMirrorTileEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.reflection.Reflection;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +15,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,8 +22,6 @@ import java.util.List;
  * Base class for magic mirror multiblock.
  * Provides a common interface to to the core tile entity.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class TileEntityMagicMirrorBase extends TileEntity {
     // Some values copied from the blockstate
     private EnumFacing facing = EnumFacing.NORTH;
