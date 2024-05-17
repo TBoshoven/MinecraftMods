@@ -10,7 +10,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Map;
@@ -19,7 +18,6 @@ import java.util.function.Supplier;
 /**
  * Collection of all items in the mod.
  */
-@EventBusSubscriber
 public final class Items {
     /**
      * The magic doorknob items by type name.
