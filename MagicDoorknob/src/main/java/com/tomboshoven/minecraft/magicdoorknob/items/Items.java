@@ -10,7 +10,6 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -21,7 +20,6 @@ import java.util.function.Supplier;
 /**
  * Collection of all items in the mod.
  */
-@EventBusSubscriber
 public final class Items {
     /**
      * The magic doorknob items by type name.
