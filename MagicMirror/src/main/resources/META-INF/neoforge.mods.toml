@@ -18,7 +18,7 @@ It can be made to look like a skeleton, or you could even give it some armor and
 [[dependencies.magic_mirror]]
 modId="neoforge"
 type="required"
-versionRange="[20.6-beta,)"
+versionRange="[20.6,)"
 ordering="NONE"
 side="BOTH"
 

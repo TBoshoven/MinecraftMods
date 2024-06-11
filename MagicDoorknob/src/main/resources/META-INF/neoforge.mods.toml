@@ -17,7 +17,7 @@ A doorknob that does not require a door.
 [[dependencies.magic_doorknob]]
 modId="neoforge"
 type="required"
-versionRange="[20.6-beta,)"
+versionRange="[20.6,)"
 ordering="NONE"
 side="BOTH"
 
