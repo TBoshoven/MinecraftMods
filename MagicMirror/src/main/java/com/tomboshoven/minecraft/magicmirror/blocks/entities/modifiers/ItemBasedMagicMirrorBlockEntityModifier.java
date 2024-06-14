@@ -23,23 +23,7 @@ public abstract class ItemBasedMagicMirrorBlockEntityModifier extends MagicMirro
     public ItemBasedMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt, HolderLookup.Provider lookupProvider) {
         super(modifier);
         CompoundTag itemCompound = nbt.getCompound("Item");
-        if (itemCompound.isEmpty()) {
-            item = getItemStackOldNbt(nbt, lookupProvider);
-        } else {
-            item = ItemStack.parse(lookupProvider, itemCompound).orElse(ItemStack.EMPTY);
-        }
-    }
-
-    /**
-     * Reconstruct the item stack from old NBT compounds, which kept track of things separately.
-     * This should be safe to remove over time.
-     *
-     * @param nbt            The NBT compound to attempt to reconstruct the item stack for.
-     * @param lookupProvider The holder lookup provider for deserializing item stacks.
-     * @return the reconstructed item stack.
-     */
-    protected ItemStack getItemStackOldNbt(CompoundTag nbt, HolderLookup.Provider lookupProvider) {
-        return ItemStack.EMPTY;
+        item = ItemStack.parse(lookupProvider, itemCompound).orElse(ItemStack.EMPTY);
     }
 
     @Override

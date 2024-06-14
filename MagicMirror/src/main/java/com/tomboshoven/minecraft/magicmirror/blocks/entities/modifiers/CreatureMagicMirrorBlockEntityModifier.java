@@ -8,7 +8,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlockEntityModifier {
     /**
@@ -36,11 +35,6 @@ public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirror
             entityType = CreatureMagicMirrorModifier.getDefaultEntityType();
         }
         this.entityType = entityType;
-    }
-
-    @Override
-    protected ItemStack getItemStackOldNbt(CompoundTag nbt, HolderLookup.Provider lookupProvider) {
-        return new ItemStack(Items.SKELETON_SKULL);
     }
 
     @Override
