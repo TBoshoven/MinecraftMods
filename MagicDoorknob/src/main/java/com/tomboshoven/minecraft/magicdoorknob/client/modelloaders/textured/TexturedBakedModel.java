@@ -1,6 +1,5 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
@@ -48,19 +47,8 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
 
     static {
         // Find the UV index and offset in the vertex format.
-        int index;
-        VertexFormatElement element = null;
-        ImmutableList<VertexFormatElement> elements = VERTEX_FORMAT.getElements();
-        int size = elements.size();
-        for (index = 0; index < size; ++index) {
-            VertexFormatElement el = VERTEX_FORMAT.getElements().get(index);
-            if (el.getUsage() == VertexFormatElement.Usage.UV && el.getIndex() == 0) {
-                element = el;
-                break;
-            }
-        }
-        VERTEX_FORMAT_ELEMENT_UV = element;
-        VERTEX_FORMAT_ELEMENT_UV_OFFSET = VERTEX_FORMAT.getOffset(index);
+        VERTEX_FORMAT_ELEMENT_UV = VERTEX_FORMAT.getElements().stream().filter(el -> el.usage() == VertexFormatElement.Usage.UV && el.index() == 0).findFirst().orElseThrow();
+        VERTEX_FORMAT_ELEMENT_UV_OFFSET = VERTEX_FORMAT.getOffset(VERTEX_FORMAT_ELEMENT_UV);
     }
 
     /**
@@ -99,7 +87,7 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
         // Offset between vertices
         int stride = VERTEX_FORMAT.getVertexSize();
         // Offset for a single U/V
-        int eltOffset = VERTEX_FORMAT_ELEMENT_UV.getType().getSize();
+        int eltOffset = VERTEX_FORMAT_ELEMENT_UV.type().size();
 
         float minU = sprite.getU0();
         float maxU = sprite.getU1();

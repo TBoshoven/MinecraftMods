@@ -82,7 +82,7 @@ public class Reflection {
     public Reflection(MagicMirrorCoreBlockEntity blockEntity) {
         angle = blockEntity.getBlockState().getValue(HORIZONTAL_FACING).toYRot();
         this.blockEntity = blockEntity;
-        textureLocation = new ResourceLocation(MagicMirrorMod.MOD_ID, String.format(Locale.ROOT, "reflection_%d", texId++));
+        textureLocation = ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, String.format(Locale.ROOT, "reflection_%d", texId++));
 
         Entity entity = blockEntity.getReflectedEntity();
         if (entity != null) {

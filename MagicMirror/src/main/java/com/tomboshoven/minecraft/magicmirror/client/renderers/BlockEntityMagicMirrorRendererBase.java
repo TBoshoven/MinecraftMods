@@ -74,9 +74,9 @@ public abstract class BlockEntityMagicMirrorRendererBase {
         Matrix4f matrix = matrixStack.last().pose();
 
         // Draw a simple quad
-        buffer.vertex(matrix, -.5f, -.5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(0, texBottom).uv2(combinedLight).endVertex();
-        buffer.vertex(matrix, .5f, -.5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(1, texBottom).uv2(combinedLight).endVertex();
-        buffer.vertex(matrix, .5f, .5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(1, texTop).uv2(combinedLight).endVertex();
-        buffer.vertex(matrix, -.5f, .5f, 0).color(1f, 1f, 1f, reflectionAlpha).uv(0, texTop).uv2(combinedLight).endVertex();
+        buffer.addVertex(matrix, -.5f, -.5f, 0).setColor(1f, 1f, 1f, reflectionAlpha).setUv(0, texBottom).setLight(combinedLight);
+        buffer.addVertex(matrix, .5f, -.5f, 0).setColor(1f, 1f, 1f, reflectionAlpha).setUv(1, texBottom).setLight(combinedLight);
+        buffer.addVertex(matrix, .5f, .5f, 0).setColor(1f, 1f, 1f, reflectionAlpha).setUv(1, texTop).setLight(combinedLight);
+        buffer.addVertex(matrix, -.5f, .5f, 0).setColor(1f, 1f, 1f, reflectionAlpha).setUv(0, texTop).setLight(combinedLight);
     }
 }

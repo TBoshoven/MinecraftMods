@@ -25,7 +25,7 @@ public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirror
         super(modifier, nbt, holderLookupProvider);
         EntityType<?> entityType = null;
         if (nbt.contains("EntityType", 8)) {
-            ResourceLocation entityTypeKey = new ResourceLocation(nbt.getString("EntityType"));
+            ResourceLocation entityTypeKey = ResourceLocation.parse(nbt.getString("EntityType"));
             // Extra check to make sure we're not getting the default
             if (BuiltInRegistries.ENTITY_TYPE.containsKey(entityTypeKey)) {
                 entityType = BuiltInRegistries.ENTITY_TYPE.get(entityTypeKey);

@@ -14,7 +14,7 @@ public final class MagicMirrorModifiers {
     /**
      * The resource key for the modifier registry.
      */
-    public static final ResourceKey<Registry<MagicMirrorModifier>> MAGIC_MIRROR_MODIFIER_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(MagicMirrorMod.MOD_ID, "magic_mirror_modifiers"));
+    public static final ResourceKey<Registry<MagicMirrorModifier>> MAGIC_MIRROR_MODIFIER_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "magic_mirror_modifiers"));
     /**
      * A registry of all modifiers.
      */

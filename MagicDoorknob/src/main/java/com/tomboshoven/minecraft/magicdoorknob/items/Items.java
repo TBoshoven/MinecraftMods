@@ -53,7 +53,7 @@ public final class Items {
      * @param blockName  The name of the block that provides the texture of the doorknob
      */
     private static void addDoorknob(String typeName, Tier tier, String blockName) {
-        addDoorknob(typeName, tier, new ResourceLocation("minecraft", String.format("block/%s", blockName)), tier::getRepairIngredient);
+        addDoorknob(typeName, tier, ResourceLocation.withDefaultNamespace(String.format("block/%s", blockName)), tier::getRepairIngredient);
     }
 
     public static void register(IEventBus eventBus) {

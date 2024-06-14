@@ -26,12 +26,13 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -102,7 +103,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
         }
 
         if (player instanceof ServerPlayer) {
-            if (!tryEquipArmor(blockEntity, heldItem)) {
+            if (!tryEquipArmor(blockEntity, player, heldItem)) {
                 swapArmor(blockEntity, player);
             }
         }
@@ -117,10 +118,10 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
      * @param heldItem    The item held by the player.
      * @return Whether the held item was successfully equipped as armor.
      */
-    private boolean tryEquipArmor(MagicMirrorCoreBlockEntity blockEntity, ItemStack heldItem) {
+    private boolean tryEquipArmor(MagicMirrorCoreBlockEntity blockEntity, LivingEntity player, ItemStack heldItem) {
         if (heldItem.getItem() instanceof ArmorItem) {
-            EquipmentSlot equipmentSlotType = Mob.getEquipmentSlotForItem(heldItem);
-            if (equipmentSlotType.getType() == EquipmentSlot.Type.ARMOR) {
+            EquipmentSlot equipmentSlotType = player.getEquipmentSlotForItem(heldItem);
+            if (equipmentSlotType.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
                 int slotIndex = equipmentSlotType.getIndex();
                 if (replacementArmor.isEmpty(slotIndex)) {
                     BlockPos pos = blockEntity.getBlockPos();
@@ -229,7 +230,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
             for (int i : Inventory.ALL_ARMOR_SLOTS) {
                 ItemStack original = inventory.get(i);
                 ItemStack replacement = replacementInventory.get(i);
-                if (EnchantmentHelper.hasBindingCurse(original) || EnchantmentHelper.hasBindingCurse(replacement)) {
+                if (EnchantmentHelper.has(original, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE) || EnchantmentHelper.has(replacement, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) {
                     // Cannot swap armor with curse of binding
                     continue;
                 }
@@ -247,7 +248,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
             for (int i = 0; i < 4; ++i) {
                 ItemStack playerArmor = player.getInventory().armor.get(i);
                 ItemStack replacement = replacementInventory.get(i);
-                if (EnchantmentHelper.hasBindingCurse(playerArmor) || EnchantmentHelper.hasBindingCurse(replacement)) {
+                if (EnchantmentHelper.has(playerArmor, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE) || EnchantmentHelper.has(replacement, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) {
                     // Cannot swap armor with curse of binding
                     continue;
                 }
@@ -309,7 +310,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
      * Message describing players equipping the mirror with armor.
      */
     public record MessageEquip(BlockPos mirrorPos, int slotIdx, ItemStack armor) implements CustomPacketPayload {
-        public static final CustomPacketPayload.Type<MessageEquip> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(MagicMirrorMod.MOD_ID, "equip"));
+        public static final CustomPacketPayload.Type<MessageEquip> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "equip"));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, MessageEquip> STREAM_CODEC = StreamCodec.composite(BlockPos.STREAM_CODEC, MessageEquip::mirrorPos, ByteBufCodecs.INT, MessageEquip::slotIdx, ItemStack.STREAM_CODEC, MessageEquip::armor, MessageEquip::new);
 
@@ -323,7 +324,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
      * Message describing players swapping armor with the mirror (mirror side).
      */
     public record MessageSwapMirror(ReplacementArmor armor, BlockPos mirrorPos) implements CustomPacketPayload {
-        public static final CustomPacketPayload.Type<MessageSwapMirror> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(MagicMirrorMod.MOD_ID, "swap_mirror"));
+        public static final CustomPacketPayload.Type<MessageSwapMirror> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "swap_mirror"));
 
         MessageSwapMirror(MagicMirrorCoreBlockEntity magicMirrorBase, Player player) {
             this(new ReplacementArmor(player.getArmorSlots()), magicMirrorBase.getBlockPos());
@@ -341,7 +342,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
      * Message describing players swapping armor with the mirror (player side).
      */
     public record MessageSwapPlayer(ReplacementArmor armor, int entityId) implements CustomPacketPayload {
-        public static final CustomPacketPayload.Type<MessageSwapPlayer> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(MagicMirrorMod.MOD_ID, "swap_player"));
+        public static final CustomPacketPayload.Type<MessageSwapPlayer> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "swap_player"));
 
         MessageSwapPlayer(ArmorMagicMirrorBlockEntityModifier armorModifier, Player player) {
             this(new ReplacementArmor(armorModifier.getReplacementArmor().replacementInventory), player.getId());

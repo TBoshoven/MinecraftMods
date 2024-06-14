@@ -17,13 +17,13 @@ A doorknob that does not require a door.
 [[dependencies.magic_doorknob]]
 modId="neoforge"
 type="required"
-versionRange="[20.6,)"
+versionRange="[21.0,)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.magic_doorknob]]
 modId="minecraft"
 type="required"
-versionRange="[1.20.6,1.21)"
+versionRange="[1.21.0,1.22)"
 ordering="NONE"
 side="BOTH"

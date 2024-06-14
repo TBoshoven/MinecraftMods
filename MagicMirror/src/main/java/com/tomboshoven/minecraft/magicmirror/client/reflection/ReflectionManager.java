@@ -66,7 +66,7 @@ public class ReflectionManager {
     public static void renderReflections(RenderFrameEvent.Pre event) {
         if (!Minecraft.getInstance().noRender) {
             for (Reflection reflection : reflections.values()) {
-                reflection.render(event.getPartialTick());
+                reflection.render(event.getPartialTick().getRealtimeDeltaTicks());
             }
             // Restore the regular frame buffer
             Minecraft.getInstance().getMainRenderTarget().bindWrite(false);

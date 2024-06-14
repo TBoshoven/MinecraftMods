@@ -107,7 +107,7 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
      * Message describing the action of attaching a new modifier to a mirror.
      */
     public record MessageAttachModifier(BlockPos mirrorPos, ItemStack usedItemStack, ResourceLocation modifier) implements CustomPacketPayload {
-        public static final CustomPacketPayload.Type<MessageAttachModifier> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(MagicMirrorMod.MOD_ID, "attach_modifier"));
+        public static final CustomPacketPayload.Type<MessageAttachModifier> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "attach_modifier"));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, MessageAttachModifier> STREAM_CODEC = StreamCodec.composite(BlockPos.STREAM_CODEC, MessageAttachModifier::mirrorPos, ItemStack.STREAM_CODEC, MessageAttachModifier::usedItemStack, ResourceLocation.STREAM_CODEC, MessageAttachModifier::modifier, MessageAttachModifier::new);
 

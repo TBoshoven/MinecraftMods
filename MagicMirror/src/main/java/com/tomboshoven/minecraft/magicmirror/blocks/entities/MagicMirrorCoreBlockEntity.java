@@ -157,7 +157,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
                     // Fall back on old "name" field
                     // TODO: Remove fallback
                     String name = modifierCompound.getString("name");
-                    id = new ResourceLocation(MagicMirrorMod.MOD_ID, name);
+                    id = ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, name);
                 }
                 else {
                     id = ResourceLocation.tryParse(idStr);

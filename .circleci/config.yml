@@ -17,7 +17,7 @@ jobs:
               TAG_VERSION="$(echo "$CIRCLE_TAG" | sed -E 's/[^0-9]+//')"
               sed -Ei 's/^(\s*version = ")([0-9]+\.){2}[0-9]+-DEV\.0+"$/\1'$TAG_VERSION'.'$CIRCLE_BUILD_NUM'"/' build.gradle
             else
-              [[ $CIRCLE_BRANCH = '1.20.6' ]] && LIB_VERSION=MASTER || LIB_VERSION=DEV
+              [[ $CIRCLE_BRANCH = '1.21.0' ]] && LIB_VERSION=MASTER || LIB_VERSION=DEV
               sed -Ei 's/^(\s*version = "([0-9]+\.){2}[0-9]+-)DEV\.0+"$/\1'$LIB_VERSION'.'$CIRCLE_BUILD_NUM'"/' build.gradle
             fi
       - restore_cache:
@@ -94,7 +94,7 @@ jobs:
             FILE="$(ls /tmp/workspace/libs/*.jar | head -n 1)"
             # Use the build number on the JAR to prevent confusion.
             ORIGINAL_BUILD_NUM="$(echo "$FILE" | sed -E 's/^.*\.([0-9]+)\.jar$/\1/')"
-            METADATA="$(jq -n '{"changelog": $ARGS.positional[0], "changelogType": "markdown", "displayName": $ARGS.positional[1], "gameVersions": [11198, 10150, 8326], "releaseType": "release"}' --args "$DESCRIPTION" "v$TAG_VERSION.$ORIGINAL_BUILD_NUM")"
+            METADATA="$(jq -n '{"changelog": $ARGS.positional[0], "changelogType": "markdown", "displayName": $ARGS.positional[1], "gameVersions": [11457, 10150, 8326], "releaseType": "release"}' --args "$DESCRIPTION" "v$TAG_VERSION.$ORIGINAL_BUILD_NUM")"
             curl -XPOST -f "https://minecraft.curseforge.com/api/projects/$PROJECT_ID/upload-file" -F "file=@$FILE" -F "metadata=$METADATA" -H "X-Api-Token: $CURSEFORGE_TOKEN"
   release-modrinth:
     docker:
@@ -116,7 +116,7 @@ jobs:
             FILE="$(ls /tmp/workspace/libs/*.jar | head -n 1)"
             # Use the build number on the JAR to prevent confusion.
             ORIGINAL_BUILD_NUM="$(echo "$FILE" | sed -E 's/^.*\.([0-9]+)\.jar$/\1/')"
-            DATA="$(jq -n '{"name": $ARGS.positional[1], "version_number": $ARGS.positional[2], "changelog": $ARGS.positional[0], "dependencies": [], "game_versions": ["1.20.6"], "version_type": "release", "loaders": ["neoforge"], "featured": false, "project_id": $ARGS.positional[3], "file_parts": ["file"]}' --args "$DESCRIPTION" "v$TAG_VERSION" "$TAG_VERSION.$ORIGINAL_BUILD_NUM" "$PROJECT_ID")"
+            DATA="$(jq -n '{"name": $ARGS.positional[1], "version_number": $ARGS.positional[2], "changelog": $ARGS.positional[0], "dependencies": [], "game_versions": ["1.21.0"], "version_type": "release", "loaders": ["neoforge"], "featured": false, "project_id": $ARGS.positional[3], "file_parts": ["file"]}' --args "$DESCRIPTION" "v$TAG_VERSION" "$TAG_VERSION.$ORIGINAL_BUILD_NUM" "$PROJECT_ID")"
             curl -XPOST -f 'https://api.modrinth.com/v2/version' -F "data=$DATA" -F "file=@$FILE" -H "Authorization: $MODRINTH_TOKEN" -H 'User-Agent: TBoshoven/MinecraftMods'
 workflows:
   version: 2

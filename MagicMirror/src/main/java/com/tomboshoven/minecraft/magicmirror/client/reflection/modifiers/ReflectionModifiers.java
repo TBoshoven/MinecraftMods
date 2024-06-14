@@ -22,7 +22,7 @@ public class ReflectionModifiers {
     /**
      * The resource key for the modifier registry.
      */
-    public static final ResourceKey<Registry<ReflectionModifier>> REFLECTION_MODIFIER_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(MagicMirrorMod.MOD_ID, "reflection_modifiers"));
+    public static final ResourceKey<Registry<ReflectionModifier>> REFLECTION_MODIFIER_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "reflection_modifiers"));
     /**
      * A registry of all modifiers.
      */

@@ -40,12 +40,12 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     /**
      * The main texture of the doorway (based on base block).
      */
-    private static final ModelTextureProperty TEXTURE_MAIN = ModelTextureProperty.get(new ResourceLocation(PROPERTY_NAMESPACE, "texture_main"));
+    private static final ModelTextureProperty TEXTURE_MAIN = ModelTextureProperty.get(ResourceLocation.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_main"));
 
     /**
      * The highlight texture of the doorway (based on doorknob).
      */
-    private static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(new ResourceLocation(PROPERTY_NAMESPACE, "texture_highlight"));
+    private static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(ResourceLocation.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_highlight"));
 
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.defaultBlockState();
@@ -112,7 +112,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
         Material blockMaterial;
         if (blockTexture == null || blockTexture == minecraft.getTextureAtlas(blockTexture.atlasLocation()).apply(MissingTextureAtlasSprite.getLocation())) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.
-            blockMaterial = new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation(MOD_ID, "block/empty"));
+            blockMaterial = new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.fromNamespaceAndPath(MOD_ID, "block/empty"));
         } else {
             blockMaterial = new Material(blockTexture.atlasLocation(), blockTexture.contents().name());
         }

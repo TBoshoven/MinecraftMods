@@ -18,13 +18,13 @@ It can be made to look like a skeleton, or you could even give it some armor and
 [[dependencies.magic_mirror]]
 modId="neoforge"
 type="required"
-versionRange="[20.6,)"
+versionRange="[21.0,)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.magic_mirror]]
 modId="minecraft"
 type="required"
-versionRange="[1.20.6,1.21)"
+versionRange="[1.21.0,1.22)"
 ordering="NONE"
 side="BOTH"

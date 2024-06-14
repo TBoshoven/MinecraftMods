@@ -31,7 +31,7 @@ public class OffModelPlayerRenderers implements ResourceManagerReloadListener {
                 EntityType.SKELETON,
                 OffModelPlayerRenderer.createProvider(
                         context -> new HumanoidModel<>(context.bakeLayer(ModelLayers.SKELETON)),
-                        new ResourceLocation("textures/entity/skeleton/skeleton.png")
+                        ResourceLocation.withDefaultNamespace("textures/entity/skeleton/skeleton.png")
                 ));
     }
 

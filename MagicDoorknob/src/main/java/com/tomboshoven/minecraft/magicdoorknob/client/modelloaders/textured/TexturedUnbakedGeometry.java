@@ -34,7 +34,7 @@ public class TexturedUnbakedGeometry implements IUnbakedGeometry<TexturedUnbaked
     }
 
     @Override
-    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides) {
         // Use a custom texture getter and baked model
         Function<Material, TextureAtlasSprite> augmentedSpriteGetter = material -> {
             if (ModelTextureProperty.PROPERTY_NAMESPACE.equals(material.texture().getNamespace())) {
@@ -42,6 +42,6 @@ public class TexturedUnbakedGeometry implements IUnbakedGeometry<TexturedUnbaked
             }
             return spriteGetter.apply(material);
         };
-        return new TexturedBakedModel<>(originalModelGeometry.bake(context, baker, augmentedSpriteGetter, modelTransform, overrides, modelLocation), spriteGetter, new ModelDataTextureMapper());
+        return new TexturedBakedModel<>(originalModelGeometry.bake(context, baker, augmentedSpriteGetter, modelTransform, overrides), spriteGetter, new ModelDataTextureMapper());
     }
 }
