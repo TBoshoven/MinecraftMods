@@ -3,6 +3,7 @@ package com.tomboshoven.minecraft.magicdoorknob.items;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayBlock;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayPartBaseBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
@@ -148,8 +149,8 @@ public class MagicDoorknobItem extends Item {
         for (int i = 0; i < depth; ++i) {
             BlockPos elementPos = pos.relative(doorwayFacing, i);
             if (
-                    (isReplaceable(world, elementPos) && !isEmpty(world, elementPos, useContext)) ||
-                            (isReplaceable(world, elementPos.below()) && !isEmpty(world, elementPos.below(), useContext))
+                    (isReplaceable(world, elementPos, false) && !isEmpty(world, elementPos, useContext)) ||
+                            (isReplaceable(world, elementPos.below(), false) && !isEmpty(world, elementPos.below(), useContext))
             ) {
                 placeDoorwayElement(world, elementPos, isNorthSouth, MagicDoorwayBlock.EnumPartType.TOP);
                 placeDoorwayElement(world, elementPos.below(), isNorthSouth, MagicDoorwayBlock.EnumPartType.BOTTOM);
@@ -169,15 +170,24 @@ public class MagicDoorknobItem extends Item {
      * @param part         Whether this is the top or bottom part
      */
     private void placeDoorwayElement(Level world, BlockPos pos, boolean isNorthSouth, MagicDoorwayBlock.EnumPartType part) {
-        if (isReplaceable(world, pos)) {
+        if (isReplaceable(world, pos, false)) {
             BlockState state = world.getBlockState(pos);
             Block block = Blocks.MAGIC_DOORWAY.get();
-            world.setBlockAndUpdate(pos, block.defaultBlockState().setValue(MagicDoorwayBlock.OPEN_NORTH_SOUTH, isNorthSouth).setValue(MagicDoorwayBlock.OPEN_EAST_WEST, !isNorthSouth).setValue(MagicDoorwayBlock.PART, part));
+            if (state.is(block)) {
+                BlockState newState = state.setValue(isNorthSouth ? MagicDoorwayBlock.OPEN_NORTH_SOUTH : MagicDoorwayBlock.OPEN_EAST_WEST, true);
+                if (part == MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM && state.getValue(MagicDoorwayBlock.PART) == MagicDoorwayPartBaseBlock.EnumPartType.TOP) {
+                    newState.setValue(MagicDoorwayBlock.PART, MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM).setValue(MagicDoorwayBlock.OPEN_CROSS_TOP_BOTTOM, true);
+                }
+                world.setBlockAndUpdate(pos, newState);
+            }
+            else {
+                world.setBlockAndUpdate(pos, block.defaultBlockState().setValue(MagicDoorwayBlock.OPEN_NORTH_SOUTH, isNorthSouth).setValue(MagicDoorwayBlock.OPEN_EAST_WEST, !isNorthSouth).setValue(MagicDoorwayBlock.PART, part));
 
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof MagicDoorwayBlockEntity) {
-                ((MagicDoorwayPartBaseBlockEntity) blockEntity).setBaseBlockState(state);
-                ((MagicDoorwayPartBaseBlockEntity) blockEntity).setDoorknob(this);
+                BlockEntity blockEntity = world.getBlockEntity(pos);
+                if (blockEntity instanceof MagicDoorwayBlockEntity) {
+                    ((MagicDoorwayPartBaseBlockEntity) blockEntity).setBaseBlockState(state);
+                    ((MagicDoorwayPartBaseBlockEntity) blockEntity).setDoorknob(this);
+                }
             }
         }
     }
@@ -192,7 +202,7 @@ public class MagicDoorknobItem extends Item {
      * @return Whether a door can be placed at the given position.
      */
     private boolean canPlaceDoor(BlockGetter world, BlockPos pos, Direction facing, BlockPlaceContext useContext) {
-        if (!isReplaceable(world, pos) || !isReplaceable(world, pos.below())) {
+        if (!isReplaceable(world, pos, true) || !isReplaceable(world, pos.below(), true)) {
             return false;
         }
         return isEmpty(world, pos.relative(facing), useContext) && isEmpty(world, pos.relative(facing).below(), useContext);
@@ -203,10 +213,15 @@ public class MagicDoorknobItem extends Item {
      *
      * @param world The world to analyze
      * @param pos   The position to check
+     * @param door  Whether we're trying to place a door
      * @return Whether this doorknob can replace the given block by a door or doorway
      */
-    private boolean isReplaceable(BlockGetter world, BlockPos pos) {
+    private boolean isReplaceable(BlockGetter world, BlockPos pos, boolean door) {
         BlockState blockState = world.getBlockState(pos);
+        // It's currently not possible to place a door on a doorway (blockstate limitation)
+        if (!door && blockState.is(Blocks.MAGIC_DOORWAY.get())) {
+            return true;
+        }
         if (blockState.hasBlockEntity()) {
             return false;
         }
