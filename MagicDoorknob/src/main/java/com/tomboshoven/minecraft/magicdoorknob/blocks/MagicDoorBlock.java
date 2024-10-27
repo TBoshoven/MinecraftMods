@@ -92,9 +92,10 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
     @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        breakDoorway(worldIn, pos, state.getValue(HORIZONTAL_FACING));
+        EnumPartType part = state.getValue(PART);
+        breakDoorway(worldIn, pos, state.getValue(HORIZONTAL_FACING), part);
 
-        if (state.getValue(PART) == EnumPartType.TOP) {
+        if (part == EnumPartType.TOP) {
             // Spawn the doorknob
             Item doorknob = getDoorknob(worldIn, pos);
             if (doorknob != null) {
@@ -117,8 +118,9 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
      * @param world  The world containing the door
      * @param pos    The position of the door block
      * @param facing The direction the door is facing in (opposite to doorway)
+     * @param part   The part of the doorway we're breaking
      */
-    private static void breakDoorway(World world, BlockPos pos, Direction facing) {
+    private static void breakDoorway(World world, BlockPos pos, Direction facing, MagicDoorwayPartBaseBlock.EnumPartType part) {
         Direction doorwayFacing = facing.getOpposite();
 
         MagicDoorknobItem doorknob = getDoorknob(world, pos);
@@ -129,7 +131,17 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
             BlockPos blockPos = pos.relative(doorwayFacing, i);
             BlockState state = world.getBlockState(blockPos);
             if (state.getBlock() == Blocks.MAGIC_DOORWAY.get()) {
-                world.destroyBlock(blockPos, false);
+                // If it's a crossing doorway, just remove the one direction but don't actually break the block
+                if (state.getValue(MagicDoorwayBlock.OPEN_EAST_WEST) && state.getValue(MagicDoorwayBlock.OPEN_NORTH_SOUTH)) {
+                    BlockState newState = state.setValue(facing.getAxis() == Direction.Axis.X ? MagicDoorwayBlock.OPEN_EAST_WEST : MagicDoorwayBlock.OPEN_NORTH_SOUTH, false);
+                    if (part == EnumPartType.BOTTOM && state.getValue(MagicDoorwayBlock.OPEN_CROSS_TOP_BOTTOM)) {
+                        newState = state.setValue(MagicDoorwayBlock.PART, EnumPartType.TOP).setValue(MagicDoorwayBlock.OPEN_CROSS_TOP_BOTTOM, false);
+                    }
+                    world.setBlockAndUpdate(blockPos, newState);
+                }
+                else {
+                    world.destroyBlock(blockPos, false);
+                }
             }
         }
     }

@@ -26,6 +26,14 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
      */
     public static final EnumProperty<EnumPartType> PART = EnumProperty.create("part", EnumPartType.class);
 
+    // Awkward representation of blockstate for backward compatibility
+    // To be fixed up in the future
+
+    /**
+     * Property describing whether the doorway represents both the top and bottom of crossing doorways.
+     */
+    public static final BooleanProperty OPEN_CROSS_TOP_BOTTOM = BooleanProperty.create("open_cross_top_bottom");
+
     /**
      * Property describing whether the block forms a doorway between north and south.
      */
@@ -37,7 +45,7 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
     public static final BooleanProperty OPEN_EAST_WEST = BooleanProperty.create("open_east_west");
 
     private static final VoxelShape BOUNDING_BOX_PILLAR_NW = box(0, 0, 15, 1, 16, 16);
-    private static final VoxelShape BOUNDING_BOX_PILLAR_NE = box(15, 0, 0, 16, 16, 15);
+    private static final VoxelShape BOUNDING_BOX_PILLAR_NE = box(15, 0, 0, 16, 16, 1);
     private static final VoxelShape BOUNDING_BOX_PILLAR_SW = box(0, 0, 0, 1, 16, 1);
     private static final VoxelShape BOUNDING_BOX_PILLAR_SE = box(15, 0, 15, 16, 16, 16);
 
@@ -60,6 +68,7 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
                         .setValue(PART, EnumPartType.BOTTOM)
                         .setValue(OPEN_EAST_WEST, Boolean.TRUE)
                         .setValue(OPEN_NORTH_SOUTH, Boolean.FALSE)
+                        .setValue(OPEN_CROSS_TOP_BOTTOM, Boolean.FALSE)
         );
     }
 
@@ -102,7 +111,7 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
 
     @Override
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(PART, OPEN_NORTH_SOUTH, OPEN_EAST_WEST);
+        builder.add(PART, OPEN_NORTH_SOUTH, OPEN_EAST_WEST, OPEN_CROSS_TOP_BOTTOM);
     }
 
     @Nullable
