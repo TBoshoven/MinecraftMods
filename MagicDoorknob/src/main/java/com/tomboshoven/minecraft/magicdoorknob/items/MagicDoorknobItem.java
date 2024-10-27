@@ -3,6 +3,7 @@ package com.tomboshoven.minecraft.magicdoorknob.items;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayBlock;
+import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayPartBaseBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
@@ -115,9 +116,17 @@ public class MagicDoorknobItem extends Item {
                         .setValue(MagicDoorBlock.PART, MagicDoorBlock.EnumPartType.TOP)
         );
         BlockEntity topBlockEntity = world.getBlockEntity(doorPos);
-        if (topBlockEntity instanceof MagicDoorBlockEntity) {
-            ((MagicDoorwayPartBaseBlockEntity) topBlockEntity).setBaseBlockState(world.getBlockState(pos));
-            ((MagicDoorwayPartBaseBlockEntity) topBlockEntity).setDoorknob(this);
+        if (topBlockEntity instanceof MagicDoorBlockEntity topDoorBlockEntity) {
+            BlockState blockState = world.getBlockState(pos);
+            if (blockState.is(Blocks.MAGIC_DOORWAY.get())) {
+                if (world.getBlockEntity(pos) instanceof MagicDoorwayBlockEntity magicDoorwayBlockEntity) {
+                    topDoorBlockEntity.setBaseBlockState(magicDoorwayBlockEntity.getBaseBlockState());
+                }
+            }
+            else {
+                topDoorBlockEntity.setBaseBlockState(blockState);
+            }
+            topDoorBlockEntity.setDoorknob(this);
         }
         world.setBlockAndUpdate(
                 doorPos.below(),
@@ -126,9 +135,17 @@ public class MagicDoorknobItem extends Item {
                         .setValue(MagicDoorBlock.PART, MagicDoorBlock.EnumPartType.BOTTOM)
         );
         BlockEntity bottomBlockEntity = world.getBlockEntity(doorPos.below());
-        if (bottomBlockEntity instanceof MagicDoorBlockEntity) {
-            ((MagicDoorwayPartBaseBlockEntity) bottomBlockEntity).setBaseBlockState(world.getBlockState(pos.below()));
-            ((MagicDoorwayPartBaseBlockEntity) bottomBlockEntity).setDoorknob(this);
+        if (bottomBlockEntity instanceof MagicDoorBlockEntity bottomDoorBlockEntity) {
+            BlockState blockState = world.getBlockState(pos.below());
+            if (blockState.is(Blocks.MAGIC_DOORWAY.get())) {
+                if (world.getBlockEntity(pos) instanceof MagicDoorwayBlockEntity magicDoorwayBlockEntity) {
+                    bottomDoorBlockEntity.setBaseBlockState(magicDoorwayBlockEntity.getBaseBlockState());
+                }
+            }
+            else {
+                bottomDoorBlockEntity.setBaseBlockState(blockState);
+            }
+            bottomDoorBlockEntity.setDoorknob(this);
         }
         world.playSound(null, doorPos, SoundEvents.WOODEN_DOOR_OPEN, SoundSource.BLOCKS, 1, 1);
     }
@@ -173,12 +190,21 @@ public class MagicDoorknobItem extends Item {
         if (isReplaceable(world, pos)) {
             BlockState state = world.getBlockState(pos);
             Block block = Blocks.MAGIC_DOORWAY.get();
-            world.setBlockAndUpdate(pos, block.defaultBlockState().setValue(MagicDoorwayBlock.OPEN_NORTH_SOUTH, isNorthSouth).setValue(MagicDoorwayBlock.OPEN_EAST_WEST, !isNorthSouth).setValue(MagicDoorwayBlock.PART, part));
+            if (state.is(block)) {
+                BlockState newState = state.setValue(isNorthSouth ? MagicDoorwayBlock.OPEN_NORTH_SOUTH : MagicDoorwayBlock.OPEN_EAST_WEST, true);
+                if (part == MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM && state.getValue(MagicDoorwayBlock.PART) == MagicDoorwayPartBaseBlock.EnumPartType.TOP) {
+                    newState = newState.setValue(MagicDoorwayBlock.PART, MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM).setValue(MagicDoorwayBlock.OPEN_CROSS_TOP_BOTTOM, true);
+                }
+                world.setBlockAndUpdate(pos, newState);
+            }
+            else {
+                world.setBlockAndUpdate(pos, block.defaultBlockState().setValue(MagicDoorwayBlock.OPEN_NORTH_SOUTH, isNorthSouth).setValue(MagicDoorwayBlock.OPEN_EAST_WEST, !isNorthSouth).setValue(MagicDoorwayBlock.PART, part));
 
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof MagicDoorwayBlockEntity) {
-                ((MagicDoorwayPartBaseBlockEntity) blockEntity).setBaseBlockState(state);
-                ((MagicDoorwayPartBaseBlockEntity) blockEntity).setDoorknob(this);
+                BlockEntity blockEntity = world.getBlockEntity(pos);
+                if (blockEntity instanceof MagicDoorwayBlockEntity) {
+                    ((MagicDoorwayPartBaseBlockEntity) blockEntity).setBaseBlockState(state);
+                    ((MagicDoorwayPartBaseBlockEntity) blockEntity).setDoorknob(this);
+                }
             }
         }
     }
@@ -208,6 +234,9 @@ public class MagicDoorknobItem extends Item {
      */
     private boolean isReplaceable(BlockGetter world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
+        if (blockState.is(Blocks.MAGIC_DOORWAY.get())) {
+            return true;
+        }
         if (blockState.hasBlockEntity()) {
             return false;
         }
