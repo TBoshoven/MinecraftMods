@@ -122,7 +122,7 @@ public class MagicDoorknobItem extends Item {
         if (topBlockEntity instanceof MagicDoorBlockEntity) {
             MagicDoorBlockEntity topDoorBlockEntity = (MagicDoorBlockEntity) topBlockEntity;
             BlockState blockState = world.getBlockState(pos);
-            if (blockState.is(Blocks.MAGIC_DOORWAY.get())) {
+            if (blockState.getBlock() == Blocks.MAGIC_DOORWAY.get()) {
                 TileEntity targetBlockEntity = world.getBlockEntity(pos);
                 if (targetBlockEntity instanceof MagicDoorwayBlockEntity) {
                     topDoorBlockEntity.setBaseBlockState(((MagicDoorwayBlockEntity)targetBlockEntity).getBaseBlockState());
@@ -143,7 +143,7 @@ public class MagicDoorknobItem extends Item {
         if (bottomBlockEntity instanceof MagicDoorBlockEntity) {
             MagicDoorBlockEntity bottomDoorBlockEntity = (MagicDoorBlockEntity) bottomBlockEntity;
             BlockState blockState = world.getBlockState(pos.below());
-            if (blockState.is(Blocks.MAGIC_DOORWAY.get())) {
+            if (blockState.getBlock() == Blocks.MAGIC_DOORWAY.get()) {
                 TileEntity targetBlockEntity = world.getBlockEntity(pos);
                 if (targetBlockEntity instanceof MagicDoorwayBlockEntity) {
                     bottomDoorBlockEntity.setBaseBlockState(((MagicDoorwayBlockEntity)targetBlockEntity).getBaseBlockState());
@@ -197,7 +197,7 @@ public class MagicDoorknobItem extends Item {
         if (isReplaceable(world, pos)) {
             BlockState state = world.getBlockState(pos);
             Block block = Blocks.MAGIC_DOORWAY.get();
-            if (state.is(block)) {
+            if (state.getBlock() == block) {
                 BlockState newState = state.setValue(isNorthSouth ? MagicDoorwayBlock.OPEN_NORTH_SOUTH : MagicDoorwayBlock.OPEN_EAST_WEST, true);
                 if (part == MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM && state.getValue(MagicDoorwayBlock.PART) == MagicDoorwayPartBaseBlock.EnumPartType.TOP) {
                     newState = newState.setValue(MagicDoorwayBlock.PART, MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM).setValue(MagicDoorwayBlock.OPEN_CROSS_TOP_BOTTOM, true);
@@ -241,7 +241,7 @@ public class MagicDoorknobItem extends Item {
      */
     private boolean isReplaceable(IBlockReader world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
-        if (blockState.is(Blocks.MAGIC_DOORWAY.get())) {
+        if (blockState.getBlock() == Blocks.MAGIC_DOORWAY.get()) {
             return true;
         }
         if (blockState.hasTileEntity()) {
