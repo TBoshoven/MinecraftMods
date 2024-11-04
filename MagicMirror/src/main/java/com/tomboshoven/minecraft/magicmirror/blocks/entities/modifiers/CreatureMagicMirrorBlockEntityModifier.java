@@ -27,7 +27,7 @@ public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirror
             ResourceLocation entityTypeKey = ResourceLocation.parse(nbt.getString("EntityType"));
             // Extra check to make sure we're not getting the default
             if (BuiltInRegistries.ENTITY_TYPE.containsKey(entityTypeKey)) {
-                entityType = BuiltInRegistries.ENTITY_TYPE.get(entityTypeKey);
+                entityType = BuiltInRegistries.ENTITY_TYPE.getValue(entityTypeKey);
             }
         }
         if (entityType == null || !CreatureMagicMirrorModifier.isSupportedEntityType(entityType)) {
@@ -46,7 +46,7 @@ public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirror
     }
 
     /**
-     * @return the entity type to change the reflection to.
+     * @return The entity type to change the reflection to.
      */
     public EntityType<?> getEntityType() {
         return entityType;

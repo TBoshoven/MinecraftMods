@@ -7,7 +7,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.concurrent.CompletableFuture;
@@ -15,22 +14,38 @@ import java.util.concurrent.CompletableFuture;
 import static net.minecraft.world.item.Items.ENDER_PEARL;
 
 class Recipes extends RecipeProvider {
-    Recipes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, lookupProvider);
+    Recipes(HolderLookup.Provider lookupProvider, RecipeOutput output) {
+        super(lookupProvider, output);
     }
 
     @Override
-    protected void buildRecipes(RecipeOutput output) {
+    protected void buildRecipes() {
         Items.DOORKNOBS.values().forEach(
-                doorknob -> ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, doorknob.get())
+                doorknob -> shaped(RecipeCategory.TOOLS, doorknob.get())
                         .pattern(" # ")
                         .pattern("#@#")
                         .pattern(" # ")
-                        .define('#', doorknob.get().getIngredient())
+                        .define('#', doorknob.get().getIngredients())
                         .define('@', Tags.Items.ENDER_PEARLS)
                         .group("magic_doorknob")
                         .unlockedBy("ender_pearls", InventoryChangeTrigger.TriggerInstance.hasItems(ENDER_PEARL))
                         .save(output)
         );
+    }
+
+    public static class Runner extends RecipeProvider.Runner {
+        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> holderLookupProvider) {
+            super(output, holderLookupProvider);
+        }
+
+        @Override
+        protected RecipeProvider createRecipeProvider(HolderLookup.Provider holderLookupProvider, RecipeOutput output) {
+            return new Recipes(holderLookupProvider, output);
+        }
+
+        @Override
+        public String getName() {
+            return "Magic Doorknob Recipes";
+        }
     }
 }

@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 /**
  * A modifier for a reflection renderer which replaces the armor that is worn by the reflected entity.
  */
-public class ArmorReflectionRendererModifier extends ReflectionRendererModifier {
+public class ArmorReflectionRendererModifier<E extends Entity> extends ReflectionRendererModifier<E> {
     /**
      * The armor to show instead of the actual armor.
      */
@@ -21,7 +21,7 @@ public class ArmorReflectionRendererModifier extends ReflectionRendererModifier 
      * @param baseRenderer     The renderer that is being proxied.
      * @param replacementArmor The armor to show instead of the actual armor.
      */
-    public ArmorReflectionRendererModifier(ReflectionRendererBase baseRenderer, ReplacementArmor replacementArmor) {
+    public ArmorReflectionRendererModifier(ReflectionRendererBase<E> baseRenderer, ReplacementArmor replacementArmor) {
         super(baseRenderer);
         this.replacementArmor = replacementArmor;
     }

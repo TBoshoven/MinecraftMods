@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection;
 
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
@@ -53,7 +54,7 @@ public class Reflection {
      * The renderer for the reflection.
      */
     @Nullable
-    private ReflectionRendererBase reflectionRenderer;
+    private ReflectionRendererBase<?> reflectionRenderer;
 
     /**
      * The number of currently active reflections.
@@ -139,7 +140,7 @@ public class Reflection {
      */
     void rebuildRenderer() {
         if (reflectedEntity != null) {
-            reflectionRenderer = new ReflectionRenderer(reflectedEntity);
+            reflectionRenderer = new ReflectionRenderer<>(reflectedEntity);
             for (MagicMirrorBlockEntityModifier modifier : blockEntity.getModifiers()) {
                 ReflectionModifier reflectionModifier = ReflectionModifiers.forMirrorModifier(modifier.getModifier());
                 if (reflectionModifier != null) {
@@ -194,12 +195,11 @@ public class Reflection {
             cleanUpTexture();
         }
 
-
         if (reflectionTexture != null && reflectionRenderer != null) {
             MultiBufferSource.BufferSource renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
 
             reflectionTexture.clear();
-            reflectionTexture.bindWrite(true);
+            RenderTarget oldMainRenderTarget = reflectionTexture.bindWriteAsMain();
 
             reflectionRenderer.setUp();
 
@@ -209,7 +209,7 @@ public class Reflection {
 
             reflectionRenderer.tearDown();
 
-            reflectionTexture.unbindWrite();
+            reflectionTexture.unbindWriteAsMain(oldMainRenderTarget);
         }
     }
 
@@ -221,14 +221,14 @@ public class Reflection {
     }
 
     /**
-     * @return whether the reflection is available for rendering.
+     * @return Whether the reflection is available for rendering.
      */
     public boolean isAvailable() {
         return reflectionTexture != null;
     }
 
     /**
-     * @return the render type for rendering the actual reflection.
+     * @return The render type for rendering the actual reflection.
      */
     public RenderType getRenderType() {
         return renderType;

@@ -27,7 +27,7 @@ public final class DataGenerators {
         generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) output -> new BlockStates(output, existingFileHelper));
         generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) Language::new);
         generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) output -> new LootTables(output, lookupProvider));
-        generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) output -> new Recipes(output, lookupProvider));
+        generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) output -> new Recipes.Runner(output, lookupProvider));
         generator.addProvider(includeClient, (DataProvider.Factory<DataProvider>) output -> new ItemModels(output, existingFileHelper));
     }
 }

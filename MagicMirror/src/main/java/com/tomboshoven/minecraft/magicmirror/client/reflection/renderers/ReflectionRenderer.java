@@ -1,50 +1,47 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection.renderers;
 
+import com.mojang.blaze3d.ProjectionType;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexSorting;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.Entity;
 import org.joml.Matrix4f;
 
 /**
  * Renderer for reflections in the mirror.
  */
-public class ReflectionRenderer extends ReflectionRendererBase {
+public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase<E> {
     /**
      * The entity that is rendered.
      */
-    private final Entity entity;
+    private final E entity;
 
     /**
      * The renderer class for the entity that is being rendered.
      */
-    private EntityRenderer<? extends Entity> entityRenderer;
+    private StatefulRenderer<E, ? extends EntityRenderer<? super E, ?>, ?> statefulRenderer;
 
     /**
      * @param entity The entity to render.
      */
-    public ReflectionRenderer(Entity entity) {
+    public ReflectionRenderer(E entity) {
         this.entity = entity;
-        entityRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity);
+        EntityRenderer<? super E, ?> entityRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity);
+        statefulRenderer = new StatefulRenderer<>(entityRenderer);
     }
 
     @Override
-    public Entity getEntity() {
+    public E getEntity() {
         return entity;
     }
 
     @Override
-    public EntityRenderer<? extends Entity> getRenderer() {
-        return entityRenderer;
-    }
-
-    @Override
-    public void setRenderer(EntityRenderer<? extends Entity> renderer) {
-        entityRenderer = renderer;
+    public void replaceRenderer(EntityRenderer<? super E, ?> renderer) {
+        statefulRenderer = new StatefulRenderer<>(renderer);
     }
 
     @Override
@@ -52,7 +49,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         // Re-initialize the projection matrix to keep full control over the perspective
         RenderSystem.backupProjectionMatrix();
         // Aspect is .5 to compensate for the rectangular mirror
-        RenderSystem.setProjectionMatrix(new Matrix4f().setPerspective((float)(Math.PI / 2), .5f, .05f, 50f), VertexSorting.DISTANCE_TO_ORIGIN);
+        RenderSystem.setProjectionMatrix(new Matrix4f().setPerspective((float)(Math.PI / 2), .5f, .05f, 50f), ProjectionType.PERSPECTIVE);
     }
 
     @Override
@@ -63,7 +60,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
 
     @Override
     public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
-        if (entityRenderer == null) {
+        if (statefulRenderer == null) {
             return;
         }
 
@@ -76,9 +73,43 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         // Face toward the front of the mirror
         reflectionMatrixStack.mulPose(Axis.YP.rotationDegrees(facing));
 
-        // The typing of these classes works out a little weird, so instead of complicating things too much, let's go
-        // with the unchecked cast.
-        //noinspection unchecked
-        ((EntityRenderer<Entity>) entityRenderer).render(entity, 0, partialTicks, reflectionMatrixStack, renderTypeBuffer, 0x00f000f0);
+        statefulRenderer.updateState(entity, partialTicks);
+        statefulRenderer.render(reflectionMatrixStack, renderTypeBuffer);
+    }
+
+    /**
+     * The renderer + state combination representing what is being rendered.
+     */
+    static class StatefulRenderer<E extends Entity, R extends EntityRenderer<? super E, S>, S extends EntityRenderState> {
+        private final R renderer;
+        private final S state;
+
+        /**
+         * @param renderer The renderer to use for the entity.
+         */
+        StatefulRenderer(R renderer) {
+            this.renderer = renderer;
+            state = renderer.createRenderState();
+        }
+
+        /**
+         * Update the render state based on an entity.
+         *
+         * @param entity       The entity to read from.
+         * @param partialTicks The partial ticks to use for the state.
+         */
+        public void updateState(E entity, float partialTicks) {
+            renderer.extractRenderState(entity, state, partialTicks);
+        }
+
+        /**
+         * Render the entity using its accompanying state.
+         *
+         * @param poseStack        The pose stack for the render operation.
+         * @param renderTypeBuffer The buffers to render to,
+         */
+        public void render(PoseStack poseStack, MultiBufferSource renderTypeBuffer) {
+            renderer.render(state, poseStack, renderTypeBuffer, 0x00f000f0);
+        }
     }
 }

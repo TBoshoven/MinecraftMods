@@ -28,3 +28,6 @@ type="required"
 versionRange="[1.21.0,1.22)"
 ordering="NONE"
 side="BOTH"
+
+[[mixins]]
+config="magic_mirror.mixins.json"

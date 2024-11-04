@@ -19,12 +19,12 @@ public final class BlockEntities {
      * Core that has all the actual logic.
      */
     public static final Supplier<BlockEntityType<MagicMirrorCoreBlockEntity>> MAGIC_MIRROR_CORE =
-            BLOCK_ENTITIES.register("magic_mirror_core", () -> BlockEntityType.Builder.of(MagicMirrorCoreBlockEntity::new, Blocks.MAGIC_MIRROR_CORE.get()).build(null));
+            BLOCK_ENTITIES.register("magic_mirror_core", () -> new BlockEntityType<>(MagicMirrorCoreBlockEntity::new, Blocks.MAGIC_MIRROR_CORE.get()));
     /**
      * Parts that defer logic to the core.
      */
     public static final Supplier<BlockEntityType<MagicMirrorPartBlockEntity>> MAGIC_MIRROR_PART =
-            BLOCK_ENTITIES.register("magic_mirror_part", () -> BlockEntityType.Builder.of(MagicMirrorPartBlockEntity::new, Blocks.MAGIC_MIRROR_PART.get()).build(null));
+            BLOCK_ENTITIES.register("magic_mirror_part", () -> new BlockEntityType<>(MagicMirrorPartBlockEntity::new, Blocks.MAGIC_MIRROR_PART.get()));
 
     private BlockEntities() {
     }

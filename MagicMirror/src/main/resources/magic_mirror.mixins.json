@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_17",
+  "package": "com.tomboshoven.minecraft.magicmirror.mixin",
+  "mixins": [],
+  "client": ["MinecraftRenderTargetMixin"],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

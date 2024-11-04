@@ -8,7 +8,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
@@ -82,29 +81,29 @@ public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implem
                 // See if any existing modifier can do something.
                 return coreBlockEntity.useWithoutItem(player);
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.PASS;
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         // The mirror will only do anything if it's used from the front.
         if (state.getValue(FACING) == hit.getDirection()) {
             MagicMirrorCoreBlockEntity coreBlockEntity = getCoreBlockEntity(level, pos);
             if (coreBlockEntity != null) {
                 // First, see if we can add a modifier
-                Optional<Holder.Reference<MagicMirrorModifier>> modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.holders().filter(m -> m.value().canModify(heldItem, coreBlockEntity)).findFirst();
+                Optional<Holder.Reference<MagicMirrorModifier>> modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.listElements().filter(m -> m.value().canModify(heldItem, coreBlockEntity)).findFirst();
                 if (modifier.isPresent()) {
                     attachModifier(heldItem, modifier.get(), coreBlockEntity);
-                    return ItemInteractionResult.sidedSuccess(level.isClientSide);
+                    return InteractionResult.SUCCESS;
                 }
 
                 // Then, see if any existing modifier can do something.
                 return coreBlockEntity.useWithItem(player, heldItem);
             }
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.CONSUME;
         }
 
         return super.useItemOn(heldItem, state, level, pos, player, hand, hit);

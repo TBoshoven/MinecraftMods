@@ -9,32 +9,27 @@ import net.minecraft.world.entity.Entity;
  * Modifier for how the reflection is rendered.
  * Contains some basic functionality for overriding part of the rendering behavior.
  */
-class ReflectionRendererModifier extends ReflectionRendererBase {
+class ReflectionRendererModifier<E extends Entity> extends ReflectionRendererBase<E> {
     /**
      * The renderer that is being proxied.
      */
-    private final ReflectionRendererBase baseRenderer;
+    private final ReflectionRendererBase<E> baseRenderer;
 
     /**
      * @param baseRenderer The renderer that is being proxied.
      */
-    ReflectionRendererModifier(ReflectionRendererBase baseRenderer) {
+    ReflectionRendererModifier(ReflectionRendererBase<E> baseRenderer) {
         this.baseRenderer = baseRenderer;
     }
 
     @Override
-    public Entity getEntity() {
+    public E getEntity() {
         return baseRenderer.getEntity();
     }
 
     @Override
-    public EntityRenderer<? extends Entity> getRenderer() {
-        return baseRenderer.getRenderer();
-    }
-
-    @Override
-    public void setRenderer(EntityRenderer<? extends Entity> renderer) {
-        baseRenderer.setRenderer(renderer);
+    public void replaceRenderer(EntityRenderer<? super E, ?> renderer) {
+        baseRenderer.replaceRenderer(renderer);
     }
 
     @Override

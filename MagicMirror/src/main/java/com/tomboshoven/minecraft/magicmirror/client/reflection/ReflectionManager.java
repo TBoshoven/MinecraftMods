@@ -92,7 +92,7 @@ public class ReflectionManager {
     }
 
     /**
-     * @return the number of tracked reflections.
+     * @return The number of tracked reflections.
      */
     public static int countReflections() {
         return reflections.size();

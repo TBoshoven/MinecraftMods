@@ -23,14 +23,14 @@ public class MagicMirrorReflectedEntityEvent extends Event {
     }
 
     /**
-     * @return the block entity of the updated mirror.
+     * @return The block entity of the updated mirror.
      */
     public MagicMirrorCoreBlockEntity getBlockEntity() {
         return blockEntity;
     }
 
     /**
-     * @return the new reflected entity. May be null, indicating there is no currently reflected entity.
+     * @return The new reflected entity. May be null, indicating there is no currently reflected entity.
      */
     @Nullable
     public Entity getReflectedEntity() {

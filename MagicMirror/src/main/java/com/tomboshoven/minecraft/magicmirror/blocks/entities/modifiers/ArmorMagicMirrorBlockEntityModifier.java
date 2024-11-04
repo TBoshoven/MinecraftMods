@@ -8,6 +8,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -23,23 +24,21 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 
@@ -91,9 +90,9 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
     }
 
     @Override
-    public ItemInteractionResult useWithItem(MagicMirrorCoreBlockEntity blockEntity, Player player, ItemStack heldItem) {
+    public InteractionResult useWithItem(MagicMirrorCoreBlockEntity blockEntity, Player player, ItemStack heldItem) {
         if (coolingDown()) {
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
 
         if (player instanceof ServerPlayer) {
@@ -101,7 +100,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                 swapArmor(blockEntity, player);
             }
         }
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     /**
@@ -174,14 +173,15 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
      * Container class for a swapped-out inventory.
      */
     public static class ReplacementArmor {
-        private static final int NUM_SLOTS = Arrays.stream(Inventory.ALL_ARMOR_SLOTS).max().orElse(3) + 1;
+        private static final int NUM_SLOTS = 4;
 
         public static final StreamCodec<RegistryFriendlyByteBuf, ReplacementArmor> STREAM_CODEC = new StreamCodec<>() {
             @Override
             public ReplacementArmor decode(RegistryFriendlyByteBuf byteBuf) {
                 NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
-                for (int i : Inventory.ALL_ARMOR_SLOTS) {
-                    ByteBufCodecs.optional(ItemStack.STREAM_CODEC).decode(byteBuf).ifPresent(itemStack -> inventory.set(i, itemStack));
+                for (int i = 0; i < NUM_SLOTS; ++i) {
+                    int finalI = i;
+                    ByteBufCodecs.optional(ItemStack.STREAM_CODEC).decode(byteBuf).ifPresent(itemStack -> inventory.set(finalI, itemStack));
                 }
                 return new ReplacementArmor(inventory);
             }
@@ -221,7 +221,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
          * @param inventory The inventory to swap with.
          */
         public void swap(NonNullList<ItemStack> inventory) {
-            for (int i : Inventory.ALL_ARMOR_SLOTS) {
+            for (int i = 0; i < NUM_SLOTS; ++i) {
                 ItemStack original = inventory.get(i);
                 ItemStack replacement = replacementInventory.get(i);
                 if (EnchantmentHelper.has(original, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE) || EnchantmentHelper.has(replacement, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) {
@@ -239,8 +239,9 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
          * @param player The player to swap armor with.
          */
         void swap(Player player) {
-            for (int i = 0; i < 4; ++i) {
-                ItemStack playerArmor = player.getInventory().armor.get(i);
+            NonNullList<ItemStack> armorInventory = player.getInventory().armor;
+            for (int i = 0; i < NUM_SLOTS; ++i) {
+                ItemStack playerArmor = armorInventory.get(i);
                 ItemStack replacement = replacementInventory.get(i);
                 if (EnchantmentHelper.has(playerArmor, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE) || EnchantmentHelper.has(replacement, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) {
                     // Cannot swap armor with curse of binding
@@ -251,7 +252,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                     ((ServerPlayer) player).connection.send(new ClientboundContainerSetSlotPacket(-2, 0, i + 36, replacement));
                 }
                 replacementInventory.set(i, playerArmor);
-                player.getInventory().armor.set(i, replacement);
+                armorInventory.set(i, replacement);
             }
         }
 
@@ -364,7 +365,11 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                             .map(ArmorMagicMirrorBlockEntityModifier.class::cast)
                             .ifPresent(modifier -> modifier.replacementArmor.set(message.slotIdx, message.armor));
                     ArmorItem item = (ArmorItem) message.armor.getItem();
-                    world.playLocalSound(message.mirrorPos, item.getEquipSound().value(), SoundSource.BLOCKS, 1, 1, false);
+                    // Play appropriate equip sound
+                    Equippable equippable = item.components().get(DataComponents.EQUIPPABLE);
+                    if (equippable != null) {
+                        world.playLocalSound(message.mirrorPos, equippable.equipSound().value(), SoundSource.BLOCKS, 1, 1, false);
+                    }
                 }
             }
         });
