@@ -215,6 +215,15 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
         }
 
         /**
+         * Get the proper armor piece by equipment slot.
+         * @param slot The slot to read from.
+         * @return The armor item in that slot, or EMPTY if the slot has no armor in it.
+         */
+        public final ItemStack getBySlot(EquipmentSlot slot) {
+            return slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR ? replacementInventory.get(slot.getIndex()) : ItemStack.EMPTY;
+        }
+
+        /**
          * Swap the current inventory with another.
          * The inventories should have the same size.
          *

@@ -59,11 +59,12 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
     }
 
     @Override
-    public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
-        if (statefulRenderer == null) {
-            return;
-        }
+    public EntityRenderState updateState(float partialTicks) {
+        return statefulRenderer.updateState(entity, partialTicks);
+    }
 
+    @Override
+    public void render(float facing, MultiBufferSource renderTypeBuffer) {
         PoseStack reflectionMatrixStack = new PoseStack();
 
         // Head's up
@@ -73,7 +74,6 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
         // Face toward the front of the mirror
         reflectionMatrixStack.mulPose(Axis.YP.rotationDegrees(facing));
 
-        statefulRenderer.updateState(entity, partialTicks);
         statefulRenderer.render(reflectionMatrixStack, renderTypeBuffer);
     }
 
@@ -97,9 +97,11 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
          *
          * @param entity       The entity to read from.
          * @param partialTicks The partial ticks to use for the state.
+         * @return The updated state, for further manipulation.
          */
-        public void updateState(E entity, float partialTicks) {
+        public S updateState(E entity, float partialTicks) {
             renderer.extractRenderState(entity, state, partialTicks);
+            return state;
         }
 
         /**

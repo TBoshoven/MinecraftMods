@@ -22,8 +22,8 @@ public class ReflectionManager {
      */
     private static Map<MagicMirrorCoreBlockEntity, Reflection> reflectionNext = new ConcurrentHashMap<>();
 
-    public static Reflection reflectionForRendering(MagicMirrorCoreBlockEntity blockEntity) {
-        Reflection reflection = reflections.computeIfAbsent(blockEntity, Reflection::new);
+    public static Reflection reflectionForRendering(MagicMirrorCoreBlockEntity blockEntity, Reflection.RenderContext renderContext) {
+        Reflection reflection = reflections.computeIfAbsent(blockEntity, be -> new Reflection(be, renderContext));
         reflectionNext.put(blockEntity, reflection);
         return reflection;
     }
@@ -66,7 +66,8 @@ public class ReflectionManager {
     public static void renderReflections(RenderFrameEvent.Pre event) {
         if (!Minecraft.getInstance().noRender) {
             for (Reflection reflection : reflections.values()) {
-                reflection.render(event.getPartialTick().getRealtimeDeltaTicks());
+                reflection.updateState(event.getPartialTick().getRealtimeDeltaTicks());
+                reflection.render();
             }
             // Restore the regular frame buffer
             Minecraft.getInstance().getMainRenderTarget().bindWrite(false);

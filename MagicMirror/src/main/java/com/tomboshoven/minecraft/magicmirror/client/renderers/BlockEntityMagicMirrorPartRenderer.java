@@ -14,16 +14,15 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
  * Renderer for the Magic Mirror block entity.
  */
 class BlockEntityMagicMirrorPartRenderer extends BlockEntityMagicMirrorRendererBase implements BlockEntityRenderer<MagicMirrorPartBlockEntity> {
-
     BlockEntityMagicMirrorPartRenderer(BlockEntityRendererProvider.Context context) {
-
+        super(context);
     }
 
     @Override
     public void render(MagicMirrorPartBlockEntity magicMirrorPartBlockEntity, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLight, int combinedOverlay) {
         MagicMirrorCoreBlockEntity core = magicMirrorPartBlockEntity.getCore();
         if (core != null) {
-            Reflection reflection = ReflectionManager.reflectionForRendering(core);
+            Reflection reflection = ReflectionManager.reflectionForRendering(core, renderContext());
             render(reflection, magicMirrorPartBlockEntity.getBlockPos(), core.getBlockState().getValue(HorizontalDirectionalBlock.FACING), poseStack, multiBufferSource, combinedLight);
         }
     }

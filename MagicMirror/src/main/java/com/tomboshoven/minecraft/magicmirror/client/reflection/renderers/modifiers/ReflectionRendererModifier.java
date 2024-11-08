@@ -3,6 +3,7 @@ package com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.modifi
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRendererBase;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.Entity;
 
 /**
@@ -43,7 +44,12 @@ class ReflectionRendererModifier<E extends Entity> extends ReflectionRendererBas
     }
 
     @Override
-    public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
-        baseRenderer.render(facing, partialTicks, renderTypeBuffer);
+    public EntityRenderState updateState(float partialTicks) {
+        return baseRenderer.updateState(partialTicks);
+    }
+
+    @Override
+    public void render(float facing, MultiBufferSource renderTypeBuffer) {
+        baseRenderer.render(facing, renderTypeBuffer);
     }
 }

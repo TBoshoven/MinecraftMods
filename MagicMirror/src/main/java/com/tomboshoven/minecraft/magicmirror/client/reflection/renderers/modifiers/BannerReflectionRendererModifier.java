@@ -34,8 +34,8 @@ public class BannerReflectionRendererModifier<E extends Entity> extends Reflecti
     }
 
     @Override
-    public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
-        super.render(facing, partialTicks, renderTypeBuffer);
+    public void render(float facing, MultiBufferSource renderTypeBuffer) {
+        super.render(facing, renderTypeBuffer);
 
         VertexConsumer baseBuffer = Sheets.BANNER_BASE.buffer(renderTypeBuffer, RenderType::entityNoOutline);
         drawLayer(baseBuffer, baseColor);
