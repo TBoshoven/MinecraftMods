@@ -17,7 +17,7 @@ public class MagicMirrorModifiersUpdatedEvent extends Event {
     }
 
     /**
-     * @return the block entity of the updated mirror.
+     * @return The block entity of the updated mirror.
      */
     public MagicMirrorCoreBlockEntity getBlockEntity() {
         return blockEntity;

@@ -126,7 +126,7 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
             if (world != null) {
                 BlockEntity blockEntity = world.getBlockEntity(message.mirrorPos);
                 if (blockEntity instanceof MagicMirrorCoreBlockEntity) {
-                    MagicMirrorModifier modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.get(message.modifier);
+                    MagicMirrorModifier modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.getValue(message.modifier);
                     if (modifier == null) {
                         MagicMirrorMod.LOGGER.error("Received a request to add modifier \"{}\" which does not exist.", message.modifier);
                         return;

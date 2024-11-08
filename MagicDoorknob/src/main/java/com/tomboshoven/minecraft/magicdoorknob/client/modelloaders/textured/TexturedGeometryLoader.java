@@ -1,8 +1,10 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.geometry.GeometryLoaderManager;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
@@ -15,12 +17,17 @@ public class TexturedGeometryLoader implements IGeometryLoader<TexturedUnbakedGe
     @Override
     public TexturedUnbakedGeometry read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) throws JsonParseException {
         // Load the original model through its configured base loader
-        ResourceLocation baseLoaderName = ResourceLocation.parse(jsonObject.get("base_loader").getAsString());
-        IGeometryLoader<?> baseLoader = GeometryLoaderManager.get(baseLoaderName);
-        if (baseLoader == null) {
-            throw new RuntimeException(String.format("Invalid base loader \"%s\"", baseLoaderName));
+        JsonElement baseLoaderName = jsonObject.remove("base_loader");
+        if (baseLoaderName != null) {
+            jsonObject.add("loader", baseLoaderName);
+            IGeometryLoader<?> baseLoader = GeometryLoaderManager.get(ResourceLocation.parse(baseLoaderName.getAsString()));
+            if (baseLoader != null) {
+                IUnbakedGeometry<?> modelGeometry = baseLoader.read(jsonObject, deserializationContext);
+                return new TexturedUnbakedGeometry.Geometry(modelGeometry);
+            }
         }
-        IUnbakedGeometry<?> modelGeometry = baseLoader.read(jsonObject, deserializationContext);
-        return new TexturedUnbakedGeometry(modelGeometry);
+
+        jsonObject.remove("loader");
+        return new TexturedUnbakedGeometry.Model(deserializationContext.deserialize(jsonObject, BlockModel.class));
     }
 }

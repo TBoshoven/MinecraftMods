@@ -14,12 +14,12 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
  */
 class BlockEntityMagicMirrorCoreRenderer extends BlockEntityMagicMirrorRendererBase implements BlockEntityRenderer<MagicMirrorCoreBlockEntity> {
     BlockEntityMagicMirrorCoreRenderer(BlockEntityRendererProvider.Context context) {
-
+        super(context);
     }
 
     @Override
     public void render(MagicMirrorCoreBlockEntity magicMirrorCoreBlockEntity, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLight, int combinedOverlay) {
-        Reflection reflection = ReflectionManager.reflectionForRendering(magicMirrorCoreBlockEntity);
+        Reflection reflection = ReflectionManager.reflectionForRendering(magicMirrorCoreBlockEntity, renderContext());
         render(reflection, magicMirrorCoreBlockEntity.getBlockPos(), magicMirrorCoreBlockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING), poseStack, multiBufferSource, combinedLight);
     }
 

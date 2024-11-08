@@ -2,23 +2,24 @@ package com.tomboshoven.minecraft.magicmirror.client.reflection.renderers;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.Entity;
 
 /**
  * Base class for reflection renderers.
  */
-public abstract class ReflectionRendererBase {
+public abstract class ReflectionRendererBase<E extends Entity> {
     /**
      * @return The entity that is being rendered. This is used for chaining modifiers.
      */
-    public abstract Entity getEntity();
+    public abstract E getEntity();
 
     /**
-     * @return The entity renderer that is used for rendering the entity. This is used for chaining modifiers.
+     * Replace the renderer with another one (for a compatible entity type).
+     *
+     * @param renderer The new renderer to use.
      */
-    public abstract EntityRenderer<? extends Entity> getRenderer();
-
-    public abstract void setRenderer(EntityRenderer<? extends Entity> renderer);
+    public abstract void replaceRenderer(EntityRenderer<? super E, ?> renderer);
 
     /**
      * Set up the rendering perspective.
@@ -33,10 +34,19 @@ public abstract class ReflectionRendererBase {
     public abstract void tearDown();
 
     /**
+     * Update the state of the reflection.
+     * To be called before rendering.
+     *
+     * @param partialTicks The partial ticks, used for rendering smooth animations.
+     * @return The updated state, for further manipulation.
+     */
+    public abstract EntityRenderState updateState(float partialTicks);
+
+    /**
      * Render the reflection.
      *
-     * @param facing       The rotation (in degrees) for the entity that is being rendered.
-     * @param partialTicks The partial ticks, for smooth rendering.
+     * @param facing           The rotation (in degrees) for the entity that is being rendered.
+     * @param renderTypeBuffer The buffers to render to.
      */
-    public abstract void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer);
+    public abstract void render(float facing, MultiBufferSource renderTypeBuffer);
 }

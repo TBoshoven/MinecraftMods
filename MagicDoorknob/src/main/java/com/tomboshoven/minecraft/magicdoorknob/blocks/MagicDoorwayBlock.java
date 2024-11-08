@@ -27,7 +27,7 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
     public static final EnumProperty<EnumPartType> PART = EnumProperty.create("part", EnumPartType.class);
 
     // Awkward representation of blockstate for backward compatibility
-    // To be fixed up in the future
+    // TODO: Fix this upon major update
 
     /**
      * Property describing whether the doorway represents both the top and bottom of crossing doorways.
@@ -72,7 +72,6 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
         );
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         boolean openNorthSouth = state.getValue(OPEN_NORTH_SOUTH);
@@ -95,7 +94,6 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
         return result;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.isAir()) {

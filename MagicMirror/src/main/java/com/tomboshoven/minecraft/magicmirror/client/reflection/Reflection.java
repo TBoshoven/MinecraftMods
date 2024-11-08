@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection;
 
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
@@ -10,6 +11,7 @@ import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.Reflect
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
@@ -53,7 +55,7 @@ public class Reflection {
      * The renderer for the reflection.
      */
     @Nullable
-    private ReflectionRendererBase reflectionRenderer;
+    private ReflectionRendererBase<?> reflectionRenderer;
 
     /**
      * The number of currently active reflections.
@@ -64,6 +66,11 @@ public class Reflection {
      * The block entity to base the reflection on.
      */
     MagicMirrorCoreBlockEntity blockEntity;
+
+    /**
+     * The render context for the reflection.
+     */
+    private final RenderContext renderContext;
 
     /**
      * The entity that is currently being reflected, if any.
@@ -79,9 +86,10 @@ public class Reflection {
     /**
      * @param blockEntity The block entity corresponding to the mirror that displays the reflection.
      */
-    public Reflection(MagicMirrorCoreBlockEntity blockEntity) {
+    public Reflection(MagicMirrorCoreBlockEntity blockEntity, RenderContext context) {
         angle = blockEntity.getBlockState().getValue(HORIZONTAL_FACING).toYRot();
         this.blockEntity = blockEntity;
+        this.renderContext = context;
         textureLocation = ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, String.format(Locale.ROOT, "reflection_%d", texId++));
 
         Entity entity = blockEntity.getReflectedEntity();
@@ -139,11 +147,11 @@ public class Reflection {
      */
     void rebuildRenderer() {
         if (reflectedEntity != null) {
-            reflectionRenderer = new ReflectionRenderer(reflectedEntity);
+            reflectionRenderer = new ReflectionRenderer<>(reflectedEntity);
             for (MagicMirrorBlockEntityModifier modifier : blockEntity.getModifiers()) {
                 ReflectionModifier reflectionModifier = ReflectionModifiers.forMirrorModifier(modifier.getModifier());
                 if (reflectionModifier != null) {
-                    reflectionRenderer = reflectionModifier.apply(modifier, reflectionRenderer);
+                    reflectionRenderer = reflectionModifier.apply(modifier, reflectionRenderer, this.renderContext);
                 }
             }
         }
@@ -181,12 +189,22 @@ public class Reflection {
     }
 
     /**
-     * Render the reflection of the entity to the texture.
-     * This operation unbinds the frame buffer, so rebinding may be required afterward.
+     * Update the state of the reflection.
+     * To be called before rendering.
      *
      * @param partialTicks The partial ticks, used for rendering smooth animations.
      */
-    public void render(float partialTicks) {
+    public void updateState(float partialTicks) {
+        if (reflectionRenderer != null) {
+            reflectionRenderer.updateState(partialTicks);
+        }
+    }
+
+    /**
+     * Render the reflection of the entity to the texture.
+     * This operation unbinds the frame buffer, so rebinding may be required afterward.
+     */
+    public void render() {
         // Create or destroy the frame buffer if needed
         if (reflectedEntity != null && reflectionTexture == null) {
             buildTexture();
@@ -194,22 +212,21 @@ public class Reflection {
             cleanUpTexture();
         }
 
-
         if (reflectionTexture != null && reflectionRenderer != null) {
             MultiBufferSource.BufferSource renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
 
             reflectionTexture.clear();
-            reflectionTexture.bindWrite(true);
+            RenderTarget oldMainRenderTarget = reflectionTexture.bindWriteAsMain();
 
             reflectionRenderer.setUp();
 
-            reflectionRenderer.render(angle, partialTicks, renderTypeBuffer);
+            reflectionRenderer.render(angle, renderTypeBuffer);
 
             renderTypeBuffer.endBatch();
 
             reflectionRenderer.tearDown();
 
-            reflectionTexture.unbindWrite();
+            reflectionTexture.unbindWriteAsMain(oldMainRenderTarget);
         }
     }
 
@@ -221,16 +238,22 @@ public class Reflection {
     }
 
     /**
-     * @return whether the reflection is available for rendering.
+     * @return Whether the reflection is available for rendering.
      */
     public boolean isAvailable() {
         return reflectionTexture != null;
     }
 
     /**
-     * @return the render type for rendering the actual reflection.
+     * @return The render type for rendering the actual reflection.
      */
     public RenderType getRenderType() {
         return renderType;
     }
+
+    /**
+     * Render context for reflections.
+     * Mirrors EntityRendererProvider.Context.
+     */
+    public record RenderContext(ItemRenderer itemRenderer) { }
 }

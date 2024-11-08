@@ -40,7 +40,7 @@ public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
      * Get the default entity type to use when we have no information.
      * This can be used for recovery upon encountering bad data.
      *
-     * @return the entity type to use when we don't have the required information.
+     * @return The entity type to use when we don't have the required information.
      */
     public static EntityType<?> getDefaultEntityType() {
         return EntityType.SKELETON;

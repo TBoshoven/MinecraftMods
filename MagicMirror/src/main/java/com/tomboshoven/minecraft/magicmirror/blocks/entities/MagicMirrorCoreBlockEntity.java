@@ -16,7 +16,6 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -163,7 +162,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
                     id = ResourceLocation.tryParse(idStr);
                 }
 
-                MagicMirrorModifier modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.get(id);
+                MagicMirrorModifier modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.getValue(id);
                 if (modifier != null) {
                     modifier.apply(this, modifierCompound, holderLookupProvider);
                 }
@@ -202,14 +201,14 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
      * @param heldItem The item held by the player.
      * @return Whether activation was successful.
      */
-    public ItemInteractionResult useWithItem(Player player, ItemStack heldItem) {
+    public InteractionResult useWithItem(Player player, ItemStack heldItem) {
         for (MagicMirrorBlockEntityModifier modifier : modifiers) {
-            ItemInteractionResult result = modifier.useWithItem(this, player, heldItem);
-            if (result != ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION) {
+            InteractionResult result = modifier.useWithItem(this, player, heldItem);
+            if (result.consumesAction()) {
                 return result;
             }
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.PASS;
     }
 
     /**
@@ -267,7 +266,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     }
 
     /**
-     * @return the current reflected entity, if any.
+     * @return The current reflected entity, if any.
      */
     @Nullable
     public Entity getReflectedEntity() {

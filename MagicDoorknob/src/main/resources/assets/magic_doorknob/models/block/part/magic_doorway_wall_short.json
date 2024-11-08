@@ -1,6 +1,5 @@
 {
   "loader": "magic_doorknob:textured",
-  "base_loader": "neoforge:elements",
   "render_type": "translucent",
   "textures": {
     "main": "property:texture_main",

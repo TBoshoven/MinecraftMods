@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.Reflection;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
@@ -18,6 +20,25 @@ public abstract class BlockEntityMagicMirrorRendererBase {
      */
     private static final double MAX_HORIZONTAL_DISTANCE_SQ = 8 * 8;
     private static final double MAX_VERTICAL_DISTANCE_SQ = 3 * 3;
+
+    /**
+     * Item renderer, used for rendering items in reflections
+     */
+    private final ItemRenderer itemRenderer;
+
+    /**
+     * @param context The render context for the reflection.
+     */
+    protected BlockEntityMagicMirrorRendererBase(BlockEntityRendererProvider.Context context) {
+        this.itemRenderer = context.getItemRenderer();
+    }
+
+    /**
+     * @return The render context for the reflection.
+     */
+    protected Reflection.RenderContext renderContext() {
+        return new Reflection.RenderContext(itemRenderer);
+    }
 
     /**
      * Render a reflection.

@@ -60,7 +60,7 @@ public class ReflectionModifiers {
         return REFLECTION_MAPPING.computeIfAbsent(modifier, m -> {
             // Current convention is reflection modifiers have the same location as the mirror modifiers.
             ResourceLocation key = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.getKey(m);
-            return REFLECTION_MODIFIER_REGISTRY.get(key);
+            return REFLECTION_MODIFIER_REGISTRY.getValue(key);
         });
     }
 }

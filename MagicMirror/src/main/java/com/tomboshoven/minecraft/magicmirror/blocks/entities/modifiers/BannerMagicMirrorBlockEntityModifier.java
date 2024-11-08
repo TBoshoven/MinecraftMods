@@ -21,7 +21,7 @@ public class BannerMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBl
     }
 
     /**
-     * @return the base color of the banner.
+     * @return The base color of the banner.
      */
     @Nullable
     public DyeColor getBaseColor() {
@@ -35,7 +35,7 @@ public class BannerMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBl
      * Get a copy of the pattern layers for this banner.
      * Does not include the base color.
      *
-     * @return the patterns to use when rendering this banner.
+     * @return The patterns to use when rendering this banner.
      */
     @Nullable
     public BannerPatternLayers getPatterns() {

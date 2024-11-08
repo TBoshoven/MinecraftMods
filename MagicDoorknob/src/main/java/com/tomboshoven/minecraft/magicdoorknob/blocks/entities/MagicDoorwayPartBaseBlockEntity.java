@@ -9,9 +9,7 @@ import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -29,6 +27,7 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
 import static com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty.PROPERTY_NAMESPACE;
@@ -72,14 +71,16 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     @Override
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
         super.loadAdditional(compound, lookupProvider);
-        loadInternal(compound);
+        loadInternal(compound, lookupProvider);
     }
 
-    private void loadInternal(CompoundTag compound) {
-        HolderGetter<Block> holdergetter = this.level != null ? this.level.holderLookup(Registries.BLOCK) : BuiltInRegistries.BLOCK.asLookup();
-        baseBlockState = NbtUtils.readBlockState(holdergetter, compound.getCompound("baseBlock"));
-        String doorknobType = compound.getString("doorknobType");
-        doorknob = Items.DOORKNOBS.get(doorknobType).get();
+    private void loadInternal(CompoundTag compound, HolderLookup.Provider lookupProvider) {
+        Optional<? extends HolderLookup.RegistryLookup<Block>> blockLookup = lookupProvider.lookup(Registries.BLOCK);
+        if (blockLookup.isPresent()) {
+            baseBlockState = NbtUtils.readBlockState(blockLookup.get(), compound.getCompound("baseBlock"));
+            String doorknobType = compound.getString("doorknobType");
+            doorknob = Items.DOORKNOBS.get(doorknobType).get();
+        }
     }
 
     @Override
@@ -97,7 +98,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
-        loadInternal(pkt.getTag());
+        loadInternal(pkt.getTag(), lookupProvider);
         requestModelDataUpdate();
     }
 

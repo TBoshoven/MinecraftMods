@@ -7,7 +7,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -87,7 +86,7 @@ public class MagicMirrorInactiveBlock extends MagicMirrorBaseBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         Item item = itemStack.getItem();
 
         // Add the second part if possible
@@ -101,30 +100,13 @@ public class MagicMirrorInactiveBlock extends MagicMirrorBaseBlock {
                     // Only do this if the block can be replaced it wouldn't result in the new part being turned around
                     if (Arrays.stream(ctx.getNearestLookingDirections()).filter(d -> d.getAxis().isHorizontal()).findFirst().orElse(ownDirection) == ownDirection.getOpposite()) {
                         if (item instanceof BlockItem blockItem) {
-                            InteractionResult result = blockItem.place(ctx);
-                            switch (result) {
-                                case SUCCESS, SUCCESS_NO_ITEM_USED -> {
-                                    return ItemInteractionResult.SUCCESS;
-                                }
-                                case CONSUME -> {
-                                    return ItemInteractionResult.CONSUME;
-                                }
-                                case CONSUME_PARTIAL -> {
-                                    return ItemInteractionResult.CONSUME_PARTIAL;
-                                }
-                                case PASS -> {
-                                    return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-                                }
-                                case FAIL -> {
-                                    return ItemInteractionResult.FAIL;
-                                }
-                            }
+                            return blockItem.place(ctx);
                         }
                     }
                 }
             }
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.PASS;
     }
 }

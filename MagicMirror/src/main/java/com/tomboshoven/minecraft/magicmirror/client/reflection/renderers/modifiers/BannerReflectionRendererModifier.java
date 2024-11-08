@@ -8,11 +8,12 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Holder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 
-public class BannerReflectionRendererModifier extends ReflectionRendererModifier {
+public class BannerReflectionRendererModifier<E extends Entity> extends ReflectionRendererModifier<E> {
     /**
      * The distance at which to render the background.
      */
@@ -25,7 +26,7 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
     private final DyeColor baseColor;
     private final BannerPatternLayers bannerPatternLayers;
 
-    public BannerReflectionRendererModifier(ReflectionRendererBase baseRenderer, DyeColor baseColor, BannerPatternLayers bannerPatternLayers) {
+    public BannerReflectionRendererModifier(ReflectionRendererBase<E> baseRenderer, DyeColor baseColor, BannerPatternLayers bannerPatternLayers) {
         super(baseRenderer);
 
         this.baseColor = baseColor;
@@ -33,8 +34,8 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
     }
 
     @Override
-    public void render(float facing, float partialTicks, MultiBufferSource renderTypeBuffer) {
-        super.render(facing, partialTicks, renderTypeBuffer);
+    public void render(float facing, MultiBufferSource renderTypeBuffer) {
+        super.render(facing, renderTypeBuffer);
 
         VertexConsumer baseBuffer = Sheets.BANNER_BASE.buffer(renderTypeBuffer, RenderType::entityNoOutline);
         drawLayer(baseBuffer, baseColor);

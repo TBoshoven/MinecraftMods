@@ -26,7 +26,7 @@ public final class DataGenerators {
         boolean includeClient = event.includeClient();
         generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new BlockStates(output, existingFileHelper));
         generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) Language::new);
-        generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new Recipes(output, lookupProvider));
+        generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new Recipes.Runner(output, lookupProvider));
         generator.addProvider(includeClient, (DataProvider.Factory<? extends DataProvider>) output -> new ItemModels(output, existingFileHelper));
     }
 }

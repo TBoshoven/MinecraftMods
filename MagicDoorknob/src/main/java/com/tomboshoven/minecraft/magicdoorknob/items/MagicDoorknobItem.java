@@ -14,13 +14,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -38,9 +38,9 @@ public class MagicDoorknobItem extends Item {
     // The name of the type of item (used in NBT data; do not modify)
     private final String typeName;
     // The item material, used for determining doorway generation properties
-    private final Tier tier;
+    private final ToolMaterial toolMaterial;
     // The ingredient used to make doorknobs of this type
-    private final Supplier<Ingredient> ingredient;
+    private final Supplier<TagKey<Item>> ingredients;
     /**
      * The maximum allowed length of a doorway.
      */
@@ -49,17 +49,17 @@ public class MagicDoorknobItem extends Item {
     /**
      * @param properties          The item properties
      * @param typeName            The main texture of the item
-     * @param tier                The item material, used for determining doorway generation properties
+     * @param toolMaterial        The item material, used for determining doorway generation properties
      * @param mainTextureLocation The main material for rendering the block
-     * @param ingredient          The ingredient used to make doorknobs of this type
+     * @param ingredients         The ingredient used to make doorknobs of this type
      */
-    MagicDoorknobItem(Item.Properties properties, String typeName, Tier tier, ResourceLocation mainTextureLocation, Supplier<Ingredient> ingredient) {
+    MagicDoorknobItem(Item.Properties properties, String typeName, ToolMaterial toolMaterial, ResourceLocation mainTextureLocation, Supplier<TagKey<Item>> ingredients) {
         super(properties);
 
         this.typeName = typeName;
-        this.tier = tier;
+        this.toolMaterial = toolMaterial;
         this.mainTextureLocation = mainTextureLocation;
-        this.ingredient = ingredient;
+        this.ingredients = ingredients;
     }
 
     /**
@@ -243,7 +243,7 @@ public class MagicDoorknobItem extends Item {
         if (blockState.getDestroySpeed(world, pos) < 0) {
             return false;
         }
-        return !blockState.is(tier.getIncorrectBlocksForDrops());
+        return !blockState.is(toolMaterial.incorrectBlocksForDrops());
     }
 
     /**
@@ -263,21 +263,21 @@ public class MagicDoorknobItem extends Item {
     /**
      * @return The material that the doorknob is made out of
      */
-    public Tier getTier() {
-        return tier;
+    public ToolMaterial getToolMaterial() {
+        return toolMaterial;
     }
 
     /**
      * @return The maximum size of the doorway created by this doorknob
      */
     public double getDepth() {
-        return Math.min(getTier().getSpeed() * Config.SERVER.doorwayMultiplier.get(), MAX_DOORWAY_LENGTH);
+        return Math.min(getToolMaterial().speed() * Config.SERVER.doorwayMultiplier.get(), MAX_DOORWAY_LENGTH);
     }
 
     /**
      * @return The ingredient used to make doorknobs of this type
      */
-    public Ingredient getIngredient() {
-        return ingredient.get();
+    public TagKey<Item> getIngredients() {
+        return ingredients.get();
     }
 }

@@ -35,6 +35,11 @@ public abstract class MagicDoorwayPartBaseBlock extends Block implements EntityB
     }
 
     @Override
+    public boolean hasDynamicLightEmission(BlockState state) {
+        return true;
+    }
+
+    @Override
     public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
         // Use the base block's light value.
         BlockEntity blockEntity = world.getBlockEntity(pos);
@@ -42,17 +47,6 @@ public abstract class MagicDoorwayPartBaseBlock extends Block implements EntityB
             return ((MagicDoorwayPartBaseBlockEntity) blockEntity).getBaseBlockState().getLightEmission(world, pos);
         }
         return super.getLightEmission(state, world, pos);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
-        // Use the base block's light opacity.
-        BlockEntity blockEntity = worldIn.getBlockEntity(pos);
-        if (blockEntity instanceof MagicDoorwayPartBaseBlockEntity) {
-            return ((MagicDoorwayPartBaseBlockEntity) blockEntity).getBaseBlockState().getLightBlock(worldIn, pos);
-        }
-        return super.getLightBlock(state, worldIn, pos);
     }
 
     @Override
@@ -65,7 +59,6 @@ public abstract class MagicDoorwayPartBaseBlock extends Block implements EntityB
         return super.getFriction(state, world, pos, entity);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public float getDestroyProgress(BlockState state, Player player, BlockGetter worldIn, BlockPos pos) {
         // Use the base block's hardness.

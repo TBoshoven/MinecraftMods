@@ -3,20 +3,15 @@ package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.BakedModelWrapper;
 import net.neoforged.neoforge.client.model.data.ModelData;
@@ -107,7 +102,7 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
             idx += stride;
         }
 
-        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getDirection(), sprite, quad.isShade());
+        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getDirection(), sprite, quad.isShade(), quad.getLightEmission(), quad.hasAmbientOcclusion());
     }
 
     private static int getAtByteOffset(int[] inData, int offset) {
@@ -147,11 +142,6 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
     }
 
     @Override
-    public ItemOverrides getOverrides() {
-        return new TexturedOverrideList(super.getOverrides());
-    }
-
-    @Override
     public TextureAtlasSprite getParticleIcon(@Nonnull ModelData data) {
         TextureAtlasSprite sprite = super.getParticleIcon(data);
         if (sprite instanceof PropertySprite) {
@@ -162,36 +152,5 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
             sprite = bakedTextureGetter.apply(spriteLocation);
         }
         return sprite;
-    }
-
-    /**
-     * We use override lists to dynamically texture items.
-     */
-    private class TexturedOverrideList extends ItemOverrides {
-        // The original baked model's override list
-        private final ItemOverrides wrappedOverrideList;
-
-        /**
-         * @param wrappedOverrideList The original baked model's override list
-         */
-        TexturedOverrideList(ItemOverrides wrappedOverrideList) {
-            this.wrappedOverrideList = wrappedOverrideList;
-        }
-
-        @Override
-        public com.google.common.collect.ImmutableList<BakedOverride> getOverrides() {
-            return wrappedOverrideList.getOverrides();
-        }
-
-        @Nullable
-        @Override
-        public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity entityIn, int seed) {
-            // If the item has a texture mapper, use it.
-            Item item = stack.getItem();
-            if (item instanceof IItemStackTextureMapperProvider) {
-                return new TexturedBakedModel<>(model, bakedTextureGetter, ((IItemStackTextureMapperProvider) item).getTextureMapper(stack));
-            }
-            return wrappedOverrideList.resolve(model, stack, worldIn, entityIn, seed);
-        }
     }
 }
