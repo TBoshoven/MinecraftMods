@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -78,7 +79,8 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
         HolderGetter<Block> holdergetter = this.level != null ? this.level.holderLookup(Registries.BLOCK) : BuiltInRegistries.BLOCK.asLookup();
         baseBlockState = NbtUtils.readBlockState(holdergetter, compound.getCompound("baseBlock"));
         String doorknobType = compound.getString("doorknobType");
-        doorknob = Items.DOORKNOBS.get(doorknobType).get();
+        RegistryObject<MagicDoorknobItem> deferredDoorknob = Items.DOORKNOBS.get(doorknobType);
+        doorknob = deferredDoorknob != null ? deferredDoorknob.get() : null;
     }
 
     @Override
