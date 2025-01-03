@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.registries.DeferredItem;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -79,7 +80,8 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
         if (blockLookup.isPresent()) {
             baseBlockState = NbtUtils.readBlockState(blockLookup.get(), compound.getCompound("baseBlock"));
             String doorknobType = compound.getString("doorknobType");
-            doorknob = Items.DOORKNOBS.get(doorknobType).get();
+            DeferredItem<MagicDoorknobItem> deferredDoorknob = Items.DOORKNOBS.get(doorknobType);
+            doorknob = deferredDoorknob != null ? deferredDoorknob.get() : null;
         }
     }
 
