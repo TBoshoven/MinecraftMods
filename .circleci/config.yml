@@ -31,9 +31,9 @@ jobs:
           command: |
             for SUBPROJECT_BUILD in */build.gradle; do
               SUBPROJECT=$(dirname "$SUBPROJECT_BUILD")
-              ./gradlew --info "$SUBPROJECT":runData || \
+              ./gradlew --info "$SUBPROJECT":runClientData || \
               ls "$SUBPROJECT/src/generated/resources/.cache" || \
-              ./gradlew --info "$SUBPROJECT":runData || \
+              ./gradlew --info "$SUBPROJECT":runClientData || \
               ls "$SUBPROJECT/src/generated/resources/.cache"
             done
       - run:
