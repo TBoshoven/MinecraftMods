@@ -35,7 +35,7 @@ subprojects {
         }
         client {}
         server {}
-        data {
+        clientData {
             systemProperty 'fml.earlyprogresswindow', 'false'
             programArguments.addAll '--mod', modName, '--all',
                     '--existing', file('src/main/resources/').getAbsolutePath(),
@@ -51,7 +51,7 @@ subprojects {
     }
 
     dependencies {
-        implementation "net.neoforged:neoforge:21.3.56"
+        implementation "net.neoforged:neoforge:21.4.103-beta"
         implementation "org.spongepowered:mixin:0.8.7"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
@@ -60,7 +60,7 @@ subprojects {
     jar {
         manifest {
             attributes([
-                "Implementation-Version": getArchiveVersion(),
+                    "Implementation-Version": getArchiveVersion(),
             ])
         }
     }

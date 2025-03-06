@@ -1,10 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.data;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DataProvider;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.concurrent.CompletableFuture;
@@ -17,17 +14,13 @@ public final class DataGenerators {
         eventBus.addListener(DataGenerators::gatherData);
     }
 
-    private static void gatherData(GatherDataEvent event) {
-        DataGenerator generator = event.getGenerator();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+    // NeoForge recommend generating all data as part of the client event
+    private static void gatherData(GatherDataEvent.Client event) {
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-        boolean includeServer = event.includeServer();
-        boolean includeClient = event.includeClient();
-        generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) output -> new BlockStates(output, existingFileHelper));
-        generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) Language::new);
-        generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) output -> new LootTables(output, lookupProvider));
-        generator.addProvider(includeServer, (DataProvider.Factory<DataProvider>) output -> new Recipes.Runner(output, lookupProvider));
-        generator.addProvider(includeClient, (DataProvider.Factory<DataProvider>) output -> new ItemModels(output, existingFileHelper));
+        event.createProvider(Language::new);
+        event.createProvider(Models::new);
+        event.createProvider(output -> new LootTables(output, lookupProvider));
+        event.createProvider(output -> new Recipes.Runner(output, lookupProvider));
     }
 }

@@ -50,7 +50,7 @@ public class BannerReflectionRendererModifier<E extends Entity> extends Reflecti
         }
     }
 
-    private void drawLayer(VertexConsumer buffer, DyeColor color) {
+    private static void drawLayer(VertexConsumer buffer, DyeColor color) {
         int rgb = color.getTextureDiffuseColor();
 
         // Draw a simple quad

@@ -11,7 +11,7 @@ import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.Reflect
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
@@ -32,7 +32,7 @@ public class Reflection {
     /**
      * Incrementing ID for use in the texture name.
      */
-    private static int texId = 0;
+    private static int texId;
 
     /**
      * Location of the texture. Since every reflection has a dynamic texture, we generate these.
@@ -60,12 +60,12 @@ public class Reflection {
     /**
      * The number of currently active reflections.
      */
-    static int numActiveReflections;
+    private static int numActiveReflections;
 
     /**
      * The block entity to base the reflection on.
      */
-    MagicMirrorCoreBlockEntity blockEntity;
+    private final MagicMirrorCoreBlockEntity blockEntity;
 
     /**
      * The render context for the reflection.
@@ -76,12 +76,13 @@ public class Reflection {
      * The entity that is currently being reflected, if any.
      */
     @Nullable
+    private
     Entity reflectedEntity;
 
     /**
      * The angle in degrees over the Y axis that the reflection should be rotated.
      */
-    float angle;
+    private final float angle;
 
     /**
      * @param blockEntity The block entity corresponding to the mirror that displays the reflection.
@@ -89,7 +90,7 @@ public class Reflection {
     public Reflection(MagicMirrorCoreBlockEntity blockEntity, RenderContext context) {
         angle = blockEntity.getBlockState().getValue(HORIZONTAL_FACING).toYRot();
         this.blockEntity = blockEntity;
-        this.renderContext = context;
+        renderContext = context;
         textureLocation = ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, String.format(Locale.ROOT, "reflection_%d", texId++));
 
         Entity entity = blockEntity.getReflectedEntity();
@@ -112,7 +113,7 @@ public class Reflection {
      * Stop reflecting any entities.
      * This cleans up all used resources.
      */
-    public void stopReflecting() {
+    void stopReflecting() {
         if (reflectedEntity != null) {
             MagicMirrorMod.LOGGER.debug("No longer reflecting {}", reflectedEntity.getName());
             cleanUpRenderer();
@@ -124,7 +125,7 @@ public class Reflection {
     /**
      * Construct a new frame buffer to render to.
      */
-    void buildTexture() {
+    private void buildTexture() {
         if (reflectionTexture == null) {
             reflectionTexture = new ReflectionTexture(TEXTURE_WIDTH, TEXTURE_HEIGHT);
             Minecraft.getInstance().getTextureManager().register(textureLocation, reflectionTexture);
@@ -134,7 +135,7 @@ public class Reflection {
     /**
      * Clean up the current frame buffer.
      */
-    void cleanUpTexture() {
+    private void cleanUpTexture() {
         if (reflectionTexture != null) {
             Minecraft.getInstance().getTextureManager().release(textureLocation);
             reflectionTexture = null;
@@ -145,13 +146,13 @@ public class Reflection {
      * Re-create the reflection renderer.
      * Used when a new modifier is introduced.
      */
-    void rebuildRenderer() {
+    private void rebuildRenderer() {
         if (reflectedEntity != null) {
             reflectionRenderer = new ReflectionRenderer<>(reflectedEntity);
             for (MagicMirrorBlockEntityModifier modifier : blockEntity.getModifiers()) {
                 ReflectionModifier reflectionModifier = ReflectionModifiers.forMirrorModifier(modifier.getModifier());
                 if (reflectionModifier != null) {
-                    reflectionRenderer = reflectionModifier.apply(modifier, reflectionRenderer, this.renderContext);
+                    reflectionRenderer = reflectionModifier.apply(modifier, reflectionRenderer, renderContext);
                 }
             }
         }
@@ -160,7 +161,7 @@ public class Reflection {
     /**
      * Clean up the current reflection renderer.
      */
-    void cleanUpRenderer() {
+    private void cleanUpRenderer() {
         reflectionRenderer = null;
     }
 
@@ -177,7 +178,7 @@ public class Reflection {
      *
      * @param reflectedEntity Which entity to start reflecting.
      */
-    public void setReflectedEntity(Entity reflectedEntity) {
+    public final void setReflectedEntity(Entity reflectedEntity) {
         if (this.reflectedEntity != reflectedEntity) {
             MagicMirrorMod.LOGGER.debug("Reflecting {}", reflectedEntity.getName());
             if (this.reflectedEntity == null) {
@@ -255,5 +256,6 @@ public class Reflection {
      * Render context for reflections.
      * Mirrors EntityRendererProvider.Context.
      */
-    public record RenderContext(ItemRenderer itemRenderer) { }
+    public record RenderContext(ItemModelResolver itemModelResolver) {
+    }
 }

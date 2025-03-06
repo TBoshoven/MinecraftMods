@@ -4,7 +4,7 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-public class Config {
+public final class Config {
     private static final ModConfigSpec.Builder SERVER_BUILDER;
     public final static Server SERVER;
     private final static ModConfigSpec SERVER_CONFIG;
@@ -15,7 +15,10 @@ public class Config {
         SERVER_CONFIG = SERVER_BUILDER.build();
     }
 
-    public static class Server {
+    private Config() {
+    }
+
+    public static final class Server {
         public final ModConfigSpec.DoubleValue doorwayMultiplier;
 
         private Server(ModConfigSpec.Builder builder) {

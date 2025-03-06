@@ -30,7 +30,7 @@ public class OffModelRenderers {
      * @param source The entity type of the actual rendered entity.
      * @param target The entity type of the shown entity.
      */
-    public record Mapping(EntityType<?> source, EntityType<?> target) {
+    record Mapping(EntityType<?> source, EntityType<?> target) {
     }
 
     /**
@@ -105,10 +105,9 @@ public class OffModelRenderers {
      * @param <SourceState> The source state to hold.
      */
     private static class SkeletonRenderStateHolder<SourceState extends EntityRenderState> extends SkeletonRenderState implements OffModelRenderer.RenderStateHolder<SourceState> {
-        SourceState source;
+        final SourceState source;
 
         SkeletonRenderStateHolder(SourceState source) {
-            super();
             this.source = source;
         }
 
@@ -155,7 +154,6 @@ public class OffModelRenderers {
             targetState.deathTime = sourceState.deathTime;
             targetState.walkAnimationPos = sourceState.walkAnimationPos;
             targetState.walkAnimationSpeed = sourceState.walkAnimationSpeed;
-            targetState.wornHeadAnimationPos = sourceState.wornHeadAnimationPos;
             targetState.scale = sourceState.scale;
             targetState.ageScale = sourceState.scale;
             targetState.isUpsideDown = sourceState.isUpsideDown;
@@ -167,13 +165,15 @@ public class OffModelRenderers {
             targetState.isInvisibleToPlayer = sourceState.isInvisibleToPlayer;
             targetState.appearsGlowing = sourceState.appearsGlowing;
             targetState.pose = sourceState.pose;
-            targetState.headItemModel = sourceState.headItemModel;
-            targetState.headItem = sourceState.headItem;
-            targetState.mainArm = sourceState.mainArm;
-            targetState.rightHandItemModel = sourceState.rightHandItemModel;
-            targetState.rightHandItem = sourceState.rightHandItem;
-            targetState.leftHandItemModel = sourceState.leftHandItemModel;
-            targetState.leftHandItem = sourceState.leftHandItem;
+            targetState.headItem.clear();
+            if (targetState.headItem instanceof OffModelRenderer.CopyableItemStackRenderState targetItemStackRenderState) {
+                if (sourceState.headItem instanceof OffModelRenderer.CopyableItemStackRenderState sourceItemStackRenderState) {
+                    targetItemStackRenderState.copyFrom(sourceItemStackRenderState);
+                }
+            }
+            targetState.wornHeadAnimationPos = sourceState.wornHeadAnimationPos;
+            targetState.wornHeadType = sourceState.wornHeadType;
+            targetState.wornHeadProfile = sourceState.wornHeadProfile;
         }
     }
 
@@ -203,9 +203,11 @@ public class OffModelRenderers {
             targetState.elytraRotX = sourceState.elytraRotX;
             targetState.elytraRotY = sourceState.elytraRotY;
             targetState.elytraRotZ = sourceState.elytraRotZ;
-            targetState.chestItem = sourceState.chestItem;
-            targetState.legsItem = sourceState.legsItem;
-            targetState.feetItem = sourceState.feetItem;
+            targetState.headEquipment = sourceState.headEquipment;
+            targetState.chestEquipment = sourceState.chestEquipment;
+            targetState.legsEquipment = sourceState.legsEquipment;
+            targetState.feetEquipment = sourceState.feetEquipment;
         }
     }
+
 }

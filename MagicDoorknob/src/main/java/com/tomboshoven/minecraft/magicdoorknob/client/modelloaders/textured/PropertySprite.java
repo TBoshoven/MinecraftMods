@@ -25,7 +25,7 @@ public class PropertySprite extends TextureAtlasSprite {
     }
 
     public ResourceLocation getProperty() {
-        return this.property;
+        return property;
     }
 
     @Override
@@ -36,6 +36,6 @@ public class PropertySprite extends TextureAtlasSprite {
     }
 
     public String toString() {
-        return "PropertySprite{name='" + property + "'}";
+        return "PropertySprite{name='%s'}".formatted(property);
     }
 }

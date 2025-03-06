@@ -8,6 +8,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorBlockEnt
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.config.Config;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,7 +17,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -121,8 +121,7 @@ public class MagicDoorknobItem extends Item {
                 if (world.getBlockEntity(pos) instanceof MagicDoorwayBlockEntity magicDoorwayBlockEntity) {
                     topDoorBlockEntity.setBaseBlockState(magicDoorwayBlockEntity.getBaseBlockState());
                 }
-            }
-            else {
+            } else {
                 topDoorBlockEntity.setBaseBlockState(blockState);
             }
             topDoorBlockEntity.setDoorknob(this);
@@ -140,8 +139,7 @@ public class MagicDoorknobItem extends Item {
                 if (world.getBlockEntity(pos) instanceof MagicDoorwayBlockEntity magicDoorwayBlockEntity) {
                     bottomDoorBlockEntity.setBaseBlockState(magicDoorwayBlockEntity.getBaseBlockState());
                 }
-            }
-            else {
+            } else {
                 bottomDoorBlockEntity.setBaseBlockState(blockState);
             }
             bottomDoorBlockEntity.setDoorknob(this);
@@ -195,8 +193,7 @@ public class MagicDoorknobItem extends Item {
                     newState = newState.setValue(MagicDoorwayBlock.PART, MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM).setValue(MagicDoorwayBlock.OPEN_CROSS_TOP_BOTTOM, true);
                 }
                 world.setBlockAndUpdate(pos, newState);
-            }
-            else {
+            } else {
                 world.setBlockAndUpdate(pos, block.defaultBlockState().setValue(MagicDoorwayBlock.OPEN_NORTH_SOUTH, isNorthSouth).setValue(MagicDoorwayBlock.OPEN_EAST_WEST, !isNorthSouth).setValue(MagicDoorwayBlock.PART, part));
 
                 BlockEntity blockEntity = world.getBlockEntity(pos);
@@ -250,7 +247,8 @@ public class MagicDoorknobItem extends Item {
      * @return The location of the main texture of the doorknob
      */
     public Material getMainMaterial() {
-        return new Material(InventoryMenu.BLOCK_ATLAS, mainTextureLocation);
+        //noinspection deprecation
+        return new Material(TextureAtlas.LOCATION_BLOCKS, mainTextureLocation);
     }
 
     /**
@@ -271,7 +269,7 @@ public class MagicDoorknobItem extends Item {
      * @return The maximum size of the doorway created by this doorknob
      */
     public double getDepth() {
-        return Math.min(getToolMaterial().speed() * Config.SERVER.doorwayMultiplier.get(), MAX_DOORWAY_LENGTH);
+        return Math.min(toolMaterial.speed() * Config.SERVER.doorwayMultiplier.get(), MAX_DOORWAY_LENGTH);
     }
 
     /**

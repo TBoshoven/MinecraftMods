@@ -6,14 +6,15 @@ import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.DelegateBakedModel;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.BakedModelWrapper;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,17 +22,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * A baked model that fills in the texture properties dynamically.
  */
-class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
+class TexturedBakedModel extends DelegateBakedModel {
     // The baked texture getter
-    private final Function<? super Material, ? extends TextureAtlasSprite> bakedTextureGetter;
+    private final SpriteGetter spriteGetter;
     // The mapper that replaces property textures by their values
-    private final ITextureMapper textureMapper;
+    private final TextureMapper textureMapper;
 
     // The vertex format of the model. At the moment, only "block" is supported.
     private static final VertexFormat VERTEX_FORMAT = DefaultVertexFormat.BLOCK;
@@ -47,28 +47,29 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
     }
 
     /**
-     * @param originalModel      The original baked model
-     * @param bakedTextureGetter The baked texture getter
-     * @param textureMapper      The mapper that replaces property textures by their values
+     * @param originalModel The original baked model
+     * @param spriteGetter  The sprite getter
+     * @param textureMapper The mapper that replaces property textures by their values
      */
-    TexturedBakedModel(T originalModel, Function<? super Material, ? extends TextureAtlasSprite> bakedTextureGetter, ITextureMapper textureMapper) {
+    TexturedBakedModel(BakedModel originalModel, SpriteGetter spriteGetter, TextureMapper textureMapper) {
         super(originalModel);
-        this.bakedTextureGetter = bakedTextureGetter;
+        this.spriteGetter = spriteGetter;
         this.textureMapper = textureMapper;
     }
 
     @Override
     public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
         // Return the original quads, with the property sprites replaced by actual ones
-        List<BakedQuad> quads = originalModel.getQuads(state, side, rand, extraData, renderType);
+        List<BakedQuad> quads = parent.getQuads(state, side, rand, extraData, renderType);
         return quads.stream().map(quad -> {
             TextureAtlasSprite sprite = quad.getSprite();
             if (sprite instanceof PropertySprite) {
                 Material material = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
                 if (material == null) {
+                    //noinspection ReturnOfNull
                     return null;
                 }
-                TextureAtlasSprite actualSprite = bakedTextureGetter.apply(material);
+                TextureAtlasSprite actualSprite = spriteGetter.get(material);
                 return retexture(quad, actualSprite);
             }
             return quad;
@@ -136,6 +137,7 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
         outData[index + 1] = (outData[index + 1] & msbMask) | (value >>> (32 - shift));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
         return getQuads(state, side, rand, ModelData.EMPTY, null);
@@ -147,9 +149,10 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
         if (sprite instanceof PropertySprite) {
             Material spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, null, data);
             if (spriteLocation == null) {
-                spriteLocation = new Material(InventoryMenu.BLOCK_ATLAS, MissingTextureAtlasSprite.getLocation());
+                //noinspection deprecation
+                spriteLocation = new Material(TextureAtlas.LOCATION_BLOCKS, MissingTextureAtlasSprite.getLocation());
             }
-            sprite = bakedTextureGetter.apply(spriteLocation);
+            sprite = spriteGetter.get(spriteLocation);
         }
         return sprite;
     }

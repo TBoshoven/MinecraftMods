@@ -6,9 +6,11 @@ import com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -16,7 +18,6 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -40,17 +41,17 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     /**
      * The main texture of the doorway (based on base block).
      */
-    private static final ModelTextureProperty TEXTURE_MAIN = ModelTextureProperty.get(ResourceLocation.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_main"));
+    public static final ModelTextureProperty TEXTURE_MAIN = ModelTextureProperty.get(ResourceLocation.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_main"));
 
     /**
      * The highlight texture of the doorway (based on doorknob).
      */
-    private static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(ResourceLocation.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_highlight"));
+    public static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(ResourceLocation.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_highlight"));
 
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.defaultBlockState();
     // The doorknob that caused this block to be created.
-    private MagicDoorknobItem doorknob;
+    private @Nullable MagicDoorknobItem doorknob;
 
     MagicDoorwayPartBaseBlockEntity(BlockEntityType<? extends MagicDoorwayPartBaseBlockEntity> blockEntityType, BlockPos pos, BlockState state) {
         super(blockEntityType, pos, state);
@@ -75,8 +76,8 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
         loadInternal(compound, lookupProvider);
     }
 
-    private void loadInternal(CompoundTag compound, HolderLookup.Provider lookupProvider) {
-        Optional<? extends HolderLookup.RegistryLookup<Block>> blockLookup = lookupProvider.lookup(Registries.BLOCK);
+    private void loadInternal(CompoundTag compound, HolderGetter.Provider lookupProvider) {
+        Optional<? extends HolderGetter<Block>> blockLookup = lookupProvider.lookup(Registries.BLOCK);
         if (blockLookup.isPresent()) {
             baseBlockState = NbtUtils.readBlockState(blockLookup.get(), compound.getCompound("baseBlock"));
             String doorknobType = compound.getString("doorknobType");
@@ -115,7 +116,8 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
         Material blockMaterial;
         if (blockTexture == null || blockTexture == minecraft.getTextureAtlas(blockTexture.atlasLocation()).apply(MissingTextureAtlasSprite.getLocation())) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.
-            blockMaterial = new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.fromNamespaceAndPath(MOD_ID, "block/empty"));
+            //noinspection deprecation
+            blockMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.fromNamespaceAndPath(MOD_ID, "block/empty"));
         } else {
             blockMaterial = new Material(blockTexture.atlasLocation(), blockTexture.contents().name());
         }

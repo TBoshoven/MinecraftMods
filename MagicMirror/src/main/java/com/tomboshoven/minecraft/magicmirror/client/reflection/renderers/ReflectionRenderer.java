@@ -49,7 +49,7 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
         // Re-initialize the projection matrix to keep full control over the perspective
         RenderSystem.backupProjectionMatrix();
         // Aspect is .5 to compensate for the rectangular mirror
-        RenderSystem.setProjectionMatrix(new Matrix4f().setPerspective((float)(Math.PI / 2), .5f, .05f, 50f), ProjectionType.PERSPECTIVE);
+        RenderSystem.setProjectionMatrix(new Matrix4f().setPerspective((float) (Math.PI / 2), .5f, .05f, 50f), ProjectionType.PERSPECTIVE);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
          * @param partialTicks The partial ticks to use for the state.
          * @return The updated state, for further manipulation.
          */
-        public S updateState(E entity, float partialTicks) {
+        S updateState(E entity, float partialTicks) {
             renderer.extractRenderState(entity, state, partialTicks);
             return state;
         }
@@ -110,7 +110,7 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
          * @param poseStack        The pose stack for the render operation.
          * @param renderTypeBuffer The buffers to render to,
          */
-        public void render(PoseStack poseStack, MultiBufferSource renderTypeBuffer) {
+        void render(PoseStack poseStack, MultiBufferSource renderTypeBuffer) {
             renderer.render(state, poseStack, renderTypeBuffer, 0x00f000f0);
         }
     }

@@ -12,6 +12,9 @@ import net.minecraft.network.chat.Component;
  * Currently, this only features a debug command.
  */
 final class MagicMirrorCommand {
+    private MagicMirrorCommand() {
+    }
+
     /**
      * Reply with some debugging information.
      *
@@ -30,7 +33,7 @@ final class MagicMirrorCommand {
      *
      * @param dispatcher The command dispatcher to register the command to.
      */
-    void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 net.minecraft.commands.Commands.literal("magic_mirror").then(
                         net.minecraft.commands.Commands.literal("debug").executes(

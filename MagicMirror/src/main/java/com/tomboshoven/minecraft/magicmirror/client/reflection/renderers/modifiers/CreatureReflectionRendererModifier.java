@@ -12,7 +12,7 @@ import net.minecraft.world.entity.EntityType;
  * Supported entities are defined in OffModelRenderers.
  */
 public class CreatureReflectionRendererModifier<E extends Entity> extends ReflectionRendererModifier<E> {
-    final EntityType<?> entityType;
+    private final EntityType<?> entityType;
 
     /**
      * @param baseRenderer The renderer that is being proxied.

@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 /**
  * Extract the texture location from extra model data.
  */
-class ModelDataTextureMapper implements ITextureMapper {
+class ModelDataTextureMapper implements TextureMapper {
     @Override
     public @Nullable Material mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable ModelData extraData) {
         if (extraData != null) {

@@ -23,7 +23,7 @@ class LootTables extends LootTableProvider {
     }
 
     private static class BlockLoot extends BlockLootSubProvider {
-        protected BlockLoot(HolderLookup.Provider lookupProvider) {
+        BlockLoot(HolderLookup.Provider lookupProvider) {
             super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), lookupProvider);
         }
 

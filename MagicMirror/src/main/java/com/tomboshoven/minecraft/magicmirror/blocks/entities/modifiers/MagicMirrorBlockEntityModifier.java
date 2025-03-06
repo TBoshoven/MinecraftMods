@@ -103,7 +103,7 @@ public abstract class MagicMirrorBlockEntityModifier {
     /**
      * @return Whether the modifier is cooling down.
      */
-    boolean coolingDown() {
+    boolean isCoolingDown() {
         return cooldown > 0;
     }
 

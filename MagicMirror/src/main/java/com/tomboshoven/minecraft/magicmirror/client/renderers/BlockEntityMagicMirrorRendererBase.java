@@ -6,14 +6,14 @@ import com.mojang.math.Axis;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.Reflection;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
-public abstract class BlockEntityMagicMirrorRendererBase {
+abstract class BlockEntityMagicMirrorRendererBase {
     /**
      * Maximum distance for an entity to be rendered.
      * Used for fading the mirror image.
@@ -22,22 +22,22 @@ public abstract class BlockEntityMagicMirrorRendererBase {
     private static final double MAX_VERTICAL_DISTANCE_SQ = 3 * 3;
 
     /**
-     * Item renderer, used for rendering items in reflections
+     * Item model resolver, used for rendering items in reflections
      */
-    private final ItemRenderer itemRenderer;
+    private final ItemModelResolver itemModelResolver;
 
     /**
      * @param context The render context for the reflection.
      */
-    protected BlockEntityMagicMirrorRendererBase(BlockEntityRendererProvider.Context context) {
-        this.itemRenderer = context.getItemRenderer();
+    BlockEntityMagicMirrorRendererBase(BlockEntityRendererProvider.Context context) {
+        itemModelResolver = context.getItemModelResolver();
     }
 
     /**
      * @return The render context for the reflection.
      */
-    protected Reflection.RenderContext renderContext() {
-        return new Reflection.RenderContext(itemRenderer);
+    Reflection.RenderContext renderContext() {
+        return new Reflection.RenderContext(itemModelResolver);
     }
 
     /**
@@ -49,7 +49,7 @@ public abstract class BlockEntityMagicMirrorRendererBase {
      * @param poseStack         The pose stack to use for rendering.
      * @param multiBufferSource The buffer source to use for rendering.
      */
-    public void render(Reflection reflection, BlockPos pos, Direction facing, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLight) {
+    void render(Reflection reflection, BlockPos pos, Direction facing, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLight) {
         Entity reflected = reflection.getReflectedEntity();
         if (reflected != null) {
             Vec3 reflectedPos = reflected.position().add(.5, .5, .5);
