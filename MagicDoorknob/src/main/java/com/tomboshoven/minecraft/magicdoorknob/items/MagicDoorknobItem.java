@@ -137,7 +137,7 @@ public class MagicDoorknobItem extends Item {
         if (bottomBlockEntity instanceof MagicDoorBlockEntity bottomDoorBlockEntity) {
             BlockState blockState = world.getBlockState(pos.below());
             if (blockState.is(Blocks.MAGIC_DOORWAY.get())) {
-                if (world.getBlockEntity(pos) instanceof MagicDoorwayBlockEntity magicDoorwayBlockEntity) {
+                if (world.getBlockEntity(pos.below()) instanceof MagicDoorwayBlockEntity magicDoorwayBlockEntity) {
                     bottomDoorBlockEntity.setBaseBlockState(magicDoorwayBlockEntity.getBaseBlockState());
                 }
             }
