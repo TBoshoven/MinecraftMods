@@ -2,10 +2,17 @@ package com.tomboshoven.minecraft.magicmirror.client.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemDisplayContext;
+
+import javax.annotation.Nullable;
 
 /**
  * A renderer to render an entity using a different model.
@@ -40,7 +47,7 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
      * @param wrapper        Function for turning the source state into the combined state.
      * @param mapper         Mapping function from source to target state.
      */
-    public OffModelRenderer(EntityRenderer<SourceEntity, SourceState> sourceRenderer, EntityRenderer<TargetEntity, TargetState> targetRenderer, RenderStateWrapper<SourceState, CombinedState> wrapper, RenderStateMapper<SourceState, TargetState> mapper) {
+    OffModelRenderer(EntityRenderer<SourceEntity, SourceState> sourceRenderer, EntityRenderer<TargetEntity, TargetState> targetRenderer, RenderStateWrapper<SourceState, CombinedState> wrapper, RenderStateMapper<SourceState, TargetState> mapper) {
         this.sourceRenderer = sourceRenderer;
         this.targetRenderer = targetRenderer;
         this.wrapper = wrapper;
@@ -61,6 +68,7 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
     // Nested class structure is a hack
     // The issue is that sourceRenderer must be initialized before the renderer, because createRenderState is called as
     // part of construction, and it depends on the source entity.
+
     /**
      * The off-model entity renderer.
      */
@@ -99,7 +107,7 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
      * @param <SourceState>   The input state.
      * @param <CombinedState> The output state, which is based on a target state and also contains the source state.
      */
-    public interface RenderStateWrapper<SourceState extends EntityRenderState, CombinedState extends EntityRenderState & OffModelRenderer.RenderStateHolder<SourceState>> {
+    interface RenderStateWrapper<SourceState extends EntityRenderState, CombinedState extends EntityRenderState & OffModelRenderer.RenderStateHolder<SourceState>> {
         /**
          * @param state The state to be wrapped by another state.
          * @return The combined state.
@@ -131,5 +139,103 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
          * @param targetState The target state to write to.
          */
         void mapRenderState(SourceState sourceState, TargetState targetState);
+    }
+
+    /**
+     * Interface for item stack render states that can be copied.
+     * Used for interacting with a mixin.
+     *
+     * @see com.tomboshoven.minecraft.magicmirror.mixin.ItemStackRenderStateMixin
+     */
+    public interface CopyableItemStackRenderState {
+        ItemDisplayContext getDisplayContext();
+
+        void setDisplayContext(ItemDisplayContext displayContext);
+
+        @SuppressWarnings("BooleanMethodNameMustStartWithQuestion")
+        boolean getIsLeftHand();
+
+        void setIsLeftHand(boolean isLeftHand);
+
+        int getActiveLayerCount();
+
+        void setActiveLayerCount(int activeLayerCount);
+
+        ItemStackRenderState.LayerRenderState[] getLayers();
+
+        void ensureCapacity(int extraSlots);
+
+        /**
+         * Copy the contents of an item render state into this item render state.
+         *
+         * @param other The item render state to copy from.
+         */
+        default void copyFrom(OffModelRenderer.CopyableItemStackRenderState other) {
+            setDisplayContext(other.getDisplayContext());
+            setIsLeftHand(other.getIsLeftHand());
+            int newLayerCount = other.getActiveLayerCount();
+            ensureCapacity(newLayerCount - getActiveLayerCount());
+            setActiveLayerCount(newLayerCount);
+            ItemStackRenderState.LayerRenderState[] layers = getLayers();
+            ItemStackRenderState.LayerRenderState[] otherLayers = other.getLayers();
+            for (int i = 0; i < newLayerCount; ++i) {
+                if (layers[i] instanceof CopyableLayerRenderState layer) {
+                    if (otherLayers[i] instanceof CopyableLayerRenderState otherLayer) {
+                        layer.copyFrom(otherLayer);
+                    }
+                }
+            }
+        }
+
+        /**
+         * Interface for item stack render state layers that can be copied.
+         * Used for interacting with a mixin.
+         *
+         * @see com.tomboshoven.minecraft.magicmirror.mixin.ItemStackLayerRenderStateMixin
+         */
+        @SuppressWarnings("InterfaceNeverImplemented")
+        interface CopyableLayerRenderState {
+            @Nullable
+            BakedModel getModel();
+
+            void setModel(@Nullable BakedModel model);
+
+            @Nullable
+            RenderType getRenderType();
+
+            void setRenderType(@Nullable RenderType renderType);
+
+            ItemStackRenderState.FoilType getFoilType();
+
+            void setFoilType(ItemStackRenderState.FoilType foilType);
+
+            int[] prepareTintLayers(int length);
+
+            @Nullable
+            SpecialModelRenderer<Object> getSpecialRenderer();
+
+            void setSpecialRenderer(@Nullable SpecialModelRenderer<Object> specialRenderer);
+
+            @Nullable
+            Object getArgumentForSpecialRendering();
+
+            void setArgumentForSpecialRendering(@Nullable Object argumentForSpecialRendering);
+
+            /**
+             * Copy the contents of an item render state layer into this item render state layer.
+             *
+             * @param other The item render state layer to copy from.
+             */
+            default void copyFrom(OffModelRenderer.CopyableItemStackRenderState.CopyableLayerRenderState other) {
+                setModel(other.getModel());
+                setRenderType(other.getRenderType());
+                setFoilType(other.getFoilType());
+                int[] otherTintLayers = prepareTintLayers(0);
+                int[] tintLayer = prepareTintLayers(otherTintLayers.length);
+                System.arraycopy(otherTintLayers, 0, tintLayer, 0, otherTintLayers.length);
+                setSpecialRenderer(other.getSpecialRenderer());
+                setArgumentForSpecialRendering(other.getArgumentForSpecialRendering());
+            }
+        }
     }
 }

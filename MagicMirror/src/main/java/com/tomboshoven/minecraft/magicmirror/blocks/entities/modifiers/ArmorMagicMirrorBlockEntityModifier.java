@@ -36,11 +36,13 @@ import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.entity.EntityAccess;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.Optional;
 import java.util.Random;
+import java.util.random.RandomGenerator;
 
 public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlockEntityModifier {
     /**
@@ -79,7 +81,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
 
     @Override
     public InteractionResult useWithoutItem(MagicMirrorCoreBlockEntity blockEntity, Player player) {
-        if (coolingDown()) {
+        if (isCoolingDown()) {
             return InteractionResult.FAIL;
         }
 
@@ -91,7 +93,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
 
     @Override
     public InteractionResult useWithItem(MagicMirrorCoreBlockEntity blockEntity, Player player, ItemStack heldItem) {
-        if (coolingDown()) {
+        if (isCoolingDown()) {
             return InteractionResult.FAIL;
         }
 
@@ -120,7 +122,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                     BlockPos pos = blockEntity.getBlockPos();
                     Level level = blockEntity.getLevel();
                     if (level instanceof ServerLevel serverLevel) {
-                        MessageEquip message = new MessageEquip(pos, slotIndex, heldItem.copy());
+                        CustomPacketPayload message = new MessageEquip(pos, slotIndex, heldItem.copy());
                         PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(pos), message);
                     }
 
@@ -148,10 +150,10 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
         BlockPos pos = blockEntity.getBlockPos();
         Level world = blockEntity.getLevel();
         if (world instanceof ServerLevel serverLevel) {
-            MessageSwapMirror mirrorMessage = new MessageSwapMirror(blockEntity, player);
+            CustomPacketPayload mirrorMessage = new MessageSwapMirror(blockEntity, player);
             PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(pos), mirrorMessage);
         }
-        MessageSwapPlayer playerMessage = new MessageSwapPlayer(this, player);
+        CustomPacketPayload playerMessage = new MessageSwapPlayer(this, player);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, playerMessage);
 
         // Swap on the server side.
@@ -175,7 +177,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
     public static class ReplacementArmor {
         private static final int NUM_SLOTS = 4;
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, ReplacementArmor> STREAM_CODEC = new StreamCodec<>() {
+        static final StreamCodec<RegistryFriendlyByteBuf, ReplacementArmor> STREAM_CODEC = new StreamCodec<>() {
             @Override
             public ReplacementArmor decode(RegistryFriendlyByteBuf byteBuf) {
                 NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
@@ -229,7 +231,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
          *
          * @param inventory The inventory to swap with.
          */
-        public void swap(NonNullList<ItemStack> inventory) {
+        void swap(NonNullList<ItemStack> inventory) {
             for (int i = 0; i < NUM_SLOTS; ++i) {
                 ItemStack original = inventory.get(i);
                 ItemStack replacement = replacementInventory.get(i);
@@ -348,7 +350,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
     public record MessageSwapPlayer(ReplacementArmor armor, int entityId) implements CustomPacketPayload {
         public static final CustomPacketPayload.Type<MessageSwapPlayer> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "swap_player"));
 
-        MessageSwapPlayer(ArmorMagicMirrorBlockEntityModifier armorModifier, Player player) {
+        MessageSwapPlayer(ArmorMagicMirrorBlockEntityModifier armorModifier, EntityAccess player) {
             this(new ReplacementArmor(armorModifier.getReplacementArmor().replacementInventory), player.getId());
         }
 
@@ -414,7 +416,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                     message.armor.swap((Player) entity);
 
                     entity.playSound(SoundEvents.ENDERMAN_TELEPORT, .8f, .4f);
-                    Random random = new Random();
+                    RandomGenerator random = new Random();
                     for (int i = 0; i < SWAP_PARTICLE_COUNT; ++i) {
                         entity.getCommandSenderWorld().addParticle(
                                 ParticleTypes.PORTAL,

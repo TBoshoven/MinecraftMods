@@ -14,22 +14,22 @@ class ReflectionRendererModifier<E extends Entity> extends ReflectionRendererBas
     /**
      * The renderer that is being proxied.
      */
-    private final ReflectionRendererBase<E> baseRenderer;
+    private final ReflectionRendererBase<? extends E> baseRenderer;
 
     /**
      * @param baseRenderer The renderer that is being proxied.
      */
-    ReflectionRendererModifier(ReflectionRendererBase<E> baseRenderer) {
+    ReflectionRendererModifier(ReflectionRendererBase<? extends E> baseRenderer) {
         this.baseRenderer = baseRenderer;
     }
 
     @Override
-    public E getEntity() {
+    public final E getEntity() {
         return baseRenderer.getEntity();
     }
 
     @Override
-    public void replaceRenderer(EntityRenderer<? super E, ?> renderer) {
+    public final void replaceRenderer(EntityRenderer<? super E, ?> renderer) {
         baseRenderer.replaceRenderer(renderer);
     }
 

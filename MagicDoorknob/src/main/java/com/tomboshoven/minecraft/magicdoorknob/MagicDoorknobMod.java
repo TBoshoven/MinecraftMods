@@ -12,6 +12,7 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 
+@SuppressWarnings({"UtilityClassWithoutPrivateConstructor", "UtilityClassWithPublicConstructor"})
 @Mod(MagicDoorknobMod.MOD_ID)
 public final class MagicDoorknobMod {
     public static final String MOD_ID = "magic_doorknob";

@@ -13,8 +13,8 @@ import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.world.item.Items.ENDER_PEARL;
 
-class Recipes extends RecipeProvider {
-    Recipes(HolderLookup.Provider lookupProvider, RecipeOutput output) {
+final class Recipes extends RecipeProvider {
+    private Recipes(HolderLookup.Provider lookupProvider, RecipeOutput output) {
         super(lookupProvider, output);
     }
 
@@ -33,8 +33,8 @@ class Recipes extends RecipeProvider {
         );
     }
 
-    public static class Runner extends RecipeProvider.Runner {
-        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> holderLookupProvider) {
+    static class Runner extends RecipeProvider.Runner {
+        Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> holderLookupProvider) {
             super(output, holderLookupProvider);
         }
 

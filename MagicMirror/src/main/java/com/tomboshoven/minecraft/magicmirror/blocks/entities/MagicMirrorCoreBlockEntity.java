@@ -46,7 +46,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
      * The currently reflected entity, if any.
      */
     @Nullable
-    private Entity reflectedEntity = null;
+    private Entity reflectedEntity;
 
     public MagicMirrorCoreBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntities.MAGIC_MIRROR_CORE.get(), pos, state);
@@ -157,8 +157,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
                     // TODO: Remove fallback
                     String name = modifierCompound.getString("name");
                     id = ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, name);
-                }
-                else {
+                } else {
                     id = ResourceLocation.tryParse(idStr);
                 }
 

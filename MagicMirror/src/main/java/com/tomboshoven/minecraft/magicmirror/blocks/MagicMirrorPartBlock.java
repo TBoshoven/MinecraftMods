@@ -38,7 +38,6 @@ public class MagicMirrorPartBlock extends MagicMirrorActiveBlock {
         return new MagicMirrorPartBlockEntity(pos, state);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         // Change the other part to incomplete
@@ -49,7 +48,7 @@ public class MagicMirrorPartBlock extends MagicMirrorActiveBlock {
                     otherPos,
                     Blocks.MAGIC_MIRROR_INACTIVE.get().defaultBlockState()
                             .setValue(MagicMirrorInactiveBlock.PART, BOTTOM)
-                            .setValue(HorizontalDirectionalBlock.FACING, state.getValue(HorizontalDirectionalBlock.FACING))
+                            .setValue(FACING, state.getValue(FACING))
             );
         }
         super.onRemove(state, worldIn, pos, newState, isMoving);

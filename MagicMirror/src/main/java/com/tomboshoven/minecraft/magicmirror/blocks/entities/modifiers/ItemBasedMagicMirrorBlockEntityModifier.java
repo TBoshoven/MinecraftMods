@@ -15,12 +15,12 @@ public abstract class ItemBasedMagicMirrorBlockEntityModifier extends MagicMirro
     /**
      * @param item The item that went into the mirror to create this modifier.
      */
-    public ItemBasedMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, ItemStack item) {
+    ItemBasedMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, ItemStack item) {
         super(modifier);
         this.item = item;
     }
 
-    public ItemBasedMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt, HolderLookup.Provider lookupProvider) {
+    ItemBasedMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt, HolderLookup.Provider lookupProvider) {
         super(modifier);
         CompoundTag itemCompound = nbt.getCompound("Item");
         item = ItemStack.parse(lookupProvider, itemCompound).orElse(ItemStack.EMPTY);
@@ -36,6 +36,6 @@ public abstract class ItemBasedMagicMirrorBlockEntityModifier extends MagicMirro
 
     @Override
     public void remove(Level world, BlockPos pos) {
-        Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), this.item);
+        Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), item);
     }
 }

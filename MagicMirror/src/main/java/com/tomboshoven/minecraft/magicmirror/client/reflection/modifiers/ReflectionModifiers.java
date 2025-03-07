@@ -18,20 +18,20 @@ import java.util.WeakHashMap;
 /**
  * Collection of all available reflection modifiers.
  */
-public class ReflectionModifiers {
+public final class ReflectionModifiers {
     /**
      * The resource key for the modifier registry.
      */
-    public static final ResourceKey<Registry<ReflectionModifier>> REFLECTION_MODIFIER_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "reflection_modifiers"));
+    private static final ResourceKey<Registry<ReflectionModifier>> REFLECTION_MODIFIER_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "reflection_modifiers"));
     /**
      * A registry of all modifiers.
      */
-    public static final Registry<ReflectionModifier> REFLECTION_MODIFIER_REGISTRY = new RegistryBuilder<>(REFLECTION_MODIFIER_REGISTRY_KEY).create();
+    private static final Registry<ReflectionModifier> REFLECTION_MODIFIER_REGISTRY = new RegistryBuilder<>(REFLECTION_MODIFIER_REGISTRY_KEY).create();
 
     /**
      * Deferred register of al builtin modifiers.
      */
-    public static final DeferredRegister<ReflectionModifier> REFLECTION_MODIFIERS = DeferredRegister.create(REFLECTION_MODIFIER_REGISTRY, MagicMirrorMod.MOD_ID);
+    private static final DeferredRegister<ReflectionModifier> REFLECTION_MODIFIERS = DeferredRegister.create(REFLECTION_MODIFIER_REGISTRY, MagicMirrorMod.MOD_ID);
 
     private static final Map<MagicMirrorModifier, ReflectionModifier> REFLECTION_MAPPING = new WeakHashMap<>();
 
@@ -41,12 +41,15 @@ public class ReflectionModifiers {
         REFLECTION_MODIFIERS.register("creature", CreatureReflectionModifier::new);
     }
 
+    private ReflectionModifiers() {
+    }
+
     public static void register(IEventBus eventBus) {
         eventBus.addListener(ReflectionModifiers::registerRegistries);
         REFLECTION_MODIFIERS.register(eventBus);
     }
 
-    static void registerRegistries(NewRegistryEvent event) {
+    private static void registerRegistries(NewRegistryEvent event) {
         event.register(REFLECTION_MODIFIER_REGISTRY);
     }
 

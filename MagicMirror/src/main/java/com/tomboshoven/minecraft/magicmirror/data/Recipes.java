@@ -15,7 +15,7 @@ import static net.neoforged.neoforge.common.Tags.Items.GLASS_PANES;
 import static net.neoforged.neoforge.common.Tags.Items.RODS_WOODEN;
 
 class Recipes extends RecipeProvider {
-    Recipes(HolderLookup.Provider lookupProvider, RecipeOutput output) {
+    private Recipes(HolderLookup.Provider lookupProvider, RecipeOutput output) {
         super(lookupProvider, output);
     }
 

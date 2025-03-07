@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public abstract class MagicMirrorBaseBlock extends HorizontalDirectionalBlock {
+abstract class MagicMirrorBaseBlock extends HorizontalDirectionalBlock {
     /**
      * The bounding boxes of the various orientations of this block; should be indexed by facing.horizontalIndex()
      */

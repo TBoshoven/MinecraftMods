@@ -17,6 +17,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@SuppressWarnings({"UtilityClassWithoutPrivateConstructor", "UtilityClassWithPublicConstructor"})
 @Mod(MagicMirrorMod.MOD_ID)
 public final class MagicMirrorMod {
     public static final String MOD_ID = "magic_mirror";

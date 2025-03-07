@@ -79,9 +79,6 @@ public class MagicMirrorInactiveBlock extends MagicMirrorBaseBlock {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
-        if (state == null) {
-            return null;
-        }
         return state.setValue(PART, EnumPartType.BOTTOM);
     }
 

@@ -44,10 +44,10 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
 
     // Indexed by horizontal index
     private static final VoxelShape[] SHAPES = {
-            Block.box(0, 0, 0, 1, 16, 16),
-            Block.box(0, 0, 0, 16, 16, 1),
-            Block.box(15, 0, 0, 16, 16, 16),
-            Block.box(0, 0, 15, 16, 16, 16),
+            box(0, 0, 0, 1, 16, 16),
+            box(0, 0, 0, 16, 16, 1),
+            box(15, 0, 0, 16, 16, 16),
+            box(0, 0, 15, 16, 16, 16),
     };
 
     MagicDoorBlock(Properties properties) {
@@ -138,8 +138,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
                         newState = state.setValue(MagicDoorwayBlock.PART, EnumPartType.TOP).setValue(MagicDoorwayBlock.OPEN_CROSS_TOP_BOTTOM, false);
                     }
                     world.setBlockAndUpdate(blockPos, newState);
-                }
-                else {
+                } else {
                     world.destroyBlock(blockPos, false);
                 }
             }

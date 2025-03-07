@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
+import org.jetbrains.annotations.NonNls;
 
 import java.util.Map;
 import java.util.Objects;
@@ -13,7 +14,7 @@ import java.util.Objects;
  */
 public final class ModelTextureProperty extends ModelProperty<Material> {
     // The namespace of the properties; used in model definitions
-    public static final String PROPERTY_NAMESPACE = "property";
+    public static final @NonNls String PROPERTY_NAMESPACE = "property";
 
     // Lazily filled map of model texture properties.
     // Can't just use equality as they are used in an IdentityHashMap.
@@ -50,5 +51,12 @@ public final class ModelTextureProperty extends ModelProperty<Material> {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    /**
+     * @return The name (resource location) for this texture property.
+     */
+    public ResourceLocation getName() {
+        return name;
     }
 }

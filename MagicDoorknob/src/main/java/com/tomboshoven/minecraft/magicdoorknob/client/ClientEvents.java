@@ -5,7 +5,10 @@ import com.tomboshoven.minecraft.magicdoorknob.client.clientextensions.ClientExt
 import com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.ModelLoaders;
 import net.neoforged.bus.api.IEventBus;
 
-public class ClientEvents {
+public final class ClientEvents {
+    private ClientEvents() {
+    }
+
     public static void init(IEventBus modEventBus) {
         BlockColorHandlers.register(modEventBus);
         ClientExtensions.register(modEventBus);

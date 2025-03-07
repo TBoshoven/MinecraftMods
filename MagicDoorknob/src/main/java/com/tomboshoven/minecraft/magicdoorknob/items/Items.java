@@ -24,7 +24,7 @@ public final class Items {
      */
     public static final Map<String, DeferredItem<MagicDoorknobItem>> DOORKNOBS = Maps.newLinkedHashMap();
 
-    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MagicDoorknobMod.MOD_ID);
+    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MagicDoorknobMod.MOD_ID);
 
     private Items() {
     }

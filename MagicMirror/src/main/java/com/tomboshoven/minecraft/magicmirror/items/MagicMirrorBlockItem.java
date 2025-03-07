@@ -16,8 +16,8 @@ import javax.annotation.Nullable;
  * Block item for the Magic Mirror.
  * Handles custom placement logic related to activating mirrors.
  */
-public class MagicMirrorBlockItem extends BlockItem {
-    public MagicMirrorBlockItem(Block block, Properties properties) {
+class MagicMirrorBlockItem extends BlockItem {
+    MagicMirrorBlockItem(Block block, Properties properties) {
         super(block, properties);
     }
 

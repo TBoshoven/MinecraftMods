@@ -5,11 +5,13 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifie
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
@@ -45,7 +47,7 @@ public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implem
      * @return The block entity corresponding to the mirror core.
      */
     @Nullable
-    public MagicMirrorCoreBlockEntity getCoreBlockEntity(Level level, BlockPos pos) {
+    public MagicMirrorCoreBlockEntity getCoreBlockEntity(BlockGetter level, BlockPos pos) {
         BlockEntity blockEntity = level.getBlockEntity(getCoreBlockPos(pos));
         if (blockEntity instanceof MagicMirrorCoreBlockEntity) {
             return (MagicMirrorCoreBlockEntity) blockEntity;
@@ -61,13 +63,13 @@ public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implem
      * @param modifier    The modifier to attach to the mirror.
      * @param blockEntity The block entity of the mirror to apply the modifier to.
      */
-    private void attachModifier(ItemStack heldItem, Holder.Reference<MagicMirrorModifier> modifier, MagicMirrorCoreBlockEntity blockEntity) {
+    private static void attachModifier(ItemStack heldItem, Holder.Reference<? extends MagicMirrorModifier> modifier, MagicMirrorCoreBlockEntity blockEntity) {
         // Item stack may change by attaching
         ItemStack originalHeldItem = heldItem.copy();
         modifier.value().apply(blockEntity, heldItem);
         Level level = blockEntity.getLevel();
         if (level instanceof ServerLevel serverLevel) {
-            MagicMirrorCoreBlock.MessageAttachModifier message = new MagicMirrorCoreBlock.MessageAttachModifier(blockEntity.getBlockPos(), originalHeldItem, modifier.key().location());
+            CustomPacketPayload message = new MagicMirrorCoreBlock.MessageAttachModifier(blockEntity.getBlockPos(), originalHeldItem, modifier.key().location());
             PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(blockEntity.getBlockPos()), message);
         }
     }

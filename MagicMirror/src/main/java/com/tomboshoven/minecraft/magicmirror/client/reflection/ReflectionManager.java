@@ -12,7 +12,7 @@ import net.neoforged.neoforge.event.level.LevelEvent;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ReflectionManager {
+public final class ReflectionManager {
     /**
      * All current reflections.
      */
@@ -21,6 +21,9 @@ public class ReflectionManager {
      * The reflections to maintain in the next iteration.
      */
     private static Map<MagicMirrorCoreBlockEntity, Reflection> reflectionNext = new ConcurrentHashMap<>();
+
+    private ReflectionManager() {
+    }
 
     public static Reflection reflectionForRendering(MagicMirrorCoreBlockEntity blockEntity, Reflection.RenderContext renderContext) {
         Reflection reflection = reflections.computeIfAbsent(blockEntity, be -> new Reflection(be, renderContext));

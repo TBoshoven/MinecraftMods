@@ -14,7 +14,7 @@ public final class MagicMirrorModifiers {
     /**
      * The resource key for the modifier registry.
      */
-    public static final ResourceKey<Registry<MagicMirrorModifier>> MAGIC_MIRROR_MODIFIER_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "magic_mirror_modifiers"));
+    private static final ResourceKey<Registry<MagicMirrorModifier>> MAGIC_MIRROR_MODIFIER_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "magic_mirror_modifiers"));
     /**
      * A registry of all modifiers.
      */
@@ -23,7 +23,7 @@ public final class MagicMirrorModifiers {
     /**
      * Deferred register of al builtin modifiers.
      */
-    public static final DeferredRegister<MagicMirrorModifier> MAGIC_MIRROR_MODIFIERS = DeferredRegister.create(MAGIC_MIRROR_MODIFIER_REGISTRY, MagicMirrorMod.MOD_ID);
+    private static final DeferredRegister<MagicMirrorModifier> MAGIC_MIRROR_MODIFIERS = DeferredRegister.create(MAGIC_MIRROR_MODIFIER_REGISTRY, MagicMirrorMod.MOD_ID);
 
     static {
         MAGIC_MIRROR_MODIFIERS.register("armor", ArmorMagicMirrorModifier::new);
@@ -31,12 +31,15 @@ public final class MagicMirrorModifiers {
         MAGIC_MIRROR_MODIFIERS.register("creature", CreatureMagicMirrorModifier::new);
     }
 
+    private MagicMirrorModifiers() {
+    }
+
     public static void register(IEventBus eventBus) {
         eventBus.addListener(MagicMirrorModifiers::registerRegistries);
         MAGIC_MIRROR_MODIFIERS.register(eventBus);
     }
 
-    static void registerRegistries(NewRegistryEvent event) {
+    private static void registerRegistries(NewRegistryEvent event) {
         event.register(MAGIC_MIRROR_MODIFIER_REGISTRY);
     }
 }
