@@ -2,6 +2,7 @@ package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
@@ -36,8 +37,9 @@ public class TexturedGeometryLoader implements IModelLoader<TexturedUnbakedGeome
     @Override
     public TexturedUnbakedGeometry read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
         // Load the original model through its configured base loader
-        ResourceLocation baseLoader = new ResourceLocation(modelContents.get("base_loader").getAsString());
-        IModelGeometry<?> modelGeometry = ModelLoaderRegistry.getModel(baseLoader, deserializationContext, modelContents);
+        JsonElement baseLoaderLocation = modelContents.get("base_loader");
+        ResourceLocation baseLoaderName = baseLoaderLocation == null ?  new ResourceLocation("elements") : new ResourceLocation(baseLoaderLocation.getAsString());
+        IModelGeometry<?> modelGeometry = ModelLoaderRegistry.getModel(baseLoaderName, deserializationContext, modelContents);
         return new TexturedUnbakedGeometry(modelGeometry, extraTextures);
     }
 }
