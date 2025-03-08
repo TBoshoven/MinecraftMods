@@ -1,5 +1,5 @@
 {
-  "parent": "block/block",
+  "parent": "minecraft:block/block",
   "elements": [
     {
       "name": "Base",
@@ -70,27 +70,27 @@
       "faces": {
         "north": {
           "texture": "#main",
-          "uv": [13, 2, 3, 14]
+          "uv": [14, 3, 2, 13]
         },
         "south": {
           "texture": "#main",
-          "uv": [3, 2, 13, 14]
+          "uv": [2, 3, 14, 13]
         },
         "east": {
           "texture": "#main",
-          "uv": [13, 2, 13, 14]
+          "uv": [14, 3, 14, 13]
         },
         "west": {
           "texture": "#main",
-          "uv": [3, 2, 3, 14]
+          "uv": [2, 3, 2, 13]
         },
         "up": {
           "texture": "#main",
-          "uv": [3, 2, 13, 2]
+          "uv": [2, 3, 14, 3]
         },
         "down": {
           "texture": "#main",
-          "uv": [3, 14, 13, 14]
+          "uv": [2, 13, 14, 13]
         }
       }
     },
