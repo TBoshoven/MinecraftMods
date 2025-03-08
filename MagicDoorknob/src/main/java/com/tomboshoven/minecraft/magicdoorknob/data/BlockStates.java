@@ -27,7 +27,7 @@ class BlockStates extends BlockStateProvider {
     private void registerDoor() {
         ModelFile doorBottom = new ModelFile.ExistingModelFile(modLoc("block/magic_door_bottom"), existingFileHelper);
         ModelFile doorTop = new ModelFile.ExistingModelFile(modLoc("block/magic_door_top"), existingFileHelper);
-        horizontalBlock(Blocks.MAGIC_DOOR.get(), blockState -> blockState.getValue(MagicDoorBlock.PART) == MagicDoorwayPartBaseBlock.EnumPartType.TOP ? doorTop : doorBottom, 270);
+        horizontalBlock(Blocks.MAGIC_DOOR.get(), blockState -> blockState.getValue(MagicDoorBlock.PART) == MagicDoorwayPartBaseBlock.EnumPartType.TOP ? doorTop : doorBottom);
     }
 
     private void registerDoorway() {
