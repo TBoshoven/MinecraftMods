@@ -1,6 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +16,8 @@ public class TexturedGeometryLoader implements IGeometryLoader<TexturedUnbakedGe
     @Override
     public TexturedUnbakedGeometry read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) throws JsonParseException {
         // Load the original model through its configured base loader
-        ResourceLocation baseLoaderName = new ResourceLocation(jsonObject.get("base_loader").getAsString());
+        JsonElement baseLoaderLocation = jsonObject.get("base_loader");
+        ResourceLocation baseLoaderName = baseLoaderLocation == null ?  new ResourceLocation("forge", "elements") : new ResourceLocation(baseLoaderLocation.getAsString());
         IGeometryLoader<?> baseLoader = GeometryLoaderManager.get(baseLoaderName);
         if (baseLoader == null) {
             throw new RuntimeException(String.format("Invalid base loader \"%s\"", baseLoaderName));
