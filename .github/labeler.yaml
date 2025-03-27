@@ -1,7 +1,7 @@
 ci:
 - '.circleci/**/*'
 - '.github/**/*'
-minecraft 1.21.4:
+minecraft 1.21.5:
 # Looks like Labeler doesn't match directories starting on '.' by default.
 # Include at least the root-level ones.
 - '.*'
