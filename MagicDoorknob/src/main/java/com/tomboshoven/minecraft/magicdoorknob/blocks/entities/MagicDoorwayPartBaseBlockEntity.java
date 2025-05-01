@@ -19,17 +19,15 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.registries.DeferredItem;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
 import static com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty.PROPERTY_NAMESPACE;
@@ -77,13 +75,15 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     private void loadInternal(CompoundTag compound, HolderGetter.Provider lookupProvider) {
-        Optional<? extends HolderGetter<Block>> blockLookup = lookupProvider.lookup(Registries.BLOCK);
-        if (blockLookup.isPresent()) {
-            baseBlockState = NbtUtils.readBlockState(blockLookup.get(), compound.getCompound("baseBlock"));
-            String doorknobType = compound.getString("doorknobType");
+        baseBlockState = lookupProvider.lookup(Registries.BLOCK)
+                .flatMap(blockLookup -> compound.getCompound("baseBlock")
+                        .map(baseBlockCompound -> NbtUtils.readBlockState(blockLookup, baseBlockCompound))
+                ).orElse(Blocks.AIR.defaultBlockState());
+
+        compound.getString("doorknobType").ifPresent(doorknobType -> {
             DeferredItem<MagicDoorknobItem> deferredDoorknob = Items.DOORKNOBS.get(doorknobType);
             doorknob = deferredDoorknob != null ? deferredDoorknob.get() : null;
-        }
+        });
     }
 
     @Override
@@ -112,7 +112,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
 
         // Get the base block texture
         Level world = getLevel();
-        TextureAtlasSprite blockTexture = world == null ? null : blockModelShapes.getTexture(baseBlockState, world, getBlockPos());
+        TextureAtlasSprite blockTexture = world == null ? null : blockModelShapes.getParticleIcon(baseBlockState, world, getBlockPos());
         Material blockMaterial;
         if (blockTexture == null || blockTexture == minecraft.getTextureAtlas(blockTexture.atlasLocation()).apply(MissingTextureAtlasSprite.getLocation())) {
             // If we can't find the texture, use a transparent one instead, to deal with things like air.

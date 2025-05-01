@@ -10,6 +10,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
+
 /**
  * A magic mirror modifier as applied to a block entity.
  * Instead of using this directly, apply it using a MagicMirrorModifier instance.
@@ -50,7 +52,7 @@ public abstract class MagicMirrorBlockEntityModifier {
      * @param world The world that the block entity is being removed from.
      * @param pos   The position of the removed block in the world.
      */
-    public abstract void remove(Level world, BlockPos pos);
+    public abstract void remove(@Nullable Level world, BlockPos pos);
 
     /**
      * Called when the modifier is attached to the block entity.

@@ -72,8 +72,6 @@ public final class ReflectionManager {
                 reflection.updateState(event.getPartialTick().getRealtimeDeltaTicks());
                 reflection.render();
             }
-            // Restore the regular frame buffer
-            Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
 
             // Swap out the reflection maps
             Map<MagicMirrorCoreBlockEntity, Reflection> oldReflections = reflections;

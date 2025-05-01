@@ -9,6 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Optional;
+
 public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlockEntityModifier {
     /**
      * The entity type to use for the reflection.
@@ -22,19 +24,19 @@ public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirror
 
     public CreatureMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt, HolderLookup.Provider holderLookupProvider) {
         super(modifier, nbt, holderLookupProvider);
-        EntityType<?> entityType = null;
-        if (nbt.contains("EntityType", 8)) {
-            ResourceLocation entityTypeKey = ResourceLocation.parse(nbt.getString("EntityType"));
-            // Extra check to make sure we're not getting the default
-            if (BuiltInRegistries.ENTITY_TYPE.containsKey(entityTypeKey)) {
-                entityType = BuiltInRegistries.ENTITY_TYPE.getValue(entityTypeKey);
-            }
-        }
-        if (entityType == null || !CreatureMagicMirrorModifier.isSupportedEntityType(entityType)) {
+        Optional<? extends EntityType<?>> foundEntityType = nbt.getString("EntityType")
+                .map(ResourceLocation::parse)
+                // Extra check to make sure we're not getting the default
+                .filter(BuiltInRegistries.ENTITY_TYPE::containsKey)
+                .map(BuiltInRegistries.ENTITY_TYPE::getValue)
+                .filter(CreatureMagicMirrorModifier::isSupportedEntityType);
+        // Can't use orElse because EntityType type parameter may not match; limitation of Optional
+        if (foundEntityType.isEmpty()) {
             // Backward compatibility
-            entityType = CreatureMagicMirrorModifier.getDefaultEntityType();
+            this.entityType = CreatureMagicMirrorModifier.getDefaultEntityType();
+        } else {
+            this.entityType = foundEntityType.get();
         }
-        this.entityType = entityType;
     }
 
     @Override

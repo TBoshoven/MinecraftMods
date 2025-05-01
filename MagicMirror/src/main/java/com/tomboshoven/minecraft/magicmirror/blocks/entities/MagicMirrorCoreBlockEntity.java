@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicmirror.blocks.entities;
 import com.google.common.collect.Lists;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
-import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorModifiersUpdatedEvent;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorReflectedEntityEvent;
@@ -11,7 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -147,27 +145,24 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     }
 
     private void loadInternal(CompoundTag compound, HolderLookup.Provider holderLookupProvider) {
-        ListTag modifiers = compound.getList("modifiers", 10);
-        for (Tag modifierTag : modifiers) {
-            if (modifierTag instanceof CompoundTag modifierCompound) {
-                String idStr = modifierCompound.getString("id");
-                ResourceLocation id;
-                if (idStr.isEmpty()) {
-                    // Fall back on old "name" field
-                    // TODO: Remove fallback
-                    String name = modifierCompound.getString("name");
-                    id = ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, name);
-                } else {
-                    id = ResourceLocation.tryParse(idStr);
-                }
-
-                MagicMirrorModifier modifier = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.getValue(id);
-                if (modifier != null) {
-                    modifier.apply(this, modifierCompound, holderLookupProvider);
-                }
-            }
-        }
+        compound.getList("modifiers")
+                .stream()
+                .flatMap(ListTag::stream)
+                .flatMap(tag -> tag.asCompound().stream())
+                .forEach(modifierTag ->
+                        modifierTag.getString("id").map(ResourceLocation::tryParse)
+                                // Fall back on old "name" field
+                                // TODO: Remove fallback
+                                .or(() -> modifierTag.getString("name").map(name -> ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, name)))
+                                .map(MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY::getValue)
+                                .ifPresent(modifier -> modifier.apply(this, modifierTag, holderLookupProvider)));
         postModifiersUpdate();
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState blockState) {
+        removeModifiers(this.level, pos);
+        super.preRemoveSideEffects(pos, blockState);
     }
 
     /**
@@ -230,7 +225,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
      * @param worldIn The world containing the removed block.
      * @param pos     The position of the block that was removed.
      */
-    public void removeModifiers(Level worldIn, BlockPos pos) {
+    public void removeModifiers(@Nullable Level worldIn, BlockPos pos) {
         for (MagicMirrorBlockEntityModifier modifier : modifiers) {
             modifier.deactivate(this);
             modifier.remove(worldIn, pos);

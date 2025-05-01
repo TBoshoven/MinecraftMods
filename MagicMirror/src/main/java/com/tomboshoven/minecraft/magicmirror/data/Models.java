@@ -8,8 +8,6 @@ import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
-import net.minecraft.client.data.models.blockstates.Variant;
-import net.minecraft.client.data.models.blockstates.VariantProperties;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.core.Direction;
@@ -95,36 +93,36 @@ class Models extends ModelProvider {
 
         // Magic Mirror Core block
         blockModels.blockStateOutput.accept(
-                MultiVariantGenerator.multiVariant(Blocks.MAGIC_MIRROR_CORE.get(), Variant.variant().with(VariantProperties.MODEL, magicMirrorModelLocation)).with(
-                        PropertyDispatch.property(HorizontalDirectionalBlock.FACING)
-                                .select(Direction.NORTH, Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                                .select(Direction.SOUTH, Variant.variant())
-                                .select(Direction.EAST, Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                                .select(Direction.WEST, Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
+                MultiVariantGenerator.dispatch(Blocks.MAGIC_MIRROR_CORE.get(), BlockModelGenerators.plainVariant(magicMirrorModelLocation)).with(
+                        PropertyDispatch.modify(HorizontalDirectionalBlock.FACING)
+                                .select(Direction.NORTH, BlockModelGenerators.Y_ROT_180)
+                                .select(Direction.SOUTH, BlockModelGenerators.NOP)
+                                .select(Direction.EAST, BlockModelGenerators.Y_ROT_270)
+                                .select(Direction.WEST, BlockModelGenerators.Y_ROT_90)
                 )
         );
         // Magic Mirror Inactive block
         blockModels.blockStateOutput.accept(
-                MultiVariantGenerator.multiVariant(Blocks.MAGIC_MIRROR_INACTIVE.get(), Variant.variant().with(VariantProperties.MODEL, magicMirrorModelLocation)).with(
-                        PropertyDispatch.properties(HorizontalDirectionalBlock.FACING, MagicMirrorInactiveBlock.PART)
-                                .select(Direction.NORTH, MagicMirrorInactiveBlock.EnumPartType.TOP, Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R180))
-                                .select(Direction.SOUTH, MagicMirrorInactiveBlock.EnumPartType.TOP, Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R180).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                                .select(Direction.EAST, MagicMirrorInactiveBlock.EnumPartType.TOP, Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R180).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                                .select(Direction.WEST, MagicMirrorInactiveBlock.EnumPartType.TOP, Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R180).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                                .select(Direction.NORTH, MagicMirrorInactiveBlock.EnumPartType.BOTTOM, Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                                .select(Direction.SOUTH, MagicMirrorInactiveBlock.EnumPartType.BOTTOM, Variant.variant())
-                                .select(Direction.EAST, MagicMirrorInactiveBlock.EnumPartType.BOTTOM, Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                                .select(Direction.WEST, MagicMirrorInactiveBlock.EnumPartType.BOTTOM, Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
+                MultiVariantGenerator.dispatch(Blocks.MAGIC_MIRROR_INACTIVE.get(), BlockModelGenerators.plainVariant(magicMirrorModelLocation)).with(
+                        PropertyDispatch.modify(HorizontalDirectionalBlock.FACING, MagicMirrorInactiveBlock.PART)
+                                .select(Direction.NORTH, MagicMirrorInactiveBlock.EnumPartType.TOP, BlockModelGenerators.X_ROT_180)
+                                .select(Direction.SOUTH, MagicMirrorInactiveBlock.EnumPartType.TOP, BlockModelGenerators.X_ROT_180.then(BlockModelGenerators.Y_ROT_180))
+                                .select(Direction.EAST, MagicMirrorInactiveBlock.EnumPartType.TOP, BlockModelGenerators.X_ROT_180.then(BlockModelGenerators.Y_ROT_90))
+                                .select(Direction.WEST, MagicMirrorInactiveBlock.EnumPartType.TOP, BlockModelGenerators.X_ROT_180.then(BlockModelGenerators.Y_ROT_270))
+                                .select(Direction.NORTH, MagicMirrorInactiveBlock.EnumPartType.BOTTOM, BlockModelGenerators.Y_ROT_180)
+                                .select(Direction.SOUTH, MagicMirrorInactiveBlock.EnumPartType.BOTTOM, BlockModelGenerators.NOP)
+                                .select(Direction.EAST, MagicMirrorInactiveBlock.EnumPartType.BOTTOM, BlockModelGenerators.Y_ROT_270)
+                                .select(Direction.WEST, MagicMirrorInactiveBlock.EnumPartType.BOTTOM, BlockModelGenerators.Y_ROT_90)
                 )
         );
         // Magic Mirror Part block
         blockModels.blockStateOutput.accept(
-                MultiVariantGenerator.multiVariant(Blocks.MAGIC_MIRROR_PART.get(), Variant.variant().with(VariantProperties.MODEL, magicMirrorModelLocation).with(VariantProperties.X_ROT, VariantProperties.Rotation.R180)).with(
-                        PropertyDispatch.property(HorizontalDirectionalBlock.FACING)
-                                .select(Direction.NORTH, Variant.variant())
-                                .select(Direction.SOUTH, Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                                .select(Direction.EAST, Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                                .select(Direction.WEST, Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
+                MultiVariantGenerator.dispatch(Blocks.MAGIC_MIRROR_PART.get(), BlockModelGenerators.plainVariant(magicMirrorModelLocation).with(BlockModelGenerators.X_ROT_180)).with(
+                        PropertyDispatch.modify(HorizontalDirectionalBlock.FACING)
+                                .select(Direction.NORTH, BlockModelGenerators.NOP)
+                                .select(Direction.SOUTH, BlockModelGenerators.Y_ROT_180)
+                                .select(Direction.EAST, BlockModelGenerators.Y_ROT_90)
+                                .select(Direction.WEST, BlockModelGenerators.Y_ROT_270)
                 )
         );
         blockModels.registerSimpleItemModel(Items.MAGIC_MIRROR.get(), magicMirrorModelLocation);

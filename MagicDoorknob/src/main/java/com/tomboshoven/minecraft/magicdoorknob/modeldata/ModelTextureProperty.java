@@ -3,7 +3,7 @@ package com.tomboshoven.minecraft.magicdoorknob.modeldata;
 import com.google.common.collect.Maps;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.model.data.ModelProperty;
 import org.jetbrains.annotations.NonNls;
 
 import java.util.Map;

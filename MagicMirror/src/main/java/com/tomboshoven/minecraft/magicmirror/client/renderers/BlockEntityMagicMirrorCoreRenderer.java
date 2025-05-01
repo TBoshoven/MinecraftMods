@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Renderer for the Magic Mirror block entity.
@@ -18,7 +19,7 @@ class BlockEntityMagicMirrorCoreRenderer extends BlockEntityMagicMirrorRendererB
     }
 
     @Override
-    public void render(MagicMirrorCoreBlockEntity magicMirrorCoreBlockEntity, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLight, int combinedOverlay) {
+    public void render(MagicMirrorCoreBlockEntity magicMirrorCoreBlockEntity, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLight, int combinedOverlay, Vec3 cameraPosition) {
         Reflection reflection = ReflectionManager.reflectionForRendering(magicMirrorCoreBlockEntity, renderContext());
         render(reflection, magicMirrorCoreBlockEntity.getBlockPos(), magicMirrorCoreBlockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING), poseStack, multiBufferSource, combinedLight);
     }

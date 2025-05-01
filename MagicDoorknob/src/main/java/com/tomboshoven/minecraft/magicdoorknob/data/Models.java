@@ -1,11 +1,12 @@
 package com.tomboshoven.minecraft.magicdoorknob.data;
 
-import com.mojang.math.Transformation;
+import com.mojang.math.Quadrant;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayPartBaseBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
+import com.tomboshoven.minecraft.magicdoorknob.data.textured.TexturedBlockModelGenerator;
 import com.tomboshoven.minecraft.magicdoorknob.data.textured.TexturedLoaderBuilder;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
@@ -14,12 +15,9 @@ import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
-import net.minecraft.client.data.models.blockstates.Variant;
-import net.minecraft.client.data.models.blockstates.VariantProperties;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.client.renderer.block.model.BlockFaceUV;
-import net.minecraft.client.renderer.block.model.FaceBakery;
+import net.minecraft.client.renderer.block.model.VariantMutator;
 import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
@@ -28,7 +26,6 @@ import net.neoforged.neoforge.client.model.generators.template.ElementBuilder;
 import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplate;
 import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplateBuilder;
 import net.neoforged.neoforge.client.model.generators.template.FaceBuilder;
-import net.neoforged.neoforge.client.model.generators.template.FaceRotation;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.Collections;
@@ -41,37 +38,6 @@ import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
 class Models extends ModelProvider {
     private static final TextureSlot MAIN_TEXTURE = TextureSlot.create("main");
     private static final TextureSlot HIGHLIGHT_TEXTURE = TextureSlot.create("highlight");
-
-    /**
-     * Rotate UV coordinates based on a given face rotation and apply them to the FaceBuilder.
-     *
-     * @param faceBuilder The face builder to set the UVs on.
-     * @param baseFace    The face to base the reorientation on.
-     * @param u1          The horizontal start coordinate from the left of the texture.
-     * @param v1          The vertical start coordinate from the top of the texture.
-     * @param u2          The horizontal end coordinate from the left of the texture.
-     * @param v2          The vertical end coordinate from the top of the texture.
-     * @param rotation    The rotation of the texture.
-     */
-    private static FaceBuilder orientedUVs(FaceBuilder faceBuilder, Direction baseFace, int u1, int v1, int u2, int v2, FaceRotation rotation) {
-        // Reuse logic from facebakery, because there is no point in reinventing the wheel.
-        // This is probably not the most efficient, but it's fine for model gen.
-        BlockFaceUV faceUV = FaceBakery.recomputeUVs(new BlockFaceUV(new float[]{u1, v1, u2, v2}, switch (rotation) {
-            case ZERO -> 0;
-            case CLOCKWISE_90 -> 90;
-            case UPSIDE_DOWN -> 180;
-            case COUNTERCLOCKWISE_90 -> 270;
-        }), baseFace, Transformation.identity());
-        // Round the resulting UVs because of floating point errors. We're sure these are all integers in the end.
-        return faceBuilder
-                .uvs(Math.round(faceUV.uvs[0]), Math.round(faceUV.uvs[1]), Math.round(faceUV.uvs[2]), Math.round(faceUV.uvs[3]))
-                .rotation(switch (faceUV.rotation) {
-                    case 90 -> FaceRotation.CLOCKWISE_90;
-                    case 180 -> FaceRotation.UPSIDE_DOWN;
-                    case 270 -> FaceRotation.COUNTERCLOCKWISE_90;
-                    default -> FaceRotation.ZERO;
-                });
-    }
 
     /**
      * Create a cuboid that is part of a 1-thick textured shape on a wall.
@@ -113,31 +79,28 @@ class Models extends ModelProvider {
 
             // Mirror horizontally on two of the sides to get connected textures along edges
             boolean mirror = wall.getAxis() == Direction.Axis.Z;
+            int x1M = mirror ? x1 : 16 - x1;
+            int x2M = mirror ? x2 : 16 - x2;
 
             // Front
             if (renderEdge.apply(Direction.NORTH)) {
-                elementBuilder.face(wall, faceBuilder -> orientedUVs(faceBuilder, wall, mirror ? x1 : 16 - x1, y1, mirror ? x2 : 16 - x2, y2, FaceRotation.ZERO).cullface(wall));
+                elementBuilder.face(wall, faceBuilder -> faceBuilder.uvs(x1M, y1, x2M, y2).cullface(wall));
             }
 
             // Back
             if (renderEdge.apply(Direction.SOUTH)) {
-                FaceRotation rotation = switch (wall) {
-                    case UP, DOWN -> FaceRotation.UPSIDE_DOWN;
-                    case NORTH, SOUTH, WEST, EAST -> FaceRotation.ZERO;
-                };
-                elementBuilder.face(wall.getOpposite(), faceBuilder -> orientedUVs(faceBuilder, wall, mirror ? x2 : 16 - x2, y1, mirror ? x1 : 16 - x1, y2, rotation));
+                elementBuilder.face(wall.getOpposite(), faceBuilder -> faceBuilder.uvs(x2M, y1, x1M, y2).rotation(wall.getAxis() == Direction.Axis.Y ? Quadrant.R180 : Quadrant.R0));
             }
 
             // Top
             if (renderEdge.apply(Direction.UP)) {
-                FaceRotation rotation = switch (wall) {
-                    case DOWN, SOUTH -> FaceRotation.ZERO;
-                    case UP, NORTH -> FaceRotation.UPSIDE_DOWN;
-                    case WEST -> FaceRotation.COUNTERCLOCKWISE_90;
-                    case EAST -> FaceRotation.CLOCKWISE_90;
-                };
                 elementBuilder.face(top, faceBuilder -> {
-                    FaceBuilder fb = orientedUVs(faceBuilder, wall, mirror ? x1 : 16 - x1, y1, mirror ? x2 : 16 - x2, y1 + 1, rotation);
+                    FaceBuilder fb = faceBuilder.uvs(x1M, y1, x2M, y1 + 1).rotation(switch (wall) {
+                        case DOWN, SOUTH -> Quadrant.R0;
+                        case EAST -> Quadrant.R270;
+                        case UP, NORTH -> Quadrant.R180;
+                        case WEST -> Quadrant.R90;
+                    });
                     if (y1 == 0) {
                         fb.cullface(top);
                     }
@@ -146,14 +109,13 @@ class Models extends ModelProvider {
 
             // Bottom
             if (renderEdge.apply(Direction.DOWN)) {
-                FaceRotation rotation = switch (wall) {
-                    case UP, SOUTH -> FaceRotation.ZERO;
-                    case DOWN, NORTH -> FaceRotation.UPSIDE_DOWN;
-                    case WEST -> FaceRotation.CLOCKWISE_90;
-                    case EAST -> FaceRotation.COUNTERCLOCKWISE_90;
-                };
                 elementBuilder.face(bottom, faceBuilder -> {
-                    FaceBuilder fb = orientedUVs(faceBuilder, wall, mirror ? x1 : 16 - x1, y2, mirror ? x2 : 16 - x2, y2 - 1, rotation);
+                    FaceBuilder fb = faceBuilder.uvs(x1M, y2, x2M, y2 - 1).rotation(switch (wall) {
+                        case UP, SOUTH -> Quadrant.R0;
+                        case WEST -> Quadrant.R270;
+                        case DOWN, NORTH -> Quadrant.R180;
+                        case EAST -> Quadrant.R90;
+                    });
                     if (y2 == 16) {
                         fb.cullface(bottom);
                     }
@@ -162,13 +124,12 @@ class Models extends ModelProvider {
 
             // Left
             if (renderEdge.apply(Direction.WEST)) {
-                FaceRotation rotation = switch (wall) {
-                    case NORTH, SOUTH, WEST, EAST -> FaceRotation.ZERO;
-                    case UP -> FaceRotation.CLOCKWISE_90;
-                    case DOWN -> FaceRotation.COUNTERCLOCKWISE_90;
-                };
                 elementBuilder.face(left, faceBuilder -> {
-                    FaceBuilder fb = orientedUVs(faceBuilder, wall, mirror ? x1 : 16 - x1, y1, mirror ? x1 + 1 : 16 - x1 - 1, y2, rotation);
+                    FaceBuilder fb = faceBuilder.uvs(x1M, y1, mirror ? x1 + 1 : 16 - x1 - 1, y2).rotation(switch (wall) {
+                        case NORTH, SOUTH, WEST, EAST -> Quadrant.R0;
+                        case UP -> Quadrant.R270;
+                        case DOWN -> Quadrant.R90;
+                    });
                     if (x1 == 0) {
                         fb.cullface(left);
                     }
@@ -177,13 +138,12 @@ class Models extends ModelProvider {
 
             // Right
             if (renderEdge.apply(Direction.EAST)) {
-                FaceRotation rotation = switch (wall) {
-                    case NORTH, SOUTH, WEST, EAST -> FaceRotation.ZERO;
-                    case UP -> FaceRotation.COUNTERCLOCKWISE_90;
-                    case DOWN -> FaceRotation.CLOCKWISE_90;
-                };
                 elementBuilder.face(right, faceBuilder -> {
-                    FaceBuilder fb = orientedUVs(faceBuilder, wall, mirror ? x2 : 16 - x2, y1, mirror ? x2 - 1 : 16 - x2 + 1, y2, rotation);
+                    FaceBuilder fb = faceBuilder.uvs(x2M, y1, mirror ? x2 - 1 : 16 - x2 + 1, y2).rotation(switch (wall) {
+                        case NORTH, SOUTH, WEST, EAST -> Quadrant.R0;
+                        case DOWN -> Quadrant.R270;
+                        case UP -> Quadrant.R90;
+                    });
                     if (x2 != 16) {
                         fb.cullface(right);
                     }
@@ -378,8 +338,8 @@ class Models extends ModelProvider {
                             .to(18, 2, 4)
                             .face(Direction.NORTH, fb -> fb.uvs(16, 0, 0, 16))
                             .face(Direction.SOUTH, fb -> fb.uvs(16, 0, 0, 16))
-                            .face(Direction.UP, fb -> fb.uvs(16, 0, 0, 16).rotation(FaceRotation.CLOCKWISE_90))
-                            .face(Direction.DOWN, fb -> fb.uvs(16, 0, 0, 16).rotation(FaceRotation.COUNTERCLOCKWISE_90))
+                            .face(Direction.UP, fb -> fb.uvs(16, 0, 0, 16).rotation(Quadrant.R90))
+                            .face(Direction.DOWN, fb -> fb.uvs(16, 0, 0, 16).rotation(Quadrant.R270))
                             .face(Direction.EAST, fb -> fb.uvs(0, 0, 16, 16))
                             .face(Direction.WEST, fb -> fb.uvs(0, 0, 16, 16))
                             .faces((d, fb) -> fb.cullface(Direction.EAST))
@@ -389,8 +349,8 @@ class Models extends ModelProvider {
                     .element(eb -> eb
                             .from(16, 0, 2)
                             .to(17, 1, 3)
-                            .face(Direction.UP, fb -> fb.uvs(16f / 3, 16f / 3, 32f / 3, 32f / 3).rotation(FaceRotation.CLOCKWISE_90))
-                            .face(Direction.DOWN, fb -> fb.uvs(16f / 3, 16f / 3, 32f / 3, 32f / 3).rotation(FaceRotation.COUNTERCLOCKWISE_90))
+                            .face(Direction.UP, fb -> fb.uvs(16f / 3, 16f / 3, 32f / 3, 32f / 3).rotation(Quadrant.R90))
+                            .face(Direction.DOWN, fb -> fb.uvs(16f / 3, 16f / 3, 32f / 3, 32f / 3).rotation(Quadrant.R270))
                             .face(Direction.NORTH, fb -> fb.uvs(16f / 3, 16f / 3, 32f / 3, 32f / 3))
                             .face(Direction.SOUTH, fb -> fb.uvs(16f / 3, 16f / 3, 32f / 3, 32f / 3))
                             .faces((d, fb) -> fb.cullface(Direction.EAST))
@@ -572,12 +532,14 @@ class Models extends ModelProvider {
         doorTemplate(MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM).create(doorBottomModelLocation, panelTextureMapping, blockModels.modelOutput);
 
         blockModels.blockStateOutput.accept(
-                MultiVariantGenerator.multiVariant(Blocks.MAGIC_DOOR.get())
-                        .with(BlockModelGenerators.createHorizontalFacingDispatch())
-                        .with(PropertyDispatch.property(MagicDoorBlock.PART)
-                                .select(MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM, Variant.variant().with(VariantProperties.MODEL, doorBottomModelLocation))
-                                .select(MagicDoorwayPartBaseBlock.EnumPartType.TOP, Variant.variant().with(VariantProperties.MODEL, doorTopModelLocation))
-                        )
+                TexturedBlockModelGenerator.of(
+                        MultiVariantGenerator.dispatch(Blocks.MAGIC_DOOR.get(), BlockModelGenerators.plainVariant(doorBottomModelLocation))
+                                .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING)
+                                .with(PropertyDispatch.modify(MagicDoorBlock.PART)
+                                        .select(MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM, BlockModelGenerators.NOP)
+                                        .select(MagicDoorwayPartBaseBlock.EnumPartType.TOP, VariantMutator.MODEL.withValue(doorTopModelLocation))
+                                )
+                )
         );
 
         // Doorway blocks
@@ -589,19 +551,21 @@ class Models extends ModelProvider {
         openDoorwayTemplate(MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM).create(doorwayOpenBottomModelLocation, panelTextureMapping, blockModels.modelOutput);
 
         blockModels.blockStateOutput.accept(
-                MultiVariantGenerator.multiVariant(Blocks.MAGIC_DOORWAY.get())
-                        .with(PropertyDispatch.properties(MagicDoorwayBlock.PART, MagicDoorwayBlock.OPEN_NORTH_SOUTH, MagicDoorwayBlock.OPEN_EAST_WEST)
-                                .select(MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM, false, false, Variant.variant().with(VariantProperties.MODEL, doorwayClosedBottomModelLocation))
-                                .select(MagicDoorwayPartBaseBlock.EnumPartType.TOP, false, false, Variant.variant().with(VariantProperties.MODEL, doorwayClosedTopModelLocation))
-                                // Half-open
-                                .select(MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM, false, true, Variant.variant().with(VariantProperties.MODEL, doorwayHalfOpenBottomModelLocation))
-                                .select(MagicDoorwayPartBaseBlock.EnumPartType.TOP, false, true, Variant.variant().with(VariantProperties.MODEL, doorwayHalfOpenTopModelLocation))
-                                .select(MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM, true, false, Variant.variant().with(VariantProperties.MODEL, doorwayHalfOpenBottomModelLocation).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                                .select(MagicDoorwayPartBaseBlock.EnumPartType.TOP, true, false, Variant.variant().with(VariantProperties.MODEL, doorwayHalfOpenTopModelLocation).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                                // Fully open
-                                .select(MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM, true, true, Variant.variant().with(VariantProperties.MODEL, doorwayOpenBottomModelLocation))
-                                .select(MagicDoorwayPartBaseBlock.EnumPartType.TOP, true, true, Variant.variant().with(VariantProperties.MODEL, doorwayOpenTopModelLocation))
-                        )
+                TexturedBlockModelGenerator.of(
+                        MultiVariantGenerator.dispatch(Blocks.MAGIC_DOORWAY.get(), BlockModelGenerators.plainVariant(doorwayClosedBottomModelLocation))
+                                .with(PropertyDispatch.modify(MagicDoorwayBlock.PART, MagicDoorwayBlock.OPEN_NORTH_SOUTH, MagicDoorwayBlock.OPEN_EAST_WEST)
+                                        .select(MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM, false, false, BlockModelGenerators.NOP)
+                                        .select(MagicDoorwayPartBaseBlock.EnumPartType.TOP, false, false, VariantMutator.MODEL.withValue(doorwayClosedTopModelLocation))
+                                        // Half-open
+                                        .select(MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM, false, true, VariantMutator.MODEL.withValue(doorwayHalfOpenBottomModelLocation))
+                                        .select(MagicDoorwayPartBaseBlock.EnumPartType.TOP, false, true, VariantMutator.MODEL.withValue(doorwayHalfOpenTopModelLocation))
+                                        .select(MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM, true, false, VariantMutator.MODEL.withValue(doorwayHalfOpenBottomModelLocation).then(BlockModelGenerators.Y_ROT_90))
+                                        .select(MagicDoorwayPartBaseBlock.EnumPartType.TOP, true, false, VariantMutator.MODEL.withValue(doorwayHalfOpenTopModelLocation).then(BlockModelGenerators.Y_ROT_90))
+                                        // Fully open
+                                        .select(MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM, true, true, VariantMutator.MODEL.withValue(doorwayOpenBottomModelLocation))
+                                        .select(MagicDoorwayPartBaseBlock.EnumPartType.TOP, true, true, VariantMutator.MODEL.withValue(doorwayOpenTopModelLocation))
+                                )
+                )
         );
     }
 }

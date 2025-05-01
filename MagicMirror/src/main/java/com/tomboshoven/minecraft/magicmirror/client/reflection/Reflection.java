@@ -217,17 +217,19 @@ public class Reflection {
             MultiBufferSource.BufferSource renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
 
             reflectionTexture.clear();
-            RenderTarget oldMainRenderTarget = reflectionTexture.bindWriteAsMain();
+            RenderTarget oldMainRenderTarget = reflectionTexture.activate();
 
-            reflectionRenderer.setUp();
+            try {
+                reflectionRenderer.setUp();
 
-            reflectionRenderer.render(angle, renderTypeBuffer);
+                reflectionRenderer.render(angle, renderTypeBuffer);
 
-            renderTypeBuffer.endBatch();
+                renderTypeBuffer.endBatch();
 
-            reflectionRenderer.tearDown();
-
-            reflectionTexture.unbindWriteAsMain(oldMainRenderTarget);
+                reflectionRenderer.tearDown();
+            } finally {
+                reflectionTexture.deactivate(oldMainRenderTarget);
+            }
         }
     }
 

@@ -47,7 +47,7 @@ public class ArmorReflectionRendererModifier<E extends Entity> extends Reflectio
         EntityRenderState state = super.updateState(partialTicks);
         E entity = getEntity();
         if (state instanceof LivingEntityRenderState livingState && entity instanceof LivingEntity livingEntity) {
-            ItemStack headEquipment = replacementArmor.getBySlot(EquipmentSlot.HEAD).copy();
+            ItemStack headEquipment = replacementArmor.get(EquipmentSlot.HEAD).copy();
 
             // Replicate regular armor rendering logic, taking into account special skull rendering logic
             livingState.wornHeadType = null;
@@ -64,16 +64,16 @@ public class ArmorReflectionRendererModifier<E extends Entity> extends Reflectio
             if (isSkull || shouldRenderHead) {
                 livingState.headItem.clear();
             } else {
-                itemModelResolver.updateForLiving(livingState.headItem, headEquipment, ItemDisplayContext.HEAD, false, livingEntity);
+                itemModelResolver.updateForLiving(livingState.headItem, headEquipment, ItemDisplayContext.HEAD, livingEntity);
             }
 
             if (state instanceof HumanoidRenderState humanoidState) {
                 humanoidState.headEquipment = shouldRenderHead ? headEquipment.copy() : ItemStack.EMPTY;
-                ItemStack chestEquipment = replacementArmor.getBySlot(EquipmentSlot.CHEST);
+                ItemStack chestEquipment = replacementArmor.get(EquipmentSlot.CHEST);
                 humanoidState.chestEquipment = HumanoidArmorLayer.shouldRender(chestEquipment, EquipmentSlot.CHEST) ? chestEquipment.copy() : ItemStack.EMPTY;
-                ItemStack legsEquipment = replacementArmor.getBySlot(EquipmentSlot.LEGS);
+                ItemStack legsEquipment = replacementArmor.get(EquipmentSlot.LEGS);
                 humanoidState.legsEquipment = HumanoidArmorLayer.shouldRender(legsEquipment, EquipmentSlot.LEGS) ? legsEquipment.copy() : ItemStack.EMPTY;
-                ItemStack feetEquipment = replacementArmor.getBySlot(EquipmentSlot.FEET);
+                ItemStack feetEquipment = replacementArmor.get(EquipmentSlot.FEET);
                 humanoidState.feetEquipment = HumanoidArmorLayer.shouldRender(feetEquipment, EquipmentSlot.FEET) ? feetEquipment.copy() : ItemStack.EMPTY;
             }
         }

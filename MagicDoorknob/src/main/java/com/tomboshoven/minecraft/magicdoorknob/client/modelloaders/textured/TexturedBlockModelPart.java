@@ -5,71 +5,56 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.DelegateBakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * A baked model that fills in the texture properties dynamically.
+ * A block model part that  provides textures to its model.
  */
-class TexturedBakedModel extends DelegateBakedModel {
-    // The baked texture getter
-    private final SpriteGetter spriteGetter;
+class TexturedBlockModelPart implements BlockModelPart {
+    // The original block model part to use with a replaced texture
+    private final BlockModelPart original;
+    // The texture getter
+    private final SpriteGetter sprites;
     // The mapper that replaces property textures by their values
-    private final TextureMapper textureMapper;
+    private final TextureMapper.BlockStateTextureMapper textureMapper;
 
     // The vertex format of the model. At the moment, only "block" is supported.
     private static final VertexFormat VERTEX_FORMAT = DefaultVertexFormat.BLOCK;
-    // The vertex format element containing the first texture UV coordinates
-    private static final VertexFormatElement VERTEX_FORMAT_ELEMENT_UV;
-    // The offset of the UV coordinates in the vertex format
-    private static final int VERTEX_FORMAT_ELEMENT_UV_OFFSET;
-
-    static {
-        // Find the UV index and offset in the vertex format.
-        VERTEX_FORMAT_ELEMENT_UV = VERTEX_FORMAT.getElements().stream().filter(el -> el.usage() == VertexFormatElement.Usage.UV && el.index() == 0).findFirst().orElseThrow();
-        VERTEX_FORMAT_ELEMENT_UV_OFFSET = VERTEX_FORMAT.getOffset(VERTEX_FORMAT_ELEMENT_UV);
-    }
 
     /**
-     * @param originalModel The original baked model
-     * @param spriteGetter  The sprite getter
+     * @param original      The original block model part
      * @param textureMapper The mapper that replaces property textures by their values
+     * @param sprites       The sprite getter
      */
-    TexturedBakedModel(BakedModel originalModel, SpriteGetter spriteGetter, TextureMapper textureMapper) {
-        super(originalModel);
-        this.spriteGetter = spriteGetter;
+    TexturedBlockModelPart(BlockModelPart original, TextureMapper.BlockStateTextureMapper textureMapper, SpriteGetter sprites) {
+        this.original = original;
+        this.sprites = sprites;
         this.textureMapper = textureMapper;
     }
 
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
+    public List<BakedQuad> getQuads(@Nullable Direction direction) {
         // Return the original quads, with the property sprites replaced by actual ones
-        List<BakedQuad> quads = parent.getQuads(state, side, rand, extraData, renderType);
+        List<BakedQuad> quads = original.getQuads(direction);
         return quads.stream().map(quad -> {
-            TextureAtlasSprite sprite = quad.getSprite();
-            if (sprite instanceof PropertySprite) {
-                Material material = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
+            TextureAtlasSprite sprite = quad.sprite();
+            if (sprite instanceof PropertySprite property) {
+                Material material = textureMapper.mapSprite(property);
                 if (material == null) {
                     //noinspection ReturnOfNull
                     return null;
                 }
-                TextureAtlasSprite actualSprite = spriteGetter.get(material);
+                TextureAtlasSprite actualSprite = sprites.get(material, () -> "TexturedBlockModelPart");
                 return retexture(quad, actualSprite);
             }
             return quad;
@@ -78,19 +63,19 @@ class TexturedBakedModel extends DelegateBakedModel {
 
     private static BakedQuad retexture(BakedQuad quad, TextureAtlasSprite sprite) {
         // Note: assumes original sprite is 1x1
-        int[] vertexData = quad.getVertices().clone();
+        int[] vertexData = quad.vertices().clone();
 
         // Offset between vertices
         int stride = VERTEX_FORMAT.getVertexSize();
         // Offset for a single U/V
-        int eltOffset = VERTEX_FORMAT_ELEMENT_UV.type().size();
+        int eltOffset = VertexFormatElement.UV0.type().size();
 
         float minU = sprite.getU0();
         float maxU = sprite.getU1();
         float minV = sprite.getV0();
         float maxV = sprite.getV1();
 
-        int idx = VERTEX_FORMAT_ELEMENT_UV_OFFSET;
+        int idx = VERTEX_FORMAT.getOffset(VertexFormatElement.UV0);
         // Iterate over all 4 vertices
         for (int vertex = 0; vertex < 4; ++vertex) {
             float vertexU = Float.intBitsToFloat(getAtByteOffset(vertexData, idx));
@@ -103,7 +88,7 @@ class TexturedBakedModel extends DelegateBakedModel {
             idx += stride;
         }
 
-        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getDirection(), sprite, quad.isShade(), quad.getLightEmission(), quad.hasAmbientOcclusion());
+        return new BakedQuad(vertexData, quad.tintIndex(), quad.direction(), sprite, quad.shade(), quad.lightEmission(), quad.hasAmbientOcclusion());
     }
 
     private static int getAtByteOffset(int[] inData, int offset) {
@@ -137,23 +122,27 @@ class TexturedBakedModel extends DelegateBakedModel {
         outData[index + 1] = (outData[index + 1] & msbMask) | (value >>> (32 - shift));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-        return getQuads(state, side, rand, ModelData.EMPTY, null);
+    public boolean useAmbientOcclusion() {
+        //noinspection deprecation
+        return original.useAmbientOcclusion();
     }
 
     @Override
-    public TextureAtlasSprite getParticleIcon(@Nonnull ModelData data) {
-        TextureAtlasSprite sprite = super.getParticleIcon(data);
-        if (sprite instanceof PropertySprite) {
-            Material spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, null, data);
+    public TextureAtlasSprite particleIcon() {
+        TextureAtlasSprite icon = original.particleIcon();
+        if (icon instanceof PropertySprite property) {
+            Material spriteLocation = textureMapper.mapSprite(property);
             if (spriteLocation == null) {
-                //noinspection deprecation
-                spriteLocation = new Material(TextureAtlas.LOCATION_BLOCKS, MissingTextureAtlasSprite.getLocation());
+                return icon;
             }
-            sprite = spriteGetter.get(spriteLocation);
+            icon = sprites.get(spriteLocation, () -> "TexturedBlockModelPart");
         }
-        return sprite;
+        return icon;
+    }
+
+    @Override
+    public RenderType getRenderType(BlockState state) {
+        return original.getRenderType(state);
     }
 }

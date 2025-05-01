@@ -3,16 +3,19 @@ package com.tomboshoven.minecraft.magicmirror.client.renderers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * A renderer to render an entity using a different model.
@@ -152,11 +155,6 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
 
         void setDisplayContext(ItemDisplayContext displayContext);
 
-        @SuppressWarnings("BooleanMethodNameMustStartWithQuestion")
-        boolean getIsLeftHand();
-
-        void setIsLeftHand(boolean isLeftHand);
-
         int getActiveLayerCount();
 
         void setActiveLayerCount(int activeLayerCount);
@@ -172,7 +170,6 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
          */
         default void copyFrom(OffModelRenderer.CopyableItemStackRenderState other) {
             setDisplayContext(other.getDisplayContext());
-            setIsLeftHand(other.getIsLeftHand());
             int newLayerCount = other.getActiveLayerCount();
             ensureCapacity(newLayerCount - getActiveLayerCount());
             setActiveLayerCount(newLayerCount);
@@ -195,10 +192,17 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
          */
         @SuppressWarnings("InterfaceNeverImplemented")
         interface CopyableLayerRenderState {
-            @Nullable
-            BakedModel getModel();
+            List<BakedQuad> prepareQuadList();
 
-            void setModel(@Nullable BakedModel model);
+            boolean getUsesBlockLight();
+            void setUsesBlockLight(boolean usesBlockLight);
+
+            @Nullable
+            TextureAtlasSprite getParticleIcon();
+            void setParticleIcon(@Nullable TextureAtlasSprite particleIcon);
+
+            ItemTransform getTransform();
+            void setTransform(ItemTransform transform);
 
             @Nullable
             RenderType getRenderType();
@@ -227,7 +231,10 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
              * @param other The item render state layer to copy from.
              */
             default void copyFrom(OffModelRenderer.CopyableItemStackRenderState.CopyableLayerRenderState other) {
-                setModel(other.getModel());
+                prepareQuadList().addAll(other.prepareQuadList());
+                setUsesBlockLight(other.getUsesBlockLight());
+                setParticleIcon(other.getParticleIcon());
+                setTransform(other.getTransform());
                 setRenderType(other.getRenderType());
                 setFoilType(other.getFoilType());
                 int[] otherTintLayers = prepareTintLayers(0);

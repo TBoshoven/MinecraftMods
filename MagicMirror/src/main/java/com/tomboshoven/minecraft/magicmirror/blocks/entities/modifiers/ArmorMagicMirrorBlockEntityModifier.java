@@ -3,6 +3,9 @@ package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -26,9 +29,9 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -40,6 +43,7 @@ import net.minecraft.world.level.entity.EntityAccess;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.Random;
 import java.util.random.RandomGenerator;
@@ -74,9 +78,11 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
     }
 
     @Override
-    public void remove(Level world, BlockPos pos) {
+    public void remove(@Nullable Level world, BlockPos pos) {
         super.remove(world, pos);
-        replacementArmor.spawn(world, pos);
+        if (world != null) {
+            replacementArmor.spawn(world, pos);
+        }
     }
 
     @Override
@@ -98,7 +104,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
         }
 
         if (player instanceof ServerPlayer) {
-            if (!tryEquipArmor(blockEntity, player, heldItem)) {
+            if (!tryEquipArmor(blockEntity, heldItem)) {
                 swapArmor(blockEntity, player);
             }
         }
@@ -113,21 +119,21 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
      * @param heldItem    The item held by the player.
      * @return Whether the held item was successfully equipped as armor.
      */
-    private boolean tryEquipArmor(MagicMirrorCoreBlockEntity blockEntity, LivingEntity player, ItemStack heldItem) {
-        if (heldItem.getItem() instanceof ArmorItem) {
-            EquipmentSlot equipmentSlotType = player.getEquipmentSlotForItem(heldItem);
-            if (equipmentSlotType.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
-                int slotIndex = equipmentSlotType.getIndex();
-                if (replacementArmor.isEmpty(slotIndex)) {
+    private boolean tryEquipArmor(MagicMirrorCoreBlockEntity blockEntity, ItemStack heldItem) {
+        Equippable equippableComponent = heldItem.get(DataComponents.EQUIPPABLE);
+        if (equippableComponent != null) {
+            EquipmentSlot equipmentSlot = equippableComponent.slot();
+            if (equipmentSlot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
+                if (replacementArmor.isEmpty(equipmentSlot)) {
                     BlockPos pos = blockEntity.getBlockPos();
                     Level level = blockEntity.getLevel();
                     if (level instanceof ServerLevel serverLevel) {
-                        CustomPacketPayload message = new MessageEquip(pos, slotIndex, heldItem.copy());
+                        CustomPacketPayload message = new MessageEquip(pos, equipmentSlot, heldItem.copy());
                         PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(pos), message);
                     }
 
                     // Server side
-                    replacementArmor.set(slotIndex, heldItem.copy());
+                    replacementArmor.set(equipmentSlot, heldItem.copy());
                     heldItem.setCount(0);
                     blockEntity.setChanged();
                     return true;
@@ -175,13 +181,29 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
      * Container class for a swapped-out inventory.
      */
     public static class ReplacementArmor {
-        private static final int NUM_SLOTS = 4;
+        /**
+         * Slot numbers of the equipment slots we're targeting.
+         */
+        private static final int[] SLOTS = Inventory.EQUIPMENT_SLOT_MAPPING.int2ObjectEntrySet().stream().filter(e -> e.getValue().getType() == EquipmentSlot.Type.HUMANOID_ARMOR).mapToInt(Int2ObjectMap.Entry::getIntKey).toArray();
+        /**
+         * Reverse lookup for equipment slot to index in our array.
+         */
+        private static final Object2IntMap<EquipmentSlot> INDEX_BY_SLOT = new Object2IntArrayMap<>();
+
+        static {
+            for (int i = 0; i < SLOTS.length; ++i) {
+                EquipmentSlot equipmentSlot = Inventory.EQUIPMENT_SLOT_MAPPING.get(SLOTS[i]);
+                if (equipmentSlot != null) {
+                    INDEX_BY_SLOT.put(equipmentSlot, i);
+                }
+            }
+        }
 
         static final StreamCodec<RegistryFriendlyByteBuf, ReplacementArmor> STREAM_CODEC = new StreamCodec<>() {
             @Override
             public ReplacementArmor decode(RegistryFriendlyByteBuf byteBuf) {
-                NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
-                for (int i = 0; i < NUM_SLOTS; ++i) {
+                NonNullList<ItemStack> inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
+                for (int i = 0; i < SLOTS.length; ++i) {
                     int finalI = i;
                     ByteBufCodecs.optional(ItemStack.STREAM_CODEC).decode(byteBuf).ifPresent(itemStack -> inventory.set(finalI, itemStack));
                 }
@@ -197,32 +219,72 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
             }
         };
 
+        // The actual inventory. Use SLOTS and INDEX_BY_SLOT for index lookups.
         private final NonNullList<ItemStack> replacementInventory;
 
         ReplacementArmor() {
-            replacementInventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
+            this(NonNullList.withSize(SLOTS.length, ItemStack.EMPTY));
         }
 
-        ReplacementArmor(Iterable<ItemStack> armor) {
-            replacementInventory = NonNullList.create();
-            armor.forEach(replacementInventory::add);
+        private ReplacementArmor(NonNullList<ItemStack> replacementInventory) {
+            this.replacementInventory = replacementInventory;
         }
 
-        boolean isEmpty(int i) {
-            return i >= 0 && i < replacementInventory.size() && replacementInventory.get(i).isEmpty();
+        /**
+         * Create a replacement armor instance from a player's inventory.
+         * This does not also remove it from the player.
+         *
+         * @param player The player to get the armor info from.
+         * @return The replacement armor instance.
+         */
+        static ReplacementArmor fromPlayer(Player player) {
+            Inventory playerInventory = player.getInventory();
+            NonNullList<ItemStack> items = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
+            for (int i = 0; i < SLOTS.length; ++i) {
+                items.set(i, playerInventory.getItem(SLOTS[i]));
+            }
+            return new ReplacementArmor(items);
         }
 
-        void set(int i, ItemStack stack) {
-            replacementInventory.set(i, stack);
+        /**
+         * @param slot The slot to check.
+         * @return Whether the slot is empty.
+         */
+        boolean isEmpty(EquipmentSlot slot) {
+            int idx = INDEX_BY_SLOT.getOrDefault(slot, -1);
+            if (idx == -1) {
+                return false;
+            }
+            return replacementInventory.get(idx).isEmpty();
+        }
+
+        /**
+         * Set a slot to a specific item.
+         *
+         * @param slot  The slot to update.
+         * @param stack The item to put in the slot.
+         */
+        void set(EquipmentSlot slot, ItemStack stack) {
+            int idx = INDEX_BY_SLOT.getOrDefault(slot, -1);
+            if (idx == -1) {
+                return;
+            }
+            replacementInventory.set(idx, stack);
         }
 
         /**
          * Get the proper armor piece by equipment slot.
+         *
          * @param slot The slot to read from.
          * @return The armor item in that slot, or EMPTY if the slot has no armor in it.
          */
-        public final ItemStack getBySlot(EquipmentSlot slot) {
-            return slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR ? replacementInventory.get(slot.getIndex()) : ItemStack.EMPTY;
+        public final ItemStack get(EquipmentSlot slot) {
+            // Find the slot
+            int idx = INDEX_BY_SLOT.getOrDefault(slot, -1);
+            if (idx == -1) {
+                return ItemStack.EMPTY;
+            }
+            return slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR ? replacementInventory.get(idx) : ItemStack.EMPTY;
         }
 
         /**
@@ -232,7 +294,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
          * @param inventory The inventory to swap with.
          */
         void swap(NonNullList<ItemStack> inventory) {
-            for (int i = 0; i < NUM_SLOTS; ++i) {
+            for (int i = 0; i < SLOTS.length; ++i) {
                 ItemStack original = inventory.get(i);
                 ItemStack replacement = replacementInventory.get(i);
                 if (EnchantmentHelper.has(original, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE) || EnchantmentHelper.has(replacement, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) {
@@ -250,20 +312,20 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
          * @param player The player to swap armor with.
          */
         void swap(Player player) {
-            NonNullList<ItemStack> armorInventory = player.getInventory().armor;
-            for (int i = 0; i < NUM_SLOTS; ++i) {
-                ItemStack playerArmor = armorInventory.get(i);
+            Inventory playerInventory = player.getInventory();
+            for (int i = 0; i < SLOTS.length; ++i) {
+                ItemStack playerArmor = playerInventory.getItem(SLOTS[i]);
                 ItemStack replacement = replacementInventory.get(i);
                 if (EnchantmentHelper.has(playerArmor, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE) || EnchantmentHelper.has(replacement, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) {
                     // Cannot swap armor with curse of binding
                     continue;
                 }
-                if (player instanceof ServerPlayer) {
+                if (player instanceof ServerPlayer serverPlayer) {
                     // Make sure to do this on the client side as well.
-                    ((ServerPlayer) player).connection.send(new ClientboundContainerSetSlotPacket(-2, 0, i + 36, replacement));
+                    serverPlayer.connection.send(new ClientboundContainerSetSlotPacket(-2, 0, SLOTS[i], replacement));
                 }
                 replacementInventory.set(i, playerArmor);
-                armorInventory.set(i, replacement);
+                playerInventory.setItem(SLOTS[i], replacement);
             }
         }
 
@@ -315,10 +377,10 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
     /**
      * Message describing players equipping the mirror with armor.
      */
-    public record MessageEquip(BlockPos mirrorPos, int slotIdx, ItemStack armor) implements CustomPacketPayload {
+    public record MessageEquip(BlockPos mirrorPos, EquipmentSlot slot, ItemStack armor) implements CustomPacketPayload {
         public static final CustomPacketPayload.Type<MessageEquip> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "equip"));
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, MessageEquip> STREAM_CODEC = StreamCodec.composite(BlockPos.STREAM_CODEC, MessageEquip::mirrorPos, ByteBufCodecs.INT, MessageEquip::slotIdx, ItemStack.STREAM_CODEC, MessageEquip::armor, MessageEquip::new);
+        public static final StreamCodec<RegistryFriendlyByteBuf, MessageEquip> STREAM_CODEC = StreamCodec.composite(BlockPos.STREAM_CODEC, MessageEquip::mirrorPos, ByteBufCodecs.STRING_UTF8.map(EquipmentSlot::byName, EquipmentSlot::getName), MessageEquip::slot, ItemStack.STREAM_CODEC, MessageEquip::armor, MessageEquip::new);
 
         @Override
         public CustomPacketPayload.Type<MessageEquip> type() {
@@ -333,7 +395,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
         public static final CustomPacketPayload.Type<MessageSwapMirror> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "swap_mirror"));
 
         MessageSwapMirror(MagicMirrorCoreBlockEntity magicMirrorBase, Player player) {
-            this(new ReplacementArmor(player.getArmorSlots()), magicMirrorBase.getBlockPos());
+            this(ReplacementArmor.fromPlayer(player), magicMirrorBase.getBlockPos());
         }
 
         public static final StreamCodec<RegistryFriendlyByteBuf, MessageSwapMirror> STREAM_CODEC = StreamCodec.composite(ReplacementArmor.STREAM_CODEC, MessageSwapMirror::armor, BlockPos.STREAM_CODEC, MessageSwapMirror::mirrorPos, MessageSwapMirror::new);
@@ -374,8 +436,8 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                     ((MagicMirrorCoreBlockEntity) te).getModifiers().stream()
                             .filter(modifier -> modifier instanceof ArmorMagicMirrorBlockEntityModifier).findFirst()
                             .map(ArmorMagicMirrorBlockEntityModifier.class::cast)
-                            .ifPresent(modifier -> modifier.replacementArmor.set(message.slotIdx, message.armor));
-                    ArmorItem item = (ArmorItem) message.armor.getItem();
+                            .ifPresent(modifier -> modifier.replacementArmor.set(message.slot, message.armor));
+                    Item item = message.armor.getItem();
                     // Play appropriate equip sound
                     Equippable equippable = item.components().get(DataComponents.EQUIPPABLE);
                     if (equippable != null) {

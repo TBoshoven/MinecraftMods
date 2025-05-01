@@ -9,6 +9,8 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
+
 public abstract class ItemBasedMagicMirrorBlockEntityModifier extends MagicMirrorBlockEntityModifier {
     final ItemStack item;
 
@@ -22,8 +24,9 @@ public abstract class ItemBasedMagicMirrorBlockEntityModifier extends MagicMirro
 
     ItemBasedMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt, HolderLookup.Provider lookupProvider) {
         super(modifier);
-        CompoundTag itemCompound = nbt.getCompound("Item");
-        item = ItemStack.parse(lookupProvider, itemCompound).orElse(ItemStack.EMPTY);
+        item = nbt.getCompound("Item")
+                .flatMap(itemCompound -> ItemStack.parse(lookupProvider, itemCompound))
+                .orElse(ItemStack.EMPTY);
     }
 
     @Override
@@ -35,7 +38,9 @@ public abstract class ItemBasedMagicMirrorBlockEntityModifier extends MagicMirro
     }
 
     @Override
-    public void remove(Level world, BlockPos pos) {
-        Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), item);
+    public void remove(@Nullable Level world, BlockPos pos) {
+        if (world != null) {
+            Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), item);
+        }
     }
 }

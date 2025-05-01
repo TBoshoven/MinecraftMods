@@ -5,13 +5,11 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartB
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -91,25 +89,18 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
         EnumPartType part = state.getValue(PART);
-        breakDoorway(worldIn, pos, state.getValue(HORIZONTAL_FACING), part);
+        breakDoorway(level, pos, state.getValue(HORIZONTAL_FACING), part);
 
         if (part == EnumPartType.TOP) {
-            // Spawn the doorknob
-            Item doorknob = getDoorknob(worldIn, pos);
-            if (doorknob != null) {
-                Containers.dropItemStack(worldIn, pos.getX(), pos.getY() - .5f, pos.getZ(), new ItemStack(doorknob, 1));
-            }
-
             // Break the bottom part
-            worldIn.destroyBlock(pos.below(), false);
+            level.destroyBlock(pos.below(), false);
         } else {
             // Break the top part
-            worldIn.destroyBlock(pos.above(), false);
+            level.destroyBlock(pos.above(), false);
         }
-
-        super.onRemove(state, worldIn, pos, newState, isMoving);
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
     }
 
     /**

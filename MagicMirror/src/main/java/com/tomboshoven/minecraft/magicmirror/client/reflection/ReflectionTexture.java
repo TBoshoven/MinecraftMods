@@ -2,6 +2,9 @@ package com.tomboshoven.minecraft.magicmirror.client.reflection;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
+import com.mojang.blaze3d.systems.CommandEncoder;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.GpuTexture;
 import com.tomboshoven.minecraft.magicmirror.mixin.MinecraftRenderTargetMixin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -10,15 +13,16 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
  * Simple wrapper around a render target to a texture, so we can use it with the texture manager.
  */
 class ReflectionTexture extends AbstractTexture {
+    private static int textureCount;
+
     /**
      * The frame buffer which is used for rendering the reflection to and subsequently rendering it into the world.
      */
     private final RenderTarget renderTarget;
 
     ReflectionTexture(int width, int height) {
-        renderTarget = new TextureTarget(width, height, true);
-        renderTarget.unbindWrite();
-        id = renderTarget.getColorTextureId();
+        renderTarget = new TextureTarget(String.format("reflection%d", textureCount++), width, height, true);
+        this.texture = renderTarget.getColorTexture();
     }
 
     @Override
@@ -26,17 +30,19 @@ class ReflectionTexture extends AbstractTexture {
         renderTarget.destroyBuffers();
     }
 
-    @Override
-    public void releaseId() {
-        super.releaseId();
-        renderTarget.destroyBuffers();
-    }
-
     /**
      * Clear the texture.
      */
     void clear() {
-        renderTarget.clear();
+        CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
+        GpuTexture depthTexture = renderTarget.getDepthTexture();
+        if (depthTexture != null) {
+            commandEncoder.clearDepthTexture(depthTexture, 1.0);
+        }
+        GpuTexture colorTexture = renderTarget.getColorTexture();
+        if (colorTexture != null) {
+            commandEncoder.clearColorTexture(colorTexture, 0);
+        }
     }
 
     /**
@@ -45,7 +51,7 @@ class ReflectionTexture extends AbstractTexture {
      *
      * @return The old main render target, to be used with unbindWriteAsMain\.
      */
-    RenderTarget bindWriteAsMain() {
+    RenderTarget activate() {
         // We use a mixin to temporarily replace it.
         MinecraftRenderTargetMixin minecraftRenderTargetMixin = (MinecraftRenderTargetMixin) Minecraft.getInstance();
         RenderTarget oldMainRenderTarget = minecraftRenderTargetMixin.getMainRenderTarget();
@@ -58,7 +64,7 @@ class ReflectionTexture extends AbstractTexture {
      *
      * @param oldMainRenderTarget The old main render target, as returned by unbindWriteAsMain.
      */
-    void unbindWriteAsMain(RenderTarget oldMainRenderTarget) {
+    void deactivate(RenderTarget oldMainRenderTarget) {
         MinecraftRenderTargetMixin minecraftRenderTargetMixin = (MinecraftRenderTargetMixin) Minecraft.getInstance();
         minecraftRenderTargetMixin.setMainRenderTarget(oldMainRenderTarget);
     }

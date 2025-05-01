@@ -1,10 +1,8 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlockEntity;
-import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -92,19 +90,6 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
             result = Shapes.or(result, BOUNDING_BOX_TOP);
         }
         return result;
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (newState.isAir()) {
-            // When this block is destroyed (manually or by closing the door), replace it by its base block.
-            BlockEntity blockEntity = worldIn.getBlockEntity(pos);
-            if (blockEntity instanceof MagicDoorwayBlockEntity) {
-                worldIn.setBlockAndUpdate(pos, ((MagicDoorwayPartBaseBlockEntity) blockEntity).getBaseBlockState());
-            }
-        }
-
-        super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 
     @Override

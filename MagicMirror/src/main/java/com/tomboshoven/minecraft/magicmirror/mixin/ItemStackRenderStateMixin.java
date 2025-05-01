@@ -18,12 +18,6 @@ public interface ItemStackRenderStateMixin extends OffModelRenderer.CopyableItem
     void setDisplayContext(ItemDisplayContext context);
 
     @Accessor
-    boolean getIsLeftHand();
-
-    @Accessor
-    void setIsLeftHand(boolean isLeftHand);
-
-    @Accessor
     int getActiveLayerCount();
 
     @Accessor

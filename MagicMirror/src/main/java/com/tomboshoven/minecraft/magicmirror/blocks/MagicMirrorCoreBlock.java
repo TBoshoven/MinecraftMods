@@ -9,14 +9,19 @@ import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifie
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -61,24 +66,19 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        BlockEntity blockEntity = worldIn.getBlockEntity(pos);
-        if (blockEntity instanceof MagicMirrorCoreBlockEntity) {
-            ((MagicMirrorCoreBlockEntity) blockEntity).removeModifiers(worldIn, pos);
-        }
+    protected void affectNeighborsAfterRemoval(BlockState blockState, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        level.updateNeighborsAt(pos.above(), this);
+        super.affectNeighborsAfterRemoval(blockState, level, pos, movedByPiston);
+    }
 
-        // Change the other part to incomplete
-        BlockPos otherPos = pos.above();
-        BlockState otherState = worldIn.getBlockState(otherPos);
-        if (otherState.getBlock() == Blocks.MAGIC_MIRROR_PART.get()) {
-            worldIn.setBlockAndUpdate(
-                    otherPos,
-                    Blocks.MAGIC_MIRROR_INACTIVE.get().defaultBlockState()
-                            .setValue(MagicMirrorInactiveBlock.PART, TOP)
-                            .setValue(FACING, state.getValue(FACING))
-            );
+    @Override
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        if (neighborPos.equals(pos.above()) && !neighborState.is(Blocks.MAGIC_MIRROR_PART.get())) {
+            return Blocks.MAGIC_MIRROR_INACTIVE.get().defaultBlockState()
+                    .setValue(MagicMirrorInactiveBlock.PART, TOP)
+                    .setValue(FACING, state.getValue(FACING));
         }
-        super.onRemove(state, worldIn, pos, newState, isMoving);
+        return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
     }
 
     @Nullable
