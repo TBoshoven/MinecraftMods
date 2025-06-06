@@ -51,7 +51,7 @@ subprojects {
     }
 
     dependencies {
-        implementation "net.neoforged:neoforge:21.5.62-beta"
+        implementation "net.neoforged:neoforge:21.5.75"
         implementation "org.spongepowered:mixin:0.8.7"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
