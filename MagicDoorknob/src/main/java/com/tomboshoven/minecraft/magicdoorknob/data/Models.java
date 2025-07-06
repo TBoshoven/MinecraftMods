@@ -7,7 +7,6 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.MagicDoorwayPartBaseBlock;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.data.textured.TexturedBlockModelGenerator;
-import com.tomboshoven.minecraft.magicdoorknob.data.textured.TexturedLoaderBuilder;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import net.minecraft.client.data.models.BlockModelGenerators;
@@ -288,12 +287,11 @@ class Models extends ModelProvider {
         BiConsumer<Direction, FaceBuilder> highlightTextureAction = (d, faceBuilder) -> faceBuilder.texture(HIGHLIGHT_TEXTURE);
         // Note: door facing is outward, so we need to face east, not west
         ExtendedModelTemplateBuilder builder = ExtendedModelTemplateBuilder.builder()
-                .customLoader(TexturedLoaderBuilder::new, loader -> {
-                })
                 .parent(ResourceLocation.withDefaultNamespace("block/block"))
                 .renderType("translucent")
                 .requiredTextureSlot(MAIN_TEXTURE)
                 .requiredTextureSlot(HIGHLIGHT_TEXTURE)
+                .requiredTextureSlot(TextureSlot.PARTICLE)
                 // Top left
                 .element(panelCuboid(Direction.EAST, 0, 0, 1, 7, mainTextureAction, renderEdge))
                 // Top left highlight
@@ -370,12 +368,11 @@ class Models extends ModelProvider {
         BiConsumer<Direction, FaceBuilder> mainTextureAction = (d, faceBuilder) -> faceBuilder.texture(MAIN_TEXTURE).tintindex(1);
         BiConsumer<Direction, FaceBuilder> highlightTextureAction = (d, faceBuilder) -> faceBuilder.texture(HIGHLIGHT_TEXTURE);
         ExtendedModelTemplateBuilder builder = ExtendedModelTemplateBuilder.builder()
-                .customLoader(TexturedLoaderBuilder::new, loader -> {
-                })
                 .parent(ResourceLocation.withDefaultNamespace("block/block"))
                 .renderType("translucent")
                 .requiredTextureSlot(MAIN_TEXTURE)
-                .requiredTextureSlot(HIGHLIGHT_TEXTURE);
+                .requiredTextureSlot(HIGHLIGHT_TEXTURE)
+                .requiredTextureSlot(TextureSlot.PARTICLE);
 
         // The top panel has a ceiling, so start the panels 1 y-level lower
         int startY;
@@ -415,12 +412,11 @@ class Models extends ModelProvider {
         BiConsumer<Direction, FaceBuilder> mainTextureAction = (d, faceBuilder) -> faceBuilder.texture(MAIN_TEXTURE).tintindex(1);
         BiConsumer<Direction, FaceBuilder> highlightTextureAction = (d, faceBuilder) -> faceBuilder.texture(HIGHLIGHT_TEXTURE);
         ExtendedModelTemplateBuilder builder = ExtendedModelTemplateBuilder.builder()
-                .customLoader(TexturedLoaderBuilder::new, loader -> {
-                })
                 .parent(ResourceLocation.withDefaultNamespace("block/block"))
                 .renderType("translucent")
                 .requiredTextureSlot(MAIN_TEXTURE)
-                .requiredTextureSlot(HIGHLIGHT_TEXTURE);
+                .requiredTextureSlot(HIGHLIGHT_TEXTURE)
+                .requiredTextureSlot(TextureSlot.PARTICLE);
 
         // The top panel has a ceiling, so start the panels 1 y-level lower
         int startY;
@@ -457,12 +453,11 @@ class Models extends ModelProvider {
         BiConsumer<Direction, FaceBuilder> mainTextureAction = (d, faceBuilder) -> faceBuilder.texture(MAIN_TEXTURE).tintindex(1);
         BiConsumer<Direction, FaceBuilder> highlightTextureAction = (d, faceBuilder) -> faceBuilder.texture(HIGHLIGHT_TEXTURE);
         ExtendedModelTemplateBuilder builder = ExtendedModelTemplateBuilder.builder()
-                .customLoader(TexturedLoaderBuilder::new, loader -> {
-                })
                 .parent(ResourceLocation.withDefaultNamespace("block/block"))
                 .renderType("translucent")
                 .requiredTextureSlot(MAIN_TEXTURE)
-                .requiredTextureSlot(HIGHLIGHT_TEXTURE);
+                .requiredTextureSlot(HIGHLIGHT_TEXTURE)
+                .requiredTextureSlot(TextureSlot.PARTICLE);
 
         // The top panel has a ceiling, so start the panels 1 y-level lower
         int startY;
@@ -526,6 +521,7 @@ class Models extends ModelProvider {
 
         // Door blocks
         TextureMapping panelTextureMapping = new TextureMapping()
+                .put(TextureSlot.PARTICLE, MagicDoorwayPartBaseBlockEntity.TEXTURE_MAIN.getName())
                 .put(MAIN_TEXTURE, MagicDoorwayPartBaseBlockEntity.TEXTURE_MAIN.getName())
                 .put(HIGHLIGHT_TEXTURE, MagicDoorwayPartBaseBlockEntity.TEXTURE_HIGHLIGHT.getName());
         doorTemplate(MagicDoorwayPartBaseBlock.EnumPartType.TOP).create(doorTopModelLocation, panelTextureMapping, blockModels.modelOutput);

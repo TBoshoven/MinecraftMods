@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * A block model part that  provides textures to its model.
+ * A block model part that provides textures to its model.
  */
 class TexturedBlockModelPart implements BlockModelPart {
     // The original block model part to use with a replaced texture
