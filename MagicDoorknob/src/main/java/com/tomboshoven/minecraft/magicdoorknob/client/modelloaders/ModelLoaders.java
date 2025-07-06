@@ -1,10 +1,8 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders;
 
 import com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured.TexturedBlockModelDefinition;
-import com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured.TexturedUnbakedModelLoader;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 
 import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
@@ -20,12 +18,7 @@ public final class ModelLoaders {
     }
 
     public static void register(IEventBus eventBus) {
-        eventBus.addListener(ModelLoaders::registerModelLoaders);
         eventBus.addListener(ModelLoaders::registerBlockStateModelDefinition);
-    }
-
-    private static void registerModelLoaders(ModelEvent.RegisterLoaders event) {
-        event.register(TEXTURED_MODEL_LOADER_KEY, new TexturedUnbakedModelLoader());
     }
 
     private static void registerBlockStateModelDefinition(RegisterBlockStateModels event) {
