@@ -2,12 +2,11 @@ package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import javax.annotation.Nullable;
 
@@ -22,19 +21,15 @@ public abstract class ItemBasedMagicMirrorBlockEntityModifier extends MagicMirro
         this.item = item;
     }
 
-    ItemBasedMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt, HolderLookup.Provider lookupProvider) {
+    ItemBasedMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, ValueInput input) {
         super(modifier);
-        item = nbt.getCompound("Item")
-                .flatMap(itemCompound -> ItemStack.parse(lookupProvider, itemCompound))
-                .orElse(ItemStack.EMPTY);
+        item = input.read("item", ItemStack.CODEC).orElse(ItemStack.EMPTY);
     }
 
     @Override
-    public CompoundTag write(CompoundTag nbt, HolderLookup.Provider lookupProvider) {
-        super.write(nbt, lookupProvider);
-        Tag itemTag = item.save(lookupProvider, new CompoundTag());
-        nbt.put("Item", itemTag);
-        return nbt;
+    public void save(ValueOutput output) {
+        super.save(output);
+        output.store("item", ItemStack.CODEC, item);
     }
 
     @Override

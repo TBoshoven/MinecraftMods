@@ -3,9 +3,9 @@ package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.SpriteGetter;
@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * A block model part that  provides textures to its model.
+ * A block model part that provides textures to its model.
  */
 class TexturedBlockModelPart implements BlockModelPart {
     // The original block model part to use with a replaced texture
@@ -142,7 +142,7 @@ class TexturedBlockModelPart implements BlockModelPart {
     }
 
     @Override
-    public RenderType getRenderType(BlockState state) {
+    public ChunkSectionLayer getRenderType(BlockState state) {
         return original.getRenderType(state);
     }
 }

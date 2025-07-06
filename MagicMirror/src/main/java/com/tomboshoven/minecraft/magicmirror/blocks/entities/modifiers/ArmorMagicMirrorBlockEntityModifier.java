@@ -9,11 +9,9 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -40,6 +38,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.entity.EntityAccess;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -67,14 +67,15 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
         super(modifier, item);
     }
 
-    public ArmorMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt, HolderLookup.Provider lookupProvider) {
-        super(modifier, nbt, lookupProvider);
-        replacementArmor.read(nbt, lookupProvider);
+    public ArmorMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, ValueInput input) {
+        super(modifier, input);
+        replacementArmor.read(input);
     }
 
     @Override
-    public CompoundTag write(CompoundTag nbt, HolderLookup.Provider lookupProvider) {
-        return replacementArmor.write(super.write(nbt, lookupProvider), lookupProvider);
+    public void save(ValueOutput output) {
+        super.save(output);
+        replacementArmor.save(output);
     }
 
     @Override
@@ -184,7 +185,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
         /**
          * Slot numbers of the equipment slots we're targeting.
          */
-        private static final int[] SLOTS = Inventory.EQUIPMENT_SLOT_MAPPING.int2ObjectEntrySet().stream().filter(e -> e.getValue().getType() == EquipmentSlot.Type.HUMANOID_ARMOR).mapToInt(Int2ObjectMap.Entry::getIntKey).toArray();
+        private static final int[] SLOTS = Inventory.EQUIPMENT_SLOT_MAPPING.int2ObjectEntrySet().stream().filter(e -> e.getValue().getType() == EquipmentSlot.Type.HUMANOID_ARMOR).mapToInt(Int2ObjectMap.Entry::getIntKey).sorted().toArray();
         /**
          * Reverse lookup for equipment slot to index in our array.
          */
@@ -284,7 +285,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
             if (idx == -1) {
                 return ItemStack.EMPTY;
             }
-            return slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR ? replacementInventory.get(idx) : ItemStack.EMPTY;
+            return replacementInventory.get(idx);
         }
 
         /**
@@ -330,25 +331,21 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
         }
 
         /**
-         * Write the inventory out to an NBT tag compound.
+         * Write the inventory out to a value output.
          *
-         * @param nbt            The NBT tag compound to write to.
-         * @param lookupProvider The holder lookup provider for serializing the item stacks.
-         * @return The input compound, for chaining.
+         * @param output The value output to write to.
          */
-        CompoundTag write(CompoundTag nbt, HolderLookup.Provider lookupProvider) {
-            ContainerHelper.saveAllItems(nbt, replacementInventory, lookupProvider);
-            return nbt;
+        void save(ValueOutput output) {
+            ContainerHelper.saveAllItems(output, replacementInventory);
         }
 
         /**
-         * Load inventory from an NBT tag.
+         * Load inventory from a value input.
          *
-         * @param nbt            The NBT tag compound to read from.
-         * @param lookupProvider The holder lookup provider for deserializing the item stacks.
+         * @param input The NBT tag compound to read from.
          */
-        void read(CompoundTag nbt, HolderLookup.Provider lookupProvider) {
-            ContainerHelper.loadAllItems(nbt, replacementInventory, lookupProvider);
+        void read(ValueInput input) {
+            ContainerHelper.loadAllItems(input, replacementInventory);
         }
 
         /**
@@ -480,7 +477,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                     entity.playSound(SoundEvents.ENDERMAN_TELEPORT, .8f, .4f);
                     RandomGenerator random = new Random();
                     for (int i = 0; i < SWAP_PARTICLE_COUNT; ++i) {
-                        entity.getCommandSenderWorld().addParticle(
+                        world.addParticle(
                                 ParticleTypes.PORTAL,
                                 entity.getX() + random.nextGaussian() / 4,
                                 entity.getY() + 2 * random.nextDouble(),

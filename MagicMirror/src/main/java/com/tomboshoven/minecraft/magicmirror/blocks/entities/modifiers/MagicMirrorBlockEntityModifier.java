@@ -3,12 +3,11 @@ package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import javax.annotation.Nullable;
 
@@ -35,15 +34,12 @@ public abstract class MagicMirrorBlockEntityModifier {
     }
 
     /**
-     * Write the modifier out to an NBT tag compound.
-     * Including the name of the modifier is not necessary.
+     * Write the modifier out to a value output.
+     * Including the id of the modifier is not necessary.
      *
-     * @param nbt The NBT tag compound to write to.
-     * @return The input compound, for chaining.
+     * @param output The value output to write to.
      */
-    public CompoundTag write(CompoundTag nbt, HolderLookup.Provider lookupProvider) {
-        return nbt;
-    }
+    public void save(ValueOutput output) {}
 
     /**
      * Called when the block entity is removed.

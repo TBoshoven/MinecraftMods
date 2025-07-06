@@ -8,7 +8,7 @@ import net.minecraft.world.entity.Entity;
 /**
  * Base class for reflection renderers.
  */
-public abstract class ReflectionRendererBase<E extends Entity> {
+public abstract class ReflectionRendererBase<E extends Entity> implements AutoCloseable {
     /**
      * @return The entity that is being rendered. This is used for chaining modifiers.
      */

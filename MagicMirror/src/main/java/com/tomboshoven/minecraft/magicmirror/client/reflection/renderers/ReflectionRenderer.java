@@ -5,11 +5,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.CachedPerspectiveProjectionMatrixBuffer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.Entity;
-import org.joml.Matrix4f;
 
 /**
  * Renderer for reflections in the mirror.
@@ -24,6 +24,11 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
      * The renderer class for the entity that is being rendered.
      */
     private StatefulRenderer<E, ? extends EntityRenderer<? super E, ?>, ?> statefulRenderer;
+
+    /**
+     * The projection matrix to use inside the reflection.
+     */
+    private final CachedPerspectiveProjectionMatrixBuffer cachedProjectionMatrixBuffer = new CachedPerspectiveProjectionMatrixBuffer("Reflection", .05f, 50f);
 
     /**
      * @param entity The entity to render.
@@ -48,8 +53,7 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
     public void setUp() {
         // Re-initialize the projection matrix to keep full control over the perspective
         RenderSystem.backupProjectionMatrix();
-        // Aspect is .5 to compensate for the rectangular mirror
-        RenderSystem.setProjectionMatrix(new Matrix4f().setPerspective((float) (Math.PI / 2), .5f, .05f, 50f), ProjectionType.PERSPECTIVE);
+        RenderSystem.setProjectionMatrix(cachedProjectionMatrixBuffer.getBuffer(16, 32, 90), ProjectionType.PERSPECTIVE);
     }
 
     @Override
@@ -75,6 +79,11 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
         reflectionMatrixStack.mulPose(Axis.YP.rotationDegrees(facing));
 
         statefulRenderer.render(reflectionMatrixStack, renderTypeBuffer);
+    }
+
+    @Override
+    public void close() {
+        cachedProjectionMatrixBuffer.close();
     }
 
     /**

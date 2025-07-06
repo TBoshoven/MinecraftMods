@@ -22,7 +22,8 @@ class ReflectionTexture extends AbstractTexture {
 
     ReflectionTexture(int width, int height) {
         renderTarget = new TextureTarget(String.format("reflection%d", textureCount++), width, height, true);
-        this.texture = renderTarget.getColorTexture();
+        texture = renderTarget.getColorTexture();
+        textureView = renderTarget.getColorTextureView();
     }
 
     @Override
@@ -49,7 +50,7 @@ class ReflectionTexture extends AbstractTexture {
      * Make the reflection texture the main render target.
      * This changes the target for most render states.
      *
-     * @return The old main render target, to be used with unbindWriteAsMain\.
+     * @return The old main render target, to be used with deactivate.
      */
     RenderTarget activate() {
         // We use a mixin to temporarily replace it.
@@ -62,7 +63,7 @@ class ReflectionTexture extends AbstractTexture {
     /**
      * Restore the old main render target.
      *
-     * @param oldMainRenderTarget The old main render target, as returned by unbindWriteAsMain.
+     * @param oldMainRenderTarget The old main render target, as returned by activate.
      */
     void deactivate(RenderTarget oldMainRenderTarget) {
         MinecraftRenderTargetMixin minecraftRenderTargetMixin = (MinecraftRenderTargetMixin) Minecraft.getInstance();

@@ -64,11 +64,10 @@ public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implem
      * @param blockEntity The block entity of the mirror to apply the modifier to.
      */
     private static void attachModifier(ItemStack heldItem, Holder.Reference<? extends MagicMirrorModifier> modifier, MagicMirrorCoreBlockEntity blockEntity) {
-        // Item stack may change by attaching
-        ItemStack originalHeldItem = heldItem.copy();
-        modifier.value().apply(blockEntity, heldItem);
-        Level level = blockEntity.getLevel();
-        if (level instanceof ServerLevel serverLevel) {
+        if (blockEntity.getLevel() instanceof ServerLevel serverLevel) {
+            // Item stack may change by attaching
+            ItemStack originalHeldItem = heldItem.copy();
+            modifier.value().apply(blockEntity, heldItem);
             CustomPacketPayload message = new MagicMirrorCoreBlock.MessageAttachModifier(blockEntity.getBlockPos(), originalHeldItem, modifier.key().location());
             PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(blockEntity.getBlockPos()), message);
         }

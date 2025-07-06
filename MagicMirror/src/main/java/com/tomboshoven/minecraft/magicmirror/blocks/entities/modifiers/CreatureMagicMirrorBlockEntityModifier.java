@@ -2,12 +2,12 @@ package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.CreatureMagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.Optional;
 
@@ -22,9 +22,9 @@ public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirror
         this.entityType = entityType;
     }
 
-    public CreatureMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt, HolderLookup.Provider holderLookupProvider) {
-        super(modifier, nbt, holderLookupProvider);
-        Optional<? extends EntityType<?>> foundEntityType = nbt.getString("EntityType")
+    public CreatureMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, ValueInput input) {
+        super(modifier, input);
+        Optional<? extends EntityType<?>> foundEntityType = input.getString("EntityType")
                 .map(ResourceLocation::parse)
                 // Extra check to make sure we're not getting the default
                 .filter(BuiltInRegistries.ENTITY_TYPE::containsKey)
@@ -40,11 +40,10 @@ public class CreatureMagicMirrorBlockEntityModifier extends ItemBasedMagicMirror
     }
 
     @Override
-    public CompoundTag write(CompoundTag nbt, HolderLookup.Provider lookupProvider) {
-        super.write(nbt, lookupProvider);
+    public void save(ValueOutput output) {
+        super.save(output);
         ResourceLocation entityTypeKey = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
-        nbt.putString("EntityType", entityTypeKey.toString());
-        return nbt;
+        output.putString("EntityType", entityTypeKey.toString());
     }
 
     /**
