@@ -61,7 +61,8 @@ public record TexturedBlockModelDefinition(
         return new BlockStateModel.UnbakedRoot() {
             @Override
             public BlockStateModel bake(BlockState state, ModelBaker baker) {
-                return new TexturedBlockStateModel(base.bake(state, baker), textureMapper, baker.sprites());
+                ModelBaker texturedBaker = new TexturedModelBaker(baker);
+                return new TexturedBlockStateModel(base.bake(state, texturedBaker), textureMapper, texturedBaker.sprites());
             }
 
             @Override
