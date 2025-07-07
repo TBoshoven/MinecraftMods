@@ -1,4 +1,4 @@
-package com.tomboshoven.minecraft.magicmirror.packets;
+package com.tomboshoven.minecraft.magicmirror.network;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorCoreBlock;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier;
@@ -25,9 +25,9 @@ public final class Network {
     private static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar(MOD_ID);
 
-        registrar.playToClient(ArmorMagicMirrorBlockEntityModifier.MessageEquip.TYPE, ArmorMagicMirrorBlockEntityModifier.MessageEquip.STREAM_CODEC, ArmorMagicMirrorBlockEntityModifier::onMessageEquip);
-        registrar.playToClient(ArmorMagicMirrorBlockEntityModifier.MessageSwapMirror.TYPE, ArmorMagicMirrorBlockEntityModifier.MessageSwapMirror.STREAM_CODEC, ArmorMagicMirrorBlockEntityModifier::onMessageSwapMirror);
-        registrar.playToClient(ArmorMagicMirrorBlockEntityModifier.MessageSwapPlayer.TYPE, ArmorMagicMirrorBlockEntityModifier.MessageSwapPlayer.STREAM_CODEC, ArmorMagicMirrorBlockEntityModifier::onMessageSwapPlayer);
-        registrar.playToClient(MagicMirrorCoreBlock.MessageAttachModifier.TYPE, MagicMirrorCoreBlock.MessageAttachModifier.STREAM_CODEC, MagicMirrorCoreBlock::onMessageAttachModifier);
+        registrar.playToClient(ArmorMagicMirrorBlockEntityModifier.MessageEquip.TYPE, ArmorMagicMirrorBlockEntityModifier.MessageEquip.STREAM_CODEC);
+        registrar.playToClient(ArmorMagicMirrorBlockEntityModifier.MessageSwapMirror.TYPE, ArmorMagicMirrorBlockEntityModifier.MessageSwapMirror.STREAM_CODEC);
+        registrar.playToClient(ArmorMagicMirrorBlockEntityModifier.MessageSwapPlayer.TYPE, ArmorMagicMirrorBlockEntityModifier.MessageSwapPlayer.STREAM_CODEC);
+        registrar.playToClient(MagicMirrorCoreBlock.MessageAttachModifier.TYPE, MagicMirrorCoreBlock.MessageAttachModifier.STREAM_CODEC);
     }
 }
