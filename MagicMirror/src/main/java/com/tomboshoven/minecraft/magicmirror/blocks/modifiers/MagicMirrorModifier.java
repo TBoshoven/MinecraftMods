@@ -2,9 +2,8 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
 
 /**
  * A modifier for a magic mirror.
@@ -48,23 +47,21 @@ public abstract class MagicMirrorModifier {
     }
 
     /**
-     * Apply the modifier to the magic mirror as specified in an NBT tag.
+     * Apply the modifier to the magic mirror as specified in a value input.
      *
-     * @param blockEntity          The magic mirror block entity to apply the modifier to.
-     * @param nbt                  The NBT tag to use for the modifier.
-     * @param holderLookupProvider The lookup provider for resolving holders.
+     * @param blockEntity The magic mirror block entity to apply the modifier to.
+     * @param input       The value input to use for the modifier.
      */
-    public void apply(MagicMirrorCoreBlockEntity blockEntity, CompoundTag nbt, HolderLookup.Provider holderLookupProvider) {
-        MagicMirrorBlockEntityModifier magicMirrorBlockEntityModifier = createBlockEntityModifier(nbt, holderLookupProvider);
+    public void apply(MagicMirrorCoreBlockEntity blockEntity, ValueInput input) {
+        MagicMirrorBlockEntityModifier magicMirrorBlockEntityModifier = createBlockEntityModifier(input);
         blockEntity.addModifier(magicMirrorBlockEntityModifier);
     }
 
     /**
-     * @param nbt                  The NBT tag of the modifier.
-     * @param holderLookupProvider The lookup provider for resolving holders.
+     * @param input The value input to use for the modifier.
      * @return A new instance of the block entity modifier.
      */
-    abstract MagicMirrorBlockEntityModifier createBlockEntityModifier(CompoundTag nbt, HolderLookup.Provider holderLookupProvider);
+    abstract MagicMirrorBlockEntityModifier createBlockEntityModifier(ValueInput input);
 
     /**
      * @param usedItem The item used to attach the modifier.

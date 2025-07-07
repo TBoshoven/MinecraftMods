@@ -3,11 +3,10 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.CreatureMagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.ValueInput;
 
 /**
  * A magic mirror modifier that changes the appearance of the reflection to be another creature's.
@@ -52,8 +51,8 @@ public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
     }
 
     @Override
-    MagicMirrorBlockEntityModifier createBlockEntityModifier(CompoundTag nbt, HolderLookup.Provider holderLookupProvider) {
-        return new CreatureMagicMirrorBlockEntityModifier(this, nbt, holderLookupProvider);
+    MagicMirrorBlockEntityModifier createBlockEntityModifier(ValueInput input) {
+        return new CreatureMagicMirrorBlockEntityModifier(this, input);
     }
 
     @Override

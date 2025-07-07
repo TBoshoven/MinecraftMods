@@ -1,6 +1,6 @@
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-package com.tomboshoven.minecraft.magicmirror.packets;
+package com.tomboshoven.minecraft.magicmirror.network;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 

@@ -8,7 +8,7 @@ import com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers.Reflect
 import com.tomboshoven.minecraft.magicmirror.commands.Commands;
 import com.tomboshoven.minecraft.magicmirror.data.DataGenerators;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
-import com.tomboshoven.minecraft.magicmirror.packets.Network;
+import com.tomboshoven.minecraft.magicmirror.network.Network;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;

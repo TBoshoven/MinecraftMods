@@ -52,4 +52,9 @@ class ReflectionRendererModifier<E extends Entity> extends ReflectionRendererBas
     public void render(float facing, MultiBufferSource renderTypeBuffer) {
         baseRenderer.render(facing, renderTypeBuffer);
     }
+
+    @Override
+    public void close() throws Exception {
+        baseRenderer.close();
+    }
 }

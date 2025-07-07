@@ -1,13 +1,12 @@
 package com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
+import net.minecraft.world.level.storage.ValueInput;
 
 import javax.annotation.Nullable;
 
@@ -16,8 +15,8 @@ public class BannerMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBl
         super(modifier, item);
     }
 
-    public BannerMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, CompoundTag nbt, HolderLookup.Provider lookupProvider) {
-        super(modifier, nbt, lookupProvider);
+    public BannerMagicMirrorBlockEntityModifier(MagicMirrorModifier modifier, ValueInput input) {
+        super(modifier, input);
     }
 
     /**

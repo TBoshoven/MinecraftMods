@@ -9,10 +9,10 @@ import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorReflectedEntityEv
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +21,9 @@ import net.minecraft.world.level.EntityGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
@@ -113,49 +116,46 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
-        super.saveAdditional(compound, lookupProvider);
-        saveInternal(compound, lookupProvider);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        saveInternal(output);
     }
 
     /**
-     * Write out the data for the magic mirror core to an NBT compound.
+     * Write out the data for the magic mirror core to a value output.
      *
-     * @param compound       The NBT compound to write to.
-     * @param lookupProvider The holder lookup provider for serializing the state.
+     * @param output The value output to write to.
      */
-    private void saveInternal(CompoundTag compound, HolderLookup.Provider lookupProvider) {
-        ListTag modifierList = new ListTag();
-        for (MagicMirrorBlockEntityModifier modifier : modifiers) {
+    private void saveInternal(ValueOutput output) {
+        ValueOutput.ValueOutputList modifiers = output.childrenList("modifiers");
+        for (MagicMirrorBlockEntityModifier modifier : this.modifiers) {
             ResourceLocation modifierId = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.getKey(modifier.getModifier());
             if (modifierId == null) {
                 continue;
             }
-            CompoundTag modifierCompound = new CompoundTag();
-            modifierCompound.putString("id", modifierId.toString());
-            modifierList.add(modifier.write(modifierCompound, lookupProvider));
+            ValueOutput modifierOutput = modifiers.addChild();
+            modifierOutput.putString("id", modifierId.toString());
+            modifier.save(modifierOutput);
         }
-        compound.put("modifiers", modifierList);
     }
 
     @Override
-    public void loadAdditional(CompoundTag compound, HolderLookup.Provider holderLookupProvider) {
-        super.loadAdditional(compound, holderLookupProvider);
-        loadInternal(compound, holderLookupProvider);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        loadInternal(input);
     }
 
-    private void loadInternal(CompoundTag compound, HolderLookup.Provider holderLookupProvider) {
-        compound.getList("modifiers")
-                .stream()
-                .flatMap(ListTag::stream)
-                .flatMap(tag -> tag.asCompound().stream())
-                .forEach(modifierTag ->
-                        modifierTag.getString("id").map(ResourceLocation::tryParse)
-                                // Fall back on old "name" field
-                                // TODO: Remove fallback
-                                .or(() -> modifierTag.getString("name").map(name -> ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, name)))
-                                .map(MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY::getValue)
-                                .ifPresent(modifier -> modifier.apply(this, modifierTag, holderLookupProvider)));
+    private void loadInternal(ValueInput input) {
+        input.childrenList("modifiers").ifPresent(modifierList ->
+                modifierList.forEach(modifierInput -> {
+                    modifierInput.getString("id").map(ResourceLocation::tryParse)
+                            // Fall back on old "name" field
+                            // TODO: Remove fallback
+                            .or(() -> modifierInput.getString("name").map(name -> ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, name)))
+                            .map(MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY::getValue)
+                            .ifPresent(modifier -> modifier.apply(this, modifierInput));
+                })
+        );
         postModifiersUpdate();
     }
 
@@ -243,9 +243,11 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider lookupProvider) {
-        CompoundTag updateTag = super.getUpdateTag(lookupProvider);
-        saveInternal(updateTag, lookupProvider);
-        return updateTag;
+        // Unfortunately this is still done with raw NBT tags instead of a ValueOutput.
+        // Let's just create a ValueOutput ourselves so we can reuse the write code.
+        TagValueOutput valueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, lookupProvider);
+        saveInternal(valueOutput);
+        return valueOutput.buildResult();
     }
 
     @Nullable
@@ -255,8 +257,8 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
-        loadInternal(pkt.getTag(), lookupProvider);
+    public void onDataPacket(Connection net, ValueInput input) {
+        loadInternal(input);
     }
 
     /**

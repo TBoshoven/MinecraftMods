@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.client;
 
+import com.tomboshoven.minecraft.magicmirror.client.network.Network;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.ReflectionManager;
 import com.tomboshoven.minecraft.magicmirror.client.renderers.Renderers;
 import net.neoforged.bus.api.IEventBus;
@@ -10,6 +11,7 @@ public final class ClientEvents {
     }
 
     public static void init(IEventBus modEventBus) {
+        Network.register(modEventBus);
         Renderers.register(modEventBus);
         NeoForge.EVENT_BUS.register(ReflectionManager.class);
     }

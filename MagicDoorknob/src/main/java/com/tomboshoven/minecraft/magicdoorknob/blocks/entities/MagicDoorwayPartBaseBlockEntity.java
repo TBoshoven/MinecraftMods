@@ -10,19 +10,20 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.registries.DeferredItem;
 import org.jetbrains.annotations.NotNull;
@@ -56,31 +57,29 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
-        super.saveAdditional(compound, lookupProvider);
-        saveInternal(compound);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        saveInternal(output);
     }
 
-    private void saveInternal(CompoundTag compound) {
-        compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
+    private void saveInternal(ValueOutput output) {
+        output.store("baseBlock", BlockState.CODEC, baseBlockState);
         if (doorknob != null) {
-            compound.putString("doorknobType", doorknob.getTypeName());
+            output.putString("doorknobType", doorknob.getTypeName());
         }
     }
 
     @Override
-    public void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
-        super.loadAdditional(compound, lookupProvider);
-        loadInternal(compound, lookupProvider);
+    public void loadAdditional(ValueInput valueInput) {
+        super.loadAdditional(valueInput);
+        loadInternal(valueInput);
     }
 
-    private void loadInternal(CompoundTag compound, HolderGetter.Provider lookupProvider) {
-        baseBlockState = lookupProvider.lookup(Registries.BLOCK)
-                .flatMap(blockLookup -> compound.getCompound("baseBlock")
-                        .map(baseBlockCompound -> NbtUtils.readBlockState(blockLookup, baseBlockCompound))
-                ).orElse(Blocks.AIR.defaultBlockState());
+    private void loadInternal(ValueInput valueInput) {
+        baseBlockState = valueInput.read("baseBlock", BlockState.CODEC)
+                .orElse(Blocks.AIR.defaultBlockState());
 
-        compound.getString("doorknobType").ifPresent(doorknobType -> {
+        valueInput.getString("doorknobType").ifPresent(doorknobType -> {
             DeferredItem<MagicDoorknobItem> deferredDoorknob = Items.DOORKNOBS.get(doorknobType);
             doorknob = deferredDoorknob != null ? deferredDoorknob.get() : null;
         });
@@ -88,9 +87,11 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider lookupProvider) {
-        CompoundTag updateTag = super.getUpdateTag(lookupProvider);
-        saveInternal(updateTag);
-        return updateTag;
+        // Unfortunately this is still done with raw NBT tags instead of a ValueOutput.
+        // Let's just create a ValueOutput ourselves so we can reuse the write code.
+        TagValueOutput valueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, lookupProvider);
+        saveInternal(valueOutput);
+        return valueOutput.buildResult();
     }
 
     @Nullable
@@ -100,8 +101,8 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
-        loadInternal(pkt.getTag(), lookupProvider);
+    public void onDataPacket(Connection net, ValueInput valueInput) {
+        loadInternal(valueInput);
         requestModelDataUpdate();
     }
 

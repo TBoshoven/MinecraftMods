@@ -162,7 +162,15 @@ public class Reflection {
      * Clean up the current reflection renderer.
      */
     private void cleanUpRenderer() {
-        reflectionRenderer = null;
+        if (reflectionRenderer != null) {
+            try {
+                reflectionRenderer.close();
+            }
+            catch (Exception e) {
+                MagicMirrorMod.LOGGER.warn("Could not clean up reflection renderer", e);
+            }
+            reflectionRenderer = null;
+        }
     }
 
     /**
@@ -180,7 +188,7 @@ public class Reflection {
      */
     public final void setReflectedEntity(Entity reflectedEntity) {
         if (this.reflectedEntity != reflectedEntity) {
-            MagicMirrorMod.LOGGER.debug("Reflecting {}", reflectedEntity.getName());
+            MagicMirrorMod.LOGGER.debug("Reflecting {}", reflectedEntity.getName().getString());
             if (this.reflectedEntity == null) {
                 ++numActiveReflections;
             }

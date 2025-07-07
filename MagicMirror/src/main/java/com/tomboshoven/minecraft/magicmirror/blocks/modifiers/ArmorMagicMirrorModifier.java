@@ -3,10 +3,9 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.ArmorMagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.ValueInput;
 
 /**
  * A magic mirror modifier that allows it to be used as an armor stand for switching an entire set of armor.
@@ -24,8 +23,8 @@ public class ArmorMagicMirrorModifier extends MagicMirrorModifier {
     }
 
     @Override
-    MagicMirrorBlockEntityModifier createBlockEntityModifier(CompoundTag nbt, HolderLookup.Provider holderLookupProvider) {
-        return new ArmorMagicMirrorBlockEntityModifier(this, nbt, holderLookupProvider);
+    MagicMirrorBlockEntityModifier createBlockEntityModifier(ValueInput input) {
+        return new ArmorMagicMirrorBlockEntityModifier(this, input);
     }
 
     @Override
