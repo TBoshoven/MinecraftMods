@@ -21,7 +21,7 @@ subprojects {
 
     String modName = project.getName().replaceAll(/([a-z])([A-Z])/, /$1_$2/).toLowerCase()
 
-    version = "1.21.7-DEV.0"
+    version = "1.21.8-DEV.0"
     group = "com.tomboshoven.minecraft." + project.getName().toLowerCase()
     archivesBaseName = project.projectDir.name
 
@@ -51,7 +51,7 @@ subprojects {
     }
 
     dependencies {
-        implementation "net.neoforged:neoforge:21.7.7-beta"
+        implementation "net.neoforged:neoforge:21.8.2-beta"
         implementation "org.spongepowered:mixin:0.8.7"
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
