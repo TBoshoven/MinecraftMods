@@ -51,10 +51,7 @@ subprojects {
     }
 
     dependencies {
-        implementation "net.neoforged:neoforge:21.8.2-beta"
-        implementation "org.spongepowered:mixin:0.8.7"
-
-        implementation 'com.google.code.findbugs:jsr305:3.0.2'
+        implementation 'net.neoforged:neoforge:21.8.10'
     }
 
     jar {
