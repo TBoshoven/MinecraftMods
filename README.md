@@ -54,7 +54,7 @@ For instructions on how to use the mods, take a look at the [wiki](https://githu
 | [1.21.3](https://github.com//TBoshoven/MinecraftMods/tree/1.21.3) | [NeoForge]           | 🔴 None       | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.21.3.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.21.3) |
 | [1.21.4](https://github.com//TBoshoven/MinecraftMods/tree/1.21.4) | [NeoForge]           | 🔴 None       | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.21.4.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.21.4) |
 | [1.21.5](https://github.com//TBoshoven/MinecraftMods/tree/1.21.5) | [NeoForge]           | 🔴 None       | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.21.5.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.21.5) |
-| [1.21.7](https://github.com//TBoshoven/MinecraftMods/tree/1.21.8) | [NeoForge]           | 🔵 Current    | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.21.8.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.21.8) |
+| [1.21.8](https://github.com//TBoshoven/MinecraftMods/tree/1.21.8) | [NeoForge]           | 🔵 Current    | [![CircleCI](https://circleci.com/gh/TBoshoven/MinecraftMods/tree/1.21.8.svg?style=shield)](https://app.circleci.com/pipelines/github/TBoshoven/MinecraftMods?branch=1.21.8) |
 
 [Forge]: https://minecraftforge.net/
 [NeoForge]: https://neoforged.net/
