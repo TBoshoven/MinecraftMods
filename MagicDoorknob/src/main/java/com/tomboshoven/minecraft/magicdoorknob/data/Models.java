@@ -238,10 +238,11 @@ class Models extends ModelProvider {
                 .textureAll(texture)
                 .face(Direction.NORTH, builder -> builder.uvs(x2, y1, x1, y2))
                 .face(Direction.SOUTH, builder -> builder.uvs(x1, y1, x2, y2))
-                .face(Direction.EAST, builder -> builder.uvs(x2, y1, x2, y2))
-                .face(Direction.WEST, builder -> builder.uvs(x1, y1, x1, y2))
-                .face(Direction.UP, builder -> builder.uvs(x1, y1, x2, y1))
-                .face(Direction.DOWN, builder -> builder.uvs(x1, y2, x2, y2));
+                // Use a small offset to prevent texture width 0 on a texel edge, which causes issues on some graphics cards,
+                .face(Direction.EAST, builder -> builder.uvs(x2, y1, x2 - .01f, y2))
+                .face(Direction.WEST, builder -> builder.uvs(x1, y1, x1 + .01f, y2))
+                .face(Direction.UP, builder -> builder.uvs(x1, y1, x2, y1 + .01f))
+                .face(Direction.DOWN, builder -> builder.uvs(x1, y2, x2, y2 - .01f));
     }
 
     /**
