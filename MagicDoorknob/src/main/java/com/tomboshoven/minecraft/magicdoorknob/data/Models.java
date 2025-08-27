@@ -228,6 +228,23 @@ class Models extends ModelProvider {
     }
 
     /**
+     * Create a 1-thick ceiling on the top of the block.
+     * The top and bottom are textured like a regular block, while the sides are textured to match the behavior of the
+     * {@link #wallCuboid} method.
+     *
+     * @param faceAction The face action to apply to all faces. Used for setting textures.
+     */
+    private static Consumer<ElementBuilder> top(BiConsumer<Direction, FaceBuilder> faceAction) {
+        return elementBuilder -> elementBuilder.from(0, 15, 0).to(16, 16, 16).allFaces(faceAction)
+                // Fix up texture alignment to match panels
+                .allFaces((d, faceBuilder) -> {
+                    if (d.getAxis().isHorizontal()) {
+                        faceBuilder.uvs(0, 0, 16, 1);
+                    }
+                });
+    }
+
+    /**
      * Create a cuboid that is textured on the north and south faces (mirrored) and stretched along the other faces.
      * Mainly useful for 1-thick cuboids or intersected ones.
      */
@@ -425,7 +442,7 @@ class Models extends ModelProvider {
         if (partType == MagicDoorwayPartBaseBlock.EnumPartType.TOP) {
             startY = 1;
             // Add the ceiling
-            builder.element(panelCuboid(Direction.UP, 0, 0, 16, 16, mainTextureAction));
+            builder.element(top(mainTextureAction));
         } else {
             startY = 0;
         }
@@ -509,9 +526,10 @@ class Models extends ModelProvider {
         ExtendedModelTemplate doorknobTemplate = doorknobTemplate(doorknobBaseModelLocation);
         for (DeferredItem<MagicDoorknobItem> item : Items.DOORKNOBS.values()) {
             MagicDoorknobItem doorknobItem = item.get();
+            ResourceLocation texture = doorknobItem.getMainMaterial().texture();
             ResourceLocation modelLocation = doorknobTemplate.create(
                     doorknobItem,
-                    new TextureMapping().put(MAIN_TEXTURE, doorknobItem.getMainMaterial().texture()),
+                    new TextureMapping().put(MAIN_TEXTURE, texture).put(TextureSlot.PARTICLE, texture),
                     itemModels.modelOutput
             );
             itemModels.itemModelOutput.accept(doorknobItem, new BlockModelWrapper.Unbaked(

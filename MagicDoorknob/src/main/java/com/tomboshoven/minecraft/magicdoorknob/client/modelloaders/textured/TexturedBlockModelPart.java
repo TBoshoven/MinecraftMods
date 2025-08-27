@@ -3,11 +3,11 @@ package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,19 +49,18 @@ class TexturedBlockModelPart implements BlockModelPart {
         return quads.stream().map(quad -> {
             TextureAtlasSprite sprite = quad.sprite();
             if (sprite instanceof PropertySprite property) {
-                Material material = textureMapper.mapSprite(property);
-                if (material == null) {
-                    //noinspection ReturnOfNull
-                    return null;
+                TextureSourceReference textureSourceReference = textureMapper.mapSprite(property);
+                if (textureSourceReference != null) {
+                    TextureSourceReference.LookupResult lookupResult = textureSourceReference.lookup(sprites, quad.direction());
+                    return retexture(quad, lookupResult.sprite(), lookupResult.tintIndex());
                 }
-                TextureAtlasSprite actualSprite = sprites.get(material, () -> "TexturedBlockModelPart");
-                return retexture(quad, actualSprite);
+                return null;
             }
             return quad;
         }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-    private static BakedQuad retexture(BakedQuad quad, TextureAtlasSprite sprite) {
+    private static BakedQuad retexture(BakedQuad quad, TextureAtlasSprite sprite, @Nullable Integer tintIndex) {
         // Note: assumes original sprite is 1x1
         int[] vertexData = quad.vertices().clone();
 
@@ -88,7 +87,7 @@ class TexturedBlockModelPart implements BlockModelPart {
             idx += stride;
         }
 
-        return new BakedQuad(vertexData, quad.tintIndex(), quad.direction(), sprite, quad.shade(), quad.lightEmission(), quad.hasAmbientOcclusion());
+        return new BakedQuad(vertexData, tintIndex == null ? quad.tintIndex() : tintIndex, quad.direction(), sprite, quad.shade(), quad.lightEmission(), quad.hasAmbientOcclusion());
     }
 
     private static int getAtByteOffset(int[] inData, int offset) {
@@ -132,11 +131,10 @@ class TexturedBlockModelPart implements BlockModelPart {
     public TextureAtlasSprite particleIcon() {
         TextureAtlasSprite icon = original.particleIcon();
         if (icon instanceof PropertySprite property) {
-            Material spriteLocation = textureMapper.mapSprite(property);
-            if (spriteLocation == null) {
-                return icon;
+            TextureSourceReference textureSourceReference = textureMapper.mapSprite(property);
+            if (textureSourceReference != null) {
+                return textureSourceReference.lookup(sprites).sprite();
             }
-            icon = sprites.get(spriteLocation, () -> "TexturedBlockModelPart");
         }
         return icon;
     }

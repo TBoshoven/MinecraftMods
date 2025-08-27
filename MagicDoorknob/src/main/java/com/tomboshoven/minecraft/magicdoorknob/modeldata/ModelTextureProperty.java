@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.modeldata;
 
 import com.google.common.collect.Maps;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.model.data.ModelProperty;
 import org.jetbrains.annotations.NonNls;
@@ -12,7 +11,7 @@ import java.util.Objects;
 /**
  * Model property pointing to a texture.
  */
-public final class ModelTextureProperty extends ModelProperty<Material> {
+public final class ModelTextureProperty extends ModelProperty<TextureSourceReference> {
     // The namespace of the properties; used in model definitions
     public static final @NonNls String PROPERTY_NAMESPACE = "property";
 

@@ -1,9 +1,9 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -83,11 +83,10 @@ public class TexturedBlockStateModel extends DelegateBlockStateModel {
         TextureAtlasSprite baseIcon = delegate.particleIcon(level, pos, state);
         if (baseIcon instanceof PropertySprite baseIconProperty) {
             ModelData modelData = level.getModelData(pos);
-            Material material = textureMapper.forBlockState(state, modelData).mapSprite(baseIconProperty);
-            if (material == null) {
-                return baseIcon;
+            TextureSourceReference textureSourceReference = textureMapper.forBlockState(state, modelData).mapSprite(baseIconProperty);
+            if (textureSourceReference != null) {
+                return textureSourceReference.lookup(sprites).sprite();
             }
-            return sprites.get(material, () -> "TexturedBlockStateModel");
         }
         return baseIcon;
     }
