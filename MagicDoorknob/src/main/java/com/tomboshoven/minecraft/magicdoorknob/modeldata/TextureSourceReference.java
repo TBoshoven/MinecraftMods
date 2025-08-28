@@ -36,7 +36,7 @@ public interface TextureSourceReference {
      * @return The result of the lookup.
      */
     default LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites) {
-        return lookup(sprites, Direction.NORTH);
+        return lookup(sprites, Direction.NORTH, new Random());
     }
 
     /**
@@ -44,9 +44,10 @@ public interface TextureSourceReference {
      *
      * @param sprites   The sprite getter to use for looking up texture references.
      * @param direction The direction of the side to get the texture for.
+     * @param random    A random source to use in the texture lookup.
      * @return The result of the lookup.
      */
-    LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction);
+    LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction, Random random);
 
     /**
      * A direct reference to a material.
@@ -55,7 +56,7 @@ public interface TextureSourceReference {
      */
     record MaterialTextureSource(Material material) implements TextureSourceReference {
         @Override
-        public LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction) {
+        public LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction, Random random) {
             return new LookupResult(sprites.apply(material), null);
         }
     }
@@ -74,11 +75,10 @@ public interface TextureSourceReference {
     record BlockLookup(@Nullable Level level, BlockPos pos, BlockState blockState,
                        TextureSourceReference fallback) implements TextureSourceReference {
         @Override
-        public LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction) {
+        public LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction, Random random) {
             Minecraft minecraft = Minecraft.getInstance();
             BlockModelShaper blockModelShaper = minecraft.getBlockRenderer().getBlockModelShaper();
             BakedModel blockModel = blockModelShaper.getBlockModel(blockState);
-            Random random = new Random();
             // First try the actual direction we're going for.
             for (BakedQuad quad : blockModel.getQuads(blockState, direction, random, EmptyModelData.INSTANCE)) {
                 return new LookupResult(quad.getSprite(), quad.getTintIndex());
@@ -92,7 +92,7 @@ public interface TextureSourceReference {
                 }
                 return new LookupResult(quad.getSprite(), quad.getTintIndex());
             }
-            return fallback.lookup(sprites, direction);
+            return fallback.lookup(sprites, direction, random);
         }
     }
 }
