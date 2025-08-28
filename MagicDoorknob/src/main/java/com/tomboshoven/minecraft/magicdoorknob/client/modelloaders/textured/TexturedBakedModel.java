@@ -4,18 +4,17 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -81,18 +80,18 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
         return quads.stream().map(quad -> {
             TextureAtlasSprite sprite = quad.getSprite();
             if (sprite instanceof PropertySprite) {
-                Material material = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
-                if (material == null) {
-                    return null;
+                TextureSourceReference textureSourceReference = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
+                if (textureSourceReference != null) {
+                    TextureSourceReference.LookupResult lookupResult = textureSourceReference.lookup(bakedTextureGetter, quad.getDirection());
+                    return retexture(quad, lookupResult.sprite(), lookupResult.tintIndex());
                 }
-                TextureAtlasSprite actualSprite = bakedTextureGetter.apply(material);
-                return retexture(quad, actualSprite);
+                return null;
             }
             return quad;
         }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-    private static BakedQuad retexture(BakedQuad quad, TextureAtlasSprite sprite) {
+    private static BakedQuad retexture(BakedQuad quad, TextureAtlasSprite sprite, @Nullable Integer tintIndex) {
         // Note: assumes original sprite is 1x1
         int[] vertexData = quad.getVertices().clone();
 
@@ -119,7 +118,7 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
             idx += stride;
         }
 
-        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getDirection(), sprite, quad.isShade());
+        return new BakedQuad(vertexData, tintIndex == null ? quad.getTintIndex() : tintIndex, quad.getDirection(), sprite, quad.isShade());
     }
 
     private static int getAtByteOffset(int[] inData, int offset) {
@@ -165,15 +164,14 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
 
     @Override
     public TextureAtlasSprite getParticleIcon(@Nonnull ModelData data) {
-        TextureAtlasSprite sprite = super.getParticleIcon(data);
-        if (sprite instanceof PropertySprite) {
-            Material spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, null, data);
-            if (spriteLocation == null) {
-                spriteLocation = new Material(InventoryMenu.BLOCK_ATLAS, MissingTextureAtlasSprite.getLocation());
+        TextureAtlasSprite icon = super.getParticleIcon(data);
+        if (icon instanceof PropertySprite) {
+            TextureSourceReference textureSourceReference = textureMapper.mapSprite((PropertySprite) icon, null, data);
+            if (textureSourceReference != null) {
+                return textureSourceReference.lookup(bakedTextureGetter).sprite();
             }
-            sprite = bakedTextureGetter.apply(spriteLocation);
         }
-        return sprite;
+        return icon;
     }
 
     /**
