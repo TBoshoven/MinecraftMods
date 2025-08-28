@@ -113,7 +113,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
         Level level = getLevel();
         BlockPos blockPos = getBlockPos();
 
-        // Fallback chain is block texture -> block particle texture -> empty
+        // Fallback chain is block texture -> empty
         TextureSourceReference fallbackReference = new TextureSourceReference.MaterialTextureSource(EMPTY_MATERIAL);
         TextureSourceReference blockTextureSourceReference = new TextureSourceReference.BlockLookup(level, blockPos, baseBlockState, fallbackReference);
 
