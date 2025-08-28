@@ -4,66 +4,33 @@
     {
       "faces": {
         "down": {
-          "rotation": 180,
           "texture": "#main",
           "tintindex": 1
         },
         "east": {
-          "rotation": 90,
+          "cullface": "east",
           "texture": "#main",
-          "tintindex": 1,
-          "uv": [
-            0.0,
-            0.0,
-            1.0,
-            16.0
-          ]
+          "tintindex": 1
         },
         "north": {
           "cullface": "north",
-          "rotation": 180,
           "texture": "#main",
-          "tintindex": 1,
-          "uv": [
-            16.0,
-            0.0,
-            0.0,
-            1.0
-          ]
+          "tintindex": 1
         },
         "south": {
           "cullface": "south",
           "texture": "#main",
-          "tintindex": 1,
-          "uv": [
-            16.0,
-            16.0,
-            0.0,
-            15.0
-          ]
+          "tintindex": 1
         },
         "up": {
           "cullface": "up",
           "texture": "#main",
-          "tintindex": 1,
-          "uv": [
-            16.0,
-            0.0,
-            0.0,
-            16.0
-          ]
+          "tintindex": 1
         },
         "west": {
           "cullface": "west",
-          "rotation": 270,
           "texture": "#main",
-          "tintindex": 1,
-          "uv": [
-            16.0,
-            0.0,
-            15.0,
-            16.0
-          ]
+          "tintindex": 1
         }
       },
       "from": [
@@ -589,6 +556,7 @@
   "render_type": "minecraft:translucent",
   "textures": {
     "highlight": "property:texture_highlight",
-    "main": "property:texture_main"
+    "main": "property:texture_main",
+    "particle": "property:texture_main"
   }
 }
