@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
 import net.minecraft.client.renderer.model.ItemOverride;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.Material;
@@ -78,15 +79,15 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
         return quads.stream().map(quad -> {
             TextureAtlasSprite sprite = quad.getSprite();
             if (sprite instanceof PropertySprite) {
-                Material material = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
-                TextureAtlasSprite actualSprite = bakedTextureGetter.apply(material);
-                return retexture(quad, actualSprite);
+                TextureSourceReference textureSourceReference = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
+                TextureSourceReference.LookupResult lookupResult = textureSourceReference.lookup(bakedTextureGetter, quad.getDirection());
+                return retexture(quad, lookupResult.sprite(), lookupResult.tintIndex());
             }
             return quad;
         }).collect(Collectors.toList());
     }
 
-    private static BakedQuad retexture(BakedQuad quad, TextureAtlasSprite sprite) {
+    private static BakedQuad retexture(BakedQuad quad, TextureAtlasSprite sprite, @Nullable Integer tintIndex) {
         int[] vertexData = quad.getVertices().clone();
 
         // Offset between vertices
@@ -111,7 +112,7 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
             idx += stride;
         }
 
-        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getDirection(), sprite, quad.shouldApplyDiffuseLighting());
+        return new BakedQuad(vertexData, tintIndex == null ? quad.getTintIndex() : tintIndex, quad.getDirection(), sprite, quad.shouldApplyDiffuseLighting());
     }
 
     private static int getAtByteOffset(int[] inData, int offset) {
@@ -157,12 +158,12 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
 
     @Override
     public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data) {
-        TextureAtlasSprite sprite = super.getParticleTexture(data);
-        if (sprite instanceof PropertySprite) {
-            Material spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, null, data);
-            sprite = bakedTextureGetter.apply(spriteLocation);
+        TextureAtlasSprite icon = super.getParticleTexture(data);
+        if (icon instanceof PropertySprite) {
+            TextureSourceReference textureSourceReference = textureMapper.mapSprite((PropertySprite) icon, null, data);
+            return textureSourceReference.lookup(bakedTextureGetter).sprite();
         }
-        return sprite;
+        return icon;
     }
 
     /**

@@ -1,0 +1,134 @@
+package com.tomboshoven.minecraft.magicdoorknob.modeldata;
+
+
+import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockModelShapes;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.EmptyModelData;
+
+import javax.annotation.Nullable;
+import java.util.Random;
+import java.util.function.Function;
+
+/**
+ * A reference to something that is associated with a texture, such as a material or a block in the world.
+ */
+public interface TextureSourceReference {
+    /**
+     * The result of a lookup, containing a sprite and optionally a tint index to use.
+     */
+    class LookupResult {
+        TextureAtlasSprite sprite;
+        @Nullable
+        Integer tintIndex;
+
+        /**
+         * @param sprite    The sprite resulting from the lookup.
+         * @param tintIndex The tint index to use, if any was found in the source.
+         */
+        public LookupResult(TextureAtlasSprite sprite, @Nullable Integer tintIndex) {
+            this.sprite = sprite;
+            this.tintIndex = tintIndex;
+        }
+
+        public TextureAtlasSprite sprite() {
+            return sprite;
+        }
+
+        public @Nullable Integer tintIndex() {
+            return tintIndex;
+        }
+    }
+
+    /**
+     * Perform the actual lookup.
+     *
+     * @param sprites The sprite getter to use for looking up texture references.
+     * @return The result of the lookup.
+     */
+    default LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites) {
+        return lookup(sprites, Direction.NORTH);
+    }
+
+    /**
+     * Perform the actual lookup.
+     *
+     * @param sprites   The sprite getter to use for looking up texture references.
+     * @param direction The direction of the side to get the texture for.
+     * @return The result of the lookup.
+     */
+    LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction);
+
+    /**
+     * A direct reference to a material.
+     */
+    class MaterialTextureSource implements TextureSourceReference {
+        Material material;
+
+        /**
+         * @param material The material referring to the texture to use.
+         */
+        public MaterialTextureSource(Material material) {
+            this.material = material;
+        }
+
+        @Override
+        public LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction) {
+            return new LookupResult(sprites.apply(material), null);
+        }
+    }
+
+    /**
+     * A direct reference to a material.
+     */
+    class BlockLookup implements TextureSourceReference {
+        @Nullable
+        World level;
+        BlockPos pos;
+        BlockState blockState;
+        TextureSourceReference fallback;
+
+        /**
+         * @param level      The level (hypothetically) containing the block. May be left null for an agnostic lookup.
+         * @param pos        The position of the block in the level.
+         * @param blockState The block state of the block.
+         * @param fallback   A fallback to use in case no appropriate textures are found on the block model.
+         */
+        public BlockLookup(@Nullable World level, BlockPos pos, BlockState blockState,
+                           TextureSourceReference fallback) {
+            this.level = level;
+            this.pos = pos;
+            this.blockState = blockState;
+            this.fallback = fallback;
+        }
+
+        @Override
+        public LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction) {
+            Minecraft minecraft = Minecraft.getInstance();
+            BlockModelShapes blockModelShaper = minecraft.getBlockRenderer().getBlockModelShaper();
+            IBakedModel blockModel = blockModelShaper.getBlockModel(blockState);
+            Random random = new Random();
+            // First try the actual direction we're going for.
+            for (BakedQuad quad : blockModel.getQuads(blockState, direction, random, EmptyModelData.INSTANCE)) {
+                return new LookupResult(quad.getSprite(), quad.getTintIndex());
+            }
+            // Fall back on any other ones, if they're there.
+            // This will make cross blocks textures a bit better.
+            for (BakedQuad quad : blockModel.getQuads(blockState, direction, random, EmptyModelData.INSTANCE)) {
+                // Separate out the sides from top and bottom, because those are often not compatible
+                if (quad.getDirection().getAxis().isVertical() != direction.getAxis().isVertical()) {
+                    continue;
+                }
+                return new LookupResult(quad.getSprite(), quad.getTintIndex());
+            }
+            return fallback.lookup(sprites, direction);
+        }
+    }
+}
