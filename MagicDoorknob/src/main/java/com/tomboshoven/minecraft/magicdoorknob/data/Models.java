@@ -398,7 +398,7 @@ class Models extends ModelProvider {
         if (partType == MagicDoorwayPartBaseBlock.EnumPartType.TOP) {
             startY = 1;
             // Add the ceiling
-            builder.element(panelCuboid(Direction.UP, 0, 0, 16, 16, mainTextureAction));
+            builder.element(top(mainTextureAction));
         } else {
             startY = 0;
         }
@@ -483,7 +483,7 @@ class Models extends ModelProvider {
         if (partType == MagicDoorwayPartBaseBlock.EnumPartType.TOP) {
             startY = 1;
             // Add the ceiling
-            builder.element(panelCuboid(Direction.UP, 0, 0, 16, 16, mainTextureAction));
+            builder.element(top(mainTextureAction));
         } else {
             startY = 0;
         }
