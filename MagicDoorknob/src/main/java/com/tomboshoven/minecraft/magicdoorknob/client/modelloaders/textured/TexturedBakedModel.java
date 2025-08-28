@@ -70,7 +70,7 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
             if (sprite instanceof PropertySprite) {
                 TextureSourceReference textureSourceReference = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
                 if (textureSourceReference != null) {
-                    TextureSourceReference.LookupResult lookupResult = textureSourceReference.lookup(bakedTextureGetter, quad.getDirection());
+                    TextureSourceReference.LookupResult lookupResult = textureSourceReference.lookup(bakedTextureGetter, quad.getDirection(), rand);
                     return retexture(quad, lookupResult.sprite(), lookupResult.tintIndex());
                 }
                 return null;
