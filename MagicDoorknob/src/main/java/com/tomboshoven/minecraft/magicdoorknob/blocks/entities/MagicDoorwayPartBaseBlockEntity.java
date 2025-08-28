@@ -4,12 +4,9 @@ import com.mojang.datafixers.Dynamic;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.texture.MissingTextureSprite;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTDynamicOps;
 import net.minecraft.network.NetworkManager;
@@ -17,6 +14,7 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -39,6 +37,9 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
      * The highlight texture of the doorway (based on doorknob).
      */
     private static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(new ResourceLocation(PROPERTY_NAMESPACE, "texture_highlight"));
+
+    // Material to use when no proper material can be found, such as with air.
+    private static final ResourceLocation EMPTY_MATERIAL = new ResourceLocation(MOD_ID, "block/empty");
 
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.defaultBlockState();
@@ -90,30 +91,26 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
 
     @Override
     public IModelData getModelData() {
-        Minecraft minecraft = Minecraft.getInstance();
-        BlockModelShapes blockModelShapes = minecraft.getBlockRenderer().getBlockModelShaper();
-
         // Get the base block texture
-        World world = getLevel();
-        TextureAtlasSprite blockTexture = world == null ? MissingTextureSprite.newInstance() : blockModelShapes.getTexture(baseBlockState, world, getBlockPos());
-        if (blockTexture instanceof MissingTextureSprite) {
-            // If we can't find the texture, use a transparent one instead, to deal with things like air.
-            blockTexture = minecraft.getTextureAtlas().getTexture(MOD_ID + ":block/empty");
-        }
+        World level = getLevel();
+        BlockPos blockPos = getBlockPos();
 
-        // Get the highlight texture
-        ResourceLocation doorknobTextureLocation;
-        if (doorknob != null) {
-            doorknobTextureLocation = doorknob.getMainTextureLocation();
+        // Fallback chain is block texture -> empty
+        TextureSourceReference fallbackReference = new TextureSourceReference.MaterialTextureSource(EMPTY_MATERIAL);
+        TextureSourceReference blockTextureSourceReference = new TextureSourceReference.BlockLookup(level, blockPos, baseBlockState, fallbackReference);
+
+        TextureSourceReference doorknobTextureSourceReference;
+        if (doorknob == null) {
+            // This can happen when we draw a frame before receiving the block entity data from the server.
+            // This makes it a bit less conspicuous.
+            doorknobTextureSourceReference = blockTextureSourceReference;
         } else {
-            // This can happen when we draw a frame before receiving the tile entity data from the server.
-            // In that case, we just want to draw the outline to make it less conspicuous.
-            doorknobTextureLocation = blockTexture.getName();
+            doorknobTextureSourceReference = new TextureSourceReference.MaterialTextureSource(doorknob.getMainTextureLocation());
         }
 
         return new ModelDataMap.Builder()
-                .withInitial(TEXTURE_MAIN, blockTexture.getName())
-                .withInitial(TEXTURE_HIGHLIGHT, doorknobTextureLocation)
+                .withInitial(TEXTURE_MAIN, blockTextureSourceReference)
+                .withInitial(TEXTURE_HIGHLIGHT, doorknobTextureSourceReference)
                 .build();
     }
 

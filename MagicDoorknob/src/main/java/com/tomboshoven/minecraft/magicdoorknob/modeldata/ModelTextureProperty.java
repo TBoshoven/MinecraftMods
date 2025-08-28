@@ -10,9 +10,10 @@ import java.util.Objects;
 /**
  * Model property pointing to a texture.
  */
-public final class ModelTextureProperty extends ModelProperty<ResourceLocation> {
+public final class ModelTextureProperty extends ModelProperty<TextureSourceReference> {
     // The namespace of the properties; used in model definitions
     public static final String PROPERTY_NAMESPACE = "property";
+
     // Lazily filled map of model texture properties.
     // Can't just use equality as they are used in an IdentityHashMap.
     private static final Map<ResourceLocation, ModelTextureProperty> PROPERTIES = Maps.newHashMap();

@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.BakedQuadRetextured;
 import net.minecraft.client.renderer.model.IBakedModel;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
 import net.minecraft.client.renderer.model.ItemOverride;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -52,12 +53,19 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
         return quads.stream().map(quad -> {
             TextureAtlasSprite sprite = quad.getSprite();
             if (sprite instanceof PropertySprite) {
-                ResourceLocation spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
-                TextureAtlasSprite actualSprite = bakedTextureGetter.apply(spriteLocation);
-                return new BakedQuadRetextured(quad, actualSprite);
+                TextureSourceReference textureSourceReference = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
+                TextureSourceReference.LookupResult lookupResult = textureSourceReference.lookup(bakedTextureGetter, quad.getDirection());
+                return retexture(quad, lookupResult.sprite(), lookupResult.tintIndex());
             }
             return quad;
         }).collect(Collectors.toList());
+    }
+
+    private static BakedQuad retexture(BakedQuad quad, TextureAtlasSprite sprite, @Nullable Integer tintIndex) {
+        return new BakedQuadRetextured(
+                new BakedQuad(quad.getVertices(), tintIndex == null ? quad.getTintIndex() : tintIndex, quad.getDirection(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat()),
+                sprite
+        );
     }
 
     @Override
@@ -72,12 +80,12 @@ class TexturedBakedModel<T extends IBakedModel> extends BakedModelWrapper<T> {
 
     @Override
     public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data) {
-        TextureAtlasSprite sprite = super.getParticleTexture(data);
-        if (sprite instanceof PropertySprite) {
-            ResourceLocation spriteLocation = textureMapper.mapSprite((PropertySprite) sprite, null, data);
-            sprite = bakedTextureGetter.apply(spriteLocation);
+        TextureAtlasSprite icon = super.getParticleTexture(data);
+        if (icon instanceof PropertySprite) {
+            TextureSourceReference textureSourceReference = textureMapper.mapSprite((PropertySprite) icon, null, data);
+            return textureSourceReference.lookup(bakedTextureGetter).sprite();
         }
-        return sprite;
+        return icon;
     }
 
     /**

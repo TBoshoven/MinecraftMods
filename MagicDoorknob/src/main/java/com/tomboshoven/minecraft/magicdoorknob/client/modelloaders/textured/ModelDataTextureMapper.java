@@ -1,7 +1,9 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
 import com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -13,15 +15,15 @@ import javax.annotation.Nullable;
  */
 class ModelDataTextureMapper implements ITextureMapper {
     @Override
-    public ResourceLocation mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable IModelData extraData) {
+    public TextureSourceReference mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable IModelData extraData) {
         if (extraData != null) {
             ResourceLocation name = spriteToMap.getName();
-            ModelProperty<ResourceLocation> modelProperty = ModelTextureProperty.get(name);
-            ResourceLocation spriteLocation = extraData.getData(modelProperty);
-            if (spriteLocation != null) {
-                return spriteLocation;
+            ModelProperty<TextureSourceReference> modelProperty = ModelTextureProperty.get(name);
+            TextureSourceReference textureSourceReference = extraData.getData(modelProperty);
+            if (textureSourceReference != null) {
+                return textureSourceReference;
             }
         }
-        return new ResourceLocation("missingno");
+        return new TextureSourceReference.MaterialTextureSource(MissingTextureSprite.getLocation());
     }
 }
