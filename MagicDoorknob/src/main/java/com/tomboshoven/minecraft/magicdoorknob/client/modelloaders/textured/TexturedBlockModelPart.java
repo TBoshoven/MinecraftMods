@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
@@ -27,6 +28,8 @@ class TexturedBlockModelPart implements BlockModelPart {
     private final SpriteGetter sprites;
     // The mapper that replaces property textures by their values
     private final TextureMapper.BlockStateTextureMapper textureMapper;
+    // The random source for texture lookups
+    private final RandomSource randomSource;
 
     // The vertex format of the model. At the moment, only "block" is supported.
     private static final VertexFormat VERTEX_FORMAT = DefaultVertexFormat.BLOCK;
@@ -35,11 +38,13 @@ class TexturedBlockModelPart implements BlockModelPart {
      * @param original      The original block model part
      * @param textureMapper The mapper that replaces property textures by their values
      * @param sprites       The sprite getter
+     * @param randomSource  The random source for texture lookups
      */
-    TexturedBlockModelPart(BlockModelPart original, TextureMapper.BlockStateTextureMapper textureMapper, SpriteGetter sprites) {
+    TexturedBlockModelPart(BlockModelPart original, TextureMapper.BlockStateTextureMapper textureMapper, SpriteGetter sprites, RandomSource randomSource) {
         this.original = original;
         this.sprites = sprites;
         this.textureMapper = textureMapper;
+        this.randomSource = randomSource;
     }
 
     @Override
@@ -51,7 +56,7 @@ class TexturedBlockModelPart implements BlockModelPart {
             if (sprite instanceof PropertySprite property) {
                 TextureSourceReference textureSourceReference = textureMapper.mapSprite(property);
                 if (textureSourceReference != null) {
-                    TextureSourceReference.LookupResult lookupResult = textureSourceReference.lookup(sprites, quad.direction());
+                    TextureSourceReference.LookupResult lookupResult = textureSourceReference.lookup(sprites, quad.direction(), randomSource);
                     return retexture(quad, lookupResult.sprite(), lookupResult.tintIndex());
                 }
                 return null;

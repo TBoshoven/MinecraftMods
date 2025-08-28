@@ -72,7 +72,7 @@ public class TexturedBlockStateModel extends DelegateBlockStateModel {
         List<BlockModelPart> delegatePartList = partCache.computeIfAbsent(mapper.getMappingKey(), key -> {
             List<BlockModelPart> partList = new ArrayList<>();
             delegate.collectParts(level, pos, state, random, partList);
-            partList.replaceAll(part -> wrapPart(part, mapper));
+            partList.replaceAll(part -> wrapPart(part, mapper, random));
             return partList;
         });
         parts.addAll(delegatePartList);
@@ -96,9 +96,10 @@ public class TexturedBlockStateModel extends DelegateBlockStateModel {
      *
      * @param basePart The part to wrap.
      * @param mapper   The texture mapper to use.
+     * @param random   The random source for the part collection.
      * @return The wrapped block model part.
      */
-    private BlockModelPart wrapPart(BlockModelPart basePart, TextureMapper.BlockStateTextureMapper mapper) {
-        return new TexturedBlockModelPart(basePart, mapper, sprites);
+    private BlockModelPart wrapPart(BlockModelPart basePart, TextureMapper.BlockStateTextureMapper mapper, RandomSource random) {
+        return new TexturedBlockModelPart(basePart, mapper, sprites, random);
     }
 }
