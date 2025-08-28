@@ -138,7 +138,7 @@ class TexturedBlockModelPart implements BlockModelPart {
         if (icon instanceof PropertySprite property) {
             TextureSourceReference textureSourceReference = textureMapper.mapSprite(property);
             if (textureSourceReference != null) {
-                return textureSourceReference.lookup(sprites).sprite();
+                return textureSourceReference.lookup(sprites, randomSource).sprite();
             }
         }
         return icon;

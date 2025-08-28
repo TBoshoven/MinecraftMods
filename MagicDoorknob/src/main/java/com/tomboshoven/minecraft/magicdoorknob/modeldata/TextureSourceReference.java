@@ -38,7 +38,18 @@ public interface TextureSourceReference {
      * @return The result of the lookup.
      */
     default LookupResult lookup(SpriteGetter sprites) {
-        return lookup(sprites, Direction.NORTH, RandomSource.create());
+        return lookup(sprites, RandomSource.create());
+    }
+
+    /**
+     * Perform the actual lookup.
+     *
+     * @param sprites The sprite getter to use for looking up texture references.
+     * @param randomSource A random source to use in the texture lookup.
+     * @return The result of the lookup.
+     */
+    default LookupResult lookup(SpriteGetter sprites, RandomSource randomSource) {
+        return lookup(sprites, Direction.NORTH, randomSource);
     }
 
     /**
