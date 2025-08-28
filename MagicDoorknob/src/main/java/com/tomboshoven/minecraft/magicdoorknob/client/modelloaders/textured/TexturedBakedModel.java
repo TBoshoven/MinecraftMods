@@ -79,7 +79,7 @@ class TexturedBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
             TextureAtlasSprite sprite = quad.getSprite();
             if (sprite instanceof PropertySprite) {
                 TextureSourceReference textureSourceReference = textureMapper.mapSprite((PropertySprite) sprite, state, extraData);
-                TextureSourceReference.LookupResult lookupResult = textureSourceReference.lookup(bakedTextureGetter, quad.getDirection());
+                TextureSourceReference.LookupResult lookupResult = textureSourceReference.lookup(bakedTextureGetter, quad.getDirection(), rand);
                 return retexture(quad, lookupResult.sprite(), lookupResult.tintIndex());
             }
             return quad;
