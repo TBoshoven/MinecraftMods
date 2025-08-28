@@ -235,11 +235,11 @@ class Models extends ModelProvider {
      * @param faceAction The face action to apply to all faces. Used for setting textures.
      */
     private static Consumer<ElementBuilder> top(BiConsumer<Direction, FaceBuilder> faceAction) {
-        return elementBuilder -> elementBuilder.from(0, 15, 0).to(16, 16, 16).allFaces(faceAction)
-                // Fix up texture alignment to match panels
+        return elementBuilder -> elementBuilder.from(0, 15, 0).to(16, 16, 16)
+                .allFaces(faceAction)
                 .allFaces((d, faceBuilder) -> {
-                    if (d.getAxis().isHorizontal()) {
-                        faceBuilder.uvs(0, 0, 16, 1);
+                    if (d != Direction.DOWN) {
+                        faceBuilder.cullface(d);
                     }
                 });
     }
