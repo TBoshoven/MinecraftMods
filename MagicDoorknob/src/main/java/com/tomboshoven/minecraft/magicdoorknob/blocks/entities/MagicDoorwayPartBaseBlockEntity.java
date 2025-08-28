@@ -3,13 +3,10 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.entities;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.MissingTextureSprite;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -18,6 +15,7 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.CompositeModel;
 import net.minecraftforge.client.model.data.IModelData;
@@ -40,6 +38,9 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
      * The highlight texture of the doorway (based on doorknob).
      */
     private static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(new ResourceLocation(PROPERTY_NAMESPACE, "texture_highlight"));
+
+    // Material to use when no proper material can be found, such as with air.
+    private static final RenderMaterial EMPTY_MATERIAL = new RenderMaterial(PlayerContainer.BLOCK_ATLAS, new ResourceLocation(MOD_ID, "block/empty"));
 
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.defaultBlockState();
@@ -95,34 +96,26 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
 
     @Override
     public IModelData getModelData() {
-        Minecraft minecraft = Minecraft.getInstance();
-        BlockModelShapes blockModelShapes = minecraft.getBlockRenderer().getBlockModelShaper();
-
         // Get the base block texture
-        World world = getLevel();
-        TextureAtlasSprite blockTexture = world == null ? null : blockModelShapes.getTexture(baseBlockState, world, getBlockPos());
-        RenderMaterial blockMaterial;
-        if (blockTexture == null || blockTexture instanceof MissingTextureSprite) {
-            // If we can't find the texture, use a transparent one instead, to deal with things like air.
-            blockMaterial = new RenderMaterial(PlayerContainer.BLOCK_ATLAS, new ResourceLocation(MOD_ID, "block/empty"));
-        }
-        else {
-            blockMaterial = new RenderMaterial(blockTexture.atlas().location(), blockTexture.getName());
-        }
+        World level = getLevel();
+        BlockPos blockPos = getBlockPos();
 
-        // Get the highlight texture
-        RenderMaterial doorknobMaterial;
-        if (doorknob != null) {
-            doorknobMaterial = doorknob.getMainMaterial();
+        // Fallback chain is block texture -> empty
+        TextureSourceReference fallbackReference = new TextureSourceReference.MaterialTextureSource(EMPTY_MATERIAL);
+        TextureSourceReference blockTextureSourceReference = new TextureSourceReference.BlockLookup(level, blockPos, baseBlockState, fallbackReference);
+
+        TextureSourceReference doorknobTextureSourceReference;
+        if (doorknob == null) {
+            // This can happen when we draw a frame before receiving the block entity data from the server.
+            // This makes it a bit less conspicuous.
+            doorknobTextureSourceReference = blockTextureSourceReference;
         } else {
-            // This can happen when we draw a frame before receiving the tile entity data from the server.
-            // In that case, we just want to draw the outline to make it less conspicuous.
-            doorknobMaterial = blockMaterial;
+            doorknobTextureSourceReference = new TextureSourceReference.MaterialTextureSource(doorknob.getMainMaterial());
         }
 
         CompositeModel.CompositeModelData compositeModelData = new CompositeModel.CompositeModelData();
-        compositeModelData.setData(TEXTURE_MAIN, blockMaterial);
-        compositeModelData.setData(TEXTURE_HIGHLIGHT, doorknobMaterial);
+        compositeModelData.setData(TEXTURE_MAIN, blockTextureSourceReference);
+        compositeModelData.setData(TEXTURE_HIGHLIGHT, doorknobTextureSourceReference);
         return compositeModelData;
     }
 
