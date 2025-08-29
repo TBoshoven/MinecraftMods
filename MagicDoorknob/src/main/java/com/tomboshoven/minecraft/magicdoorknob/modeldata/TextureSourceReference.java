@@ -36,7 +36,18 @@ public interface TextureSourceReference {
      * @return The result of the lookup.
      */
     default LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites) {
-        return lookup(sprites, Direction.NORTH, RandomSource.create());
+        return lookup(sprites, null);
+    }
+
+    /**
+     * Perform the actual lookup.
+     *
+     * @param sprites The sprite getter to use for looking up texture references.
+     * @param randomSource A random source to use in the texture lookup.
+     * @return The result of the lookup.
+     */
+    default LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, @Nullable RandomSource randomSource) {
+        return lookup(sprites, Direction.NORTH, randomSource);
     }
 
     /**
@@ -47,7 +58,7 @@ public interface TextureSourceReference {
      * @param randomSource A random source to use in the texture lookup.
      * @return The result of the lookup.
      */
-    LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction, RandomSource randomSource);
+    LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction, @Nullable RandomSource randomSource);
 
     /**
      * A direct reference to a material.
@@ -56,8 +67,26 @@ public interface TextureSourceReference {
      */
     record MaterialTextureSource(Material material) implements TextureSourceReference {
         @Override
-        public LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction, RandomSource randomSource) {
+        public LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction, @Nullable RandomSource randomSource) {
             return new LookupResult(sprites.apply(material), null);
+        }
+    }
+
+    /**
+     * A reference to a particle for a block in the world.
+     * The block doesn't actually need to exist in the level at the provided position, but if the model relies on model
+     * data, the result may not be great.
+     *
+     * @param blockState The block state of the block.
+     */
+    record BlockParticle(BlockState blockState) implements TextureSourceReference {
+        @Override
+        public LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction, @Nullable RandomSource randomSource) {
+            Minecraft minecraft = Minecraft.getInstance();
+            BlockModelShaper blockModelShaper = minecraft.getBlockRenderer().getBlockModelShaper();
+            BakedModel blockModel = blockModelShaper.getBlockModel(blockState);
+            //noinspection deprecation
+            return new LookupResult(blockModel.getParticleIcon(), null);
         }
     }
 
@@ -75,10 +104,13 @@ public interface TextureSourceReference {
     record BlockLookup(@Nullable Level level, BlockPos pos, BlockState blockState,
                        TextureSourceReference fallback) implements TextureSourceReference {
         @Override
-        public LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction, RandomSource randomSource) {
+        public LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction, @Nullable RandomSource randomSource) {
             Minecraft minecraft = Minecraft.getInstance();
             BlockModelShaper blockModelShaper = minecraft.getBlockRenderer().getBlockModelShaper();
             BakedModel blockModel = blockModelShaper.getBlockModel(blockState);
+            if (randomSource == null) {
+                randomSource = RandomSource.create();
+            }
             // First try the actual direction we're going for.
             for (BakedQuad quad : blockModel.getQuads(blockState, direction, randomSource, ModelData.EMPTY, null)) {
                 return new LookupResult(quad.getSprite(), quad.getTintIndex());
