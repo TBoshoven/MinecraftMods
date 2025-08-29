@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -104,21 +105,27 @@ public interface TextureSourceReference {
      */
     class BlockParticle implements TextureSourceReference {
         BlockState blockState;
+        TextureSourceReference fallback;
 
         /**
          * @param blockState The block state of the block.
+         * @param fallback   A fallback to use in case no appropriate textures are found on the block model.
          */
-        public BlockParticle(BlockState blockState) {
+        public BlockParticle(BlockState blockState, TextureSourceReference fallback) {
             this.blockState = blockState;
+            this.fallback = fallback;
         }
-
         @Override
         public LookupResult lookup(Function<? super RenderMaterial, ? extends TextureAtlasSprite> sprites, Direction direction, @Nullable Random random) {
             Minecraft minecraft = Minecraft.getInstance();
             BlockModelShapes blockModelShaper = minecraft.getBlockRenderer().getBlockModelShaper();
             IBakedModel blockModel = blockModelShaper.getBlockModel(blockState);
             //noinspection deprecation
-            return new LookupResult(blockModel.getParticleIcon(), null);
+            TextureAtlasSprite icon = blockModel.getParticleIcon();
+            if (icon == icon.atlas().getSprite(MissingTextureSprite.getLocation())) {
+                return fallback.lookup(sprites, direction, random);
+            }
+            return new LookupResult(icon, null);
         }
     }
 
