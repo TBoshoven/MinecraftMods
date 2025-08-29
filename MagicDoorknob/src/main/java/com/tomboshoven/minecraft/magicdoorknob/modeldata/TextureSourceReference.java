@@ -54,7 +54,18 @@ public interface TextureSourceReference {
      * @return The result of the lookup.
      */
     default LookupResult lookup(Function<? super RenderMaterial, ? extends TextureAtlasSprite> sprites) {
-        return lookup(sprites, Direction.NORTH, new Random());
+        return lookup(sprites, null);
+    }
+
+    /**
+     * Perform the actual lookup.
+     *
+     * @param sprites The sprite getter to use for looking up texture references.
+     * @param random  A random source to use in the texture lookup.
+     * @return The result of the lookup.
+     */
+    default LookupResult lookup(Function<? super RenderMaterial, ? extends TextureAtlasSprite> sprites, @Nullable Random random) {
+        return lookup(sprites, Direction.NORTH, random);
     }
 
     /**
@@ -65,7 +76,7 @@ public interface TextureSourceReference {
      * @param random    A random source to use in the texture lookup.
      * @return The result of the lookup.
      */
-    LookupResult lookup(Function<? super RenderMaterial, ? extends TextureAtlasSprite> sprites, Direction direction, Random random);
+    LookupResult lookup(Function<? super RenderMaterial, ? extends TextureAtlasSprite> sprites, Direction direction, @Nullable Random random);
 
     /**
      * A direct reference to a material.
@@ -81,8 +92,33 @@ public interface TextureSourceReference {
         }
 
         @Override
-        public LookupResult lookup(Function<? super RenderMaterial, ? extends TextureAtlasSprite> sprites, Direction direction, Random random) {
+        public LookupResult lookup(Function<? super RenderMaterial, ? extends TextureAtlasSprite> sprites, Direction direction, @Nullable Random random) {
             return new LookupResult(sprites.apply(material), null);
+        }
+    }
+
+    /**
+     * A reference to a particle for a block in the world.
+     * The block doesn't actually need to exist in the level at the provided position, but if the model relies on model
+     * data, the result may not be great.
+     */
+    class BlockParticle implements TextureSourceReference {
+        BlockState blockState;
+
+        /**
+         * @param blockState The block state of the block.
+         */
+        public BlockParticle(BlockState blockState) {
+            this.blockState = blockState;
+        }
+
+        @Override
+        public LookupResult lookup(Function<? super RenderMaterial, ? extends TextureAtlasSprite> sprites, Direction direction, @Nullable Random random) {
+            Minecraft minecraft = Minecraft.getInstance();
+            BlockModelShapes blockModelShaper = minecraft.getBlockRenderer().getBlockModelShaper();
+            IBakedModel blockModel = blockModelShaper.getBlockModel(blockState);
+            //noinspection deprecation
+            return new LookupResult(blockModel.getParticleIcon(), null);
         }
     }
 
@@ -111,10 +147,13 @@ public interface TextureSourceReference {
         }
 
         @Override
-        public LookupResult lookup(Function<? super RenderMaterial, ? extends TextureAtlasSprite> sprites, Direction direction, Random random) {
+        public LookupResult lookup(Function<? super RenderMaterial, ? extends TextureAtlasSprite> sprites, Direction direction, @Nullable Random random) {
             Minecraft minecraft = Minecraft.getInstance();
             BlockModelShapes blockModelShaper = minecraft.getBlockRenderer().getBlockModelShaper();
             IBakedModel blockModel = blockModelShaper.getBlockModel(blockState);
+            if (random == null) {
+                random = new Random();
+            }
             // First try the actual direction we're going for.
             for (BakedQuad quad : blockModel.getQuads(blockState, direction, random, EmptyModelData.INSTANCE)) {
                 return new LookupResult(quad.getSprite(), quad.getTintIndex());

@@ -39,6 +39,11 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
      */
     private static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(new ResourceLocation(PROPERTY_NAMESPACE, "texture_highlight"));
 
+    /**
+     * The particle texture of the doorway (based on base block particle texture).
+     */
+    public static final ModelTextureProperty TEXTURE_PARTICLE = ModelTextureProperty.get(new ResourceLocation(PROPERTY_NAMESPACE, "texture_particle"));
+
     // Material to use when no proper material can be found, such as with air.
     private static final RenderMaterial EMPTY_MATERIAL = new RenderMaterial(PlayerContainer.BLOCK_ATLAS, new ResourceLocation(MOD_ID, "block/empty"));
 
@@ -102,6 +107,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
 
         // Fallback chain is block texture -> empty
         TextureSourceReference fallbackReference = new TextureSourceReference.MaterialTextureSource(EMPTY_MATERIAL);
+        TextureSourceReference particleTextureSourceReference = new TextureSourceReference.BlockParticle(baseBlockState);
         TextureSourceReference blockTextureSourceReference = new TextureSourceReference.BlockLookup(level, blockPos, baseBlockState, fallbackReference);
 
         TextureSourceReference doorknobTextureSourceReference;
@@ -116,6 +122,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
         CompositeModel.CompositeModelData compositeModelData = new CompositeModel.CompositeModelData();
         compositeModelData.setData(TEXTURE_MAIN, blockTextureSourceReference);
         compositeModelData.setData(TEXTURE_HIGHLIGHT, doorknobTextureSourceReference);
+        compositeModelData.setData(TEXTURE_PARTICLE, particleTextureSourceReference);
         return compositeModelData;
     }
 
