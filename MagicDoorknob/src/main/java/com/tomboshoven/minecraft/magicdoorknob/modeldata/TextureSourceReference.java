@@ -99,6 +99,7 @@ public interface TextureSourceReference {
             } else {
                 blockModel.collectParts(level, pos, blockState, randomSource, parts);
             }
+            LookupResult result = null;
             for (BlockModelPart part : parts) {
                 // First try the actual direction we're going for.
                 for (BakedQuad quad : part.getQuads(direction)) {
@@ -108,13 +109,21 @@ public interface TextureSourceReference {
                 // This will make cross blocks textures a bit better.
                 for (BakedQuad quad : part.getQuads(null)) {
                     // Separate out the sides from top and bottom, because those are often not compatible
-                    if (quad.direction().getAxis().isVertical() != direction.getAxis().isVertical()) {
+                    Direction quadDirection = quad.direction();
+                    if (quadDirection.getAxis().isVertical() != direction.getAxis().isVertical()) {
                         continue;
                     }
-                    return new LookupResult(quad.sprite(), quad.tintIndex());
+                    result = new LookupResult(quad.sprite(), quad.tintIndex());
+                    // Always prefer a direction match
+                    if (quadDirection == direction) {
+                        return result;
+                    }
                 }
             }
-            return fallback.lookup(sprites, direction, randomSource);
+            if (result == null) {
+                return fallback.lookup(sprites, direction, randomSource);
+            }
+            return result;
         }
     }
 }
