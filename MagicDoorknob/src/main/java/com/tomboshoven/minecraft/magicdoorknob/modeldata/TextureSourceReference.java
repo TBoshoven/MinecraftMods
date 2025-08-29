@@ -3,6 +3,7 @@ package com.tomboshoven.minecraft.magicdoorknob.modeldata;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
@@ -78,15 +79,21 @@ public interface TextureSourceReference {
      * data, the result may not be great.
      *
      * @param blockState The block state of the block.
+     * @param fallback   A fallback to use in case no appropriate textures are found on the block model.
      */
-    record BlockParticle(BlockState blockState) implements TextureSourceReference {
+    record BlockParticle(BlockState blockState, TextureSourceReference fallback) implements TextureSourceReference {
         @Override
         public LookupResult lookup(Function<? super Material, ? extends TextureAtlasSprite> sprites, Direction direction, @Nullable RandomSource randomSource) {
             Minecraft minecraft = Minecraft.getInstance();
             BlockModelShaper blockModelShaper = minecraft.getBlockRenderer().getBlockModelShaper();
             BakedModel blockModel = blockModelShaper.getBlockModel(blockState);
+
             //noinspection deprecation
-            return new LookupResult(blockModel.getParticleIcon(), null);
+            TextureAtlasSprite icon = blockModel.getParticleIcon();
+            if (icon == minecraft.getTextureAtlas(icon.atlasLocation()).apply(MissingTextureAtlasSprite.getLocation())) {
+                return fallback.lookup(sprites, direction, randomSource);
+            }
+            return new LookupResult(icon, null);
         }
     }
 
