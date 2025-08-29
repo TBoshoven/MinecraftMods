@@ -121,14 +121,23 @@ public interface TextureSourceReference {
             }
             // Fall back on any other ones, if they're there.
             // This will make cross blocks textures a bit better.
-            for (BakedQuad quad : blockModel.getQuads(blockState, direction, random, EmptyModelData.INSTANCE)) {
+            LookupResult result = null;
+            for (BakedQuad quad : blockModel.getQuads(blockState, null, random, EmptyModelData.INSTANCE)) {
                 // Separate out the sides from top and bottom, because those are often not compatible
-                if (quad.getDirection().getAxis().isVertical() != direction.getAxis().isVertical()) {
+                Direction quadDirection = quad.getDirection();
+                if (quadDirection.getAxis().isVertical() != direction.getAxis().isVertical()) {
                     continue;
                 }
-                return new LookupResult(quad.getSprite(), quad.getTintIndex());
+                // Always prefer a direction match
+                result = new LookupResult(quad.getSprite(), quad.getTintIndex());
+                if (quadDirection == direction) {
+                    return result;
+                }
             }
-            return fallback.lookup(sprites, direction, random);
+            if (result == null) {
+                return fallback.lookup(sprites, direction, random);
+            }
+            return result;
         }
     }
 }
