@@ -540,7 +540,7 @@ class Models extends ModelProvider {
 
         // Door blocks
         TextureMapping panelTextureMapping = new TextureMapping()
-                .put(TextureSlot.PARTICLE, MagicDoorwayPartBaseBlockEntity.TEXTURE_MAIN.getName())
+                .put(TextureSlot.PARTICLE, MagicDoorwayPartBaseBlockEntity.TEXTURE_PARTICLE.getName())
                 .put(MAIN_TEXTURE, MagicDoorwayPartBaseBlockEntity.TEXTURE_MAIN.getName())
                 .put(HIGHLIGHT_TEXTURE, MagicDoorwayPartBaseBlockEntity.TEXTURE_HIGHLIGHT.getName());
         doorTemplate(MagicDoorwayPartBaseBlock.EnumPartType.TOP).create(doorTopModelLocation, panelTextureMapping, blockModels.modelOutput);

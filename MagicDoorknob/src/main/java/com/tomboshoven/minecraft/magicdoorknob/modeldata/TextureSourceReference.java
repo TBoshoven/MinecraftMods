@@ -38,7 +38,7 @@ public interface TextureSourceReference {
      * @return The result of the lookup.
      */
     default LookupResult lookup(SpriteGetter sprites) {
-        return lookup(sprites, RandomSource.create());
+        return lookup(sprites, null);
     }
 
     /**
@@ -48,7 +48,7 @@ public interface TextureSourceReference {
      * @param randomSource A random source to use in the texture lookup.
      * @return The result of the lookup.
      */
-    default LookupResult lookup(SpriteGetter sprites, RandomSource randomSource) {
+    default LookupResult lookup(SpriteGetter sprites, @Nullable RandomSource randomSource) {
         return lookup(sprites, Direction.NORTH, randomSource);
     }
 
@@ -60,7 +60,7 @@ public interface TextureSourceReference {
      * @param randomSource A random source to use in the texture lookup.
      * @return The result of the lookup.
      */
-    LookupResult lookup(SpriteGetter sprites, Direction direction, RandomSource randomSource);
+    LookupResult lookup(SpriteGetter sprites, Direction direction, @Nullable RandomSource randomSource);
 
     /**
      * A direct reference to a material.
@@ -69,8 +69,31 @@ public interface TextureSourceReference {
      */
     record MaterialTextureSource(Material material) implements TextureSourceReference {
         @Override
-        public LookupResult lookup(SpriteGetter sprites, Direction direction, RandomSource randomSource) {
+        public LookupResult lookup(SpriteGetter sprites, Direction direction, @Nullable RandomSource randomSource) {
             return new LookupResult(sprites.get(material, () -> "TextureReference"), null);
+        }
+    }
+
+    /**
+     * A reference to a particle for a block in the world.
+     * The block doesn't actually need to exist in the level at the provided position, but if the model relies on model
+     * data, the result may not be great.
+     *
+     * @param level      The level (hypothetically) containing the block. May be left null for an agnostic lookup.
+     * @param pos        The position of the block in the level.
+     * @param blockState The block state of the block.
+     */
+    record BlockParticle(@Nullable Level level, BlockPos pos, BlockState blockState) implements TextureSourceReference {
+        @Override
+        public LookupResult lookup(SpriteGetter sprites, Direction direction, @Nullable RandomSource randomSource) {
+            Minecraft minecraft = Minecraft.getInstance();
+            BlockModelShaper blockModelShaper = minecraft.getBlockRenderer().getBlockModelShaper();
+            BlockStateModel blockModel = blockModelShaper.getBlockModel(blockState);
+            if (level == null) {
+                //noinspection deprecation
+                return new LookupResult(blockModel.particleIcon(), null);
+            }
+            return new LookupResult(blockModel.particleIcon(level, pos, blockState), null);
         }
     }
 
@@ -88,11 +111,14 @@ public interface TextureSourceReference {
     record BlockLookup(@Nullable Level level, BlockPos pos, BlockState blockState,
                        TextureSourceReference fallback) implements TextureSourceReference {
         @Override
-        public LookupResult lookup(SpriteGetter sprites, Direction direction, RandomSource randomSource) {
+        public LookupResult lookup(SpriteGetter sprites, Direction direction, @Nullable RandomSource randomSource) {
             Minecraft minecraft = Minecraft.getInstance();
             BlockModelShaper blockModelShaper = minecraft.getBlockRenderer().getBlockModelShaper();
             BlockStateModel blockModel = blockModelShaper.getBlockModel(blockState);
             List<BlockModelPart> parts = new ObjectArrayList<>();
+            if (randomSource == null) {
+                randomSource = RandomSource.create();
+            }
             if (level == null) {
                 //noinspection deprecation
                 blockModel.collectParts(randomSource, parts);
