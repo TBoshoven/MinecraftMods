@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.SpriteGetter;
@@ -82,18 +83,21 @@ public interface TextureSourceReference {
      * @param level      The level (hypothetically) containing the block. May be left null for an agnostic lookup.
      * @param pos        The position of the block in the level.
      * @param blockState The block state of the block.
+     * @param fallback   A fallback to use in case no appropriate textures are found on the block model.
      */
-    record BlockParticle(@Nullable Level level, BlockPos pos, BlockState blockState) implements TextureSourceReference {
+    record BlockParticle(@Nullable Level level, BlockPos pos, BlockState blockState, TextureSourceReference fallback) implements TextureSourceReference {
         @Override
         public LookupResult lookup(SpriteGetter sprites, Direction direction, @Nullable RandomSource randomSource) {
             Minecraft minecraft = Minecraft.getInstance();
             BlockModelShaper blockModelShaper = minecraft.getBlockRenderer().getBlockModelShaper();
             BlockStateModel blockModel = blockModelShaper.getBlockModel(blockState);
-            if (level == null) {
-                //noinspection deprecation
-                return new LookupResult(blockModel.particleIcon(), null);
+
+            //noinspection deprecation
+            TextureAtlasSprite icon = level == null ? blockModel.particleIcon() : blockModel.particleIcon(level, pos, blockState);
+            if (icon == minecraft.getTextureAtlas(icon.atlasLocation()).apply(MissingTextureAtlasSprite.getLocation())) {
+                return fallback.lookup(sprites, direction, randomSource);
             }
-            return new LookupResult(blockModel.particleIcon(level, pos, blockState), null);
+            return new LookupResult(icon, null);
         }
     }
 
