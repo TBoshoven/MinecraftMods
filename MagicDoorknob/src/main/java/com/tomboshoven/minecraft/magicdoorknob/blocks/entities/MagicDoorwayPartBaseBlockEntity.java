@@ -42,6 +42,11 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
      */
     private static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(new ResourceLocation(PROPERTY_NAMESPACE, "texture_highlight"));
 
+    /**
+     * The particle texture of the doorway (based on base block particle texture).
+     */
+    public static final ModelTextureProperty TEXTURE_PARTICLE = ModelTextureProperty.get(new ResourceLocation(PROPERTY_NAMESPACE, "texture_particle"));
+
     // Material to use when no proper material can be found, such as with air.
     private static final Material EMPTY_MATERIAL = new Material(PlayerContainer.BLOCK_ATLAS, new ResourceLocation(MOD_ID, "block/empty"));
 
@@ -106,6 +111,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
 
         // Fallback chain is block texture -> empty
         TextureSourceReference fallbackReference = new TextureSourceReference.MaterialTextureSource(EMPTY_MATERIAL);
+        TextureSourceReference particleTextureSourceReference = new TextureSourceReference.BlockParticle(baseBlockState);
         TextureSourceReference blockTextureSourceReference = new TextureSourceReference.BlockLookup(level, blockPos, baseBlockState, fallbackReference);
 
         TextureSourceReference doorknobTextureSourceReference;
@@ -120,6 +126,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
         IModelData submodelData = new ModelDataMap.Builder()
                 .withInitial(TEXTURE_MAIN, blockTextureSourceReference)
                 .withInitial(TEXTURE_HIGHLIGHT, doorknobTextureSourceReference)
+                .withInitial(TEXTURE_PARTICLE, particleTextureSourceReference)
                 .build();
         CompositeModel.SubmodelModelData submodelModelData = new CompositeModel.SubmodelModelData();
         for (String submodelName : SUBMODEL_NAMES) {
@@ -129,6 +136,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
                 .withInitial(SUBMODEL_DATA, submodelModelData)
                 .withInitial(TEXTURE_MAIN, blockTextureSourceReference)
                 .withInitial(TEXTURE_HIGHLIGHT, doorknobTextureSourceReference)
+                .withInitial(TEXTURE_PARTICLE, particleTextureSourceReference)
                 .build();
     }
 

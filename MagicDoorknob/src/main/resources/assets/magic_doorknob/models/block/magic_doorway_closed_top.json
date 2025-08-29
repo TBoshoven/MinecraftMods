@@ -803,6 +803,6 @@
   "textures": {
     "highlight": "property:texture_highlight",
     "main": "property:texture_main",
-    "particle": "property:texture_main"
+    "particle": "property:texture_particle"
   }
 }
