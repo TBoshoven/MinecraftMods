@@ -117,7 +117,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
 
         // Fallback chain is block texture -> empty
         TextureSourceReference fallbackReference = new TextureSourceReference.MaterialTextureSource(EMPTY_MATERIAL);
-        TextureSourceReference particleTextureSourceReference = new TextureSourceReference.BlockParticle(baseBlockState);
+        TextureSourceReference particleTextureSourceReference = new TextureSourceReference.BlockParticle(baseBlockState, fallbackReference);
         TextureSourceReference blockTextureSourceReference = new TextureSourceReference.BlockLookup(level, blockPos, baseBlockState, fallbackReference);
 
         TextureSourceReference doorknobTextureSourceReference;
