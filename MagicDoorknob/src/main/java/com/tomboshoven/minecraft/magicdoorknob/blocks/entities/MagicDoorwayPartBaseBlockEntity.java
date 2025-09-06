@@ -3,11 +3,8 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.entities;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -46,6 +43,15 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
      * The highlight texture of the doorway (based on doorknob).
      */
     public static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(ResourceLocation.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_highlight"));
+
+    /**
+     * The particle texture of the doorway (based on base block particle texture).
+     */
+    public static final ModelTextureProperty TEXTURE_PARTICLE = ModelTextureProperty.get(ResourceLocation.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_particle"));
+
+    // Material to use when no proper material can be found, such as with air.
+    @SuppressWarnings("deprecation")
+    private static final Material EMPTY_MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.fromNamespaceAndPath(MOD_ID, "block/empty"));
 
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.defaultBlockState();
@@ -108,34 +114,29 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
 
     @Override
     public @NotNull ModelData getModelData() {
-        Minecraft minecraft = Minecraft.getInstance();
-        BlockModelShaper blockModelShapes = minecraft.getBlockRenderer().getBlockModelShaper();
-
         // Get the base block texture
-        Level world = getLevel();
-        TextureAtlasSprite blockTexture = world == null ? null : blockModelShapes.getParticleIcon(baseBlockState, world, getBlockPos());
-        Material blockMaterial;
-        if (blockTexture == null || blockTexture == minecraft.getTextureAtlas(blockTexture.atlasLocation()).apply(MissingTextureAtlasSprite.getLocation())) {
-            // If we can't find the texture, use a transparent one instead, to deal with things like air.
-            //noinspection deprecation
-            blockMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.fromNamespaceAndPath(MOD_ID, "block/empty"));
-        } else {
-            blockMaterial = new Material(blockTexture.atlasLocation(), blockTexture.contents().name());
-        }
+        Level level = getLevel();
+        BlockPos blockPos = getBlockPos();
 
-        // Get the highlight texture
-        Material doorknobMaterial;
-        if (doorknob != null) {
-            doorknobMaterial = doorknob.getMainMaterial();
-        } else {
+        // Fallback chain is block texture -> empty
+        TextureSourceReference fallbackReference = new TextureSourceReference.MaterialTextureSource(EMPTY_MATERIAL);
+        TextureSourceReference particleTextureSourceReference = new TextureSourceReference.BlockParticle(level, blockPos, baseBlockState, fallbackReference);
+        TextureSourceReference blockTextureSourceReference = new TextureSourceReference.BlockLookup(level, blockPos, baseBlockState, fallbackReference);
+
+        TextureSourceReference doorknobTextureSourceReference;
+        if (doorknob == null) {
             // This can happen when we draw a frame before receiving the block entity data from the server.
-            // In that case, we just want to draw the outline to make it less conspicuous.
-            doorknobMaterial = blockMaterial;
+            // This makes it a bit less conspicuous.
+            doorknobTextureSourceReference = blockTextureSourceReference;
+        }
+        else {
+            doorknobTextureSourceReference = new TextureSourceReference.MaterialTextureSource(doorknob.getMainMaterial());
         }
 
         return ModelData.builder()
-                .with(TEXTURE_MAIN, blockMaterial)
-                .with(TEXTURE_HIGHLIGHT, doorknobMaterial)
+                .with(TEXTURE_MAIN, blockTextureSourceReference)
+                .with(TEXTURE_HIGHLIGHT, doorknobTextureSourceReference)
+                .with(TEXTURE_PARTICLE, particleTextureSourceReference)
                 .build();
     }
 

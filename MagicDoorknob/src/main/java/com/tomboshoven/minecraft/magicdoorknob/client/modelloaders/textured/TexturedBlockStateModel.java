@@ -1,9 +1,9 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -72,7 +72,7 @@ public class TexturedBlockStateModel extends DelegateBlockStateModel {
         List<BlockModelPart> delegatePartList = partCache.computeIfAbsent(mapper.getMappingKey(), key -> {
             List<BlockModelPart> partList = new ArrayList<>();
             delegate.collectParts(level, pos, state, random, partList);
-            partList.replaceAll(part -> wrapPart(part, mapper));
+            partList.replaceAll(part -> wrapPart(part, mapper, random));
             return partList;
         });
         parts.addAll(delegatePartList);
@@ -83,11 +83,10 @@ public class TexturedBlockStateModel extends DelegateBlockStateModel {
         TextureAtlasSprite baseIcon = delegate.particleIcon(level, pos, state);
         if (baseIcon instanceof PropertySprite baseIconProperty) {
             ModelData modelData = level.getModelData(pos);
-            Material material = textureMapper.forBlockState(state, modelData).mapSprite(baseIconProperty);
-            if (material == null) {
-                return baseIcon;
+            TextureSourceReference textureSourceReference = textureMapper.forBlockState(state, modelData).mapSprite(baseIconProperty);
+            if (textureSourceReference != null) {
+                return textureSourceReference.lookup(sprites).sprite();
             }
-            return sprites.get(material, () -> "TexturedBlockStateModel");
         }
         return baseIcon;
     }
@@ -97,9 +96,10 @@ public class TexturedBlockStateModel extends DelegateBlockStateModel {
      *
      * @param basePart The part to wrap.
      * @param mapper   The texture mapper to use.
+     * @param random   The random source for the part collection.
      * @return The wrapped block model part.
      */
-    private BlockModelPart wrapPart(BlockModelPart basePart, TextureMapper.BlockStateTextureMapper mapper) {
-        return new TexturedBlockModelPart(basePart, mapper, sprites);
+    private BlockModelPart wrapPart(BlockModelPart basePart, TextureMapper.BlockStateTextureMapper mapper, RandomSource random) {
+        return new TexturedBlockModelPart(basePart, mapper, sprites, random);
     }
 }

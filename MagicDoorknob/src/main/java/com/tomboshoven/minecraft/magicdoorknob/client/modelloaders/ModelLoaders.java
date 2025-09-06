@@ -11,7 +11,6 @@ import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
  * Collection of custom model loaders.
  */
 public final class ModelLoaders {
-    public static final ResourceLocation TEXTURED_MODEL_LOADER_KEY = ResourceLocation.fromNamespaceAndPath(MOD_ID, "textured");
     public static final ResourceLocation BLOCK_STATE_MODEL_DEFINITION_KEY = ResourceLocation.fromNamespaceAndPath(MOD_ID, "textured");
 
     private ModelLoaders() {

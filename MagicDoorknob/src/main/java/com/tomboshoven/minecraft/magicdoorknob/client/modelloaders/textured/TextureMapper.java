@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
-import net.minecraft.client.resources.model.Material;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.model.data.ModelData;
 
@@ -33,10 +33,10 @@ public interface TextureMapper {
 
         /**
          * @param spriteToMap The property to get the texture location for.
-         * @return The appropriate material.
+         * @return The appropriate texture reference.
          */
         @Nullable
-        Material mapSprite(PropertySprite spriteToMap);
+        TextureSourceReference mapSprite(PropertySprite spriteToMap);
 
         /**
          * A very basic implementation of a texture mapper that never maps any textures.
@@ -51,7 +51,7 @@ public interface TextureMapper {
 
             @Nullable
             @Override
-            public Material mapSprite(PropertySprite spriteToMap) {
+            public TextureSourceReference mapSprite(PropertySprite spriteToMap) {
                 return null;
             }
         }
