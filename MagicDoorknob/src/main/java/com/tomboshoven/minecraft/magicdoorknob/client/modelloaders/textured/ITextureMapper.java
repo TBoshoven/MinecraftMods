@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nullable;
@@ -16,5 +16,5 @@ public interface ITextureMapper {
      * @param extraData   Extra model data if available
      * @return The appropriate material
      */
-    Material mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable IModelData extraData);
+    TextureSourceReference mapSprite(PropertySprite spriteToMap, @Nullable BlockState blockState, @Nullable IModelData extraData);
 }
