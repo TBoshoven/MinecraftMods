@@ -50,10 +50,6 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
      */
     public static final ModelTextureProperty TEXTURE_PARTICLE = ModelTextureProperty.get(ResourceLocation.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_particle"));
 
-    // Material to use when no proper material can be found, such as with air.
-    @SuppressWarnings("deprecation")
-    private static final Material EMPTY_MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.fromNamespaceAndPath(MOD_ID, "block/empty"));
-
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.defaultBlockState();
     // The doorknob that caused this block to be created.
@@ -115,8 +111,12 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
         Level level = getLevel();
         BlockPos blockPos = getBlockPos();
 
+        // Material to use when no proper material can be found, such as with air.
+        @SuppressWarnings("deprecation")
+        final Material emptyMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.fromNamespaceAndPath(MOD_ID, "block/empty"));
+
         // Fallback chain is block texture -> empty
-        TextureSourceReference fallbackReference = new TextureSourceReference.MaterialTextureSource(EMPTY_MATERIAL);
+        TextureSourceReference fallbackReference = new TextureSourceReference.MaterialTextureSource(emptyMaterial);
         TextureSourceReference particleTextureSourceReference = new TextureSourceReference.BlockParticle(baseBlockState, fallbackReference);
         TextureSourceReference blockTextureSourceReference = new TextureSourceReference.BlockLookup(level, blockPos, baseBlockState, fallbackReference);
 
