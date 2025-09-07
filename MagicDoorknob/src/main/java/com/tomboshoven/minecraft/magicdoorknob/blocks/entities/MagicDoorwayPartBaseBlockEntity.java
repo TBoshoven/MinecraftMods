@@ -44,9 +44,6 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
      */
     public static final ModelTextureProperty TEXTURE_PARTICLE = ModelTextureProperty.get(new ResourceLocation(PROPERTY_NAMESPACE, "texture_particle"));
 
-    // Material to use when no proper material can be found, such as with air.
-    private static final RenderMaterial EMPTY_MATERIAL = new RenderMaterial(PlayerContainer.BLOCK_ATLAS, new ResourceLocation(MOD_ID, "block/empty"));
-
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.defaultBlockState();
     // The doorknob that caused this block to be created.
@@ -105,8 +102,11 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
         World level = getLevel();
         BlockPos blockPos = getBlockPos();
 
+        // Material to use when no proper material can be found, such as with air.
+        final RenderMaterial emptyMaterial = new RenderMaterial(PlayerContainer.BLOCK_ATLAS, new ResourceLocation(MOD_ID, "block/empty"));
+
         // Fallback chain is block texture -> empty
-        TextureSourceReference fallbackReference = new TextureSourceReference.MaterialTextureSource(EMPTY_MATERIAL);
+        TextureSourceReference fallbackReference = new TextureSourceReference.MaterialTextureSource(emptyMaterial);
         TextureSourceReference particleTextureSourceReference = new TextureSourceReference.BlockParticle(baseBlockState, fallbackReference);
         TextureSourceReference blockTextureSourceReference = new TextureSourceReference.BlockLookup(level, blockPos, baseBlockState, fallbackReference);
 
