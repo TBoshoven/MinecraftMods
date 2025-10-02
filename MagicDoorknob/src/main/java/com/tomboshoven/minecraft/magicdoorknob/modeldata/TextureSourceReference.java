@@ -94,7 +94,7 @@ public interface TextureSourceReference {
 
             //noinspection deprecation
             TextureAtlasSprite icon = level == null ? blockModel.particleIcon() : blockModel.particleIcon(level, pos, blockState);
-            if (icon == minecraft.getTextureAtlas(icon.atlasLocation()).apply(MissingTextureAtlasSprite.getLocation())) {
+            if (icon == minecraft.getAtlasManager().getAtlasOrThrow(icon.atlasLocation()).getSprite(MissingTextureAtlasSprite.getLocation())) {
                 return fallback.lookup(sprites, direction, randomSource);
             }
             return new LookupResult(icon, null);

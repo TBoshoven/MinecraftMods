@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.metadata.animation.FrameSize;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceMetadata;
 import net.neoforged.neoforge.client.textures.UnitTextureAtlasSprite;
 
 /**
@@ -20,7 +19,7 @@ public class PropertySprite extends TextureAtlasSprite {
      */
     PropertySprite(ResourceLocation property) {
         // Hijack the atlas and native image from UnitTextureAtlasSprite, so we don't have to build our own.
-        super(UnitTextureAtlasSprite.LOCATION, new SpriteContents(property, new FrameSize(1, 1), UnitTextureAtlasSprite.INSTANCE.contents().getOriginalImage(), ResourceMetadata.EMPTY), 1, 1, 0, 0);
+        super(UnitTextureAtlasSprite.LOCATION, new SpriteContents(property, new FrameSize(1, 1), UnitTextureAtlasSprite.INSTANCE.contents().getOriginalImage()), 1, 1, 0, 0);
         this.property = property;
     }
 

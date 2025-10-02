@@ -154,7 +154,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             level.destroyBlock(pos, false);
         }
         return InteractionResult.SUCCESS;
