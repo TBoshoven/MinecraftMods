@@ -1,8 +1,9 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection.renderers;
 
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.world.entity.Entity;
 
 /**
@@ -43,10 +44,11 @@ public abstract class ReflectionRendererBase<E extends Entity> implements AutoCl
     public abstract EntityRenderState updateState(float partialTicks);
 
     /**
-     * Render the reflection.
+     * Submit the reflection for rendering.
      *
-     * @param facing           The rotation (in degrees) for the entity that is being rendered.
-     * @param renderTypeBuffer The buffers to render to.
+     * @param facing              The rotation (in degrees) for the entity that is being rendered.
+     * @param submitNodeCollector The collector to submit to.
+     * @param cameraRenderState   The camera render state to use for rendering.
      */
-    public abstract void render(float facing, MultiBufferSource renderTypeBuffer);
+    public abstract void submit(float facing, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState);
 }

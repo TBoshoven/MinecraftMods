@@ -1,9 +1,10 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRendererBase;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.world.entity.Entity;
 
 /**
@@ -49,8 +50,8 @@ class ReflectionRendererModifier<E extends Entity> extends ReflectionRendererBas
     }
 
     @Override
-    public void render(float facing, MultiBufferSource renderTypeBuffer) {
-        baseRenderer.render(facing, renderTypeBuffer);
+    public void submit(float facing, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+        baseRenderer.submit(facing, submitNodeCollector, cameraRenderState);
     }
 
     @Override

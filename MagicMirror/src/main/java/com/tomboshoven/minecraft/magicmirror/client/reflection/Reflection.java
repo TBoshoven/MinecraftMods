@@ -11,7 +11,10 @@ import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.Reflect
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
@@ -222,7 +225,8 @@ public class Reflection {
         }
 
         if (reflectionTexture != null && reflectionRenderer != null) {
-            MultiBufferSource.BufferSource renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
+            Minecraft minecraft = Minecraft.getInstance();
+            MultiBufferSource.BufferSource renderTypeBuffer = minecraft.renderBuffers().bufferSource();
 
             reflectionTexture.clear();
             RenderTarget oldMainRenderTarget = reflectionTexture.activate();
@@ -230,7 +234,12 @@ public class Reflection {
             try {
                 reflectionRenderer.setUp();
 
-                reflectionRenderer.render(angle, renderTypeBuffer);
+                CameraRenderState cameraRenderState = new CameraRenderState();
+
+                FeatureRenderDispatcher featureRenderDispatcher = minecraft.gameRenderer.getFeatureRenderDispatcher();
+                SubmitNodeStorage submitNodeStorage = featureRenderDispatcher.getSubmitNodeStorage();
+                reflectionRenderer.submit(angle, submitNodeStorage, cameraRenderState);
+                featureRenderDispatcher.renderAllFeatures();
 
                 renderTypeBuffer.endBatch();
 

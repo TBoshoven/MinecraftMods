@@ -1,17 +1,17 @@
 package com.tomboshoven.minecraft.magicmirror.client.renderers;
 
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.SkeletonRenderState;
-import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Skeleton;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerModelType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
@@ -60,13 +60,13 @@ public class OffModelRenderers {
         RENDERERS.clear();
         EntityRendererProvider.Context context = event.getContext();
         // Skin doesn't really matter since we're not actually rendering; we just care about the render state initialization and updates
-        EntityRenderer<Player, PlayerRenderState> playerRenderer = event.getSkin(PlayerSkin.Model.WIDE);
+        EntityRenderer<AbstractClientPlayer, AvatarRenderState> playerRenderer = event.getPlayerRenderer(PlayerModelType.WIDE);
 
         if (playerRenderer != null) {
             EntityRenderer<Skeleton, SkeletonRenderState> skeletonRenderer = event.getRenderer(EntityType.SKELETON);
             if (skeletonRenderer != null) {
                 // Skeleton doesn't have any properties of interest over humanoid
-                putRenderer(EntityType.PLAYER, EntityType.SKELETON, new OffModelRenderer<Player, PlayerRenderState, Skeleton, SkeletonRenderState, SkeletonRenderStateHolder<PlayerRenderState>>(playerRenderer, skeletonRenderer, SkeletonRenderStateHolder::new, new HumanoidRendererMapper<>()).create(context));
+                putRenderer(EntityType.PLAYER, EntityType.SKELETON, new OffModelRenderer<AbstractClientPlayer, AvatarRenderState, Skeleton, SkeletonRenderState, SkeletonRenderStateHolder<AvatarRenderState>>(playerRenderer, skeletonRenderer, SkeletonRenderStateHolder::new, new HumanoidRendererMapper<>()).create(context));
             }
         }
     }
@@ -133,6 +133,8 @@ public class OffModelRenderers {
             targetState.isInvisible = sourceState.isInvisible;
             targetState.isDiscrete = sourceState.isDiscrete;
             targetState.displayFireAnimation = sourceState.displayFireAnimation;
+            targetState.lightCoords = sourceState.lightCoords;
+            targetState.outlineColor = sourceState.outlineColor;
             targetState.partialTick = sourceState.partialTick;
         }
     }
@@ -163,7 +165,6 @@ public class OffModelRenderers {
             targetState.isAutoSpinAttack = sourceState.isAutoSpinAttack;
             targetState.hasRedOverlay = sourceState.hasRedOverlay;
             targetState.isInvisibleToPlayer = sourceState.isInvisibleToPlayer;
-            targetState.appearsGlowing = sourceState.appearsGlowing;
             targetState.pose = sourceState.pose;
             targetState.headItem.clear();
             if (targetState.headItem instanceof OffModelRenderer.CopyableItemStackRenderState targetItemStackRenderState) {

@@ -36,7 +36,7 @@ public final class MagicMirrorMod {
 
         Commands.register(NeoForge.EVENT_BUS);
 
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT) {
             ClientEvents.init(modEventBus);
             ReflectionModifiers.register(modEventBus);
         }

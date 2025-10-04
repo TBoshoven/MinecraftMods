@@ -1,11 +1,16 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.modifiers;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRendererBase;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.AtlasManager;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
@@ -34,30 +39,39 @@ public class BannerReflectionRendererModifier<E extends Entity> extends Reflecti
     }
 
     @Override
-    public void render(float facing, MultiBufferSource renderTypeBuffer) {
-        super.render(facing, renderTypeBuffer);
+    public void submit(float facing, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+        super.submit(facing, submitNodeCollector, cameraRenderState);
 
-        VertexConsumer baseBuffer = Sheets.BANNER_BASE.buffer(renderTypeBuffer, RenderType::entityNoOutline);
-        drawLayer(baseBuffer, baseColor);
+        PoseStack poseStack = new PoseStack();
+        AtlasManager atlasManager = Minecraft.getInstance().getAtlasManager();
+        Material baseMaterial = Sheets.BANNER_BASE;
+        RenderType baseRenderType = baseMaterial.renderType(RenderType::entityNoOutline);
+        TextureAtlasSprite baseSprite = atlasManager.get(baseMaterial);
+
+        submitNodeCollector.submitCustomGeometry(poseStack, baseRenderType, (pose, vertexConsumer) -> submitLayer(vertexConsumer, baseSprite, baseColor));
 
         for (BannerPatternLayers.Layer layer : bannerPatternLayers.layers()) {
             Holder<BannerPattern> bannerPattern = layer.pattern();
-            Material material = Sheets.getBannerMaterial(bannerPattern);
+            Material layerMaterial = Sheets.getBannerMaterial(bannerPattern);
+            RenderType layerRenderType = layerMaterial.renderType(RenderType::entityNoOutline);
+            TextureAtlasSprite layerSprite = atlasManager.get(layerMaterial);
 
-            VertexConsumer buffer = material.buffer(renderTypeBuffer, RenderType::entityNoOutline);
-
-            drawLayer(buffer, layer.color());
+            submitNodeCollector.submitCustomGeometry(poseStack, layerRenderType, (pose, vertexConsumer) -> submitLayer(vertexConsumer, layerSprite, layer.color()));
         }
     }
 
-    private static void drawLayer(VertexConsumer buffer, DyeColor color) {
+    private static void submitLayer(VertexConsumer vertexConsumer, TextureAtlasSprite sprite, DyeColor color) {
         int rgb = color.getTextureDiffuseColor();
 
         // Draw a simple quad
         // Perspective is 90 degrees, so width should be distance for a perfect fit
-        buffer.addVertex(-BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).setColor(rgb).setUv(BANNER_TEXTURE_START_U, BANNER_TEXTURE_START_V).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
-        buffer.addVertex(BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).setColor(rgb).setUv(BANNER_TEXTURE_END_U, BANNER_TEXTURE_START_V).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
-        buffer.addVertex(BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).setColor(rgb).setUv(BANNER_TEXTURE_END_U, BANNER_TEXTURE_END_V).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
-        buffer.addVertex(-BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).setColor(rgb).setUv(BANNER_TEXTURE_START_U, BANNER_TEXTURE_END_V).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
+        float startU = sprite.getU(BANNER_TEXTURE_START_U);
+        float startV = sprite.getV(BANNER_TEXTURE_START_V);
+        float endU = sprite.getU(BANNER_TEXTURE_END_U);
+        float endV = sprite.getV(BANNER_TEXTURE_END_V);
+        vertexConsumer.addVertex(-BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).setColor(rgb).setUv(startU, startV).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
+        vertexConsumer.addVertex(BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).setColor(rgb).setUv(endU, startV).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
+        vertexConsumer.addVertex(BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).setColor(rgb).setUv(endU, endV).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
+        vertexConsumer.addVertex(-BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).setColor(rgb).setUv(startU, endV).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
     }
 }
