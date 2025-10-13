@@ -2,6 +2,7 @@ package com.tomboshoven.minecraft.magicmirror.data;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.Blocks;
+import com.tomboshoven.minecraft.magicmirror.items.Items;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
@@ -17,6 +18,7 @@ class Language extends LanguageProvider {
         add(Blocks.MAGIC_MIRROR_CORE.get(), "Magic Mirror");
         add(Blocks.MAGIC_MIRROR_PART.get(), "Magic Mirror");
         add(Blocks.MAGIC_MIRROR_INACTIVE.get(), "Magic Mirror (inactive)");
+        add(Items.MAGIC_MIRROR.get(), "Magic Mirror");
 
         add("commands.magic_mirror.debug.reflections", "Total number of reflections: %d\nActive reflections: %d");
     }
