@@ -76,7 +76,7 @@ public class MagicDoorknobItem extends Item {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level world = context.getLevel();
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             Direction face = context.getClickedFace();
             BlockPos pos = context.getClickedPos();
 

@@ -1,8 +1,8 @@
 package com.tomboshoven.minecraft.magicmirror.client.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -84,11 +85,11 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
         }
 
         @Override
-        public void render(CombinedState renderState, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        public void submit(CombinedState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
             // This would require an explicit constraint that CombinedState extends TargetState.
             // While it's perfectly legitimate, Java doesn't allow specifying this.
             @SuppressWarnings("unchecked") TargetState targetState = (TargetState) renderState;
-            targetRenderer.render(targetState, poseStack, bufferSource, packedLight);
+            targetRenderer.submit(targetState, poseStack, submitNodeCollector, cameraRenderState);
         }
 
         @Override

@@ -6,9 +6,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.CachedPerspectiveProjectionMatrixBuffer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.world.entity.Entity;
 
 /**
@@ -68,7 +69,7 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
     }
 
     @Override
-    public void render(float facing, MultiBufferSource renderTypeBuffer) {
+    public void submit(float facing, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
         PoseStack reflectionMatrixStack = new PoseStack();
 
         // Head's up
@@ -78,7 +79,7 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
         // Face toward the front of the mirror
         reflectionMatrixStack.mulPose(Axis.YP.rotationDegrees(facing));
 
-        statefulRenderer.render(reflectionMatrixStack, renderTypeBuffer);
+        statefulRenderer.submit(reflectionMatrixStack, submitNodeCollector, cameraRenderState);
     }
 
     @Override
@@ -114,13 +115,14 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
         }
 
         /**
-         * Render the entity using its accompanying state.
+         * Render the entity using its accompanying state for rendering.
          *
-         * @param poseStack        The pose stack for the render operation.
-         * @param renderTypeBuffer The buffers to render to,
+         * @param poseStack           The pose stack for the render operation.
+         * @param submitNodeCollector The collector to submit to.
+         * @param cameraRenderState   The camera render state to use for rendering.
          */
-        void render(PoseStack poseStack, MultiBufferSource renderTypeBuffer) {
-            renderer.render(state, poseStack, renderTypeBuffer, 0x00f000f0);
+        void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+            renderer.submit(state, poseStack, submitNodeCollector, cameraRenderState);
         }
     }
 }

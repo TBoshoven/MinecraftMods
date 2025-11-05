@@ -24,7 +24,7 @@ public final class MagicDoorknobMod {
         Items.register(modEventBus);
         BlockEntities.register(modEventBus);
 
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT) {
             ClientEvents.init(modEventBus);
         }
     }
