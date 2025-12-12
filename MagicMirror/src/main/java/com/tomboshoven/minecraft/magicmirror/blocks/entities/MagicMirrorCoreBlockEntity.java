@@ -11,7 +11,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -27,8 +27,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -129,7 +129,7 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     private void saveInternal(ValueOutput output) {
         ValueOutput.ValueOutputList modifiers = output.childrenList("modifiers");
         for (MagicMirrorBlockEntityModifier modifier : this.modifiers) {
-            ResourceLocation modifierId = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.getKey(modifier.getModifier());
+            Identifier modifierId = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.getKey(modifier.getModifier());
             if (modifierId == null) {
                 continue;
             }
@@ -148,10 +148,10 @@ public class MagicMirrorCoreBlockEntity extends BlockEntity {
     private void loadInternal(ValueInput input) {
         input.childrenList("modifiers").ifPresent(modifierList ->
                 modifierList.forEach(modifierInput -> {
-                    modifierInput.getString("id").map(ResourceLocation::tryParse)
+                    modifierInput.getString("id").map(Identifier::tryParse)
                             // Fall back on old "name" field
                             // TODO: Remove fallback
-                            .or(() -> modifierInput.getString("name").map(name -> ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, name)))
+                            .or(() -> modifierInput.getString("name").map(name -> Identifier.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, name)))
                             .map(MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY::getValue)
                             .ifPresent(modifier -> modifier.apply(this, modifierInput));
                 })

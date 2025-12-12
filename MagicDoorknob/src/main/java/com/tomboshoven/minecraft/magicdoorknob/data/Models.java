@@ -20,7 +20,7 @@ import net.minecraft.client.renderer.block.model.VariantMutator;
 import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.model.generators.template.ElementBuilder;
 import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplate;
 import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplateBuilder;
@@ -263,12 +263,12 @@ class Models extends ModelProvider {
     }
 
     /**
-     * @param blockModelLocation The location of the default block model.
+     * @param blockModelIdentifier The identifier of the default block model.
      * @return The model template for the untextured doorknob model.
      */
-    private static ExtendedModelTemplate doorknobBaseTemplate(ResourceLocation blockModelLocation) {
+    private static ExtendedModelTemplate doorknobBaseTemplate(Identifier blockModelIdentifier) {
         return ExtendedModelTemplateBuilder.builder()
-                .parent(blockModelLocation)
+                .parent(blockModelIdentifier)
                 // Body
                 .element(stretchCuboid(3, 3, 7, 13, 13, 10, MAIN_TEXTURE))
                 // Tall
@@ -283,11 +283,11 @@ class Models extends ModelProvider {
     }
 
     /**
-     * @param doorKnobBaseModelLocation The model location for the base (untextured) doorknob.
+     * @param doorKnobBaseModelIdentifier The identifier for the base (untextured) doorknob.
      * @return The model template for textured doorknob model.
      */
-    private static ExtendedModelTemplate doorknobTemplate(ResourceLocation doorKnobBaseModelLocation) {
-        return ExtendedModelTemplateBuilder.builder().parent(doorKnobBaseModelLocation).requiredTextureSlot(MAIN_TEXTURE).build();
+    private static ExtendedModelTemplate doorknobTemplate(Identifier doorKnobBaseModelIdentifier) {
+        return ExtendedModelTemplateBuilder.builder().parent(doorKnobBaseModelIdentifier).requiredTextureSlot(MAIN_TEXTURE).build();
     }
 
     /**
@@ -305,7 +305,7 @@ class Models extends ModelProvider {
         BiConsumer<Direction, FaceBuilder> highlightTextureAction = (d, faceBuilder) -> faceBuilder.texture(HIGHLIGHT_TEXTURE);
         // Note: door facing is outward, so we need to face east, not west
         ExtendedModelTemplateBuilder builder = ExtendedModelTemplateBuilder.builder()
-                .parent(ResourceLocation.withDefaultNamespace("block/block"))
+                .parent(Identifier.withDefaultNamespace("block/block"))
                 .renderType("translucent")
                 .requiredTextureSlot(MAIN_TEXTURE)
                 .requiredTextureSlot(HIGHLIGHT_TEXTURE)
@@ -386,7 +386,7 @@ class Models extends ModelProvider {
         BiConsumer<Direction, FaceBuilder> mainTextureAction = (d, faceBuilder) -> faceBuilder.texture(MAIN_TEXTURE).tintindex(1);
         BiConsumer<Direction, FaceBuilder> highlightTextureAction = (d, faceBuilder) -> faceBuilder.texture(HIGHLIGHT_TEXTURE);
         ExtendedModelTemplateBuilder builder = ExtendedModelTemplateBuilder.builder()
-                .parent(ResourceLocation.withDefaultNamespace("block/block"))
+                .parent(Identifier.withDefaultNamespace("block/block"))
                 .renderType("translucent")
                 .requiredTextureSlot(MAIN_TEXTURE)
                 .requiredTextureSlot(HIGHLIGHT_TEXTURE)
@@ -430,7 +430,7 @@ class Models extends ModelProvider {
         BiConsumer<Direction, FaceBuilder> mainTextureAction = (d, faceBuilder) -> faceBuilder.texture(MAIN_TEXTURE).tintindex(1);
         BiConsumer<Direction, FaceBuilder> highlightTextureAction = (d, faceBuilder) -> faceBuilder.texture(HIGHLIGHT_TEXTURE);
         ExtendedModelTemplateBuilder builder = ExtendedModelTemplateBuilder.builder()
-                .parent(ResourceLocation.withDefaultNamespace("block/block"))
+                .parent(Identifier.withDefaultNamespace("block/block"))
                 .renderType("translucent")
                 .requiredTextureSlot(MAIN_TEXTURE)
                 .requiredTextureSlot(HIGHLIGHT_TEXTURE)
@@ -471,7 +471,7 @@ class Models extends ModelProvider {
         BiConsumer<Direction, FaceBuilder> mainTextureAction = (d, faceBuilder) -> faceBuilder.texture(MAIN_TEXTURE).tintindex(1);
         BiConsumer<Direction, FaceBuilder> highlightTextureAction = (d, faceBuilder) -> faceBuilder.texture(HIGHLIGHT_TEXTURE);
         ExtendedModelTemplateBuilder builder = ExtendedModelTemplateBuilder.builder()
-                .parent(ResourceLocation.withDefaultNamespace("block/block"))
+                .parent(Identifier.withDefaultNamespace("block/block"))
                 .renderType("translucent")
                 .requiredTextureSlot(MAIN_TEXTURE)
                 .requiredTextureSlot(HIGHLIGHT_TEXTURE)
@@ -511,23 +511,23 @@ class Models extends ModelProvider {
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         // Model locations
-        ResourceLocation doorknobBaseModelLocation = modLocation("item/magic_doorknob");
-        ResourceLocation doorTopModelLocation = modLocation("block/magic_door_top");
-        ResourceLocation doorBottomModelLocation = modLocation("block/magic_door_bottom");
-        ResourceLocation doorwayClosedTopModelLocation = modLocation("block/magic_doorway_closed_top");
-        ResourceLocation doorwayClosedBottomModelLocation = modLocation("block/magic_doorway_closed_bottom");
-        ResourceLocation doorwayHalfOpenTopModelLocation = modLocation("block/magic_doorway_half_open_top");
-        ResourceLocation doorwayHalfOpenBottomModelLocation = modLocation("block/magic_doorway_half_open_bottom");
-        ResourceLocation doorwayOpenTopModelLocation = modLocation("block/magic_doorway_open_top");
-        ResourceLocation doorwayOpenBottomModelLocation = modLocation("block/magic_doorway_open_bottom");
+        Identifier doorknobBaseModelLocation = modLocation("item/magic_doorknob");
+        Identifier doorTopModelLocation = modLocation("block/magic_door_top");
+        Identifier doorBottomModelLocation = modLocation("block/magic_door_bottom");
+        Identifier doorwayClosedTopModelLocation = modLocation("block/magic_doorway_closed_top");
+        Identifier doorwayClosedBottomModelLocation = modLocation("block/magic_doorway_closed_bottom");
+        Identifier doorwayHalfOpenTopModelLocation = modLocation("block/magic_doorway_half_open_top");
+        Identifier doorwayHalfOpenBottomModelLocation = modLocation("block/magic_doorway_half_open_bottom");
+        Identifier doorwayOpenTopModelLocation = modLocation("block/magic_doorway_open_top");
+        Identifier doorwayOpenBottomModelLocation = modLocation("block/magic_doorway_open_bottom");
 
         // Doorknob items
         doorknobBaseTemplate(mcLocation("block/block")).create(doorknobBaseModelLocation, new TextureMapping(), itemModels.modelOutput);
         ExtendedModelTemplate doorknobTemplate = doorknobTemplate(doorknobBaseModelLocation);
         for (DeferredItem<MagicDoorknobItem> item : Items.DOORKNOBS.values()) {
             MagicDoorknobItem doorknobItem = item.get();
-            ResourceLocation texture = doorknobItem.getMainMaterial().texture();
-            ResourceLocation modelLocation = doorknobTemplate.create(
+            Identifier texture = doorknobItem.getMainMaterial().texture();
+            Identifier modelLocation = doorknobTemplate.create(
                     doorknobItem,
                     new TextureMapping().put(MAIN_TEXTURE, texture).put(TextureSlot.PARTICLE, texture),
                     itemModels.modelOutput

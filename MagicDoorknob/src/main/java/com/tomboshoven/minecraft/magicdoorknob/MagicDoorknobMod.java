@@ -1,11 +1,11 @@
 package com.tomboshoven.minecraft.magicdoorknob;
 
-import com.tomboshoven.minecraft.magicdoorknob.client.ClientEvents;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.BlockEntities;
+import com.tomboshoven.minecraft.magicdoorknob.client.ClientEvents;
 import com.tomboshoven.minecraft.magicdoorknob.config.Config;
-import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.data.DataGenerators;
+import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;

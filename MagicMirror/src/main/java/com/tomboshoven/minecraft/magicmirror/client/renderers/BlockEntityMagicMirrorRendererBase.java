@@ -17,8 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING;
 
@@ -105,8 +104,8 @@ abstract class BlockEntityMagicMirrorRendererBase<E extends BlockEntity> impleme
     }
 
     static class RenderState extends BlockEntityRenderState {
-        Direction facing;
+        Direction facing = Direction.DOWN;
         @Nullable Reflection reflection;
-        Vec3 distance;
+        Vec3 distance = Vec3.ZERO;
     }
 }

@@ -13,7 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -29,8 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorInactiveBlock.EnumPartType.TOP;
 
@@ -109,11 +108,11 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
     public record MessageAttachModifier(
             BlockPos mirrorPos,
             ItemStack usedItemStack,
-            ResourceLocation modifier
+            Identifier modifier
     ) implements CustomPacketPayload {
-        public static final CustomPacketPayload.Type<MessageAttachModifier> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "attach_modifier"));
+        public static final CustomPacketPayload.Type<MessageAttachModifier> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "attach_modifier"));
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, MessageAttachModifier> STREAM_CODEC = StreamCodec.composite(BlockPos.STREAM_CODEC, MessageAttachModifier::mirrorPos, ItemStack.STREAM_CODEC, MessageAttachModifier::usedItemStack, ResourceLocation.STREAM_CODEC, MessageAttachModifier::modifier, MessageAttachModifier::new);
+        public static final StreamCodec<RegistryFriendlyByteBuf, MessageAttachModifier> STREAM_CODEC = StreamCodec.composite(BlockPos.STREAM_CODEC, MessageAttachModifier::mirrorPos, ItemStack.STREAM_CODEC, MessageAttachModifier::usedItemStack, Identifier.STREAM_CODEC, MessageAttachModifier::modifier, MessageAttachModifier::new);
 
         @Override
         public CustomPacketPayload.Type<MessageAttachModifier> type() {

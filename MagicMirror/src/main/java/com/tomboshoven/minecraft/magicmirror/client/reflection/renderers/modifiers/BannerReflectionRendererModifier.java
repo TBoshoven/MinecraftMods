@@ -4,9 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRendererBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -45,7 +46,7 @@ public class BannerReflectionRendererModifier<E extends Entity> extends Reflecti
         PoseStack poseStack = new PoseStack();
         AtlasManager atlasManager = Minecraft.getInstance().getAtlasManager();
         Material baseMaterial = Sheets.BANNER_BASE;
-        RenderType baseRenderType = baseMaterial.renderType(RenderType::entityNoOutline);
+        RenderType baseRenderType = baseMaterial.renderType(RenderTypes::entityNoOutline);
         TextureAtlasSprite baseSprite = atlasManager.get(baseMaterial);
 
         submitNodeCollector.submitCustomGeometry(poseStack, baseRenderType, (pose, vertexConsumer) -> submitLayer(vertexConsumer, baseSprite, baseColor));
@@ -53,7 +54,7 @@ public class BannerReflectionRendererModifier<E extends Entity> extends Reflecti
         for (BannerPatternLayers.Layer layer : bannerPatternLayers.layers()) {
             Holder<BannerPattern> bannerPattern = layer.pattern();
             Material layerMaterial = Sheets.getBannerMaterial(bannerPattern);
-            RenderType layerRenderType = layerMaterial.renderType(RenderType::entityNoOutline);
+            RenderType layerRenderType = layerMaterial.renderType(RenderTypes::entityNoOutline);
             TextureAtlasSprite layerSprite = atlasManager.get(layerMaterial);
 
             submitNodeCollector.submitCustomGeometry(poseStack, layerRenderType, (pose, vertexConsumer) -> submitLayer(vertexConsumer, layerSprite, layer.color()));

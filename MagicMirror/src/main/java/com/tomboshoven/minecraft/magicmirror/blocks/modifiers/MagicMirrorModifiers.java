@@ -2,8 +2,8 @@ package com.tomboshoven.minecraft.magicmirror.blocks.modifiers;
 
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
@@ -14,7 +14,7 @@ public final class MagicMirrorModifiers {
     /**
      * The resource key for the modifier registry.
      */
-    private static final ResourceKey<Registry<MagicMirrorModifier>> MAGIC_MIRROR_MODIFIER_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "magic_mirror_modifiers"));
+    private static final ResourceKey<Registry<MagicMirrorModifier>> MAGIC_MIRROR_MODIFIER_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "magic_mirror_modifiers"));
     /**
      * A registry of all modifiers.
      */

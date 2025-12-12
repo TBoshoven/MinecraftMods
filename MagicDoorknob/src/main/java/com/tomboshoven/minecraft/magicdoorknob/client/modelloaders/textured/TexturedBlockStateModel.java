@@ -33,7 +33,7 @@ public class TexturedBlockStateModel extends DelegateBlockStateModel {
      * Cache for collectParts, which runs fairly frequently on the same inputs and ideally doesn't do a lot of computation.
      * This uses the mapping key (see {@link TextureMapper.BlockStateTextureMapper#getMappingKey()}) as a unique key.
      */
-    private final ConcurrentHashMap<Object, List<BlockModelPart>> partCache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<@Nullable Object, List<BlockModelPart>> partCache = new ConcurrentHashMap<>();
 
     /**
      * @param baseModel     The block state model to enhance with texturing functionality.

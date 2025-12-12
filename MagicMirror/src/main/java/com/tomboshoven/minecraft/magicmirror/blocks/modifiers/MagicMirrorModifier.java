@@ -16,7 +16,7 @@ public abstract class MagicMirrorModifier {
      * Find out whether the mirror at the given position already has a modifier of a given type.
      *
      * @param blockEntity The block entity of the mirror to check.
-     * @param modifier The modifier to test for.
+     * @param modifier    The modifier to test for.
      * @return Whether the mirror at the given position has the given modifier.
      */
     private static boolean hasModifierOfType(MagicMirrorCoreBlockEntity blockEntity, MagicMirrorModifier modifier) {
@@ -28,7 +28,7 @@ public abstract class MagicMirrorModifier {
      * <p>
      * This should also check constraints such as not modifying the same block twice etc.
      *
-     * @param heldItem The item used on the block.
+     * @param heldItem    The item used on the block.
      * @param blockEntity The block entity of the mirror to check.
      * @return Whether the block can be modified in the given configuration.
      */

@@ -4,14 +4,14 @@ import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.modifiers.MagicMirrorModifiers;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -22,7 +22,7 @@ public final class ReflectionModifiers {
     /**
      * The resource key for the modifier registry.
      */
-    private static final ResourceKey<Registry<ReflectionModifier>> REFLECTION_MODIFIER_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "reflection_modifiers"));
+    private static final ResourceKey<Registry<ReflectionModifier>> REFLECTION_MODIFIER_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "reflection_modifiers"));
     /**
      * A registry of all modifiers.
      */
@@ -55,14 +55,13 @@ public final class ReflectionModifiers {
 
     /**
      * @param modifier The modifier for which to find the reflection modifier.
-     *
      * @return The reflection modifier for that modifier, or null if there is none.
      */
     @Nullable
     public static ReflectionModifier forMirrorModifier(MagicMirrorModifier modifier) {
         return REFLECTION_MAPPING.computeIfAbsent(modifier, m -> {
             // Current convention is reflection modifiers have the same location as the mirror modifiers.
-            ResourceLocation key = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.getKey(m);
+            Identifier key = MagicMirrorModifiers.MAGIC_MIRROR_MODIFIER_REGISTRY.getKey(m);
             return REFLECTION_MODIFIER_REGISTRY.getValue(key);
         });
     }

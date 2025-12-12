@@ -4,12 +4,12 @@ import com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty;
 import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 
 /**
@@ -33,7 +33,7 @@ class ModelDataTextureMapper implements TextureMapper {
 
             @Override
             public @Nullable TextureSourceReference mapSprite(PropertySprite spriteToMap) {
-                ResourceLocation name = spriteToMap.contents().name();
+                Identifier name = spriteToMap.contents().name();
                 ModelProperty<TextureSourceReference> modelProperty = ModelTextureProperty.get(name);
                 return lookup.get(modelProperty);
             }

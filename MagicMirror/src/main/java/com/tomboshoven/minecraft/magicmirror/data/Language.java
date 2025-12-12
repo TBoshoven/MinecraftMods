@@ -6,8 +6,6 @@ import com.tomboshoven.minecraft.magicmirror.items.Items;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
-import javax.annotation.Nonnull;
-
 class Language extends LanguageProvider {
     Language(PackOutput output) {
         super(output, MagicMirrorMod.MOD_ID, "en_us");
@@ -23,7 +21,6 @@ class Language extends LanguageProvider {
         add("commands.magic_mirror.debug.reflections", "Total number of reflections: %d\nActive reflections: %d");
     }
 
-    @Nonnull
     @Override
     public String getName() {
         return String.format("%s %s", MagicMirrorMod.MOD_ID, super.getName());

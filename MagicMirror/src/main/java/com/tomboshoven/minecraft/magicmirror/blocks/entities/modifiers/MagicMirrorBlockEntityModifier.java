@@ -8,8 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueOutput;
-
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A magic mirror modifier as applied to a block entity.
@@ -39,7 +38,8 @@ public abstract class MagicMirrorBlockEntityModifier {
      *
      * @param output The value output to write to.
      */
-    public void save(ValueOutput output) {}
+    public void save(ValueOutput output) {
+    }
 
     /**
      * Called when the block entity is removed.

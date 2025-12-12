@@ -2,8 +2,8 @@ package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
+import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
@@ -12,8 +12,8 @@ import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -66,64 +66,21 @@ class TexturedBlockModelPart implements BlockModelPart {
     }
 
     private static BakedQuad retexture(BakedQuad quad, TextureAtlasSprite sprite, @Nullable Integer tintIndex) {
-        // Note: assumes original sprite is 1x1
-        int[] vertexData = quad.vertices().clone();
-
-        // Offset between vertices
-        int stride = VERTEX_FORMAT.getVertexSize();
-        // Offset for a single U/V
-        int eltOffset = VertexFormatElement.UV0.type().size();
-
         float minU = sprite.getU0();
         float maxU = sprite.getU1();
         float minV = sprite.getV0();
         float maxV = sprite.getV1();
 
-        int idx = VERTEX_FORMAT.getOffset(VertexFormatElement.UV0);
-        // Iterate over all 4 vertices
-        for (int vertex = 0; vertex < 4; ++vertex) {
-            float vertexU = Float.intBitsToFloat(getAtByteOffset(vertexData, idx));
-            float vertexV = Float.intBitsToFloat(getAtByteOffset(vertexData, idx + eltOffset));
-            float newU = minU + (maxU - minU) * vertexU;
-            float newV = minV + (maxV - minV) * vertexV;
-            putAtByteOffset(vertexData, idx, Float.floatToRawIntBits(newU));
-            putAtByteOffset(vertexData, idx + eltOffset, Float.floatToRawIntBits(newV));
+        long packedUV0 = quad.packedUV0();
+        long packedUV1 = quad.packedUV1();
+        long packedUV2 = quad.packedUV2();
+        long packedUV3 = quad.packedUV3();
+        packedUV0 = UVPair.pack(minU + (maxU - minU) * UVPair.unpackU(packedUV0), minV + (maxV - minV) * UVPair.unpackV(packedUV0));
+        packedUV1 = UVPair.pack(minU + (maxU - minU) * UVPair.unpackU(packedUV1), minV + (maxV - minV) * UVPair.unpackV(packedUV1));
+        packedUV2 = UVPair.pack(minU + (maxU - minU) * UVPair.unpackU(packedUV2), minV + (maxV - minV) * UVPair.unpackV(packedUV2));
+        packedUV3 = UVPair.pack(minU + (maxU - minU) * UVPair.unpackU(packedUV3), minV + (maxV - minV) * UVPair.unpackV(packedUV3));
 
-            idx += stride;
-        }
-
-        return new BakedQuad(vertexData, tintIndex == null ? quad.tintIndex() : tintIndex, quad.direction(), sprite, quad.shade(), quad.lightEmission(), quad.hasAmbientOcclusion());
-    }
-
-    private static int getAtByteOffset(int[] inData, int offset) {
-        // Borrowed from QuadTransformer code
-        int index = offset / 4;
-        int lsb = inData[index];
-
-        int shift = (offset % 4) * 8;
-        if (shift == 0)
-            return inData[index];
-
-        int msb = inData[index + 1];
-
-        return (lsb >>> shift) | (msb << (32 - shift));
-    }
-
-    private static void putAtByteOffset(int[] outData, int offset, int value) {
-        // Borrowed from QuadTransformer code
-        int index = offset / 4;
-        int shift = (offset % 4) * 8;
-
-        if (shift == 0) {
-            outData[index] = value;
-            return;
-        }
-
-        int lsbMask = 0xFFFFFFFF >>> (32 - shift);
-        int msbMask = 0xFFFFFFFF << shift;
-
-        outData[index] = (outData[index] & lsbMask) | (value << shift);
-        outData[index + 1] = (outData[index + 1] & msbMask) | (value >>> (32 - shift));
+        return new BakedQuad(quad.position0(), quad.position1(), quad.position2(), quad.position3(), packedUV0, packedUV1, packedUV2, packedUV3, tintIndex == null ? quad.tintIndex() : tintIndex, quad.direction(), sprite, quad.shade(), quad.lightEmission(), quad.bakedNormals(), quad.bakedColors(), quad.hasAmbientOcclusion());
     }
 
     @Override

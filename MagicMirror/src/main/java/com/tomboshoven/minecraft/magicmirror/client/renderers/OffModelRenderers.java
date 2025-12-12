@@ -3,19 +3,21 @@ package com.tomboshoven.minecraft.magicmirror.client.renderers;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.SkeletonRenderState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.monster.skeleton.Skeleton;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +41,7 @@ public class OffModelRenderers {
      */
     final private static Map<Mapping, OffModelRenderer<?, ?, ?, ?, ?>.Renderer> RENDERERS = new HashMap<>();
 
+    @Nullable
     private static OffModelRenderers INSTANCE;
 
     /**
@@ -93,10 +96,9 @@ public class OffModelRenderers {
      * @param <TargetEntity> The type of the shown entity.
      * @return The requested off-model renderer, or null if none exists.
      */
-    @Nullable
-    public <SourceEntity extends Entity, TargetEntity extends Entity> OffModelRenderer<SourceEntity, ? extends EntityRenderState, TargetEntity, ?, ?>.Renderer get(EntityType<SourceEntity> source, EntityType<TargetEntity> target) {
+    public <SourceEntity extends Entity, TargetEntity extends Entity> OffModelRenderer<SourceEntity, ? extends EntityRenderState, TargetEntity, ?, ?>.@Nullable Renderer get(EntityType<SourceEntity> source, EntityType<TargetEntity> target) {
         //noinspection unchecked
-        return (OffModelRenderer<SourceEntity, ? extends EntityRenderState, TargetEntity, ?, ?>.Renderer) RENDERERS.get(new Mapping(source, target));
+        return (OffModelRenderer<SourceEntity, ? extends @NotNull EntityRenderState, TargetEntity, ?, ?>.Renderer) RENDERERS.get(new Mapping(source, target));
     }
 
     /**
@@ -158,6 +160,7 @@ public class OffModelRenderers {
             targetState.walkAnimationSpeed = sourceState.walkAnimationSpeed;
             targetState.scale = sourceState.scale;
             targetState.ageScale = sourceState.scale;
+            targetState.ticksSinceKineticHitFeedback = sourceState.ticksSinceKineticHitFeedback;
             targetState.isUpsideDown = sourceState.isUpsideDown;
             targetState.isFullyFrozen = sourceState.isFullyFrozen;
             targetState.isBaby = sourceState.isBaby;
@@ -179,18 +182,50 @@ public class OffModelRenderers {
     }
 
     /**
+     * Mapper for entities based on the armed entity render state,
+     *
+     * @param <Source> The type of the source state to read from.
+     * @param <Target> The type of the target state to write to.
+     */
+    private static class ArmedEntityRendererMapper<Source extends ArmedEntityRenderState, Target extends HumanoidRenderState> extends LivingEntityRendererMapper<Source, Target> {
+        @Override
+        public void mapRenderState(Source sourceState, Target targetState) {
+            super.mapRenderState(sourceState, targetState);
+
+            targetState.mainArm = sourceState.mainArm;
+            targetState.rightArmPose = sourceState.rightArmPose;
+            if (targetState.rightHandItemState instanceof OffModelRenderer.CopyableItemStackRenderState targetItemStackRenderState) {
+                if (sourceState.rightHandItemState instanceof OffModelRenderer.CopyableItemStackRenderState sourceItemStackRenderState) {
+                    targetItemStackRenderState.copyFrom(sourceItemStackRenderState);
+                }
+            }
+            targetState.rightHandItemStack = sourceState.rightHandItemStack;
+
+            targetState.leftArmPose = sourceState.leftArmPose;
+            if (targetState.leftHandItemState instanceof OffModelRenderer.CopyableItemStackRenderState targetItemStackRenderState) {
+                if (sourceState.leftHandItemState instanceof OffModelRenderer.CopyableItemStackRenderState sourceItemStackRenderState) {
+                    targetItemStackRenderState.copyFrom(sourceItemStackRenderState);
+                }
+            }
+            targetState.leftHandItemStack = sourceState.leftHandItemStack;
+
+            targetState.swingAnimationType = sourceState.swingAnimationType;
+            targetState.attackTime = sourceState.attackTime;
+        }
+    }
+
+    /**
      * Mapper for entities based on the humanoid entity render state,
      *
      * @param <Source> The type of the source state to read from.
      * @param <Target> The type of the target state to write to.
      */
-    private static class HumanoidRendererMapper<Source extends HumanoidRenderState, Target extends HumanoidRenderState> extends LivingEntityRendererMapper<Source, Target> {
+    private static class HumanoidRendererMapper<Source extends HumanoidRenderState, Target extends HumanoidRenderState> extends ArmedEntityRendererMapper<Source, Target> {
         @Override
         public void mapRenderState(Source sourceState, Target targetState) {
             super.mapRenderState(sourceState, targetState);
 
             targetState.swimAmount = sourceState.swimAmount;
-            targetState.attackTime = sourceState.attackTime;
             targetState.speedValue = sourceState.speedValue;
             targetState.maxCrossbowChargeDuration = sourceState.maxCrossbowChargeDuration;
             targetState.ticksUsingItem = sourceState.ticksUsingItem;

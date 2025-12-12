@@ -3,8 +3,7 @@ package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.model.data.ModelData;
-
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An interface for getting a texture location for a property.

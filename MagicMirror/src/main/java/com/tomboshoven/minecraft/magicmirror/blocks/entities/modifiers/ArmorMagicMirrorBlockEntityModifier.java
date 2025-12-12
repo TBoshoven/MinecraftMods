@@ -17,7 +17,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -42,8 +42,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.Random;
 import java.util.random.RandomGenerator;
@@ -375,7 +375,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
      * Message describing players equipping the mirror with armor.
      */
     public record MessageEquip(BlockPos mirrorPos, EquipmentSlot slot, ItemStack armor) implements CustomPacketPayload {
-        public static final CustomPacketPayload.Type<MessageEquip> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "equip"));
+        public static final CustomPacketPayload.Type<MessageEquip> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "equip"));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, MessageEquip> STREAM_CODEC = StreamCodec.composite(BlockPos.STREAM_CODEC, MessageEquip::mirrorPos, ByteBufCodecs.STRING_UTF8.map(EquipmentSlot::byName, EquipmentSlot::getName), MessageEquip::slot, ItemStack.STREAM_CODEC, MessageEquip::armor, MessageEquip::new);
 
@@ -389,7 +389,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
      * Message describing players swapping armor with the mirror (mirror side).
      */
     public record MessageSwapMirror(ReplacementArmor armor, BlockPos mirrorPos) implements CustomPacketPayload {
-        public static final CustomPacketPayload.Type<MessageSwapMirror> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "swap_mirror"));
+        public static final CustomPacketPayload.Type<MessageSwapMirror> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "swap_mirror"));
 
         MessageSwapMirror(MagicMirrorCoreBlockEntity magicMirrorBase, Player player) {
             this(ReplacementArmor.fromPlayer(player), magicMirrorBase.getBlockPos());
@@ -407,7 +407,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
      * Message describing players swapping armor with the mirror (player side).
      */
     public record MessageSwapPlayer(ReplacementArmor armor, int entityId) implements CustomPacketPayload {
-        public static final CustomPacketPayload.Type<MessageSwapPlayer> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "swap_player"));
+        public static final CustomPacketPayload.Type<MessageSwapPlayer> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, "swap_player"));
 
         MessageSwapPlayer(ArmorMagicMirrorBlockEntityModifier armorModifier, EntityAccess player) {
             this(new ReplacementArmor(armorModifier.getReplacementArmor().replacementInventory), player.getId());

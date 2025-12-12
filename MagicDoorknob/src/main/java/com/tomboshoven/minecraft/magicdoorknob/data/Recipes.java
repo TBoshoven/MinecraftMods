@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.data;
 
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;

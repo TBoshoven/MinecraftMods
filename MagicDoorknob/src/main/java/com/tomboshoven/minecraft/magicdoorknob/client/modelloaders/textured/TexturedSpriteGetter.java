@@ -5,18 +5,21 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.resources.Identifier;
 
 public class TexturedSpriteGetter implements SpriteGetter {
     private final SpriteGetter baseSpriteGetter;
+    private final Identifier supportedAtlas;
 
-    public TexturedSpriteGetter(SpriteGetter baseSpriteGetter) {
+    public TexturedSpriteGetter(SpriteGetter baseSpriteGetter, Identifier supportedAtlas) {
         this.baseSpriteGetter = baseSpriteGetter;
+        this.supportedAtlas = supportedAtlas;
     }
 
     @Override
     public TextureAtlasSprite get(Material material, ModelDebugName debugName) {
         if (ModelTextureProperty.PROPERTY_NAMESPACE.equals(material.texture().getNamespace())) {
-            return new PropertySprite(material.texture());
+            return new PropertySprite(material.texture(), supportedAtlas);
         }
         return baseSpriteGetter.get(material, debugName);
     }

@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.renderer.block.model.BlockModelDefinition;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -61,7 +62,7 @@ public record TexturedBlockModelDefinition(
         return new BlockStateModel.UnbakedRoot() {
             @Override
             public BlockStateModel bake(BlockState state, ModelBaker baker) {
-                ModelBaker texturedBaker = new TexturedModelBaker(baker);
+                @SuppressWarnings("deprecation") ModelBaker texturedBaker = new TexturedModelBaker(baker, TextureAtlas.LOCATION_BLOCKS);
                 return new TexturedBlockStateModel(base.bake(state, texturedBaker), textureMapper, texturedBaker.sprites());
             }
 

@@ -12,7 +12,7 @@ import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplate;
@@ -78,22 +78,22 @@ class Models extends ModelProvider {
 
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
-        ResourceLocation magicMirrorModelLocation = modLocation("block/magic_mirror");
-        ResourceLocation textureFrontLocation = modLocation("block/mirror");
-        ResourceLocation textureBackLocation = modLocation("block/mirror_back");
+        Identifier magicMirrorModelIdentifier = modLocation("block/magic_mirror");
+        Identifier textureFrontIdentifier = modLocation("block/mirror");
+        Identifier textureBackIdentifier = modLocation("block/mirror_back");
 
         magicMirrorPartTemplate().create(
-                magicMirrorModelLocation,
+                magicMirrorModelIdentifier,
                 new TextureMapping()
-                        .put(TextureSlot.FRONT, textureFrontLocation)
-                        .put(TextureSlot.BACK, textureBackLocation)
-                        .putForced(TextureSlot.PARTICLE, textureFrontLocation),
+                        .put(TextureSlot.FRONT, textureFrontIdentifier)
+                        .put(TextureSlot.BACK, textureBackIdentifier)
+                        .putForced(TextureSlot.PARTICLE, textureFrontIdentifier),
                 blockModels.modelOutput
         );
 
         // Magic Mirror Core block
         blockModels.blockStateOutput.accept(
-                MultiVariantGenerator.dispatch(Blocks.MAGIC_MIRROR_CORE.get(), BlockModelGenerators.plainVariant(magicMirrorModelLocation)).with(
+                MultiVariantGenerator.dispatch(Blocks.MAGIC_MIRROR_CORE.get(), BlockModelGenerators.plainVariant(magicMirrorModelIdentifier)).with(
                         PropertyDispatch.modify(HorizontalDirectionalBlock.FACING)
                                 .select(Direction.NORTH, BlockModelGenerators.Y_ROT_180)
                                 .select(Direction.SOUTH, BlockModelGenerators.NOP)
@@ -103,7 +103,7 @@ class Models extends ModelProvider {
         );
         // Magic Mirror Inactive block
         blockModels.blockStateOutput.accept(
-                MultiVariantGenerator.dispatch(Blocks.MAGIC_MIRROR_INACTIVE.get(), BlockModelGenerators.plainVariant(magicMirrorModelLocation)).with(
+                MultiVariantGenerator.dispatch(Blocks.MAGIC_MIRROR_INACTIVE.get(), BlockModelGenerators.plainVariant(magicMirrorModelIdentifier)).with(
                         PropertyDispatch.modify(HorizontalDirectionalBlock.FACING, MagicMirrorInactiveBlock.PART)
                                 .select(Direction.NORTH, MagicMirrorInactiveBlock.EnumPartType.TOP, BlockModelGenerators.X_ROT_180)
                                 .select(Direction.SOUTH, MagicMirrorInactiveBlock.EnumPartType.TOP, BlockModelGenerators.X_ROT_180.then(BlockModelGenerators.Y_ROT_180))
@@ -117,7 +117,7 @@ class Models extends ModelProvider {
         );
         // Magic Mirror Part block
         blockModels.blockStateOutput.accept(
-                MultiVariantGenerator.dispatch(Blocks.MAGIC_MIRROR_PART.get(), BlockModelGenerators.plainVariant(magicMirrorModelLocation).with(BlockModelGenerators.X_ROT_180)).with(
+                MultiVariantGenerator.dispatch(Blocks.MAGIC_MIRROR_PART.get(), BlockModelGenerators.plainVariant(magicMirrorModelIdentifier).with(BlockModelGenerators.X_ROT_180)).with(
                         PropertyDispatch.modify(HorizontalDirectionalBlock.FACING)
                                 .select(Direction.NORTH, BlockModelGenerators.NOP)
                                 .select(Direction.SOUTH, BlockModelGenerators.Y_ROT_180)
@@ -125,6 +125,6 @@ class Models extends ModelProvider {
                                 .select(Direction.WEST, BlockModelGenerators.Y_ROT_270)
                 )
         );
-        blockModels.registerSimpleItemModel(Items.MAGIC_MIRROR.get(), magicMirrorModelLocation);
+        blockModels.registerSimpleItemModel(Items.MAGIC_MIRROR.get(), magicMirrorModelIdentifier);
     }
 }

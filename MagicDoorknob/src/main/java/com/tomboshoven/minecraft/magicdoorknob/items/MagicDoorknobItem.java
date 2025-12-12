@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 public class MagicDoorknobItem extends Item {
     // The main material for rendering the item
-    private final ResourceLocation mainTextureLocation;
+    private final Identifier mainTextureIdentifier;
     // The name of the type of item (used in NBT data; do not modify)
     private final String typeName;
     // The item material, used for determining doorway generation properties
@@ -47,18 +47,18 @@ public class MagicDoorknobItem extends Item {
     public static final int MAX_DOORWAY_LENGTH = 128;
 
     /**
-     * @param properties          The item properties
-     * @param typeName            The main texture of the item
-     * @param toolMaterial        The item material, used for determining doorway generation properties
-     * @param mainTextureLocation The main material for rendering the block
-     * @param ingredients         The ingredient used to make doorknobs of this type
+     * @param properties            The item properties
+     * @param typeName              The main texture of the item
+     * @param toolMaterial          The item material, used for determining doorway generation properties
+     * @param mainTextureIdentifier The main material for rendering the block
+     * @param ingredients           The ingredient used to make doorknobs of this type
      */
-    MagicDoorknobItem(Item.Properties properties, String typeName, ToolMaterial toolMaterial, ResourceLocation mainTextureLocation, Supplier<TagKey<Item>> ingredients) {
+    MagicDoorknobItem(Item.Properties properties, String typeName, ToolMaterial toolMaterial, Identifier mainTextureIdentifier, Supplier<TagKey<Item>> ingredients) {
         super(properties);
 
         this.typeName = typeName;
         this.toolMaterial = toolMaterial;
-        this.mainTextureLocation = mainTextureLocation;
+        this.mainTextureIdentifier = mainTextureIdentifier;
         this.ingredients = ingredients;
     }
 
@@ -248,7 +248,7 @@ public class MagicDoorknobItem extends Item {
      */
     public Material getMainMaterial() {
         //noinspection deprecation
-        return new Material(TextureAtlas.LOCATION_BLOCKS, mainTextureLocation);
+        return new Material(TextureAtlas.LOCATION_BLOCKS, mainTextureIdentifier);
     }
 
     /**
@@ -256,13 +256,6 @@ public class MagicDoorknobItem extends Item {
      */
     public String getTypeName() {
         return typeName;
-    }
-
-    /**
-     * @return The material that the doorknob is made out of
-     */
-    public ToolMaterial getToolMaterial() {
-        return toolMaterial;
     }
 
     /**

@@ -22,17 +22,17 @@ public final class Blocks {
      * The core that has all the actual logic.
      */
     public static final Supplier<Block> MAGIC_MIRROR_CORE =
-            BLOCKS.registerBlock("magic_mirror_core", MagicMirrorCoreBlock::new, MIRROR_PROPERTIES);
+            BLOCKS.registerBlock("magic_mirror_core", MagicMirrorCoreBlock::new, () -> MIRROR_PROPERTIES);
     /**
      * A part that refers all the logic to the core.
      */
     public static final Supplier<Block> MAGIC_MIRROR_PART =
-            BLOCKS.registerBlock("magic_mirror_part", MagicMirrorPartBlock::new, MIRROR_PROPERTIES);
+            BLOCKS.registerBlock("magic_mirror_part", MagicMirrorPartBlock::new, () -> MIRROR_PROPERTIES);
     /**
      * An inactive mirror part.
      */
     public static final Supplier<Block> MAGIC_MIRROR_INACTIVE =
-            BLOCKS.registerBlock("magic_mirror_inactive", MagicMirrorInactiveBlock::new, MIRROR_PROPERTIES);
+            BLOCKS.registerBlock("magic_mirror_inactive", MagicMirrorInactiveBlock::new, () -> MIRROR_PROPERTIES);
 
     private Blocks() {
     }

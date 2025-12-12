@@ -3,18 +3,18 @@ package com.tomboshoven.minecraft.magicmirror.events;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.Event;
-
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An event indicating that the reflected entity in a mirror is changed.
  */
 public class MagicMirrorReflectedEntityEvent extends Event {
     private final MagicMirrorCoreBlockEntity blockEntity;
+    @Nullable
     private final Entity reflectedEntity;
 
     /**
-     * @param blockEntity The block entity of the updated mirror.
+     * @param blockEntity     The block entity of the updated mirror.
      * @param reflectedEntity The new reflected entity. May be null, indicating no reflected entity.
      */
     public MagicMirrorReflectedEntityEvent(MagicMirrorCoreBlockEntity blockEntity, @Nullable Entity reflectedEntity) {

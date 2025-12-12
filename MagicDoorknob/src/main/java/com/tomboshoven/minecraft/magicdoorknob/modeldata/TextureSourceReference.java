@@ -15,8 +15,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -45,7 +45,7 @@ public interface TextureSourceReference {
     /**
      * Perform the actual lookup.
      *
-     * @param sprites The sprite getter to use for looking up texture references.
+     * @param sprites      The sprite getter to use for looking up texture references.
      * @param randomSource A random source to use in the texture lookup.
      * @return The result of the lookup.
      */
@@ -85,7 +85,8 @@ public interface TextureSourceReference {
      * @param blockState The block state of the block.
      * @param fallback   A fallback to use in case no appropriate textures are found on the block model.
      */
-    record BlockParticle(@Nullable Level level, BlockPos pos, BlockState blockState, TextureSourceReference fallback) implements TextureSourceReference {
+    record BlockParticle(@Nullable Level level, BlockPos pos, BlockState blockState,
+                         TextureSourceReference fallback) implements TextureSourceReference {
         @Override
         public LookupResult lookup(SpriteGetter sprites, Direction direction, @Nullable RandomSource randomSource) {
             Minecraft minecraft = Minecraft.getInstance();

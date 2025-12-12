@@ -10,15 +10,16 @@ import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.Reflect
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRendererBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Locale;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
@@ -38,9 +39,9 @@ public class Reflection {
     private static int texId;
 
     /**
-     * Location of the texture. Since every reflection has a dynamic texture, we generate these.
+     * Identifier of the texture. Since every reflection has a dynamic texture, we generate these.
      */
-    private final ResourceLocation textureLocation;
+    private final Identifier textureIdentifier;
 
     /**
      * A reference to the actual texture.
@@ -94,7 +95,7 @@ public class Reflection {
         angle = blockEntity.getBlockState().getValue(HORIZONTAL_FACING).toYRot();
         this.blockEntity = blockEntity;
         renderContext = context;
-        textureLocation = ResourceLocation.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, String.format(Locale.ROOT, "reflection_%d", texId++));
+        textureIdentifier = Identifier.fromNamespaceAndPath(MagicMirrorMod.MOD_ID, String.format(Locale.ROOT, "reflection_%d", texId++));
 
         Entity entity = blockEntity.getReflectedEntity();
         if (entity != null) {
@@ -102,7 +103,7 @@ public class Reflection {
         }
 
         // Use "text" render type, which is also what's used by the map renderer.
-        renderType = RenderType.text(textureLocation);
+        renderType = RenderTypes.text(textureIdentifier);
     }
 
     /**
@@ -131,7 +132,7 @@ public class Reflection {
     private void buildTexture() {
         if (reflectionTexture == null) {
             reflectionTexture = new ReflectionTexture(TEXTURE_WIDTH, TEXTURE_HEIGHT);
-            Minecraft.getInstance().getTextureManager().register(textureLocation, reflectionTexture);
+            Minecraft.getInstance().getTextureManager().register(textureIdentifier, reflectionTexture);
         }
     }
 
@@ -140,7 +141,7 @@ public class Reflection {
      */
     private void cleanUpTexture() {
         if (reflectionTexture != null) {
-            Minecraft.getInstance().getTextureManager().release(textureLocation);
+            Minecraft.getInstance().getTextureManager().release(textureIdentifier);
             reflectionTexture = null;
         }
     }
@@ -168,8 +169,7 @@ public class Reflection {
         if (reflectionRenderer != null) {
             try {
                 reflectionRenderer.close();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 MagicMirrorMod.LOGGER.warn("Could not clean up reflection renderer", e);
             }
             reflectionRenderer = null;

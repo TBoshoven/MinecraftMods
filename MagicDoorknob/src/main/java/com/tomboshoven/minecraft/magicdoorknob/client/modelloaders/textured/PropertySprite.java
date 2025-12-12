@@ -1,10 +1,9 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
-
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.metadata.animation.FrameSize;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.textures.UnitTextureAtlasSprite;
 
 /**
@@ -12,26 +11,20 @@ import net.neoforged.neoforge.client.textures.UnitTextureAtlasSprite;
  * Instead, it describes a property that allows others to provide the texture (see ITextureMapper).
  */
 public class PropertySprite extends TextureAtlasSprite {
-    private final ResourceLocation property;
+    private final Identifier property;
 
     /**
-     * @param property The identifier of the property
+     * @param property        The identifier of the property.
+     * @param compatibleAtlas A location of a compatible atlas.
      */
-    PropertySprite(ResourceLocation property) {
-        // Hijack the atlas and native image from UnitTextureAtlasSprite, so we don't have to build our own.
-        super(UnitTextureAtlasSprite.LOCATION, new SpriteContents(property, new FrameSize(1, 1), UnitTextureAtlasSprite.INSTANCE.contents().getOriginalImage()), 1, 1, 0, 0);
+    PropertySprite(Identifier property, Identifier compatibleAtlas) {
+        // Hijack the native image from UnitTextureAtlasSprite, so we don't have to build our own.
+        super(compatibleAtlas, new SpriteContents(property, new FrameSize(1, 1), UnitTextureAtlasSprite.INSTANCE.contents().getOriginalImage()), 1, 1, 0, 0, 0);
         this.property = property;
     }
 
-    public ResourceLocation getProperty() {
+    public Identifier getProperty() {
         return property;
-    }
-
-    @Override
-    public float uvShrinkRatio() {
-        // The default calculated value for this seriously explodes for tiny textures
-        // We should be fine without; if needed, we can apply this during re-texturing
-        return 0;
     }
 
     public String toString() {

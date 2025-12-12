@@ -1,7 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.client.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransform;
@@ -9,13 +8,14 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -108,6 +108,7 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
 
     /**
      * Function to transform a render state into a combined render state,
+     *
      * @param <SourceState>   The input state.
      * @param <CombinedState> The output state, which is based on a target state and also contains the source state.
      */
@@ -134,6 +135,7 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
 
     /**
      * Mapping function from one state to another.
+     *
      * @param <SourceState> The source state to read from.
      * @param <TargetState> The target state to write to.
      */
@@ -196,13 +198,16 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
             List<BakedQuad> prepareQuadList();
 
             boolean getUsesBlockLight();
+
             void setUsesBlockLight(boolean usesBlockLight);
 
             @Nullable
             TextureAtlasSprite getParticleIcon();
+
             void setParticleIcon(@Nullable TextureAtlasSprite particleIcon);
 
             ItemTransform getTransform();
+
             void setTransform(ItemTransform transform);
 
             @Nullable
@@ -219,12 +224,10 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
             @Nullable
             SpecialModelRenderer<Object> getSpecialRenderer();
 
-            void setSpecialRenderer(@Nullable SpecialModelRenderer<Object> specialRenderer);
+            <T> void setupSpecialModel(SpecialModelRenderer<T> renderer, @Nullable T argument);
 
             @Nullable
             Object getArgumentForSpecialRendering();
-
-            void setArgumentForSpecialRendering(@Nullable Object argumentForSpecialRendering);
 
             /**
              * Copy the contents of an item render state layer into this item render state layer.
@@ -241,8 +244,10 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
                 int[] otherTintLayers = prepareTintLayers(0);
                 int[] tintLayer = prepareTintLayers(otherTintLayers.length);
                 System.arraycopy(otherTintLayers, 0, tintLayer, 0, otherTintLayers.length);
-                setSpecialRenderer(other.getSpecialRenderer());
-                setArgumentForSpecialRendering(other.getArgumentForSpecialRendering());
+                SpecialModelRenderer<Object> specialRenderer = other.getSpecialRenderer();
+                if (specialRenderer != null) {
+                    setupSpecialModel(specialRenderer, other.getArgumentForSpecialRendering());
+                }
             }
         }
     }

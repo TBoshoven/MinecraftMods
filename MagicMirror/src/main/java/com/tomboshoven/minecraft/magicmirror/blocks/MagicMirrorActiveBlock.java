@@ -19,8 +19,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implements EntityBlock {
@@ -68,7 +68,7 @@ public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implem
             // Item stack may change by attaching
             ItemStack originalHeldItem = heldItem.copy();
             modifier.value().apply(blockEntity, heldItem);
-            CustomPacketPayload message = new MagicMirrorCoreBlock.MessageAttachModifier(blockEntity.getBlockPos(), originalHeldItem, modifier.key().location());
+            CustomPacketPayload message = new MagicMirrorCoreBlock.MessageAttachModifier(blockEntity.getBlockPos(), originalHeldItem, modifier.key().identifier());
             PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(blockEntity.getBlockPos()), message);
         }
     }

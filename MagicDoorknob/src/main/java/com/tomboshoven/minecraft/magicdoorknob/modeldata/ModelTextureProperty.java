@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.modeldata;
 
 import com.google.common.collect.Maps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.model.data.ModelProperty;
 import org.jetbrains.annotations.NonNls;
 
@@ -17,14 +17,14 @@ public final class ModelTextureProperty extends ModelProperty<TextureSourceRefer
 
     // Lazily filled map of model texture properties.
     // Can't just use equality as they are used in an IdentityHashMap.
-    private static final Map<ResourceLocation, ModelTextureProperty> PROPERTIES = Maps.newHashMap();
+    private static final Map<Identifier, ModelTextureProperty> PROPERTIES = Maps.newHashMap();
 
-    private final ResourceLocation name;
+    private final Identifier name;
 
     /**
      * @param name The name of the property
      */
-    private ModelTextureProperty(ResourceLocation name) {
+    private ModelTextureProperty(Identifier name) {
         this.name = name;
     }
 
@@ -35,7 +35,7 @@ public final class ModelTextureProperty extends ModelProperty<TextureSourceRefer
      * @param name The name of the property to get.
      * @return The requested property.
      */
-    public static ModelTextureProperty get(ResourceLocation name) {
+    public static ModelTextureProperty get(Identifier name) {
         return PROPERTIES.computeIfAbsent(name, ModelTextureProperty::new);
     }
 
@@ -55,7 +55,7 @@ public final class ModelTextureProperty extends ModelProperty<TextureSourceRefer
     /**
      * @return The name (resource location) for this texture property.
      */
-    public ResourceLocation getName() {
+    public Identifier getName() {
         return name;
     }
 }

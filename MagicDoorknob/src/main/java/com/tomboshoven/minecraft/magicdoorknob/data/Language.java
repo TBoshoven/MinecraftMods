@@ -8,8 +8,6 @@ import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
-
 class Language extends LanguageProvider {
     Language(PackOutput output) {
         super(output, MagicDoorknobMod.MOD_ID, "en_us");
@@ -37,7 +35,6 @@ class Language extends LanguageProvider {
         add(doorknob, String.format("%s Magic Doorknob", materialName));
     }
 
-    @Nonnull
     @Override
     public String getName() {
         return String.format("%s %s", MagicDoorknobMod.MOD_ID, super.getName());

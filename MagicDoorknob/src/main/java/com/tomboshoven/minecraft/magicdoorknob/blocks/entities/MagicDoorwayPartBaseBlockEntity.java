@@ -11,7 +11,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -23,9 +23,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.registries.DeferredItem;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
 import static com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty.PROPERTY_NAMESPACE;
@@ -37,17 +35,17 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     /**
      * The main texture of the doorway (based on base block).
      */
-    public static final ModelTextureProperty TEXTURE_MAIN = ModelTextureProperty.get(ResourceLocation.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_main"));
+    public static final ModelTextureProperty TEXTURE_MAIN = ModelTextureProperty.get(Identifier.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_main"));
 
     /**
      * The highlight texture of the doorway (based on doorknob).
      */
-    public static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(ResourceLocation.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_highlight"));
+    public static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(Identifier.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_highlight"));
 
     /**
      * The particle texture of the doorway (based on base block particle texture).
      */
-    public static final ModelTextureProperty TEXTURE_PARTICLE = ModelTextureProperty.get(ResourceLocation.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_particle"));
+    public static final ModelTextureProperty TEXTURE_PARTICLE = ModelTextureProperty.get(Identifier.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_particle"));
 
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.defaultBlockState();
@@ -109,14 +107,13 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    public @NotNull ModelData getModelData() {
+    public ModelData getModelData() {
         // Get the base block texture
         Level level = getLevel();
         BlockPos blockPos = getBlockPos();
 
         // Material to use when no proper material can be found, such as with air.
-        @SuppressWarnings("deprecation")
-        final Material emptyMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.fromNamespaceAndPath(MOD_ID, "block/empty"));
+        @SuppressWarnings("deprecation") final Material emptyMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, Identifier.fromNamespaceAndPath(MOD_ID, "block/empty"));
 
         // Fallback chain is block texture -> empty
         TextureSourceReference fallbackReference = new TextureSourceReference.MaterialTextureSource(emptyMaterial);
@@ -128,8 +125,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
             // This can happen when we draw a frame before receiving the block entity data from the server.
             // This makes it a bit less conspicuous.
             doorknobTextureSourceReference = blockTextureSourceReference;
-        }
-        else {
+        } else {
             doorknobTextureSourceReference = new TextureSourceReference.MaterialTextureSource(doorknob.getMainMaterial());
         }
 

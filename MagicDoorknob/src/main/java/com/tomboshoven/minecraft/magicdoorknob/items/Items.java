@@ -2,7 +2,7 @@ package com.tomboshoven.minecraft.magicdoorknob.items;
 
 import com.google.common.collect.Maps;
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -39,7 +39,7 @@ public final class Items {
      * @param mainTexture  The main texture of the doorknob
      * @param ingredients  The ingredients used to build the doorknob
      */
-    private static void addDoorknob(String typeName, ToolMaterial toolMaterial, ResourceLocation mainTexture, Supplier<TagKey<Item>> ingredients) {
+    private static void addDoorknob(String typeName, ToolMaterial toolMaterial, Identifier mainTexture, Supplier<TagKey<Item>> ingredients) {
         DeferredItem<MagicDoorknobItem> item = ITEMS.registerItem(String.format("magic_doorknob_%s", typeName), (Item.Properties properties) -> new MagicDoorknobItem(properties, typeName, toolMaterial, mainTexture, ingredients));
         DOORKNOBS.put(typeName, item);
     }
@@ -52,7 +52,7 @@ public final class Items {
      * @param blockName    The name of the block that provides the texture of the doorknob
      */
     private static void addDoorknob(String typeName, ToolMaterial toolMaterial, String blockName) {
-        addDoorknob(typeName, toolMaterial, ResourceLocation.withDefaultNamespace(String.format("block/%s", blockName)), toolMaterial::repairItems);
+        addDoorknob(typeName, toolMaterial, Identifier.withDefaultNamespace(String.format("block/%s", blockName)), toolMaterial::repairItems);
     }
 
     public static void register(IEventBus eventBus) {
