@@ -17,11 +17,14 @@ public class Config {
 
     public static class Server {
         public final ModConfigSpec.DoubleValue doorwayMultiplier;
+        public final ModConfigSpec.BooleanValue preventSuffocation;
 
         private Server(ModConfigSpec.Builder builder) {
             // Max value gives a maximum length, using Vanilla materials, of 12 * 8 = 96 blocks
             doorwayMultiplier = builder.comment("Multiplier for the doorway length")
                     .defineInRange("doorwayMultiplier", 1., 0, 8);
+            preventSuffocation = builder.comment("Whether to prevent suffocation by delaying doorway destruction")
+                    .define("preventSuffocation", true);
         }
     }
 
