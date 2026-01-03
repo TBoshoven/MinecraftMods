@@ -63,12 +63,12 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
 
     @Override
     public CompoundNBT save(CompoundNBT compound) {
-        return writeInternal(compound);
+        return saveInternal(compound);
     }
 
-    private CompoundNBT writeInternal(CompoundNBT compound) {
+    protected CompoundNBT saveInternal(CompoundNBT compound) {
         CompoundNBT result = super.save(compound);
-        compound.put("baseBlock", BlockState.serialize(NBTDynamicOps.INSTANCE, baseBlockState).getValue());
+        result.put("baseBlock", BlockState.serialize(NBTDynamicOps.INSTANCE, baseBlockState).getValue());
         if (doorknob != null) {
             result.putString("doorknobType", doorknob.getTypeName());
         }
@@ -85,7 +85,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends TileEntity {
 
     @Override
     public CompoundNBT getUpdateTag() {
-        return writeInternal(super.getUpdateTag());
+        return saveInternal(super.getUpdateTag());
     }
 
     @Nullable
