@@ -62,7 +62,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
         saveInternal(output);
     }
 
-    private void saveInternal(ValueOutput output) {
+    protected void saveInternal(ValueOutput output) {
         output.store("baseBlock", BlockState.CODEC, baseBlockState);
         if (doorknob != null) {
             output.putString("doorknobType", doorknob.getTypeName());
@@ -75,7 +75,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
         loadInternal(valueInput);
     }
 
-    private void loadInternal(ValueInput valueInput) {
+    protected void loadInternal(ValueInput valueInput) {
         baseBlockState = valueInput.read("baseBlock", BlockState.CODEC)
                 .orElse(Blocks.AIR.defaultBlockState());
 
