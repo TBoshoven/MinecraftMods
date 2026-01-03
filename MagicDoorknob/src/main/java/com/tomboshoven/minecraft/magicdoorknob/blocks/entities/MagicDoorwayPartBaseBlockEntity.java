@@ -24,7 +24,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.registries.DeferredItem;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -65,7 +64,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
         saveInternal(compound);
     }
 
-    private void saveInternal(CompoundTag compound) {
+    protected void saveInternal(CompoundTag compound) {
         compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
         if (doorknob != null) {
             compound.putString("doorknobType", doorknob.getTypeName());
@@ -78,7 +77,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
         loadInternal(compound);
     }
 
-    private void loadInternal(CompoundTag compound) {
+    protected void loadInternal(CompoundTag compound) {
         HolderGetter<Block> holdergetter = this.level != null ? this.level.holderLookup(Registries.BLOCK) : BuiltInRegistries.BLOCK.asLookup();
         baseBlockState = NbtUtils.readBlockState(holdergetter, compound.getCompound("baseBlock"));
         String doorknobType = compound.getString("doorknobType");
@@ -106,7 +105,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    public @NotNull ModelData getModelData() {
+    public ModelData getModelData() {
         // Get the base block texture
         Level level = getLevel();
         BlockPos blockPos = getBlockPos();
