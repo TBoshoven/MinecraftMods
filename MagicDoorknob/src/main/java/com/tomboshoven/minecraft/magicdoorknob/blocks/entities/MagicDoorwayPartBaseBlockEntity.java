@@ -55,12 +55,12 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag save(CompoundTag compound) {
-        return writeInternal(compound);
+        return saveInternal(compound);
     }
 
-    private CompoundTag writeInternal(CompoundTag compound) {
+    protected CompoundTag saveInternal(CompoundTag compound) {
         CompoundTag result = super.save(compound);
-        compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
+        result.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
         if (doorknob != null) {
             result.putString("doorknobType", doorknob.getTypeName());
         }
@@ -70,10 +70,10 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     @Override
     public void load(CompoundTag compound) {
         super.load(compound);
-        readInternal(compound);
+        loadInternal(compound);
     }
 
-    private void readInternal(CompoundTag compound) {
+    protected void loadInternal(CompoundTag compound) {
         baseBlockState = NbtUtils.readBlockState(compound.getCompound("baseBlock"));
         String doorknobType = compound.getString("doorknobType");
         doorknob = Items.DOORKNOBS.get(doorknobType);
@@ -81,7 +81,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag() {
-        return writeInternal(super.getUpdateTag());
+        return saveInternal(super.getUpdateTag());
     }
 
     @Nullable
@@ -92,7 +92,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        readInternal(pkt.getTag());
+        loadInternal(pkt.getTag());
         requestModelDataUpdate();
     }
 
