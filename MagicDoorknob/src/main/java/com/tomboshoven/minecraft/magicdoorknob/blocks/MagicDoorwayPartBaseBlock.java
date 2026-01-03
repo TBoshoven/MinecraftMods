@@ -48,7 +48,8 @@ public abstract class MagicDoorwayPartBaseBlock extends Block {
         // Use the base block's light value.
         TileEntity tileEntity = world.getBlockEntity(pos);
         if (tileEntity instanceof MagicDoorwayPartBaseBlockEntity) {
-            return ((MagicDoorwayPartBaseBlockEntity) tileEntity).getBaseBlockState().getLightValue(world, pos);
+            // Emit at least 1, to make tunnels look a bit better
+            return Math.max(((MagicDoorwayPartBaseBlockEntity) tileEntity).getBaseBlockState().getLightValue(world, pos), 1);
         }
         return super.getLightValue(state, world, pos);
     }
