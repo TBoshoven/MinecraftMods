@@ -2,20 +2,25 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
+import com.tomboshoven.minecraft.magicdoorknob.config.Config;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 /**
  * Part of a magic doorway.
@@ -118,5 +123,52 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new MagicDoorwayBlockEntity();
+    }
+
+    /**
+     * Try closing the doorway.
+     * Closes immediately if configured without suffocation prevention, or if there are no living entities in it.
+     *
+     * @param level             The level containing the doorway.
+     * @param pos               The position of the doorway block.
+     * @param updateBlockEntity Whether to update the associated block entity if needed.
+     */
+    private void tryClose(World level, BlockPos pos, boolean updateBlockEntity) {
+        if (Config.SERVER.preventSuffocation.get() && !level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(pos)).isEmpty()) {
+            if (updateBlockEntity) {
+                TileEntity blockEntity = level.getBlockEntity(pos);
+                if (blockEntity instanceof MagicDoorwayBlockEntity) {
+                    ((MagicDoorwayBlockEntity) blockEntity).setClosing();
+                }
+            }
+            level.getBlockTicks().scheduleTick(pos, asBlock(), 10);
+        } else {
+            level.destroyBlock(pos, false);
+        }
+    }
+
+
+    /**
+     * Try closing the doorway.
+     * Closes immediately if configured without suffocation prevention, or if there are no living entities in it.
+     *
+     * @param level The level containing the doorway.
+     * @param pos   The position of the doorway block.
+     */
+    public void tryClose(World level, BlockPos pos) {
+        tryClose(level, pos, true);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void tick(BlockState state, ServerWorld level, BlockPos pos, Random random) {
+        super.tick(state, level, pos, random);
+        // Try closing the door again
+        TileEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof MagicDoorwayBlockEntity) {
+            if (((MagicDoorwayBlockEntity) blockEntity).isClosing()) {
+                tryClose(level, pos, false);
+            }
+        }
     }
 }
