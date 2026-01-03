@@ -128,10 +128,11 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
         // If the doorknob can't be found for whatever reason, fall back on the maximum possible value
         double depth = doorknob == null ? MagicDoorknobItem.MAX_DOORWAY_LENGTH : doorknob.getDepth();
 
+        MagicDoorwayBlock magicDoorwayBlock = Blocks.MAGIC_DOORWAY.get();
         for (int i = 1; i <= depth; ++i) {
             BlockPos blockPos = pos.relative(doorwayFacing, i);
             BlockState state = world.getBlockState(blockPos);
-            if (state.getBlock() == Blocks.MAGIC_DOORWAY.get()) {
+            if (state.getBlock() == magicDoorwayBlock) {
                 // If it's a crossing doorway, just remove the one direction but don't actually break the block
                 if (state.getValue(MagicDoorwayBlock.OPEN_EAST_WEST) && state.getValue(MagicDoorwayBlock.OPEN_NORTH_SOUTH)) {
                     BlockState newState = state.setValue(facing.getAxis() == Direction.Axis.X ? MagicDoorwayBlock.OPEN_EAST_WEST : MagicDoorwayBlock.OPEN_NORTH_SOUTH, false);
@@ -141,7 +142,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
                     world.setBlockAndUpdate(blockPos, newState);
                 }
                 else {
-                    world.destroyBlock(blockPos, false);
+                    magicDoorwayBlock.tryClose(world, blockPos);
                 }
             }
         }
