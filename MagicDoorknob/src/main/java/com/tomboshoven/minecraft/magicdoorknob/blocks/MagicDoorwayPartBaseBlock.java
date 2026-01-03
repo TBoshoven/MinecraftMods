@@ -44,7 +44,8 @@ public abstract class MagicDoorwayPartBaseBlock extends Block implements EntityB
         // Use the base block's light value.
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof MagicDoorwayPartBaseBlockEntity) {
-            return ((MagicDoorwayPartBaseBlockEntity) blockEntity).getBaseBlockState().getLightEmission(world, pos);
+            // Emit at least 1, to make tunnels look a bit better
+            return Math.max(((MagicDoorwayPartBaseBlockEntity) blockEntity).getBaseBlockState().getLightEmission(world, pos), 1);
         }
         return super.getLightEmission(state, world, pos);
     }

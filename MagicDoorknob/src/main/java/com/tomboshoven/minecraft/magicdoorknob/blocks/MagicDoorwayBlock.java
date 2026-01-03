@@ -1,14 +1,21 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlockEntity;
+import com.tomboshoven.minecraft.magicdoorknob.config.Config;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -101,5 +108,47 @@ public class MagicDoorwayBlock extends MagicDoorwayPartBaseBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new MagicDoorwayBlockEntity(pos, state);
+    }
+
+    /**
+     * Try closing the doorway.
+     * Closes immediately if configured without suffocation prevention, or if there are no living entities in it.
+     *
+     * @param level             The level containing the doorway.
+     * @param pos               The position of the doorway block.
+     * @param updateBlockEntity Whether to update the associated block entity if needed.
+     */
+    private void tryClose(Level level, BlockPos pos, boolean updateBlockEntity) {
+        if (Config.SERVER.preventSuffocation.getAsBoolean() && level.hasEntities(EntityTypeTest.forClass(LivingEntity.class), new AABB(pos), e -> true)) {
+            if (updateBlockEntity && level.getBlockEntity(pos) instanceof MagicDoorwayBlockEntity blockEntity) {
+                blockEntity.setClosing();
+            }
+            level.scheduleTick(pos, asBlock(), 10);
+        } else {
+            level.destroyBlock(pos, false);
+        }
+    }
+
+
+    /**
+     * Try closing the doorway.
+     * Closes immediately if configured without suffocation prevention, or if there are no living entities in it.
+     *
+     * @param level The level containing the doorway.
+     * @param pos   The position of the doorway block.
+     */
+    public void tryClose(Level level, BlockPos pos) {
+        tryClose(level, pos, true);
+    }
+
+    @Override
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        super.tick(state, level, pos, random);
+        // Try closing the door again
+        if (level.getBlockEntity(pos) instanceof MagicDoorwayBlockEntity blockEntity) {
+            if (blockEntity.isClosing()) {
+                tryClose(level, pos, false);
+            }
+        }
     }
 }
