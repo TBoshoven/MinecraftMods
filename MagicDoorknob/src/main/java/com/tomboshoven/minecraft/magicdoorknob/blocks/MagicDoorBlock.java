@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -26,6 +27,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.util.DeferredSoundType;
 
 import javax.annotation.Nullable;
+
+import java.util.Optional;
 
 /**
  * Top or bottom part of a magic door.
@@ -160,7 +163,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
 
     /**
      * Flip the direction of the doorway in case it has two doors.
-     * If two doors are found, they swap their "isPrimary" property.
+     * If two doors are found, they swap their doorknobs.
      * If no second door is found, nothing happens.
      *
      * @param level     The level containing the door
@@ -178,10 +181,12 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
                 BlockState state = level.getBlockState(blockPos);
                 if (state.getBlock() == this && state.getValue(HORIZONTAL_FACING) == direction) {
                     if (level.getBlockEntity(blockPos) instanceof MagicDoorBlockEntity otherBlockEntity) {
-                        boolean isPrimary = blockEntity.isPrimary();
-                        boolean otherIsPrimary = otherBlockEntity.isPrimary();
-                        blockEntity.setPrimary(otherIsPrimary);
-                        otherBlockEntity.setPrimary(isPrimary);
+                        Optional<ItemStack> ownDoorknobOpt = blockEntity.getDoorknobItem();
+                        Optional<ItemStack> otherDoorknobOpt = otherBlockEntity.getDoorknobItem();
+                        ownDoorknobOpt.ifPresent(ownDoorknob -> otherDoorknobOpt.ifPresent(otherDoorknob -> {
+                            blockEntity.setDoorknobItem(otherDoorknob);
+                            otherBlockEntity.setDoorknobItem(ownDoorknob);
+                        }));
                     }
                 }
             }
@@ -191,8 +196,9 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()) {
+            // Swap the doors if possible and necessary, moving the doorknob to this door
             if (level.getBlockEntity(pos) instanceof MagicDoorBlockEntity blockEntity) {
-                if (!blockEntity.isPrimary()) {
+                if (blockEntity.getDoorknobItem().filter(i -> !i.isEmpty()).isEmpty()) {
                     BlockPos topPos = state.getValue(PART) == EnumPartType.TOP ? pos : pos.above();
                     flipDoorway(level, topPos, state.getValue(HORIZONTAL_FACING).getOpposite());
                 }
