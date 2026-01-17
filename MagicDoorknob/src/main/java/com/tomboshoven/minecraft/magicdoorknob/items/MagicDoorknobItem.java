@@ -91,8 +91,13 @@ public class MagicDoorknobItem extends Item {
 
             BlockItemUseContext useContext = new BlockItemUseContext(context);
             if (canPlaceDoor(world, pos, face, useContext)) {
-                placeDoor(world, pos, face);
-                placeDoorway(world, pos, face, useContext);
+                placeDoor(world, pos, face, true);
+                int doorwayLength = placeDoorway(world, pos, face, useContext);
+                Direction oppositeFace = face.getOpposite();
+                BlockPos otherDoorwayPos = pos.relative(oppositeFace, doorwayLength);
+                if (canPlaceDoor(world, otherDoorwayPos, oppositeFace, useContext)) {
+                    placeDoor(world, otherDoorwayPos, oppositeFace, false);
+                }
                 context.getItemInHand().shrink(1);
                 return ActionResultType.SUCCESS;
             }
@@ -108,8 +113,9 @@ public class MagicDoorknobItem extends Item {
      * @param world  The world to place the door in
      * @param pos    The position of the top part of the door
      * @param facing The direction the door should be facing
+     * @param isPrimary Whether this is a primary or secondary door (used for deciding where to drop the doorknob when closed)
      */
-    private void placeDoor(World world, BlockPos pos, Direction facing) {
+    private void placeDoor(World world, BlockPos pos, Direction facing, boolean isPrimary) {
         BlockPos doorPos = pos.relative(facing);
         Block block = Blocks.MAGIC_DOOR.get();
         world.setBlockAndUpdate(
@@ -121,6 +127,7 @@ public class MagicDoorknobItem extends Item {
         TileEntity topBlockEntity = world.getBlockEntity(doorPos);
         if (topBlockEntity instanceof MagicDoorBlockEntity) {
             MagicDoorBlockEntity topDoorBlockEntity = (MagicDoorBlockEntity) topBlockEntity;
+            topDoorBlockEntity.setPrimary(isPrimary);
             BlockState blockState = world.getBlockState(pos);
             if (blockState.getBlock() == Blocks.MAGIC_DOORWAY.get()) {
                 TileEntity targetBlockEntity = world.getBlockEntity(pos);
@@ -165,12 +172,14 @@ public class MagicDoorknobItem extends Item {
      * @param pos        The position of the top part of the starting blocks of the doorway
      * @param facing     The direction the door is facing (outward from the doorway)
      * @param useContext The context for the interaction that triggered this check.
+     * @return The length of the doorway
      */
-    private void placeDoorway(World world, BlockPos pos, Direction facing, BlockItemUseContext useContext) {
+    private int placeDoorway(World world, BlockPos pos, Direction facing, BlockItemUseContext useContext) {
         Direction doorwayFacing = facing.getOpposite();
         boolean isNorthSouth = facing == Direction.NORTH || facing == Direction.SOUTH;
         double depth = getDepth();
-        for (int i = 0; i < depth; ++i) {
+        int i;
+        for (i = 0; i < depth; ++i) {
             BlockPos elementPos = pos.relative(doorwayFacing, i);
             if (
                     (isReplaceable(world, elementPos) && !isEmpty(world, elementPos, useContext)) ||
@@ -183,6 +192,7 @@ public class MagicDoorknobItem extends Item {
                 break;
             }
         }
+        return i - 1;
     }
 
     /**
