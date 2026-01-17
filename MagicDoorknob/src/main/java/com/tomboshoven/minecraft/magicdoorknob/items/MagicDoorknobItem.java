@@ -15,6 +15,7 @@ import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tileentity.TileEntity;
@@ -91,14 +92,13 @@ public class MagicDoorknobItem extends Item {
 
             BlockItemUseContext useContext = new BlockItemUseContext(context);
             if (canPlaceDoor(world, pos, face, useContext)) {
-                placeDoor(world, pos, face, true);
+                placeDoor(world, pos, face, context.getItemInHand().split(1));
                 int doorwayLength = placeDoorway(world, pos, face, useContext);
                 Direction oppositeFace = face.getOpposite();
                 BlockPos otherDoorwayPos = pos.relative(oppositeFace, doorwayLength);
                 if (canPlaceDoor(world, otherDoorwayPos, oppositeFace, useContext)) {
-                    placeDoor(world, otherDoorwayPos, oppositeFace, false);
+                    placeDoor(world, otherDoorwayPos, oppositeFace, ItemStack.EMPTY);
                 }
-                context.getItemInHand().shrink(1);
                 return ActionResultType.SUCCESS;
             }
             return ActionResultType.FAIL;
@@ -110,12 +110,12 @@ public class MagicDoorknobItem extends Item {
      * Place a door at the given position.
      * This does not do any checks to see whether it's allowed.
      *
-     * @param world  The world to place the door in
-     * @param pos    The position of the top part of the door
-     * @param facing The direction the door should be facing
-     * @param isPrimary Whether this is a primary or secondary door (used for deciding where to drop the doorknob when closed)
+     * @param world    The world to place the door in
+     * @param pos      The position of the top part of the door
+     * @param facing   The direction the door should be facing
+     * @param doorknob The doorknob to attach to the door
      */
-    private void placeDoor(World world, BlockPos pos, Direction facing, boolean isPrimary) {
+    private void placeDoor(World world, BlockPos pos, Direction facing, ItemStack doorknob) {
         BlockPos doorPos = pos.relative(facing);
         Block block = Blocks.MAGIC_DOOR.get();
         world.setBlockAndUpdate(
@@ -127,7 +127,7 @@ public class MagicDoorknobItem extends Item {
         TileEntity topBlockEntity = world.getBlockEntity(doorPos);
         if (topBlockEntity instanceof MagicDoorBlockEntity) {
             MagicDoorBlockEntity topDoorBlockEntity = (MagicDoorBlockEntity) topBlockEntity;
-            topDoorBlockEntity.setPrimary(isPrimary);
+            topDoorBlockEntity.setDoorknobItem(doorknob);
             BlockState blockState = world.getBlockState(pos);
             if (blockState.is(Blocks.MAGIC_DOORWAY.get())) {
                 TileEntity targetBlockEntity = world.getBlockEntity(pos);
