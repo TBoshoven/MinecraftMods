@@ -1,6 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.entities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,14 +29,14 @@ public class MagicDoorwayBlockEntity extends MagicDoorwayPartBaseBlockEntity {
     }
 
     @Override
-    protected void saveInternal(CompoundTag compound) {
-        super.saveInternal(compound);
+    protected void saveInternal(CompoundTag compound, HolderLookup.Provider lookupProvider) {
+        super.saveInternal(compound, lookupProvider);
         compound.putBoolean("isClosing", isClosing);
     }
 
     @Override
-    protected void loadInternal(CompoundTag compound) {
-        super.loadInternal(compound);
+    protected void loadInternal(CompoundTag compound, HolderLookup.Provider lookupProvider) {
+        super.loadInternal(compound, lookupProvider);
         isClosing = compound.getBoolean("isClosing");
     }
 
