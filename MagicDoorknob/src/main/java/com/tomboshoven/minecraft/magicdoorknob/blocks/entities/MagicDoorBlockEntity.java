@@ -2,16 +2,21 @@ package com.tomboshoven.minecraft.magicdoorknob.blocks.entities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Optional;
 
 /**
  * Block entity for the magic door parts.
  */
 public class MagicDoorBlockEntity extends MagicDoorwayPartBaseBlockEntity {
-    // Whether the door is a "primary" one, meaning it holds the doorknob item.
-    // Used in double doorways, to prevent duplication of the doorknob.
-    // Note that this is only ever set for the tops of the doors.
-    boolean isPrimary = true;
+    // The doorknob held by the door.
+    // Only one door block in the doorway can hold this.
+    // The Optional is used for backwards compatibility: if no data is present, the top part of a door is assumed to
+    // hold a simple version of its doorknob.
+    Optional<ItemStack> doorknob = Optional.of(ItemStack.EMPTY);
 
     public MagicDoorBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntities.MAGIC_DOOR.get(), pos, state);
@@ -20,28 +25,36 @@ public class MagicDoorBlockEntity extends MagicDoorwayPartBaseBlockEntity {
     @Override
     protected void saveInternal(CompoundTag compound) {
         super.saveInternal(compound);
-        compound.putBoolean("isPrimary", isPrimary);
+        doorknob.ifPresent(doorknob -> {
+            if (!doorknob.isEmpty()) {
+                Tag itemTag = doorknob.save(new CompoundTag());
+                compound.put("doorknob", itemTag);
+            }
+        });
     }
 
     @Override
     protected void loadInternal(CompoundTag compound) {
         super.loadInternal(compound);
-        if (compound.contains("isPrimary")) {
-            isPrimary = compound.getBoolean("isPrimary");
+        if (compound.contains("doorknob")) {
+            doorknob = Optional.of(ItemStack.of(compound.getCompound("doorknob")));
+        }
+        else {
+            doorknob = Optional.empty();
         }
     }
 
     /**
-     * @return Whether this door part is "primary", meaning it holds the doorknob.
+     * @return The doorknob held by this door. Optional for backward compatibility.
      */
-    public boolean isPrimary() {
-        return isPrimary;
+    public Optional<ItemStack> getDoorknobItem() {
+        return doorknob;
     }
 
     /**
-     * @param isPrimary Whether this door part is "primary", meaning it holds the doorknob.
+     * @param doorknob The doorknob held by this door. Optional for backward compatibility.
      */
-    public void setPrimary(boolean isPrimary) {
-        this.isPrimary = isPrimary;
+    public void setDoorknobItem(ItemStack doorknob) {
+        this.doorknob = Optional.of(doorknob);
     }
 }
