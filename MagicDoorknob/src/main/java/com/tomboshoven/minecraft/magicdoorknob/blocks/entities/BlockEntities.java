@@ -11,7 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 public final class BlockEntities {
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MagicDoorknobMod.MOD_ID);
 
-    static final RegistryObject<BlockEntityType<MagicDoorBlockEntity>> MAGIC_DOOR =
+    public static final RegistryObject<BlockEntityType<MagicDoorBlockEntity>> MAGIC_DOOR =
             BLOCK_ENTITIES.register("magic_door",
                     () -> BlockEntityType.Builder.of(MagicDoorBlockEntity::new, Blocks.MAGIC_DOOR.get()).build(null)
             );
