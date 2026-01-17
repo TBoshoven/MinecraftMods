@@ -111,7 +111,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
      * @param facing The direction the door is facing in (opposite to doorway)
      * @param part   The part of the doorway we're breaking
      */
-    private static void breakDoorway(Level world, BlockPos pos, Direction facing, MagicDoorwayPartBaseBlock.EnumPartType part) {
+    private void breakDoorway(Level world, BlockPos pos, Direction facing, MagicDoorwayPartBaseBlock.EnumPartType part) {
         Direction doorwayFacing = facing.getOpposite();
 
         MagicDoorknobItem doorknob = getDoorknob(world, pos);
@@ -122,7 +122,8 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
         for (int i = 1; i <= depth; ++i) {
             BlockPos blockPos = pos.relative(doorwayFacing, i);
             BlockState state = world.getBlockState(blockPos);
-            if (state.getBlock() == magicDoorwayBlock) {
+            Block block = state.getBlock();
+            if (block == magicDoorwayBlock) {
                 // If it's a crossing doorway, just remove the one direction but don't actually break the block
                 if (state.getValue(MagicDoorwayBlock.OPEN_EAST_WEST) && state.getValue(MagicDoorwayBlock.OPEN_NORTH_SOUTH)) {
                     BlockState newState = state.setValue(facing.getAxis() == Direction.Axis.X ? MagicDoorwayBlock.OPEN_EAST_WEST : MagicDoorwayBlock.OPEN_NORTH_SOUTH, false);
@@ -133,6 +134,10 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
                 } else {
                     magicDoorwayBlock.tryClose(world, blockPos);
                 }
+            } else if (block == this && state.getValue(HORIZONTAL_FACING) == doorwayFacing) {
+                // We found an opposite door; just close the pair together
+                world.destroyBlock(blockPos, false);
+                break;
             }
         }
     }
@@ -153,9 +158,45 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
         return new MagicDoorBlockEntity(pos, state);
     }
 
+    /**
+     * Flip the direction of the doorway in case it has two doors.
+     * If two doors are found, they swap their "isPrimary" property.
+     * If no second door is found, nothing happens.
+     *
+     * @param level     The level containing the door
+     * @param pos       The position of the top of one of the doors
+     * @param direction The direction of the doorway
+     */
+    private void flipDoorway(Level level, BlockPos pos, Direction direction) {
+        MagicDoorknobItem doorknob = getDoorknob(level, pos);
+        // If the doorknob can't be found for whatever reason, fall back on the maximum possible value
+        double depth = doorknob == null ? MagicDoorknobItem.MAX_DOORWAY_LENGTH : doorknob.getDepth();
+
+        if (level.getBlockEntity(pos) instanceof MagicDoorBlockEntity blockEntity) {
+            for (int i = 1; i <= depth + 1; ++i) {
+                BlockPos blockPos = pos.relative(direction, i);
+                BlockState state = level.getBlockState(blockPos);
+                if (state.getBlock() == this && state.getValue(HORIZONTAL_FACING) == direction) {
+                    if (level.getBlockEntity(blockPos) instanceof MagicDoorBlockEntity otherBlockEntity) {
+                        boolean isPrimary = blockEntity.isPrimary();
+                        boolean otherIsPrimary = otherBlockEntity.isPrimary();
+                        blockEntity.setPrimary(otherIsPrimary);
+                        otherBlockEntity.setPrimary(isPrimary);
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()) {
+            if (level.getBlockEntity(pos) instanceof MagicDoorBlockEntity blockEntity) {
+                if (!blockEntity.isPrimary()) {
+                    BlockPos topPos = state.getValue(PART) == EnumPartType.TOP ? pos : pos.above();
+                    flipDoorway(level, topPos, state.getValue(HORIZONTAL_FACING).getOpposite());
+                }
+            }
             level.destroyBlock(pos, false);
         }
         return InteractionResult.SUCCESS;
