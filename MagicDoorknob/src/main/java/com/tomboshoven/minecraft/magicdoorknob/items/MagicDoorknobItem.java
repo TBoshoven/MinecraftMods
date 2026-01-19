@@ -10,6 +10,10 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartB
 import com.tomboshoven.minecraft.magicdoorknob.config.Config;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
@@ -91,14 +95,16 @@ public class MagicDoorknobItem extends Item {
 
             BlockItemUseContext useContext = new BlockItemUseContext(context);
             if (canPlaceDoor(world, pos, face, useContext)) {
-                placeDoor(world, pos, face, context.getItemInHand().split(1));
                 int doorwayLength = placeDoorway(world, pos, face, useContext);
-                Direction oppositeFace = face.getOpposite();
-                BlockPos otherDoorwayPos = pos.relative(oppositeFace, doorwayLength);
-                if (canPlaceDoor(world, otherDoorwayPos, oppositeFace, useContext)) {
-                    placeDoor(world, otherDoorwayPos, oppositeFace, ItemStack.EMPTY);
+                if (doorwayLength > 0) {
+                    placeDoor(world, pos, face, context.getItemInHand().split(1), doorwayLength);
+                    Direction oppositeFace = face.getOpposite();
+                    BlockPos otherDoorwayPos = pos.relative(oppositeFace, doorwayLength - 1);
+                    if (canPlaceDoor(world, otherDoorwayPos, oppositeFace, useContext)) {
+                        placeDoor(world, otherDoorwayPos, oppositeFace, ItemStack.EMPTY, doorwayLength);
+                    }
+                    return ActionResultType.SUCCESS;
                 }
-                return ActionResultType.SUCCESS;
             }
             return ActionResultType.FAIL;
         }
@@ -109,12 +115,13 @@ public class MagicDoorknobItem extends Item {
      * Place a door at the given position.
      * This does not do any checks to see whether it's allowed.
      *
-     * @param world    The world to place the door in
-     * @param pos      The position of the top part of the door
-     * @param facing   The direction the door should be facing
-     * @param doorknob The doorknob to attach to the door
+     * @param world         The world to place the door in
+     * @param pos           The position of the top part of the door
+     * @param facing        The direction the door should be facing
+     * @param doorknob      The doorknob to attach to the door
+     * @param doorwayLength The length of the doorway (used when closing)
      */
-    private void placeDoor(World world, BlockPos pos, Direction facing, ItemStack doorknob) {
+    private void placeDoor(World world, BlockPos pos, Direction facing, ItemStack doorknob, int doorwayLength) {
         BlockPos doorPos = pos.relative(facing);
         Block block = Objects.requireNonNull(Blocks.MAGIC_DOOR.get());
         world.setBlockAndUpdate(
@@ -138,6 +145,7 @@ public class MagicDoorknobItem extends Item {
                 topDoorBlockEntity.setBaseBlockState(blockState);
             }
             topDoorBlockEntity.setDoorknob(this);
+            topDoorBlockEntity.setDoorwayLength(doorwayLength);
         }
         world.setBlockAndUpdate(
                 doorPos.below(),
@@ -159,6 +167,7 @@ public class MagicDoorknobItem extends Item {
                 bottomDoorBlockEntity.setBaseBlockState(blockState);
             }
             bottomDoorBlockEntity.setDoorknob(this);
+            bottomDoorBlockEntity.setDoorwayLength(doorwayLength);
         }
         world.playSound(null, doorPos, SoundEvents.WOODEN_DOOR_OPEN, SoundCategory.BLOCKS, 1, 1);
     }
@@ -176,7 +185,9 @@ public class MagicDoorknobItem extends Item {
     private int placeDoorway(World world, BlockPos pos, Direction facing, BlockItemUseContext useContext) {
         Direction doorwayFacing = facing.getOpposite();
         boolean isNorthSouth = facing == Direction.NORTH || facing == Direction.SOUTH;
-        double depth = getDepth();
+        PlayerEntity player = useContext.getPlayer();
+        int efficiency = player == null ? 0 : EnchantmentHelper.getBlockEfficiency(player);
+        double depth = getDepth(efficiency);
         int i;
         for (i = 0; i < depth; ++i) {
             BlockPos elementPos = pos.relative(doorwayFacing, i);
@@ -191,7 +202,7 @@ public class MagicDoorknobItem extends Item {
                 break;
             }
         }
-        return i - 1;
+        return i;
     }
 
     /**
@@ -263,6 +274,21 @@ public class MagicDoorknobItem extends Item {
         return blockState.getHarvestLevel() <= tier.getLevel();
     }
 
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public int getItemEnchantability(ItemStack stack) {
+        return tier.getEnchantmentValue();
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return enchantment == Enchantments.BLOCK_EFFICIENCY;
+    }
+
     /**
      * @return The location of the main texture of the doorknob
      */
@@ -287,8 +313,8 @@ public class MagicDoorknobItem extends Item {
     /**
      * @return The maximum size of the doorway created by this doorknob
      */
-    public double getDepth() {
-        return Math.min(getTier().getSpeed() * Config.SERVER.doorwayMultiplier.get(), MAX_DOORWAY_LENGTH);
+    public double getDepth(double efficiency) {
+        return Math.min((getTier().getSpeed() + efficiency) * Config.SERVER.doorwayMultiplier.get(), MAX_DOORWAY_LENGTH);
     }
 
     /**
