@@ -18,9 +18,11 @@ public final class DataGenerators {
     private static void gatherData(GatherDataEvent.Client event) {
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
+        event.createDatapackRegistryObjects(Enchantments.builder());
+        event.createProvider(EnchantmentTags::new);
+        event.createProvider(ItemTags::new);
         event.createProvider(Models::new);
         event.createProvider(Language::new);
         event.createProvider(output -> new Recipes.Runner(output, lookupProvider));
-        event.createProvider(Tags::new);
     }
 }
