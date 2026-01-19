@@ -40,7 +40,7 @@ public final class Items {
      * @param ingredients  The ingredients used to build the doorknob
      */
     private static void addDoorknob(String typeName, ToolMaterial toolMaterial, ResourceLocation mainTexture, Supplier<TagKey<Item>> ingredients) {
-        DeferredItem<MagicDoorknobItem> item = ITEMS.registerItem(String.format("magic_doorknob_%s", typeName), (Item.Properties properties) -> new MagicDoorknobItem(properties, typeName, toolMaterial, mainTexture, ingredients));
+        DeferredItem<MagicDoorknobItem> item = ITEMS.registerItem(String.format("magic_doorknob_%s", typeName), (Item.Properties properties) -> new MagicDoorknobItem(properties.enchantable(1), typeName, toolMaterial, mainTexture, ingredients));
         DOORKNOBS.put(typeName, item);
     }
 
