@@ -8,6 +8,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorBlockEnt
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.config.Config;
+import com.tomboshoven.minecraft.magicdoorknob.enchantments.Enchantments;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -96,7 +98,10 @@ public class MagicDoorknobItem extends Item {
                     placeDoor(world, pos, face, context.getItemInHand().split(1), doorwayLength);
                     Direction oppositeFace = face.getOpposite();
                     BlockPos otherDoorwayPos = pos.relative(oppositeFace, doorwayLength - 1);
-                    if (canPlaceDoor(world, otherDoorwayPos, oppositeFace, useContext)) {
+
+                    boolean doubleDoor = EnchantmentHelper.has(context.getItemInHand(), Enchantments.DOUBLE_COMPONENT.get());
+
+                    if (doubleDoor && canPlaceDoor(world, otherDoorwayPos, oppositeFace, useContext)) {
                         placeDoor(world, otherDoorwayPos, oppositeFace, ItemStack.EMPTY, doorwayLength);
                     }
                     return InteractionResult.SUCCESS;
