@@ -142,7 +142,7 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
                 .orElse(MagicDoorknobItem.MAX_DOORWAY_LENGTH);
 
         MagicDoorwayBlock magicDoorwayBlock = Blocks.MAGIC_DOORWAY.get();
-        for (int i = 1; i <= depth; ++i) {
+        for (int i = 1; i <= depth + 1; ++i) {
             BlockPos blockPos = pos.relative(doorwayFacing, i);
             BlockState state = world.getBlockState(blockPos);
             Block block = state.getBlock();
