@@ -19,12 +19,12 @@ public final class DataGenerators {
 
         boolean includeServer = event.includeServer();
         boolean includeClient = event.includeClient();
+        BlockTags blockTags = new BlockTags(generator, existingFileHelper);
+        generator.addProvider(includeServer, blockTags);
+        generator.addProvider(includeServer, new ItemTags(generator, blockTags, existingFileHelper));
         generator.addProvider(includeServer, new BlockStates(generator, existingFileHelper));
         generator.addProvider(includeServer, new Language(generator));
         generator.addProvider(includeServer, new Recipes(generator));
-        Tags.BlockTags blockTags = new Tags.BlockTags(generator, existingFileHelper);
-        generator.addProvider(includeServer, blockTags);
-        generator.addProvider(includeServer, new Tags.ItemTags(generator, blockTags, existingFileHelper));
         generator.addProvider(includeClient, new ItemModels(generator, existingFileHelper));
     }
 }

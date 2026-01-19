@@ -5,6 +5,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.BlockEntities;
 import com.tomboshoven.minecraft.magicdoorknob.client.ClientEvents;
 import com.tomboshoven.minecraft.magicdoorknob.config.Config;
 import com.tomboshoven.minecraft.magicdoorknob.data.DataGenerators;
+import com.tomboshoven.minecraft.magicdoorknob.enchantments.Enchantments;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -22,6 +23,7 @@ public final class MagicDoorknobMod {
         Config.register(ModLoadingContext.get());
         Blocks.register(modEventBus);
         DataGenerators.register(modEventBus);
+        Enchantments.register(modEventBus);
         Items.register(modEventBus);
         BlockEntities.register(modEventBus);
 

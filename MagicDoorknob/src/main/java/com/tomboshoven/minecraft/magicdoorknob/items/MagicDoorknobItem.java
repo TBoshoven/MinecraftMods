@@ -8,6 +8,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorBlockEnt
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.config.Config;
+import com.tomboshoven.minecraft.magicdoorknob.enchantments.Enchantments;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,7 +26,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -98,7 +98,11 @@ public class MagicDoorknobItem extends Item {
                     placeDoor(world, pos, face, context.getItemInHand().split(1), doorwayLength);
                     Direction oppositeFace = face.getOpposite();
                     BlockPos otherDoorwayPos = pos.relative(oppositeFace, doorwayLength - 1);
-                    if (canPlaceDoor(world, otherDoorwayPos, oppositeFace, useContext)) {
+
+                    Player player = context.getPlayer();
+                    boolean doubleDoor = player != null && EnchantmentHelper.getEnchantmentLevel(Enchantments.DOUBLE.get(), player) > 0;
+
+                    if (doubleDoor && canPlaceDoor(world, otherDoorwayPos, oppositeFace, useContext)) {
                         placeDoor(world, otherDoorwayPos, oppositeFace, ItemStack.EMPTY, doorwayLength);
                     }
                     return InteractionResult.SUCCESS;
@@ -280,7 +284,7 @@ public class MagicDoorknobItem extends Item {
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment == Enchantments.BLOCK_EFFICIENCY;
+        return enchantment == Enchantments.DOUBLE.get() || enchantment == net.minecraft.world.item.enchantment.Enchantments.BLOCK_EFFICIENCY;
     }
 
     /**
