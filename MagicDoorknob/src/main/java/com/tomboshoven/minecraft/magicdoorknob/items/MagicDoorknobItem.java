@@ -97,7 +97,9 @@ public class MagicDoorknobItem extends Item {
             if (canPlaceDoor(world, pos, face, useContext)) {
                 int doorwayLength = placeDoorway(world, pos, face, useContext);
                 if (doorwayLength > 0) {
-                    placeDoor(world, pos, face, context.getItemInHand().split(1), doorwayLength);
+                    ItemStack usedItem = context.getItemInHand().copy();
+                    usedItem.setCount(1);
+                    placeDoor(world, pos, face, usedItem, doorwayLength);
                     Direction oppositeFace = face.getOpposite();
                     BlockPos otherDoorwayPos = pos.relative(oppositeFace, doorwayLength - 1);
 
@@ -107,6 +109,7 @@ public class MagicDoorknobItem extends Item {
                     if (doubleDoor && canPlaceDoor(world, otherDoorwayPos, oppositeFace, useContext)) {
                         placeDoor(world, otherDoorwayPos, oppositeFace, ItemStack.EMPTY, doorwayLength);
                     }
+                    context.getItemInHand().shrink(1);
                     return ActionResultType.SUCCESS;
                 }
             }
