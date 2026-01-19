@@ -135,9 +135,10 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
     private void breakDoorway(Level world, BlockPos pos, Direction facing, MagicDoorwayPartBaseBlock.EnumPartType part) {
         Direction doorwayFacing = facing.getOpposite();
 
-        MagicDoorknobItem doorknob = getDoorknob(world, pos);
-        // If the doorknob can't be found for whatever reason, fall back on the maximum possible value
-        double depth = doorknob == null ? MagicDoorknobItem.MAX_DOORWAY_LENGTH : doorknob.getDepth();
+        int depth = world.getBlockEntity(pos, BlockEntities.MAGIC_DOOR.get())
+                .map(MagicDoorBlockEntity::getDoorwayLength)
+                // Fall back on the maximum possible value
+                .orElse(MagicDoorknobItem.MAX_DOORWAY_LENGTH);
 
         MagicDoorwayBlock magicDoorwayBlock = Blocks.MAGIC_DOORWAY.get();
         for (int i = 1; i <= depth; ++i) {
@@ -190,9 +191,10 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
      * @param direction The direction of the doorway
      */
     private void flipDoorway(Level level, BlockPos pos, Direction direction) {
-        MagicDoorknobItem doorknob = getDoorknob(level, pos);
-        // If the doorknob can't be found for whatever reason, fall back on the maximum possible value
-        double depth = doorknob == null ? MagicDoorknobItem.MAX_DOORWAY_LENGTH : doorknob.getDepth();
+        int depth = level.getBlockEntity(pos, BlockEntities.MAGIC_DOOR.get())
+                .map(MagicDoorBlockEntity::getDoorwayLength)
+                // Fall back on the maximum possible value
+                .orElse(MagicDoorknobItem.MAX_DOORWAY_LENGTH);
 
         if (level.getBlockEntity(pos) instanceof MagicDoorBlockEntity blockEntity) {
             for (int i = 1; i <= depth + 1; ++i) {
