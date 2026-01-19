@@ -21,6 +21,7 @@ public final class DataGenerators {
             generator.addProvider(new BlockStates(generator, existingFileHelper));
             generator.addProvider(new Language(generator));
             generator.addProvider(new Recipes(generator));
+            generator.addProvider(new ItemTags(generator));
         }
         if (event.includeClient()) {
             generator.addProvider(new ItemModels(generator, existingFileHelper));
