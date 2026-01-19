@@ -21,5 +21,6 @@ public final class DataGenerators {
         event.createProvider(Models::new);
         event.createProvider(Language::new);
         event.createProvider(output -> new Recipes.Runner(output, lookupProvider));
+        event.createProvider(Tags::new);
     }
 }
