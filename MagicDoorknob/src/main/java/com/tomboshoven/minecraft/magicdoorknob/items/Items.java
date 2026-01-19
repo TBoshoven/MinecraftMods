@@ -42,7 +42,7 @@ public final class Items {
      * @param netheriteSmithingBase The base item to use to create this one using netherite smithing
      */
     private static Supplier<? extends Item> addDoorknob(String typeName, ToolMaterial toolMaterial, Identifier mainTexture, @Nullable Supplier<TagKey<Item>> ingredients, @Nullable Supplier<? extends Item> netheriteSmithingBase) {
-        DeferredItem<MagicDoorknobItem> item = ITEMS.registerItem(String.format("magic_doorknob_%s", typeName), (Item.Properties properties) -> new MagicDoorknobItem(properties.enchantable(1), typeName, toolMaterial, mainTexture, ingredients, netheriteSmithingBase));
+        DeferredItem<MagicDoorknobItem> item = ITEMS.registerItem(String.format("magic_doorknob_%s", typeName), (Item.Properties properties) -> new MagicDoorknobItem(properties.enchantable(toolMaterial.enchantmentValue()), typeName, toolMaterial, mainTexture, ingredients, netheriteSmithingBase));
         DOORKNOBS.put(typeName, item);
         return item;
     }
