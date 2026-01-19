@@ -32,6 +32,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -45,26 +47,32 @@ public class MagicDoorknobItem extends Item {
     // The item material, used for determining doorway generation properties
     private final IItemTier tier;
     // The ingredient used to make doorknobs of this type
-    private final Supplier<Ingredient> ingredient;
+    @Nullable
+    private final Supplier<Ingredient> craftingIngredient;
+    @Nullable
+    private final Item netheriteSmithingBase;
+
     /**
      * The maximum allowed length of a doorway.
      */
     public static final int MAX_DOORWAY_LENGTH = 128;
 
     /**
-     * @param properties          The item properties
-     * @param typeName            The main texture of the item
-     * @param tier                The item material, used for determining doorway generation properties
-     * @param mainTextureLocation The main material for rendering the block
-     * @param ingredient          The ingredient used to make doorknobs of this type
+     * @param properties            The item properties
+     * @param typeName              The main texture of the item
+     * @param tier                  The item material, used for determining doorway generation properties
+     * @param mainTextureLocation   The main material for rendering the block
+     * @param craftingIngredient    The ingredient used to make doorknobs of this type
+     * @param netheriteSmithingBase The base item for use with netherite smithing
      */
-    MagicDoorknobItem(Item.Properties properties, String typeName, IItemTier tier, ResourceLocation mainTextureLocation, Supplier<Ingredient> ingredient) {
+    MagicDoorknobItem(Item.Properties properties, String typeName, IItemTier tier, ResourceLocation mainTextureLocation, @Nullable Supplier<Ingredient> craftingIngredient, @Nullable Item netheriteSmithingBase) {
         super(properties);
 
         this.typeName = typeName;
         this.tier = tier;
         this.mainTextureLocation = mainTextureLocation;
-        this.ingredient = ingredient;
+        this.craftingIngredient = craftingIngredient;
+        this.netheriteSmithingBase = netheriteSmithingBase;
     }
 
     /**
@@ -325,7 +333,14 @@ public class MagicDoorknobItem extends Item {
     /**
      * @return The ingredient used to make doorknobs of this type
      */
-    public Ingredient getIngredient() {
-        return ingredient.get();
+    public @Nullable Ingredient getCraftingIngredient() {
+        return Optional.ofNullable(craftingIngredient).map(Supplier::get).orElse(null);
+    }
+
+    /**
+     * @return The base item to use for netherite smithing into this item
+     */
+    public @Nullable Item getNetheriteSmithingBase() {
+        return netheriteSmithingBase;
     }
 }
