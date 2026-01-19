@@ -1,10 +1,13 @@
 package com.tomboshoven.minecraft.magicdoorknob.data;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+
+import java.util.concurrent.CompletableFuture;
 
 public final class DataGenerators {
     private DataGenerators() {
@@ -17,12 +20,16 @@ public final class DataGenerators {
     private static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
         boolean includeServer = event.includeServer();
         boolean includeClient = event.includeClient();
         generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new BlockStates(output, existingFileHelper));
         generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) Language::new);
         generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) Recipes::new);
+        Tags.BlockTags blockTags = new Tags.BlockTags(generator.getPackOutput(), lookupProvider, existingFileHelper);
+        generator.addProvider(includeServer, blockTags);
+        generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new Tags.ItemTags(output, lookupProvider, blockTags.contentsGetter(), existingFileHelper));
         generator.addProvider(includeClient, (DataProvider.Factory<? extends DataProvider>) output -> new ItemModels(output, existingFileHelper));
     }
 }
