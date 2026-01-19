@@ -12,6 +12,7 @@ import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.IForgeRegistry;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -37,12 +38,25 @@ public final class Items {
      * @param tier        The material this doorknob is made of
      * @param mainTexture The main texture of the doorknob
      * @param ingredient  The ingredient used to build the doorknob
+     * @param netheriteSmithingBase The base item to use to create this one using netherite smithing
      */
-    private static void addDoorknob(IForgeRegistry<? super Item> registry, String typeName, Tier tier, ResourceLocation mainTexture, Supplier<Ingredient> ingredient) {
-        MagicDoorknobItem i = new MagicDoorknobItem(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS), typeName, tier, mainTexture, ingredient);
+    private static Item addDoorknob(IForgeRegistry<? super Item> registry, String typeName, Tier tier, ResourceLocation mainTexture, @Nullable Supplier<Ingredient> ingredient, Item netheriteSmithingBase) {
+        MagicDoorknobItem i = new MagicDoorknobItem(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS), typeName, tier, mainTexture, ingredient, netheriteSmithingBase);
         i.setRegistryName(MagicDoorknobMod.MOD_ID, String.format("magic_doorknob_%s", typeName));
         registry.register(i);
         DOORKNOBS.put(typeName, i);
+        return i;
+    }
+
+    /**
+     * Convenience function for doorknobs using Vanilla materials.
+     *
+     * @param typeName     The type name of the item. Keep this stable, since it is used in NBT data.
+     * @param tier       The material this doorknob is made of
+     * @param blockName    The name of the block that provides the texture of the doorknob
+     */
+    private static Item addDoorknob(IForgeRegistry<? super Item> registry, String typeName, Tier tier, String blockName) {
+        return addDoorknob(registry, typeName, tier, new ResourceLocation(String.format("block/%s", blockName)), tier::getRepairIngredient, null);
     }
 
     /**
@@ -52,9 +66,10 @@ public final class Items {
      * @param typeName   The type name of the item. Keep this stable, since it is used in NBT data.
      * @param tier       The material this doorknob is made of
      * @param blockName  The name of the block that provides the texture of the doorknob
+     * @param netheriteSmithingBase The base item to use to create this one using netherite smithing
      */
-    private static void addDoorknob(IForgeRegistry<? super Item> registry, String typeName, Tier tier, String blockName) {
-        addDoorknob(registry, typeName, tier, new ResourceLocation("minecraft", String.format("block/%s", blockName)), tier::getRepairIngredient);
+    private static Item addDoorknob(IForgeRegistry<? super Item> registry, String typeName, Tier tier, String blockName, Item netheriteSmithingBase) {
+        return addDoorknob(registry, typeName, tier, new ResourceLocation("minecraft", String.format("block/%s", blockName)), null, netheriteSmithingBase);
     }
 
     public static void register(IEventBus eventBus) {
@@ -69,7 +84,7 @@ public final class Items {
         addDoorknob(registry, "stone", Tiers.STONE, "stone");
         addDoorknob(registry, "iron", Tiers.IRON, "iron_block");
         addDoorknob(registry, "gold", Tiers.GOLD, "gold_block");
-        addDoorknob(registry, "diamond", Tiers.DIAMOND, "diamond_block");
-        addDoorknob(registry, "netherite", Tiers.NETHERITE, "netherite_block");
+        Item diamondDoorknob = addDoorknob(registry, "diamond", Tiers.DIAMOND, "diamond_block");
+        addDoorknob(registry, "netherite", Tiers.NETHERITE, "netherite_block", diamondDoorknob);
     }
 }
