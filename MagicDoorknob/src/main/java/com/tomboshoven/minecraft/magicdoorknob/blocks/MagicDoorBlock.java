@@ -28,7 +28,6 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-
 import java.util.Optional;
 
 /**
@@ -132,9 +131,8 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
     private void breakDoorway(World world, BlockPos pos, Direction facing, MagicDoorwayPartBaseBlock.EnumPartType part) {
         Direction doorwayFacing = facing.getOpposite();
 
-        MagicDoorknobItem doorknob = getDoorknob(world, pos);
-        // If the doorknob can't be found for whatever reason, fall back on the maximum possible value
-        double depth = doorknob == null ? MagicDoorknobItem.MAX_DOORWAY_LENGTH : doorknob.getDepth();
+        TileEntity blockEntity = world.getBlockEntity(pos);
+        int depth = blockEntity instanceof MagicDoorBlockEntity ? ((MagicDoorBlockEntity) blockEntity).getDoorwayLength() : MagicDoorknobItem.MAX_DOORWAY_LENGTH;
 
         MagicDoorwayBlock magicDoorwayBlock = Blocks.MAGIC_DOORWAY.get();
         for (int i = 1; i <= depth; ++i) {
@@ -187,13 +185,10 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
      * @param direction The direction of the doorway
      */
     private void flipDoorway(World level, BlockPos pos, Direction direction) {
-        MagicDoorknobItem doorknob = getDoorknob(level, pos);
-        // If the doorknob can't be found for whatever reason, fall back on the maximum possible value
-        double depth = doorknob == null ? MagicDoorknobItem.MAX_DOORWAY_LENGTH : doorknob.getDepth();
-
         TileEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof MagicDoorBlockEntity) {
             MagicDoorBlockEntity magicDoorBlockEntity = (MagicDoorBlockEntity) blockEntity;
+            int depth = magicDoorBlockEntity.getDoorwayLength();
             for (int i = 1; i <= depth + 1; ++i) {
                 BlockPos blockPos = pos.relative(direction, i);
                 BlockState state = level.getBlockState(blockPos);
