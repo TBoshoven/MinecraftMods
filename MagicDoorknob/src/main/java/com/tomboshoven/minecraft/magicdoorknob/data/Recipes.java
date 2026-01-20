@@ -5,6 +5,7 @@ import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.LegacyUpgradeRecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -50,6 +51,15 @@ class Recipes extends RecipeProvider {
                                 )
                                 .unlocks("has_netherite_ingot", has(net.minecraft.world.item.Items.NETHERITE_INGOT))
                                 .save(consumer, BuiltInRegistries.ITEM.getKey(doorknob).withSuffix("_smithing"));
+                        //noinspection removal
+                        LegacyUpgradeRecipeBuilder.smithing(
+                                        Ingredient.of(netheriteSmithingBase),
+                                        Ingredient.of(net.minecraft.world.item.Items.NETHERITE_INGOT),
+                                        RecipeCategory.TOOLS,
+                                        doorknob
+                                )
+                                .unlocks("has_netherite_ingot", has(net.minecraft.world.item.Items.NETHERITE_INGOT))
+                                .save(consumer, BuiltInRegistries.ITEM.getKey(doorknob).withSuffix("_smithing_legacy"));
                     }
                 }
         );
