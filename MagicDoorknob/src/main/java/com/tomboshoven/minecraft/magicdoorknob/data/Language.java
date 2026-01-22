@@ -2,6 +2,7 @@ package com.tomboshoven.minecraft.magicdoorknob.data;
 
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.Blocks;
+import com.tomboshoven.minecraft.magicdoorknob.enchantments.Enchantments;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
 import net.minecraft.data.PackOutput;
@@ -26,6 +27,8 @@ class Language extends LanguageProvider {
         addDoorknob("netherite");
         addDoorknob("stone");
         addDoorknob("wood", "Wooden");
+
+        add(Enchantments.DOUBLE.get(), "Double");
     }
 
     private void addDoorknob(String typeName) {

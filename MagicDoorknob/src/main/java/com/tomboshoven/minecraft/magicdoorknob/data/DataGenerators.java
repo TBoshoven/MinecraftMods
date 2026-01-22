@@ -24,6 +24,10 @@ public final class DataGenerators {
 
         boolean includeServer = event.includeServer();
         boolean includeClient = event.includeClient();
+        generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new EnchantmentTags(output, lookupProvider));
+        BlockTags blockTags = new BlockTags(generator.getPackOutput(), lookupProvider, existingFileHelper);
+        generator.addProvider(includeServer, blockTags);
+        generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new ItemTags(output, lookupProvider, blockTags.contentsGetter(), existingFileHelper));
         generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new BlockStates(output, existingFileHelper));
         generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) Language::new);
         generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new Recipes(output, lookupProvider));
