@@ -61,10 +61,10 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     @Override
     protected void saveAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
         super.saveAdditional(compound, lookupProvider);
-        saveInternal(compound);
+        saveInternal(compound, lookupProvider);
     }
 
-    protected void saveInternal(CompoundTag compound) {
+    protected void saveInternal(CompoundTag compound, HolderLookup.Provider lookupProvider) {
         compound.put("baseBlock", NbtUtils.writeBlockState(baseBlockState));
         if (doorknob != null) {
             compound.putString("doorknobType", doorknob.getTypeName());
@@ -74,10 +74,10 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     @Override
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
         super.loadAdditional(compound, lookupProvider);
-        loadInternal(compound);
+        loadInternal(compound, lookupProvider);
     }
 
-    protected void loadInternal(CompoundTag compound) {
+    protected void loadInternal(CompoundTag compound, HolderLookup.Provider lookupProvider) {
         HolderGetter<Block> holdergetter = this.level != null ? this.level.holderLookup(Registries.BLOCK) : BuiltInRegistries.BLOCK.asLookup();
         baseBlockState = NbtUtils.readBlockState(holdergetter, compound.getCompound("baseBlock"));
         String doorknobType = compound.getString("doorknobType");
@@ -88,7 +88,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider lookupProvider) {
         CompoundTag updateTag = super.getUpdateTag(lookupProvider);
-        saveInternal(updateTag);
+        saveInternal(updateTag, lookupProvider);
         return updateTag;
     }
 
@@ -100,7 +100,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
-        loadInternal(pkt.getTag());
+        loadInternal(pkt.getTag(), lookupProvider);
         requestModelDataUpdate();
     }
 

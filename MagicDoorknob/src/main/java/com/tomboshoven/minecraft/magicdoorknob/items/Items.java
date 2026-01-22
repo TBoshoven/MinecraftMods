@@ -3,16 +3,19 @@ package com.tomboshoven.minecraft.magicdoorknob.items;
 import com.google.common.collect.Maps;
 import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -39,10 +42,23 @@ public final class Items {
      * @param tier        The material this doorknob is made of
      * @param mainTexture The main texture of the doorknob
      * @param ingredient  The ingredient used to build the doorknob
+     * @param netheriteSmithingBase The base item to use to create this one using netherite smithing
      */
-    private static void addDoorknob(String typeName, Tier tier, ResourceLocation mainTexture, Supplier<Ingredient> ingredient) {
-        DeferredItem<MagicDoorknobItem> item = ITEMS.register(String.format("magic_doorknob_%s", typeName), () -> new MagicDoorknobItem(new Item.Properties(), typeName, tier, mainTexture, ingredient));
+    private static Supplier<? extends Item> addDoorknob(String typeName, Tier tier, ResourceLocation mainTexture, @Nullable Supplier<Ingredient> ingredient, @Nullable Supplier<? extends Item> netheriteSmithingBase) {
+        DeferredItem<MagicDoorknobItem> item = ITEMS.registerItem(String.format("magic_doorknob_%s", typeName), (Item.Properties properties) -> new MagicDoorknobItem(new Item.Properties(), typeName, tier, mainTexture, ingredient, netheriteSmithingBase));
         DOORKNOBS.put(typeName, item);
+        return item;
+    }
+
+    /**
+     * Convenience function for doorknobs using Vanilla materials.
+     *
+     * @param typeName     The type name of the item. Keep this stable, since it is used in NBT data.
+     * @param tier       The material this doorknob is made of
+     * @param blockName    The name of the block that provides the texture of the doorknob
+     */
+    private static Supplier<? extends Item> addDoorknob(String typeName, Tier tier, String blockName) {
+        return addDoorknob(typeName, tier, ResourceLocation.withDefaultNamespace(String.format("block/%s", blockName)), tier::getRepairIngredient, null);
     }
 
     /**
@@ -51,9 +67,10 @@ public final class Items {
      * @param typeName   The type name of the item. Keep this stable, since it is used in NBT data.
      * @param tier       The material this doorknob is made of
      * @param blockName  The name of the block that provides the texture of the doorknob
+     * @param netheriteSmithingBase The base item to use to create this one using netherite smithing
      */
-    private static void addDoorknob(String typeName, Tier tier, String blockName) {
-        addDoorknob(typeName, tier, ResourceLocation.withDefaultNamespace(String.format("block/%s", blockName)), tier::getRepairIngredient);
+    private static Supplier<? extends Item> addDoorknob(String typeName, Tier tier, String blockName, Supplier<? extends Item> netheriteSmithingBase) {
+        return addDoorknob(typeName, tier, ResourceLocation.withDefaultNamespace(String.format("block/%s", blockName)), null, netheriteSmithingBase);
     }
 
     public static void register(IEventBus eventBus) {
@@ -73,7 +90,7 @@ public final class Items {
         addDoorknob("stone", Tiers.STONE, "stone");
         addDoorknob("iron", Tiers.IRON, "iron_block");
         addDoorknob("gold", Tiers.GOLD, "gold_block");
-        addDoorknob("diamond", Tiers.DIAMOND, "diamond_block");
-        addDoorknob("netherite", Tiers.NETHERITE, "netherite_block");
+        Supplier<? extends Item> diamondDoorknob = addDoorknob("diamond", Tiers.DIAMOND, "diamond_block");
+        addDoorknob("netherite", Tiers.NETHERITE, "netherite_block", diamondDoorknob);
     }
 }

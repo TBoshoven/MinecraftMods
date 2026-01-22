@@ -1,12 +1,15 @@
 package com.tomboshoven.minecraft.magicdoorknob.data;
 
+import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public final class DataGenerators {
@@ -24,6 +27,11 @@ public final class DataGenerators {
 
         boolean includeServer = event.includeServer();
         boolean includeClient = event.includeClient();
+        generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new DatapackBuiltinEntriesProvider(output, lookupProvider, Enchantments.builder(), Set.of(MagicDoorknobMod.MOD_ID)));
+        generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new EnchantmentTags(output, lookupProvider, existingFileHelper));
+        BlockTags blockTags = new BlockTags(generator.getPackOutput(), lookupProvider, existingFileHelper);
+        generator.addProvider(includeServer, blockTags);
+        generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new ItemTags(output, lookupProvider, blockTags.contentsGetter(), existingFileHelper));
         generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new BlockStates(output, existingFileHelper));
         generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) Language::new);
         generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new Recipes(output, lookupProvider));
