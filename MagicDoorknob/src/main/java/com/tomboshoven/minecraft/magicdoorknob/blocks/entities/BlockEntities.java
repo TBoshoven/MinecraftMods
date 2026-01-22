@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 public final class BlockEntities {
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MagicDoorknobMod.MOD_ID);
 
-    static final Supplier<BlockEntityType<MagicDoorBlockEntity>> MAGIC_DOOR =
+    public static final Supplier<BlockEntityType<MagicDoorBlockEntity>> MAGIC_DOOR =
             BLOCK_ENTITIES.register("magic_door",
                     () -> new BlockEntityType<>(MagicDoorBlockEntity::new, Blocks.MAGIC_DOOR.get())
             );
