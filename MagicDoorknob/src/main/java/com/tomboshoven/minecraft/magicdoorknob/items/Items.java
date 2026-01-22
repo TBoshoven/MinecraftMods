@@ -12,6 +12,7 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -38,10 +39,12 @@ public final class Items {
      * @param toolMaterial The material this doorknob is made of
      * @param mainTexture  The main texture of the doorknob
      * @param ingredients  The ingredients used to build the doorknob
+     * @param netheriteSmithingBase The base item to use to create this one using netherite smithing
      */
-    private static void addDoorknob(String typeName, ToolMaterial toolMaterial, ResourceLocation mainTexture, Supplier<TagKey<Item>> ingredients) {
-        DeferredItem<MagicDoorknobItem> item = ITEMS.registerItem(String.format("magic_doorknob_%s", typeName), (Item.Properties properties) -> new MagicDoorknobItem(properties, typeName, toolMaterial, mainTexture, ingredients));
+    private static Supplier<? extends Item> addDoorknob(String typeName, ToolMaterial toolMaterial, ResourceLocation mainTexture, @Nullable Supplier<TagKey<Item>> ingredients, @Nullable Supplier<? extends Item> netheriteSmithingBase) {
+        DeferredItem<MagicDoorknobItem> item = ITEMS.registerItem(String.format("magic_doorknob_%s", typeName), (Item.Properties properties) -> new MagicDoorknobItem(properties.enchantable(toolMaterial.enchantmentValue()), typeName, toolMaterial, mainTexture, ingredients, netheriteSmithingBase));
         DOORKNOBS.put(typeName, item);
+        return item;
     }
 
     /**
@@ -51,8 +54,20 @@ public final class Items {
      * @param toolMaterial The material this doorknob is made of
      * @param blockName    The name of the block that provides the texture of the doorknob
      */
-    private static void addDoorknob(String typeName, ToolMaterial toolMaterial, String blockName) {
-        addDoorknob(typeName, toolMaterial, ResourceLocation.withDefaultNamespace(String.format("block/%s", blockName)), toolMaterial::repairItems);
+    private static Supplier<? extends Item> addDoorknob(String typeName, ToolMaterial toolMaterial, String blockName) {
+        return addDoorknob(typeName, toolMaterial, ResourceLocation.withDefaultNamespace(String.format("block/%s", blockName)), toolMaterial::repairItems, null);
+    }
+
+    /**
+     * Convenience function for doorknobs using Vanilla materials.
+     *
+     * @param typeName     The type name of the item. Keep this stable, since it is used in NBT data.
+     * @param toolMaterial The material this doorknob is made of
+     * @param blockName    The name of the block that provides the texture of the doorknob
+     * @param netheriteSmithingBase The base item to use to create this one using netherite smithing
+     */
+    private static Supplier<? extends Item> addDoorknob(String typeName, ToolMaterial toolMaterial, String blockName, Supplier<? extends Item> netheriteSmithingBase) {
+        return addDoorknob(typeName, toolMaterial, ResourceLocation.withDefaultNamespace(String.format("block/%s", blockName)), null, netheriteSmithingBase);
     }
 
     public static void register(IEventBus eventBus) {
@@ -72,7 +87,7 @@ public final class Items {
         addDoorknob("stone", ToolMaterial.STONE, "stone");
         addDoorknob("iron", ToolMaterial.IRON, "iron_block");
         addDoorknob("gold", ToolMaterial.GOLD, "gold_block");
-        addDoorknob("diamond", ToolMaterial.DIAMOND, "diamond_block");
-        addDoorknob("netherite", ToolMaterial.NETHERITE, "netherite_block");
+        Supplier<? extends Item> diamondDoorknob = addDoorknob("diamond", ToolMaterial.DIAMOND, "diamond_block");
+        addDoorknob("netherite", ToolMaterial.NETHERITE, "netherite_block", diamondDoorknob);
     }
 }
