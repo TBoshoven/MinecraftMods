@@ -1,5 +1,6 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks;
 
+import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.BlockEntities;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
@@ -28,6 +29,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
+
+import java.util.Optional;
 
 /**
  * Top or bottom part of a magic door.
@@ -97,11 +100,20 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
         breakDoorway(worldIn, pos, state.getValue(HORIZONTAL_FACING), part);
 
         if (part == EnumPartType.TOP) {
-            // Spawn the doorknob
-            Item doorknob = getDoorknob(worldIn, pos);
-            if (doorknob != null) {
-                Containers.dropItemStack(worldIn, pos.getX(), pos.getY() - .5f, pos.getZ(), new ItemStack(doorknob, 1));
-            }
+            worldIn
+                    .getBlockEntity(pos, BlockEntities.MAGIC_DOOR.get())
+                    .ifPresent(blockEntity -> {
+                        // Spawn the doorknob
+                        blockEntity.getDoorknobItem().ifPresentOrElse(
+                                doorknob -> Containers.dropItemStack(worldIn, pos.getX(), pos.getY() - .5f, pos.getZ(), doorknob),
+                                () -> {
+                                    Item doorknob = blockEntity.getDoorknob();
+                                    if (doorknob != null) {
+                                        Containers.dropItemStack(worldIn, pos.getX(), pos.getY() - .5f, pos.getZ(), new ItemStack(doorknob, 1));
+                                    }
+                                }
+                        );
+                    });
 
             // Break the bottom part
             worldIn.destroyBlock(pos.below(), false);
@@ -121,18 +133,20 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
      * @param facing The direction the door is facing in (opposite to doorway)
      * @param part   The part of the doorway we're breaking
      */
-    private static void breakDoorway(Level world, BlockPos pos, Direction facing, MagicDoorwayPartBaseBlock.EnumPartType part) {
+    private void breakDoorway(Level world, BlockPos pos, Direction facing, MagicDoorwayPartBaseBlock.EnumPartType part) {
         Direction doorwayFacing = facing.getOpposite();
 
-        MagicDoorknobItem doorknob = getDoorknob(world, pos);
-        // If the doorknob can't be found for whatever reason, fall back on the maximum possible value
-        double depth = doorknob == null ? MagicDoorknobItem.MAX_DOORWAY_LENGTH : doorknob.getDepth();
+        int depth = world.getBlockEntity(pos, BlockEntities.MAGIC_DOOR.get())
+                .map(MagicDoorBlockEntity::getDoorwayLength)
+                // Fall back on the maximum possible value
+                .orElse(MagicDoorknobItem.MAX_DOORWAY_LENGTH);
 
         MagicDoorwayBlock magicDoorwayBlock = Blocks.MAGIC_DOORWAY.get();
-        for (int i = 1; i <= depth; ++i) {
+        for (int i = 1; i <= depth + 1; ++i) {
             BlockPos blockPos = pos.relative(doorwayFacing, i);
             BlockState state = world.getBlockState(blockPos);
-            if (state.getBlock() == magicDoorwayBlock) {
+            Block block = state.getBlock();
+            if (block == magicDoorwayBlock) {
                 // If it's a crossing doorway, just remove the one direction but don't actually break the block
                 if (state.getValue(MagicDoorwayBlock.OPEN_EAST_WEST) && state.getValue(MagicDoorwayBlock.OPEN_NORTH_SOUTH)) {
                     BlockState newState = state.setValue(facing.getAxis() == Direction.Axis.X ? MagicDoorwayBlock.OPEN_EAST_WEST : MagicDoorwayBlock.OPEN_NORTH_SOUTH, false);
@@ -144,6 +158,10 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
                 else {
                     magicDoorwayBlock.tryClose(world, blockPos);
                 }
+            } else if (block == this && state.getValue(HORIZONTAL_FACING) == doorwayFacing) {
+                // We found an opposite door; just close the pair together
+                world.destroyBlock(blockPos, false);
+                break;
             }
         }
     }
@@ -165,11 +183,51 @@ public class MagicDoorBlock extends MagicDoorwayPartBaseBlock {
         return new MagicDoorBlockEntity(pos, state);
     }
 
+    /**
+     * Flip the direction of the doorway in case it has two doors.
+     * If two doors are found, they swap their doorknobs.
+     * If no second door is found, nothing happens.
+     *
+     * @param level     The level containing the door
+     * @param pos       The position of the top of one of the doors
+     * @param direction The direction of the doorway
+     */
+    private void flipDoorway(Level level, BlockPos pos, Direction direction) {
+        int depth = level.getBlockEntity(pos, BlockEntities.MAGIC_DOOR.get())
+                .map(MagicDoorBlockEntity::getDoorwayLength)
+                // Fall back on the maximum possible value
+                .orElse(MagicDoorknobItem.MAX_DOORWAY_LENGTH);
+
+        if (level.getBlockEntity(pos) instanceof MagicDoorBlockEntity blockEntity) {
+            for (int i = 1; i <= depth + 1; ++i) {
+                BlockPos blockPos = pos.relative(direction, i);
+                BlockState state = level.getBlockState(blockPos);
+                if (state.getBlock() == this && state.getValue(HORIZONTAL_FACING) == direction) {
+                    if (level.getBlockEntity(blockPos) instanceof MagicDoorBlockEntity otherBlockEntity) {
+                        Optional<ItemStack> ownDoorknobOpt = blockEntity.getDoorknobItem();
+                        Optional<ItemStack> otherDoorknobOpt = otherBlockEntity.getDoorknobItem();
+                        ownDoorknobOpt.ifPresent(ownDoorknob -> otherDoorknobOpt.ifPresent(otherDoorknob -> {
+                            blockEntity.setDoorknobItem(otherDoorknob);
+                            otherBlockEntity.setDoorknobItem(ownDoorknob);
+                        }));
+                    }
+                }
+            }
+        }
+    }
+
     @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        if (!worldIn.isClientSide) {
-            worldIn.destroyBlock(pos, false);
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (!level.isClientSide) {
+            // Swap the doors if possible and necessary, moving the doorknob to this door
+            if (level.getBlockEntity(pos) instanceof MagicDoorBlockEntity blockEntity) {
+                if (blockEntity.getDoorknobItem().filter(i -> !i.isEmpty()).isEmpty()) {
+                    BlockPos topPos = state.getValue(PART) == EnumPartType.TOP ? pos : pos.above();
+                    flipDoorway(level, topPos, state.getValue(HORIZONTAL_FACING).getOpposite());
+                }
+            }
+            level.destroyBlock(pos, false);
         }
         return InteractionResult.SUCCESS;
     }

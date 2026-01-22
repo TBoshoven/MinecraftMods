@@ -8,6 +8,7 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorBlockEnt
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.config.Config;
+import com.tomboshoven.minecraft.magicdoorknob.enchantments.Enchantments;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,12 +16,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -28,6 +33,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.TierSortingRegistry;
 
+import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -41,26 +48,32 @@ public class MagicDoorknobItem extends Item {
     // The item material, used for determining doorway generation properties
     private final Tier tier;
     // The ingredient used to make doorknobs of this type
-    private final Supplier<Ingredient> ingredient;
+    @Nullable
+    private final Supplier<Ingredient> craftingIngredient;
+    @Nullable
+    private final Item netheriteSmithingBase;
+
     /**
      * The maximum allowed length of a doorway.
      */
     public static final int MAX_DOORWAY_LENGTH = 128;
 
     /**
-     * @param properties          The item properties
-     * @param typeName            The main texture of the item
-     * @param tier                The item material, used for determining doorway generation properties
-     * @param mainTextureLocation The main material for rendering the block
-     * @param ingredient          The ingredient used to make doorknobs of this type
+     * @param properties            The item properties
+     * @param typeName              The main texture of the item
+     * @param tier                  The item material, used for determining doorway generation properties
+     * @param mainTextureLocation   The main material for rendering the block
+     * @param craftingIngredient    The ingredient used to make doorknobs of this type
+     * @param netheriteSmithingBase The base item for use with netherite smithing
      */
-    MagicDoorknobItem(Item.Properties properties, String typeName, Tier tier, ResourceLocation mainTextureLocation, Supplier<Ingredient> ingredient) {
+    MagicDoorknobItem(Item.Properties properties, String typeName, Tier tier, ResourceLocation mainTextureLocation, @Nullable Supplier<Ingredient> craftingIngredient, @Nullable Item netheriteSmithingBase) {
         super(properties);
 
         this.typeName = typeName;
         this.tier = tier;
         this.mainTextureLocation = mainTextureLocation;
-        this.ingredient = ingredient;
+        this.craftingIngredient = craftingIngredient;
+        this.netheriteSmithingBase = netheriteSmithingBase;
     }
 
     /**
@@ -88,10 +101,23 @@ public class MagicDoorknobItem extends Item {
 
             BlockPlaceContext useContext = new BlockPlaceContext(context);
             if (canPlaceDoor(world, pos, face, useContext)) {
-                placeDoor(world, pos, face);
-                placeDoorway(world, pos, face, useContext);
-                context.getItemInHand().shrink(1);
-                return InteractionResult.SUCCESS;
+                int doorwayLength = placeDoorway(world, pos, face, useContext);
+                if (doorwayLength > 0) {
+                    ItemStack usedItem = context.getItemInHand().copy();
+                    usedItem.setCount(1);
+                    placeDoor(world, pos, face, usedItem, doorwayLength);
+                    Direction oppositeFace = face.getOpposite();
+                    BlockPos otherDoorwayPos = pos.relative(oppositeFace, doorwayLength - 1);
+
+                    Player player = context.getPlayer();
+                    boolean doubleDoor = player != null && EnchantmentHelper.getEnchantmentLevel(Enchantments.DOUBLE.get(), player) > 0;
+
+                    if (doubleDoor && canPlaceDoor(world, otherDoorwayPos, oppositeFace, useContext)) {
+                        placeDoor(world, otherDoorwayPos, oppositeFace, ItemStack.EMPTY, doorwayLength);
+                    }
+                    context.getItemInHand().shrink(1);
+                    return InteractionResult.SUCCESS;
+                }
             }
             return InteractionResult.FAIL;
         }
@@ -102,11 +128,13 @@ public class MagicDoorknobItem extends Item {
      * Place a door at the given position.
      * This does not do any checks to see whether it's allowed.
      *
-     * @param world  The world to place the door in
-     * @param pos    The position of the top part of the door
-     * @param facing The direction the door should be facing
+     * @param world         The world to place the door in
+     * @param pos           The position of the top part of the door
+     * @param facing        The direction the door should be facing
+     * @param doorknob      The doorknob to attach to the door
+     * @param doorwayLength The length of the doorway (used when closing)
      */
-    private void placeDoor(Level world, BlockPos pos, Direction facing) {
+    private void placeDoor(Level world, BlockPos pos, Direction facing, ItemStack doorknob, int doorwayLength) {
         BlockPos doorPos = pos.relative(facing);
         Block block = Blocks.MAGIC_DOOR.get();
         world.setBlockAndUpdate(
@@ -117,6 +145,7 @@ public class MagicDoorknobItem extends Item {
         );
         BlockEntity topBlockEntity = world.getBlockEntity(doorPos);
         if (topBlockEntity instanceof MagicDoorBlockEntity topDoorBlockEntity) {
+            topDoorBlockEntity.setDoorknobItem(doorknob);
             BlockState blockState = world.getBlockState(pos);
             if (blockState.is(Blocks.MAGIC_DOORWAY.get())) {
                 if (world.getBlockEntity(pos) instanceof MagicDoorwayBlockEntity magicDoorwayBlockEntity) {
@@ -127,6 +156,7 @@ public class MagicDoorknobItem extends Item {
                 topDoorBlockEntity.setBaseBlockState(blockState);
             }
             topDoorBlockEntity.setDoorknob(this);
+            topDoorBlockEntity.setDoorwayLength(doorwayLength);
         }
         world.setBlockAndUpdate(
                 doorPos.below(),
@@ -146,6 +176,7 @@ public class MagicDoorknobItem extends Item {
                 bottomDoorBlockEntity.setBaseBlockState(blockState);
             }
             bottomDoorBlockEntity.setDoorknob(this);
+            bottomDoorBlockEntity.setDoorwayLength(doorwayLength);
         }
         world.playSound(null, doorPos, SoundEvents.WOODEN_DOOR_OPEN, SoundSource.BLOCKS, 1, 1);
     }
@@ -158,12 +189,16 @@ public class MagicDoorknobItem extends Item {
      * @param pos        The position of the top part of the starting blocks of the doorway
      * @param facing     The direction the door is facing (outward from the doorway)
      * @param useContext The context for the interaction that triggered this check.
+     * @return The length of the doorway
      */
-    private void placeDoorway(Level world, BlockPos pos, Direction facing, BlockPlaceContext useContext) {
+    private int placeDoorway(Level world, BlockPos pos, Direction facing, BlockPlaceContext useContext) {
         Direction doorwayFacing = facing.getOpposite();
         boolean isNorthSouth = facing == Direction.NORTH || facing == Direction.SOUTH;
-        double depth = getDepth();
-        for (int i = 0; i < depth; ++i) {
+        Player player = useContext.getPlayer();
+        int efficiency = player == null ? 0 : EnchantmentHelper.getBlockEfficiency(player);
+        double depth = getDepth(efficiency);
+        int i;
+        for (i = 0; i < depth; ++i) {
             BlockPos elementPos = pos.relative(doorwayFacing, i);
             if (
                     (isReplaceable(world, elementPos) && !isEmpty(world, elementPos, useContext)) ||
@@ -176,6 +211,7 @@ public class MagicDoorknobItem extends Item {
                 break;
             }
         }
+        return i;
     }
 
     /**
@@ -247,6 +283,21 @@ public class MagicDoorknobItem extends Item {
         return TierSortingRegistry.isCorrectTierForDrops(tier, blockState);
     }
 
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public int getItemEnchantability(ItemStack stack) {
+        return tier.getEnchantmentValue();
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return enchantment == Enchantments.DOUBLE.get() || enchantment == net.minecraft.world.item.enchantment.Enchantments.BLOCK_EFFICIENCY;
+    }
+
     /**
      * @return The location of the main texture of the doorknob
      */
@@ -271,14 +322,21 @@ public class MagicDoorknobItem extends Item {
     /**
      * @return The maximum size of the doorway created by this doorknob
      */
-    public double getDepth() {
-        return Math.min(getTier().getSpeed() * Config.SERVER.doorwayMultiplier.get(), MAX_DOORWAY_LENGTH);
+    public double getDepth(double efficiency) {
+        return Math.min((getTier().getSpeed() + efficiency) * Config.SERVER.doorwayMultiplier.get(), MAX_DOORWAY_LENGTH);
     }
 
     /**
      * @return The ingredient used to make doorknobs of this type
      */
-    public Ingredient getIngredient() {
-        return ingredient.get();
+    public @Nullable Ingredient getCraftingIngredient() {
+        return Optional.ofNullable(craftingIngredient).map(Supplier::get).orElse(null);
+    }
+
+    /**
+     * @return The base item to use for netherite smithing into this item
+     */
+    public @Nullable Item getNetheriteSmithingBase() {
+        return netheriteSmithingBase;
     }
 }
