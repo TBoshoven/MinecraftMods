@@ -2,8 +2,8 @@ package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.renderer.block.model.BlockModelDefinition;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelDispatcher;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.world.level.block.Block;
@@ -21,11 +21,11 @@ import java.util.function.Supplier;
  * @param baseModelDefinition The model definition to wrap.
  */
 public record TexturedBlockModelDefinition(
-        BlockModelDefinition baseModelDefinition) implements CustomBlockModelDefinition {
+        BlockStateModelDispatcher baseModelDefinition) implements CustomBlockModelDefinition {
     /**
      * Codec for the textured block model definition.
      */
-    public static final MapCodec<TexturedBlockModelDefinition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(BlockModelDefinition.VANILLA_CODEC.forGetter(TexturedBlockModelDefinition::baseModelDefinition)).apply(instance, TexturedBlockModelDefinition::new));
+    public static final MapCodec<TexturedBlockModelDefinition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(BlockStateModelDispatcher.VANILLA_CODEC.forGetter(TexturedBlockModelDefinition::baseModelDefinition)).apply(instance, TexturedBlockModelDefinition::new));
 
     /**
      * @return A new instance of the desired texture mapper.
@@ -63,7 +63,7 @@ public record TexturedBlockModelDefinition(
             @Override
             public BlockStateModel bake(BlockState state, ModelBaker baker) {
                 @SuppressWarnings("deprecation") ModelBaker texturedBaker = new TexturedModelBaker(baker, TextureAtlas.LOCATION_BLOCKS);
-                return new TexturedBlockStateModel(base.bake(state, texturedBaker), textureMapper, texturedBaker.sprites());
+                return new TexturedBlockStateModel(base.bake(state, texturedBaker), textureMapper, texturedBaker.materials());
             }
 
             @Override

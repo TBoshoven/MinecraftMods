@@ -1,7 +1,7 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
-import com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty;
-import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.MaterialInfoSource;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelMaterialInfoProperty;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.resources.Identifier;
@@ -23,7 +23,7 @@ class ModelDataTextureMapper implements TextureMapper {
             return new BlockStateTextureMapper.Empty();
         }
 
-        Map<ModelTextureProperty, TextureSourceReference> lookup = distill(modelData);
+        Map<ModelMaterialInfoProperty, MaterialInfoSource> lookup = distill(modelData);
         return new BlockStateTextureMapper() {
             @Override
             public Object getMappingKey() {
@@ -32,9 +32,9 @@ class ModelDataTextureMapper implements TextureMapper {
             }
 
             @Override
-            public @Nullable TextureSourceReference mapSprite(PropertySprite spriteToMap) {
+            public @Nullable MaterialInfoSource mapSprite(PropertySprite spriteToMap) {
                 Identifier name = spriteToMap.contents().name();
-                ModelProperty<TextureSourceReference> modelProperty = ModelTextureProperty.get(name);
+                ModelProperty<MaterialInfoSource> modelProperty = ModelMaterialInfoProperty.get(name);
                 return lookup.get(modelProperty);
             }
         };
@@ -47,13 +47,13 @@ class ModelDataTextureMapper implements TextureMapper {
      * @param modelData The model data to distill down.
      * @return A map containing all the potentially relevant properties and their values.
      */
-    private static Map<ModelTextureProperty, TextureSourceReference> distill(ModelData modelData) {
-        Map<ModelTextureProperty, TextureSourceReference> result = new Reference2ObjectArrayMap<>();
+    private static Map<ModelMaterialInfoProperty, MaterialInfoSource> distill(ModelData modelData) {
+        Map<ModelMaterialInfoProperty, MaterialInfoSource> result = new Reference2ObjectArrayMap<>();
         for (ModelProperty<?> property : modelData.getProperties()) {
-            if (property instanceof ModelTextureProperty modelTextureProperty) {
-                TextureSourceReference value = modelData.get(modelTextureProperty);
+            if (property instanceof ModelMaterialInfoProperty modelMaterialInfoProperty) {
+                MaterialInfoSource value = modelData.get(modelMaterialInfoProperty);
                 if (value != null) {
-                    result.put(modelTextureProperty, value);
+                    result.put(modelMaterialInfoProperty, value);
                 }
             }
         }

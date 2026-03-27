@@ -5,11 +5,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.CachedPerspectiveProjectionMatrixBuffer;
+import net.minecraft.client.renderer.Projection;
+import net.minecraft.client.renderer.ProjectionMatrixBuffer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.entity.Entity;
 
 /**
@@ -29,13 +30,15 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
     /**
      * The projection matrix to use inside the reflection.
      */
-    private final CachedPerspectiveProjectionMatrixBuffer cachedProjectionMatrixBuffer = new CachedPerspectiveProjectionMatrixBuffer("Reflection", .05f, 50f);
+    private final ProjectionMatrixBuffer projectionMatrixBuffer = new ProjectionMatrixBuffer("Reflection");
+    private final Projection projection = new Projection();
 
     /**
      * @param entity The entity to render.
      */
     public ReflectionRenderer(E entity) {
         this.entity = entity;
+        projection.setupPerspective(.05f, 50f, 90, 16, 32);
         EntityRenderer<? super E, ?> entityRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity);
         statefulRenderer = new StatefulRenderer<>(entityRenderer);
     }
@@ -54,7 +57,7 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
     public void setUp() {
         // Re-initialize the projection matrix to keep full control over the perspective
         RenderSystem.backupProjectionMatrix();
-        RenderSystem.setProjectionMatrix(cachedProjectionMatrixBuffer.getBuffer(16, 32, 90), ProjectionType.PERSPECTIVE);
+        RenderSystem.setProjectionMatrix(projectionMatrixBuffer.getBuffer(projection), ProjectionType.PERSPECTIVE);
     }
 
     @Override
@@ -84,7 +87,7 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
 
     @Override
     public void close() {
-        cachedProjectionMatrixBuffer.close();
+        projectionMatrixBuffer.close();
     }
 
     /**

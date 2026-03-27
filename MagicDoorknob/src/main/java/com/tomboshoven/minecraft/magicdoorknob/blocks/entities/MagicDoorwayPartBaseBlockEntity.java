@@ -1,11 +1,14 @@
 package com.tomboshoven.minecraft.magicdoorknob.blocks.entities;
 
+import com.mojang.blaze3d.platform.Transparency;
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
 import com.tomboshoven.minecraft.magicdoorknob.items.MagicDoorknobItem;
-import com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty;
-import com.tomboshoven.minecraft.magicdoorknob.modeldata.TextureSourceReference;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelMaterialInfoProperty;
+import com.tomboshoven.minecraft.magicdoorknob.modeldata.MaterialInfoSource;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +29,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import org.jspecify.annotations.Nullable;
 
 import static com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod.MOD_ID;
-import static com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelTextureProperty.PROPERTY_NAMESPACE;
+import static com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelMaterialInfoProperty.PROPERTY_NAMESPACE;
 
 /**
  * Base class for block entities that make up magic doorways.
@@ -35,17 +38,17 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     /**
      * The main texture of the doorway (based on base block).
      */
-    public static final ModelTextureProperty TEXTURE_MAIN = ModelTextureProperty.get(Identifier.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_main"));
+    public static final ModelMaterialInfoProperty TEXTURE_MAIN = ModelMaterialInfoProperty.get(Identifier.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_main"));
 
     /**
      * The highlight texture of the doorway (based on doorknob).
      */
-    public static final ModelTextureProperty TEXTURE_HIGHLIGHT = ModelTextureProperty.get(Identifier.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_highlight"));
+    public static final ModelMaterialInfoProperty TEXTURE_HIGHLIGHT = ModelMaterialInfoProperty.get(Identifier.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_highlight"));
 
     /**
      * The particle texture of the doorway (based on base block particle texture).
      */
-    public static final ModelTextureProperty TEXTURE_PARTICLE = ModelTextureProperty.get(Identifier.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_particle"));
+    public static final ModelMaterialInfoProperty TEXTURE_PARTICLE = ModelMaterialInfoProperty.get(Identifier.fromNamespaceAndPath(PROPERTY_NAMESPACE, "texture_particle"));
 
     // The block we're basing the appearance of this block on.
     private BlockState baseBlockState = Blocks.AIR.defaultBlockState();
@@ -110,30 +113,33 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
     public ModelData getModelData() {
         // Get the base block texture
         Level level = getLevel();
-        BlockPos blockPos = getBlockPos();
+        if (level instanceof BlockAndTintGetter clientLevel) {
+            BlockPos blockPos = getBlockPos();
 
-        // Material to use when no proper material can be found, such as with air.
-        @SuppressWarnings("deprecation") final Material emptyMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, Identifier.fromNamespaceAndPath(MOD_ID, "block/empty"));
+            // Sprite to use when no proper material can be found, such as with air.
+            final Material emptySprite = new Material(Identifier.fromNamespaceAndPath(MOD_ID, "block/empty"), true);
 
-        // Fallback chain is block texture -> empty
-        TextureSourceReference fallbackReference = new TextureSourceReference.MaterialTextureSource(emptyMaterial);
-        TextureSourceReference particleTextureSourceReference = new TextureSourceReference.BlockParticle(level, blockPos, baseBlockState, fallbackReference);
-        TextureSourceReference blockTextureSourceReference = new TextureSourceReference.BlockLookup(level, blockPos, baseBlockState, fallbackReference);
+            // Fallback chain is block texture -> empty
+            MaterialInfoSource fallbackReference = new MaterialInfoSource.MaterialTextureSource(emptySprite, Transparency.TRANSLUCENT, -1, false, 0, true);
+            MaterialInfoSource particleMaterialInfoSource = new MaterialInfoSource.BlockParticle(clientLevel, blockPos, baseBlockState, fallbackReference);
+            MaterialInfoSource blockMaterialInfoSource = new MaterialInfoSource.BlockLookup(clientLevel, blockPos, baseBlockState, fallbackReference);
 
-        TextureSourceReference doorknobTextureSourceReference;
-        if (doorknob == null) {
-            // This can happen when we draw a frame before receiving the block entity data from the server.
-            // This makes it a bit less conspicuous.
-            doorknobTextureSourceReference = blockTextureSourceReference;
-        } else {
-            doorknobTextureSourceReference = new TextureSourceReference.MaterialTextureSource(doorknob.getMainMaterial());
+            MaterialInfoSource doorknobMaterialInfoSource;
+            if (doorknob == null) {
+                // This can happen when we draw a frame before receiving the block entity data from the server.
+                // This makes it a bit less conspicuous.
+                doorknobMaterialInfoSource = blockMaterialInfoSource;
+            } else {
+                doorknobMaterialInfoSource = new MaterialInfoSource.MaterialTextureSource(new Material(doorknob.getMainSpriteId(), false), Transparency.NONE, -1, false, 0, true);
+            }
+
+            return ModelData.builder()
+                    .with(TEXTURE_MAIN, blockMaterialInfoSource)
+                    .with(TEXTURE_HIGHLIGHT, doorknobMaterialInfoSource)
+                    .with(TEXTURE_PARTICLE, particleMaterialInfoSource)
+                    .build();
         }
-
-        return ModelData.builder()
-                .with(TEXTURE_MAIN, blockTextureSourceReference)
-                .with(TEXTURE_HIGHLIGHT, doorknobTextureSourceReference)
-                .with(TEXTURE_PARTICLE, particleTextureSourceReference)
-                .build();
+        return ModelData.EMPTY;
     }
 
     /**

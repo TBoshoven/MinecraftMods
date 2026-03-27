@@ -1,22 +1,26 @@
 package com.tomboshoven.minecraft.magicmirror.client.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.resources.model.cuboid.ItemTransform;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
+import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
+import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * A renderer to render an entity using a different model.
@@ -201,25 +205,23 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
 
             void setUsesBlockLight(boolean usesBlockLight);
 
-            @Nullable
-            TextureAtlasSprite getParticleIcon();
+            Material.@Nullable Baked getParticleMaterial();
 
-            void setParticleIcon(@Nullable TextureAtlasSprite particleIcon);
+            void setParticleMaterial(Material.@Nullable Baked particleMaterial);
 
-            ItemTransform getTransform();
+            ItemTransform getItemTransform();
 
-            void setTransform(ItemTransform transform);
+            void setItemTransform(ItemTransform itemTransform);
 
-            @Nullable
-            RenderType getRenderType();
+            Matrix4f getLocalTransform();
 
-            void setRenderType(@Nullable RenderType renderType);
+            void setLocalTransform(Matrix4fc transform);
 
             ItemStackRenderState.FoilType getFoilType();
 
             void setFoilType(ItemStackRenderState.FoilType foilType);
 
-            int[] prepareTintLayers(int length);
+            IntList tintLayers();
 
             @Nullable
             SpecialModelRenderer<Object> getSpecialRenderer();
@@ -229,6 +231,10 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
             @Nullable
             Object getArgumentForSpecialRendering();
 
+            Supplier<Vector3fc[]> getExtents();
+
+            void setExtents(Supplier<Vector3fc[]> extents);
+
             /**
              * Copy the contents of an item render state layer into this item render state layer.
              *
@@ -237,17 +243,16 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
             default void copyFrom(OffModelRenderer.CopyableItemStackRenderState.CopyableLayerRenderState other) {
                 prepareQuadList().addAll(other.prepareQuadList());
                 setUsesBlockLight(other.getUsesBlockLight());
-                setParticleIcon(other.getParticleIcon());
-                setTransform(other.getTransform());
-                setRenderType(other.getRenderType());
+                setParticleMaterial(other.getParticleMaterial());
+                setItemTransform(other.getItemTransform());
+                setLocalTransform(other.getLocalTransform());
                 setFoilType(other.getFoilType());
-                int[] otherTintLayers = prepareTintLayers(0);
-                int[] tintLayer = prepareTintLayers(otherTintLayers.length);
-                System.arraycopy(otherTintLayers, 0, tintLayer, 0, otherTintLayers.length);
+                tintLayers().addAll(other.tintLayers());
                 SpecialModelRenderer<Object> specialRenderer = other.getSpecialRenderer();
                 if (specialRenderer != null) {
                     setupSpecialModel(specialRenderer, other.getArgumentForSpecialRendering());
                 }
+                setExtents(other.getExtents());
             }
         }
     }

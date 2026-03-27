@@ -16,8 +16,9 @@ import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.client.renderer.block.model.VariantMutator;
-import net.minecraft.client.renderer.item.BlockModelWrapper;
+import net.minecraft.client.renderer.block.dispatch.VariantMutator;
+import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
@@ -28,6 +29,7 @@ import net.neoforged.neoforge.client.model.generators.template.FaceBuilder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -306,7 +308,6 @@ class Models extends ModelProvider {
         // Note: door facing is outward, so we need to face east, not west
         ExtendedModelTemplateBuilder builder = ExtendedModelTemplateBuilder.builder()
                 .parent(Identifier.withDefaultNamespace("block/block"))
-                .renderType("translucent")
                 .requiredTextureSlot(MAIN_TEXTURE)
                 .requiredTextureSlot(HIGHLIGHT_TEXTURE)
                 .requiredTextureSlot(TextureSlot.PARTICLE)
@@ -387,7 +388,6 @@ class Models extends ModelProvider {
         BiConsumer<Direction, FaceBuilder> highlightTextureAction = (d, faceBuilder) -> faceBuilder.texture(HIGHLIGHT_TEXTURE);
         ExtendedModelTemplateBuilder builder = ExtendedModelTemplateBuilder.builder()
                 .parent(Identifier.withDefaultNamespace("block/block"))
-                .renderType("translucent")
                 .requiredTextureSlot(MAIN_TEXTURE)
                 .requiredTextureSlot(HIGHLIGHT_TEXTURE)
                 .requiredTextureSlot(TextureSlot.PARTICLE);
@@ -431,7 +431,6 @@ class Models extends ModelProvider {
         BiConsumer<Direction, FaceBuilder> highlightTextureAction = (d, faceBuilder) -> faceBuilder.texture(HIGHLIGHT_TEXTURE);
         ExtendedModelTemplateBuilder builder = ExtendedModelTemplateBuilder.builder()
                 .parent(Identifier.withDefaultNamespace("block/block"))
-                .renderType("translucent")
                 .requiredTextureSlot(MAIN_TEXTURE)
                 .requiredTextureSlot(HIGHLIGHT_TEXTURE)
                 .requiredTextureSlot(TextureSlot.PARTICLE);
@@ -472,7 +471,6 @@ class Models extends ModelProvider {
         BiConsumer<Direction, FaceBuilder> highlightTextureAction = (d, faceBuilder) -> faceBuilder.texture(HIGHLIGHT_TEXTURE);
         ExtendedModelTemplateBuilder builder = ExtendedModelTemplateBuilder.builder()
                 .parent(Identifier.withDefaultNamespace("block/block"))
-                .renderType("translucent")
                 .requiredTextureSlot(MAIN_TEXTURE)
                 .requiredTextureSlot(HIGHLIGHT_TEXTURE)
                 .requiredTextureSlot(TextureSlot.PARTICLE);
@@ -526,23 +524,26 @@ class Models extends ModelProvider {
         ExtendedModelTemplate doorknobTemplate = doorknobTemplate(doorknobBaseModelLocation);
         for (DeferredItem<MagicDoorknobItem> item : Items.DOORKNOBS.values()) {
             MagicDoorknobItem doorknobItem = item.get();
-            Identifier texture = doorknobItem.getMainMaterial().texture();
+            Identifier texture = doorknobItem.getMainSpriteId();
             Identifier modelLocation = doorknobTemplate.create(
                     doorknobItem,
-                    new TextureMapping().put(MAIN_TEXTURE, texture).put(TextureSlot.PARTICLE, texture),
+                    new TextureMapping()
+                            .put(MAIN_TEXTURE, new Material(texture, false))
+                            .put(TextureSlot.PARTICLE, new Material(texture, false)),
                     itemModels.modelOutput
             );
-            itemModels.itemModelOutput.accept(doorknobItem, new BlockModelWrapper.Unbaked(
+            itemModels.itemModelOutput.accept(doorknobItem, new CuboidItemModelWrapper.Unbaked(
                     modelLocation,
+                    Optional.empty(),
                     Collections.emptyList()
             ));
         }
 
         // Door blocks
         TextureMapping panelTextureMapping = new TextureMapping()
-                .put(TextureSlot.PARTICLE, MagicDoorwayPartBaseBlockEntity.TEXTURE_PARTICLE.getName())
-                .put(MAIN_TEXTURE, MagicDoorwayPartBaseBlockEntity.TEXTURE_MAIN.getName())
-                .put(HIGHLIGHT_TEXTURE, MagicDoorwayPartBaseBlockEntity.TEXTURE_HIGHLIGHT.getName());
+                .put(TextureSlot.PARTICLE, new Material(MagicDoorwayPartBaseBlockEntity.TEXTURE_PARTICLE.getName(), false))
+                .put(MAIN_TEXTURE, new Material(MagicDoorwayPartBaseBlockEntity.TEXTURE_MAIN.getName(), false))
+                .put(HIGHLIGHT_TEXTURE, new Material(MagicDoorwayPartBaseBlockEntity.TEXTURE_HIGHLIGHT.getName(), false));
         doorTemplate(MagicDoorwayPartBaseBlock.EnumPartType.TOP).create(doorTopModelLocation, panelTextureMapping, blockModels.modelOutput);
         doorTemplate(MagicDoorwayPartBaseBlock.EnumPartType.BOTTOM).create(doorBottomModelLocation, panelTextureMapping, blockModels.modelOutput);
 

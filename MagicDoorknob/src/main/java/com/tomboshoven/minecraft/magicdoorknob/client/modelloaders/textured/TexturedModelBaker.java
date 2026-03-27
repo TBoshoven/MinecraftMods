@@ -1,9 +1,9 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvedModel;
-import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.MaterialBaker;
 import net.minecraft.resources.Identifier;
 
 /**
@@ -12,8 +12,13 @@ import net.minecraft.resources.Identifier;
 public class TexturedModelBaker implements ModelBaker {
     // The original model baker on which our implementation is based.
     private final ModelBaker baseBaker;
+    // The atlas to use when generating property sprites
     private final Identifier supportedAtlas;
 
+    /**
+     * @param baseBaker      The model baker to wrap
+     * @param supportedAtlas The atlas to use when generating property sprites
+     */
     public TexturedModelBaker(ModelBaker baseBaker, Identifier supportedAtlas) {
         this.baseBaker = baseBaker;
         this.supportedAtlas = supportedAtlas;
@@ -33,13 +38,8 @@ public class TexturedModelBaker implements ModelBaker {
     }
 
     @Override
-    public BlockModelPart missingBlockModelPart() {
+    public BlockStateModelPart missingBlockModelPart() {
         return baseBaker.missingBlockModelPart();
-    }
-
-    @Override
-    public PartCache parts() {
-        return baseBaker.parts();
     }
 
     @Override
@@ -48,7 +48,12 @@ public class TexturedModelBaker implements ModelBaker {
     }
 
     @Override
-    public SpriteGetter sprites() {
-        return new TexturedSpriteGetter(baseBaker.sprites(), supportedAtlas);
+    public MaterialBaker materials() {
+        return new TexturedMaterialBaker(baseBaker.materials(), supportedAtlas);
+    }
+
+    @Override
+    public Interner interner() {
+        return baseBaker.interner();
     }
 }

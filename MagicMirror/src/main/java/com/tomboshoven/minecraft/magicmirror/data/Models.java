@@ -10,6 +10,7 @@ import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
@@ -79,15 +80,15 @@ class Models extends ModelProvider {
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         Identifier magicMirrorModelIdentifier = modLocation("block/magic_mirror");
-        Identifier textureFrontIdentifier = modLocation("block/mirror");
-        Identifier textureBackIdentifier = modLocation("block/mirror_back");
+        Material textureFrontMaterial = new Material(modLocation("block/mirror"));
+        Material textureBackMaterial = new Material(modLocation("block/mirror_back"));
 
         magicMirrorPartTemplate().create(
                 magicMirrorModelIdentifier,
                 new TextureMapping()
-                        .put(TextureSlot.FRONT, textureFrontIdentifier)
-                        .put(TextureSlot.BACK, textureBackIdentifier)
-                        .putForced(TextureSlot.PARTICLE, textureFrontIdentifier),
+                        .put(TextureSlot.FRONT, textureFrontMaterial)
+                        .put(TextureSlot.BACK, textureBackMaterial)
+                        .putForced(TextureSlot.PARTICLE, textureFrontMaterial),
                 blockModels.modelOutput
         );
 

@@ -3,7 +3,6 @@ package com.tomboshoven.minecraft.magicmirror.client.reflection;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorModifiersUpdatedEvent;
 import com.tomboshoven.minecraft.magicmirror.events.MagicMirrorReflectedEntityEvent;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
@@ -67,20 +66,18 @@ public final class ReflectionManager {
      */
     @SubscribeEvent
     public static void renderReflections(RenderFrameEvent.Pre event) {
-        if (!Minecraft.getInstance().noRender) {
-            for (Reflection reflection : reflections.values()) {
-                reflection.updateState(event.getPartialTick().getRealtimeDeltaTicks());
-                reflection.render();
-            }
-
-            // Swap out the reflection maps
-            Map<MagicMirrorCoreBlockEntity, Reflection> oldReflections = reflections;
-            // Deactivate all reflections we no longer need.
-            oldReflections.entrySet().stream().filter(entry -> !reflectionNext.containsKey(entry.getKey())).forEach(entry -> entry.getValue().stopReflecting());
-            oldReflections.clear();
-            reflections = reflectionNext;
-            reflectionNext = oldReflections;
+        for (Reflection reflection : reflections.values()) {
+            reflection.updateState(event.getPartialTick().getRealtimeDeltaTicks());
+            reflection.render();
         }
+
+        // Swap out the reflection maps
+        Map<MagicMirrorCoreBlockEntity, Reflection> oldReflections = reflections;
+        // Deactivate all reflections we no longer need.
+        oldReflections.entrySet().stream().filter(entry -> !reflectionNext.containsKey(entry.getKey())).forEach(entry -> entry.getValue().stopReflecting());
+        oldReflections.clear();
+        reflections = reflectionNext;
+        reflectionNext = oldReflections;
     }
 
     /**

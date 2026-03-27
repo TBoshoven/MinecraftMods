@@ -69,7 +69,7 @@ public abstract class MagicMirrorActiveBlock extends MagicMirrorBaseBlock implem
             ItemStack originalHeldItem = heldItem.copy();
             modifier.value().apply(blockEntity, heldItem);
             CustomPacketPayload message = new MagicMirrorCoreBlock.MessageAttachModifier(blockEntity.getBlockPos(), originalHeldItem, modifier.key().identifier());
-            PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(blockEntity.getBlockPos()), message);
+            PacketDistributor.sendToPlayersTrackingChunk(serverLevel, ChunkPos.containing(blockEntity.getBlockPos()), message);
         }
     }
 

@@ -130,7 +130,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
                     Level level = blockEntity.getLevel();
                     if (level instanceof ServerLevel serverLevel) {
                         CustomPacketPayload message = new MessageEquip(pos, equipmentSlot, heldItem.copy());
-                        PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(pos), message);
+                        PacketDistributor.sendToPlayersTrackingChunk(serverLevel, ChunkPos.containing(pos), message);
                     }
 
                     // Server side
@@ -158,7 +158,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
         Level world = blockEntity.getLevel();
         if (world instanceof ServerLevel serverLevel) {
             CustomPacketPayload mirrorMessage = new MessageSwapMirror(blockEntity, player);
-            PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(pos), mirrorMessage);
+            PacketDistributor.sendToPlayersTrackingChunk(serverLevel, ChunkPos.containing(pos), mirrorMessage);
         }
         CustomPacketPayload playerMessage = new MessageSwapPlayer(this, player);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, playerMessage);
@@ -194,9 +194,7 @@ public class ArmorMagicMirrorBlockEntityModifier extends ItemBasedMagicMirrorBlo
         static {
             for (int i = 0; i < SLOTS.length; ++i) {
                 EquipmentSlot equipmentSlot = Inventory.EQUIPMENT_SLOT_MAPPING.get(SLOTS[i]);
-                if (equipmentSlot != null) {
-                    INDEX_BY_SLOT.put(equipmentSlot, i);
-                }
+                INDEX_BY_SLOT.put(equipmentSlot, i);
             }
         }
 

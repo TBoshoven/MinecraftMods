@@ -8,11 +8,11 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.AtlasManager;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.sprite.AtlasManager;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.DyeColor;
@@ -45,17 +45,17 @@ public class BannerReflectionRendererModifier<E extends Entity> extends Reflecti
 
         PoseStack poseStack = new PoseStack();
         AtlasManager atlasManager = Minecraft.getInstance().getAtlasManager();
-        Material baseMaterial = Sheets.BANNER_BASE;
-        RenderType baseRenderType = baseMaterial.renderType(RenderTypes::entityNoOutline);
-        TextureAtlasSprite baseSprite = atlasManager.get(baseMaterial);
+        SpriteId baseSpriteId = Sheets.BANNER_BASE;
+        RenderType baseRenderType = baseSpriteId.renderType(RenderTypes::bannerPattern);
+        TextureAtlasSprite baseSprite = atlasManager.get(baseSpriteId);
 
         submitNodeCollector.submitCustomGeometry(poseStack, baseRenderType, (pose, vertexConsumer) -> submitLayer(vertexConsumer, baseSprite, baseColor));
 
         for (BannerPatternLayers.Layer layer : bannerPatternLayers.layers()) {
             Holder<BannerPattern> bannerPattern = layer.pattern();
-            Material layerMaterial = Sheets.getBannerMaterial(bannerPattern);
-            RenderType layerRenderType = layerMaterial.renderType(RenderTypes::entityNoOutline);
-            TextureAtlasSprite layerSprite = atlasManager.get(layerMaterial);
+            SpriteId layerSpriteId = Sheets.getBannerSprite(bannerPattern);
+            RenderType layerRenderType = layerSpriteId.renderType(RenderTypes::bannerPattern);
+            TextureAtlasSprite layerSprite = atlasManager.get(layerSpriteId);
 
             submitNodeCollector.submitCustomGeometry(poseStack, layerRenderType, (pose, vertexConsumer) -> submitLayer(vertexConsumer, layerSprite, layer.color()));
         }

@@ -9,41 +9,41 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Model property pointing to a texture.
+ * Model property pointing to a material.
  */
-public final class ModelTextureProperty extends ModelProperty<TextureSourceReference> {
+public final class ModelMaterialInfoProperty extends ModelProperty<MaterialInfoSource> {
     // The namespace of the properties; used in model definitions
     public static final @NonNls String PROPERTY_NAMESPACE = "property";
 
-    // Lazily filled map of model texture properties.
+    // Lazily filled map of material info properties.
     // Can't just use equality as they are used in an IdentityHashMap.
-    private static final Map<Identifier, ModelTextureProperty> PROPERTIES = Maps.newHashMap();
+    private static final Map<Identifier, ModelMaterialInfoProperty> PROPERTIES = Maps.newHashMap();
 
     private final Identifier name;
 
     /**
      * @param name The name of the property
      */
-    private ModelTextureProperty(Identifier name) {
+    private ModelMaterialInfoProperty(Identifier name) {
         this.name = name;
     }
 
     /**
-     * Get the model texture property with the given name.
+     * Get the model material info property with the given name.
      * It will be created if it hasn't been requested before.
      *
      * @param name The name of the property to get.
      * @return The requested property.
      */
-    public static ModelTextureProperty get(Identifier name) {
-        return PROPERTIES.computeIfAbsent(name, ModelTextureProperty::new);
+    public static ModelMaterialInfoProperty get(Identifier name) {
+        return PROPERTIES.computeIfAbsent(name, ModelMaterialInfoProperty::new);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ModelTextureProperty that = (ModelTextureProperty) o;
+        ModelMaterialInfoProperty that = (ModelMaterialInfoProperty) o;
         return name.equals(that.name);
     }
 
@@ -53,7 +53,7 @@ public final class ModelTextureProperty extends ModelProperty<TextureSourceRefer
     }
 
     /**
-     * @return The name (resource location) for this texture property.
+     * @return The name (resource location) for this property.
      */
     public Identifier getName() {
         return name;

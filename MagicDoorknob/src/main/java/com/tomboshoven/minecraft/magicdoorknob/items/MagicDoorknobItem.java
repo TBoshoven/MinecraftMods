@@ -9,8 +9,6 @@ import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayBlock
 import com.tomboshoven.minecraft.magicdoorknob.blocks.entities.MagicDoorwayPartBaseBlockEntity;
 import com.tomboshoven.minecraft.magicdoorknob.config.Config;
 import com.tomboshoven.minecraft.magicdoorknob.enchantments.Enchantments;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
@@ -42,7 +40,7 @@ import java.util.function.Supplier;
  */
 public class MagicDoorknobItem extends Item {
     // The main material for rendering the item
-    private final Identifier mainTextureIdentifier;
+    private final Identifier mainSpriteId;
     // The name of the type of item (used in NBT data; do not modify)
     private final String typeName;
     // The item material, used for determining doorway generation properties
@@ -62,16 +60,16 @@ public class MagicDoorknobItem extends Item {
      * @param properties            The item properties
      * @param typeName              The main texture of the item
      * @param toolMaterial          The item material, used for determining doorway generation properties
-     * @param mainTextureIdentifier The main material for rendering the block
+     * @param mainSpriteId          The main material for rendering the block
      * @param craftingIngredients   The ingredient used to make doorknobs of this type
      * @param netheriteSmithingBase The base item for use with netherite smithing
      */
-    MagicDoorknobItem(Item.Properties properties, String typeName, ToolMaterial toolMaterial, Identifier mainTextureIdentifier, @Nullable Supplier<TagKey<Item>> craftingIngredients, @Nullable Supplier<? extends Item> netheriteSmithingBase) {
+    MagicDoorknobItem(Item.Properties properties, String typeName, ToolMaterial toolMaterial, Identifier mainSpriteId, @Nullable Supplier<TagKey<Item>> craftingIngredients, @Nullable Supplier<? extends Item> netheriteSmithingBase) {
         super(properties);
 
         this.typeName = typeName;
         this.toolMaterial = toolMaterial;
-        this.mainTextureIdentifier = mainTextureIdentifier;
+        this.mainSpriteId = mainSpriteId;
         this.craftingIngredients = craftingIngredients;
         this.netheriteSmithingBase = netheriteSmithingBase;
     }
@@ -281,9 +279,9 @@ public class MagicDoorknobItem extends Item {
     /**
      * @return The location of the main texture of the doorknob
      */
-    public Material getMainMaterial() {
-        //noinspection deprecation
-        return new Material(TextureAtlas.LOCATION_BLOCKS, mainTextureIdentifier);
+    public Identifier getMainSpriteId() {
+        // TODO: This should already be a material, but that's a client-only thing
+        return mainSpriteId;
     }
 
     /**

@@ -2,7 +2,7 @@ package com.tomboshoven.minecraft.magicdoorknob.data.textured;
 
 import com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured.TexturedBlockModelDefinition;
 import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator;
-import net.minecraft.client.renderer.block.model.BlockModelDefinition;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelDispatcher;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -36,8 +36,8 @@ public class TexturedBlockModelGenerator implements BlockModelDefinitionGenerato
     }
 
     @Override
-    public BlockModelDefinition create() {
+    public BlockStateModelDispatcher create() {
         // Custom block model definitions need to be wrapped inside regular block model definitions.
-        return new BlockModelDefinition(new TexturedBlockModelDefinition(baseGenerator.create()));
+        return new BlockStateModelDispatcher(new TexturedBlockModelDefinition(baseGenerator.create()));
     }
 }

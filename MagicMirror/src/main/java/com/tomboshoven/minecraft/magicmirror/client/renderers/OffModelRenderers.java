@@ -193,6 +193,7 @@ public class OffModelRenderers {
             super.mapRenderState(sourceState, targetState);
 
             targetState.mainArm = sourceState.mainArm;
+            targetState.attackArm = sourceState.attackArm;
             targetState.rightArmPose = sourceState.rightArmPose;
             if (targetState.rightHandItemState instanceof OffModelRenderer.CopyableItemStackRenderState targetItemStackRenderState) {
                 if (sourceState.rightHandItemState instanceof OffModelRenderer.CopyableItemStackRenderState sourceItemStackRenderState) {
@@ -229,7 +230,6 @@ public class OffModelRenderers {
             targetState.speedValue = sourceState.speedValue;
             targetState.maxCrossbowChargeDuration = sourceState.maxCrossbowChargeDuration;
             targetState.ticksUsingItem = sourceState.ticksUsingItem;
-            targetState.attackArm = sourceState.attackArm;
             targetState.useItemHand = sourceState.useItemHand;
             targetState.isCrouching = sourceState.isCrouching;
             targetState.isFallFlying = sourceState.isFallFlying;
