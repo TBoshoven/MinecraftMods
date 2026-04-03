@@ -27,8 +27,8 @@ public final class DataGenerators {
 
         boolean includeServer = event.includeServer();
         boolean includeClient = event.includeClient();
-        generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new DatapackBuiltinEntriesProvider(output, lookupProvider, Enchantments.builder(), Set.of(MagicDoorknobMod.MOD_ID)));
-        generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new EnchantmentTags(output, lookupProvider, existingFileHelper));
+        DatapackBuiltinEntriesProvider enchantmentDataProvider = generator.addProvider(includeServer, (DataProvider.Factory<DatapackBuiltinEntriesProvider>) output -> new DatapackBuiltinEntriesProvider(output, lookupProvider, Enchantments.builder(), Set.of(MagicDoorknobMod.MOD_ID)));
+        generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new EnchantmentTags(output, enchantmentDataProvider.getRegistryProvider(), existingFileHelper));
         BlockTags blockTags = new BlockTags(generator.getPackOutput(), lookupProvider, existingFileHelper);
         generator.addProvider(includeServer, blockTags);
         generator.addProvider(includeServer, (DataProvider.Factory<? extends DataProvider>) output -> new ItemTags(output, lookupProvider, blockTags.contentsGetter(), existingFileHelper));
