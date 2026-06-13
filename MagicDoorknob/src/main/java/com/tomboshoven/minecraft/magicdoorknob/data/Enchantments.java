@@ -28,7 +28,7 @@ public class Enchantments {
                                 new Enchantment(
                                         Component.literal("Double"),
                                         new Enchantment.EnchantmentDefinition(
-                                                bootstrap.registryLookup(Registries.ITEM).orElseThrow().getOrThrow(ItemTags.MAGIC_DOORKNOB),
+                                                bootstrap.lookup(Registries.ITEM).getOrThrow(ItemTags.MAGIC_DOORKNOB),
                                                 Optional.empty(),
                                                 1,
                                                 1,
