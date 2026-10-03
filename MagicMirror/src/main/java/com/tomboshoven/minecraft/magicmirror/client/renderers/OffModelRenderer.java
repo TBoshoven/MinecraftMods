@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.resources.model.cuboid.ItemTransform;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.ItemQuads;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -199,7 +200,9 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
          */
         @SuppressWarnings("InterfaceNeverImplemented")
         interface CopyableLayerRenderState {
-            List<BakedQuad> prepareQuadList();
+            ItemQuads getQuads();
+
+            void setQuads(ItemQuads quads);
 
             boolean getUsesBlockLight();
 
@@ -241,7 +244,7 @@ public class OffModelRenderer<SourceEntity extends Entity, SourceState extends E
              * @param other The item render state layer to copy from.
              */
             default void copyFrom(OffModelRenderer.CopyableItemStackRenderState.CopyableLayerRenderState other) {
-                prepareQuadList().addAll(other.prepareQuadList());
+                setQuads(other.getQuads());
                 setUsesBlockLight(other.getUsesBlockLight());
                 setParticleMaterial(other.getParticleMaterial());
                 setItemTransform(other.getItemTransform());
