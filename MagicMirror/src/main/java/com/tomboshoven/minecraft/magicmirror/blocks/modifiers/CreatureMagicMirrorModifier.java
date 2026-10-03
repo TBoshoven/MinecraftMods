@@ -4,6 +4,7 @@ import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBloc
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.CreatureMagicMirrorBlockEntityModifier;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.ValueInput;
@@ -32,7 +33,7 @@ public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
      */
     public static boolean isSupportedEntityType(EntityType<?> entityType) {
         // Only skeletons are supported for now
-        return entityType == EntityType.SKELETON;
+        return entityType == EntityTypes.SKELETON;
     }
 
     /**
@@ -42,7 +43,7 @@ public class CreatureMagicMirrorModifier extends MagicMirrorModifier {
      * @return The entity type to use when we don't have the required information.
      */
     public static EntityType<?> getDefaultEntityType() {
-        return EntityType.SKELETON;
+        return EntityTypes.SKELETON;
     }
 
     @Override

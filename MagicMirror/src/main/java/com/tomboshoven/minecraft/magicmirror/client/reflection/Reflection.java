@@ -1,6 +1,6 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection;
 
-import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
@@ -9,7 +9,6 @@ import com.tomboshoven.minecraft.magicmirror.client.reflection.modifiers.Reflect
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRenderer;
 import com.tomboshoven.minecraft.magicmirror.client.reflection.renderers.ReflectionRendererBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.item.ItemModelResolver;
@@ -226,26 +225,24 @@ public class Reflection {
 
         if (reflectionTexture != null && reflectionRenderer != null) {
             Minecraft minecraft = Minecraft.getInstance();
-            MultiBufferSource.BufferSource renderTypeBuffer = minecraft.renderBuffers().bufferSource();
+            RenderSystem.setupDefaultState();
+            FeatureRenderDispatcher featureRenderDispatcher = minecraft.gameRenderer.featureRenderDispatcher();
 
             reflectionTexture.clear();
-            RenderTarget oldMainRenderTarget = reflectionTexture.activate();
+            reflectionTexture.activate();
 
             try {
                 reflectionRenderer.setUp();
 
                 CameraRenderState cameraRenderState = new CameraRenderState();
 
-                FeatureRenderDispatcher featureRenderDispatcher = minecraft.gameRenderer.getFeatureRenderDispatcher();
-                SubmitNodeStorage submitNodeStorage = featureRenderDispatcher.getSubmitNodeStorage();
-                reflectionRenderer.submit(angle, submitNodeStorage, cameraRenderState);
-                featureRenderDispatcher.renderAllFeatures();
-
-                renderTypeBuffer.endBatch();
+                SubmitNodeStorage collector = new SubmitNodeStorage();
+                reflectionRenderer.submit(angle, collector, cameraRenderState);
+                featureRenderDispatcher.renderAllFeatures(collector);
 
                 reflectionRenderer.tearDown();
             } finally {
-                reflectionTexture.deactivate(oldMainRenderTarget);
+                reflectionTexture.deactivate();
             }
         }
     }

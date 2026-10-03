@@ -61,7 +61,7 @@ public final class ReflectionManager {
 
     /**
      * Render all reflections that were requested during the previous frame.
-     * We're always one second late like this, but it saves us the trouble of making sure we only render the reflections
+     * We're always one frame late like this, but it saves us the trouble of making sure we only render the reflections
      * in the frustrum.
      */
     @SubscribeEvent

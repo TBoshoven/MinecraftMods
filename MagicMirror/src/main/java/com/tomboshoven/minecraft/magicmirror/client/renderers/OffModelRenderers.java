@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.state.SkeletonRenderState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.monster.skeleton.Skeleton;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.neoforged.bus.api.IEventBus;
@@ -66,10 +67,10 @@ public class OffModelRenderers {
         EntityRenderer<AbstractClientPlayer, AvatarRenderState> playerRenderer = event.getPlayerRenderer(PlayerModelType.WIDE);
 
         if (playerRenderer != null) {
-            EntityRenderer<Skeleton, SkeletonRenderState> skeletonRenderer = event.getRenderer(EntityType.SKELETON);
+            EntityRenderer<Skeleton, SkeletonRenderState> skeletonRenderer = event.getRenderer(EntityTypes.SKELETON);
             if (skeletonRenderer != null) {
                 // Skeleton doesn't have any properties of interest over humanoid
-                putRenderer(EntityType.PLAYER, EntityType.SKELETON, new OffModelRenderer<AbstractClientPlayer, AvatarRenderState, Skeleton, SkeletonRenderState, SkeletonRenderStateHolder<AvatarRenderState>>(playerRenderer, skeletonRenderer, SkeletonRenderStateHolder::new, new HumanoidRendererMapper<>()).create(context));
+                putRenderer(EntityTypes.PLAYER, EntityTypes.SKELETON, new OffModelRenderer<AbstractClientPlayer, AvatarRenderState, Skeleton, SkeletonRenderState, SkeletonRenderStateHolder<AvatarRenderState>>(playerRenderer, skeletonRenderer, SkeletonRenderStateHolder::new, new HumanoidRendererMapper<>()).create(context));
             }
         }
     }

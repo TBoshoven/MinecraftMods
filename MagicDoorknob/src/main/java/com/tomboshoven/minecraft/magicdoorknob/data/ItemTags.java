@@ -26,7 +26,7 @@ final class ItemTags extends ItemTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         // Add all doorknobs to the doorknobs tag
-        tag(MAGIC_DOORKNOB).addAll(Items.DOORKNOBS.values().stream().map(DeferredHolder::get));
+        tag(MAGIC_DOORKNOB).addAll(Items.DOORKNOBS.values().stream().map(DeferredHolder::getKey));
         // Add the doorknobs tag to the tag that allows them to be enchanted with "mining efficiency"
         TagKey<Item> enchantableMining = TagKey.create(Registries.ITEM, Identifier.withDefaultNamespace("enchantable/mining"));
         tag(enchantableMining).addTag(MAGIC_DOORKNOB);

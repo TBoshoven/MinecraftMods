@@ -8,7 +8,7 @@ modId="magic_doorknob"
 version="${file.jarVersion}"
 displayName="Magic Doorknob"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/the-magic-doorknob"
-logoFile="logo.png"
+iconFile="logo.png"
 authors="Tom Boshoven"
 description='''
 A doorknob that does not require a door.
@@ -17,13 +17,13 @@ A doorknob that does not require a door.
 [[dependencies.magic_doorknob]]
 modId="neoforge"
 type="required"
-versionRange="[26.1,)"
+versionRange="[26.2,)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.magic_doorknob]]
 modId="minecraft"
 type="required"
-versionRange="[26.1,26.2)"
+versionRange="[26.2,26.3)"
 ordering="NONE"
 side="BOTH"
