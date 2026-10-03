@@ -120,7 +120,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
             final Material emptySprite = new Material(Identifier.fromNamespaceAndPath(MOD_ID, "block/empty"), true);
 
             // Fallback chain is block texture -> empty
-            MaterialInfoSource fallbackReference = new MaterialInfoSource.MaterialTextureSource(emptySprite, Transparency.TRANSLUCENT, -1, false, 0, true);
+            MaterialInfoSource fallbackReference = new MaterialInfoSource.MaterialTextureSource(emptySprite, Transparency.TRANSLUCENT, -1, null, 0, true);
             MaterialInfoSource particleMaterialInfoSource = new MaterialInfoSource.BlockParticle(clientLevel, blockPos, baseBlockState, fallbackReference);
             MaterialInfoSource blockMaterialInfoSource = new MaterialInfoSource.BlockLookup(clientLevel, blockPos, baseBlockState, fallbackReference);
 
@@ -130,7 +130,7 @@ public abstract class MagicDoorwayPartBaseBlockEntity extends BlockEntity {
                 // This makes it a bit less conspicuous.
                 doorknobMaterialInfoSource = blockMaterialInfoSource;
             } else {
-                doorknobMaterialInfoSource = new MaterialInfoSource.MaterialTextureSource(new Material(doorknob.getMainSpriteId(), false), Transparency.NONE, -1, false, 0, true);
+                doorknobMaterialInfoSource = new MaterialInfoSource.MaterialTextureSource(new Material(doorknob.getMainSpriteId(), false), Transparency.NONE, -1, null, 0, true);
             }
 
             return ModelData.builder()

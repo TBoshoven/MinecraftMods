@@ -2,6 +2,7 @@ package com.tomboshoven.minecraft.magicdoorknob.client.clientextensions;
 
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
@@ -10,7 +11,7 @@ import org.jspecify.annotations.Nullable;
 
 class MagicDoorwayClientBlockExtensions implements IClientBlockExtensions {
     @Override
-    public boolean addHitEffects(BlockState state, Level level, @Nullable HitResult target, ParticleEngine manager) {
+    public boolean addHitEffects(BlockState state, Level level, BlockPos pos, Direction face, ParticleEngine manager) {
         // Just remove all hit particles.
         // While we could make this work, the interface for this is rather awkward and the benefit is small.
         return true;

@@ -1,12 +1,15 @@
 package com.tomboshoven.minecraft.magicdoorknob.client.modelloaders.textured;
 
-import com.tomboshoven.minecraft.magicdoorknob.MagicDoorknobMod;
 import com.tomboshoven.minecraft.magicdoorknob.modeldata.ModelMaterialInfoProperty;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.SpriteLoader;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.sprite.MaterialBaker;
 import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.Nullable;
+
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * A material baker that wraps an existing material baker, but performs property lookups.
@@ -22,8 +25,10 @@ public class TexturedMaterialBaker extends MaterialBaker {
      * @param supportedAtlas    The atlas to use when generating property sprites
      */
     public TexturedMaterialBaker(MaterialBaker baseMaterialBaker, Identifier supportedAtlas) {
-        // Material bakers don't maintain the sprite directly, but we can grab it in this roundabout way
-        super(baseMaterialBaker.replacementForMissingMaterial(new Material(Identifier.fromNamespaceAndPath(MagicDoorknobMod.MOD_ID, "null"))).sprite());
+        // Arbitrary atlas; we don't actually bake materials ourselves, so atlas lookups are only done for the "missing"
+        // texture.
+        SpriteLoader.Preparations atlas = new SpriteLoader.Preparations(0, 0, 0, baseMaterialBaker.get(new Material(MissingTextureAtlasSprite.getLocation()), () -> "missing").sprite(), Map.of(), CompletableFuture.completedFuture(null));
+        super(atlas, atlas);
         this.baseMaterialBaker = baseMaterialBaker;
         this.supportedAtlas = supportedAtlas;
     }
@@ -34,12 +39,6 @@ public class TexturedMaterialBaker extends MaterialBaker {
             return new Material.Baked(new PropertySprite(material.sprite(), supportedAtlas), false);
         }
         return baseMaterialBaker.get(material, debugName);
-    }
-
-    @Override
-    protected Material.@Nullable Baked bake(Material material) {
-        // We don't do any actual baking, we just delegate.
-        return null;
     }
 
     @Override

@@ -6,6 +6,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -18,13 +19,13 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 class LootTables extends LootTableProvider {
-    LootTables(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(BlockLoot::new, LootContextParamSets.BLOCK)), lookupProvider);
+    LootTables() {
+        super(Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(BlockLoot::new, LootContextParamSets.BLOCK)));
     }
 
     private static class BlockLoot extends BlockLootSubProvider {
-        BlockLoot(HolderLookup.Provider lookupProvider) {
-            super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), lookupProvider);
+        BlockLoot(LootTableSubProvider.Context output) {
+            super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), output);
         }
 
         @Override

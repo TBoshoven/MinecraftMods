@@ -91,15 +91,16 @@ public interface MaterialInfoSource {
     /**
      * A direct reference to a material.
      *
-     * @param material         The material to use.
-     * @param transparency     The transparency of the material
-     * @param tintIndex        The tint index of the material (-1 if not applicable)
-     * @param shade            The shade value of the material
-     * @param lightEmission    The light emission of the material
-     * @param ambientOcclusion Whether ambient occlusion applies to the material
+     * @param material               The material to use.
+     * @param transparency           The transparency of the material
+     * @param tintIndex              The tint index of the material (-1 if not applicable)
+     * @param shadeDirectionOverride The shade direction override of the material
+     * @param lightEmission          The light emission of the material
+     * @param ambientOcclusion       Whether ambient occlusion applies to the material
      */
-    record MaterialTextureSource(Material material, Transparency transparency, int tintIndex, boolean shade,
-                                 int lightEmission, boolean ambientOcclusion) implements MaterialInfoSource {
+    record MaterialTextureSource(Material material, Transparency transparency, int tintIndex,
+                                 @Nullable Direction shadeDirectionOverride, int lightEmission,
+                                 boolean ambientOcclusion) implements MaterialInfoSource {
         @Override
         public Material.Baked lookupMaterial(MaterialBaker materialBaker, Direction direction, @Nullable RandomSource randomSource) {
             return materialBaker.get(material, () -> "TextureReference");
@@ -108,7 +109,7 @@ public interface MaterialInfoSource {
         @Override
         public BakedQuad.MaterialInfo lookupMaterialInfo(MaterialBaker materialBaker, Direction direction, @Nullable RandomSource randomSource) {
             Material.Baked baked = lookupMaterial(materialBaker, direction, randomSource);
-            return BakedQuad.MaterialInfo.of(baked, transparency, tintIndex, shade, lightEmission, ambientOcclusion);
+            return BakedQuad.MaterialInfo.of(baked, transparency, tintIndex, shadeDirectionOverride, lightEmission, ambientOcclusion);
         }
     }
 
@@ -155,7 +156,7 @@ public interface MaterialInfoSource {
             }
             Transparency transparency = particleMaterial.forceTranslucent() ? Transparency.TRANSLUCENT : particleMaterial.sprite().transparency();
 
-            return BakedQuad.MaterialInfo.of(particleMaterial, transparency, -1, false, 0, true);
+            return BakedQuad.MaterialInfo.of(particleMaterial, transparency, -1, null, 0, true);
         }
     }
 

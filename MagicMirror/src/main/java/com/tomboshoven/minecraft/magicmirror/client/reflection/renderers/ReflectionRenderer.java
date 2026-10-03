@@ -76,11 +76,11 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
         PoseStack reflectionMatrixStack = new PoseStack();
 
         // Head's up
-        reflectionMatrixStack.mulPose(Axis.XP.rotationDegrees(180));
+        reflectionMatrixStack.rotate(Axis.XP.rotationDegrees(180));
         // Position within the frame
         reflectionMatrixStack.translate(0, -1, 1.5);
         // Face toward the front of the mirror
-        reflectionMatrixStack.mulPose(Axis.YP.rotationDegrees(facing));
+        reflectionMatrixStack.rotate(Axis.YP.rotationDegrees(facing));
 
         statefulRenderer.submit(reflectionMatrixStack, submitNodeCollector, cameraRenderState);
     }

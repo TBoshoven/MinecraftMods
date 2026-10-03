@@ -1,10 +1,9 @@
 package com.tomboshoven.minecraft.magicdoorknob.data;
 
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-
-import java.util.concurrent.CompletableFuture;
 
 public final class DataGenerators {
     private DataGenerators() {
@@ -16,13 +15,11 @@ public final class DataGenerators {
 
     // NeoForge recommend generating all data as part of the client event
     private static void gatherData(GatherDataEvent.Client event) {
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-
-        event.createDatapackRegistryObjects(Enchantments.builder());
+        event.createWorldRegistryObjects(new RegistrySetBuilder().add(Registries.ENCHANTMENT, Enchantments::bootstrap));
+        event.createReloadableRegistryObjects(new RegistrySetBuilder().add(Recipes.asBootstrap(Recipes::new)));
         event.createProvider(EnchantmentTags::new);
         event.createProvider(ItemTags::new);
         event.createProvider(Models::new);
         event.createProvider(Language::new);
-        event.createProvider(output -> new Recipes.Runner(output, lookupProvider));
     }
 }
