@@ -51,7 +51,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         // Re-initialize the projection matrix to keep full control over the perspective
         RenderSystem.backupProjectionMatrix();
         // Aspect is .5 to compensate for the rectangular mirror
-        RenderSystem.setProjectionMatrix(Matrix4f.perspective(90f, .5f, .05f, 50f));
+        RenderSystem.setProjectionMatrix(Matrix4f.orthographic(0, 1, 1, 0, -1000f, 1000f));
     }
 
     @Override
@@ -68,12 +68,11 @@ public class ReflectionRenderer extends ReflectionRendererBase {
 
         PoseStack reflectionMatrixStack = new PoseStack();
 
-        // Head's up
-        reflectionMatrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
         // Position within the frame
-        reflectionMatrixStack.translate(0, -1, 1.5);
+        reflectionMatrixStack.translate(.5, .9, 0);
+        reflectionMatrixStack.scale(-.8f, -.4f, .8f);
         // Face toward the front of the mirror
-        reflectionMatrixStack.mulPose(Vector3f.YP.rotationDegrees(facing));
+        reflectionMatrixStack.mulPose(Vector3f.YP.rotationDegrees(facing + 180));
 
         // The typing of these classes works out a little weird, so instead of complicating things too much, let's go
         // with the unchecked cast.
