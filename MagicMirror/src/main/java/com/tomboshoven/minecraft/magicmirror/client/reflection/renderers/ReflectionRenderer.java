@@ -38,7 +38,7 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
      */
     public ReflectionRenderer(E entity) {
         this.entity = entity;
-        projection.setupPerspective(.05f, 50f, 90, 16, 32);
+        projection.setupOrtho(-1000, 1000, 1, 1, false);
         EntityRenderer<? super E, ?> entityRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity);
         statefulRenderer = new StatefulRenderer<>(entityRenderer);
     }
@@ -75,12 +75,11 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
     public void submit(float facing, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
         PoseStack reflectionMatrixStack = new PoseStack();
 
-        // Head's up
-        reflectionMatrixStack.rotate(Axis.XP.rotationDegrees(180));
         // Position within the frame
-        reflectionMatrixStack.translate(0, -1, 1.5);
+        reflectionMatrixStack.translate(.5, .9, 0);
+        reflectionMatrixStack.scale(-.8f, -.4f, .8f);
         // Face toward the front of the mirror
-        reflectionMatrixStack.rotate(Axis.YP.rotationDegrees(facing));
+        reflectionMatrixStack.rotate(Axis.YP.rotationDegrees(facing + 180));
 
         statefulRenderer.submit(reflectionMatrixStack, submitNodeCollector, cameraRenderState);
     }
