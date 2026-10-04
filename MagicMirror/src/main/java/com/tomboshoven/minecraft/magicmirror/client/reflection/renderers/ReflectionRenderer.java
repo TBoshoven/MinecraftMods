@@ -55,8 +55,7 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         RenderSystem.matrixMode(GL_PROJECTION);
         RenderSystem.pushMatrix();
         RenderSystem.loadIdentity();
-        // Aspect is .5 to compensate for the rectangular mirror
-        RenderSystem.multMatrix(Matrix4f.perspective(90f, .5f, .05f, 50f));
+        RenderSystem.multMatrix(Matrix4f.orthographic(1, 1, -1000, 1000));
         RenderSystem.matrixMode(GL_MODELVIEW);
     }
 
@@ -76,12 +75,11 @@ public class ReflectionRenderer extends ReflectionRendererBase {
 
         MatrixStack reflectionMatrixStack = new MatrixStack();
 
-        // Head's up
-        reflectionMatrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
         // Position within the frame
-        reflectionMatrixStack.translate(0, -1, 1.5);
+        reflectionMatrixStack.translate(.5, .9, 0);
+        reflectionMatrixStack.scale(-.8f, -.4f, .8f);
         // Face toward the front of the mirror
-        reflectionMatrixStack.mulPose(Vector3f.YP.rotationDegrees(facing));
+        reflectionMatrixStack.mulPose(Vector3f.YP.rotationDegrees(facing + 180));
 
         // The typing of these classes works out a little weird, so instead of complicating things too much, let's go
         // with the unchecked cast.
