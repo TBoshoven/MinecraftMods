@@ -53,15 +53,12 @@ public class ReflectionRenderer extends ReflectionRendererBase {
         GlStateManager.matrixMode(GL_PROJECTION);
         GlStateManager.pushMatrix();
         GlStateManager.loadIdentity();
-        // Aspect is .5 to compensate for the rectangular mirror
-        GlStateManager.multMatrix(Matrix4f.perspective(90f, .5f, .05f, 50f));
+        GlStateManager.multMatrix(Matrix4f.orthographic(1, 1, -1000, 1000));
         GlStateManager.matrixMode(GL_MODELVIEW);
 
         GlStateManager.pushMatrix();
 
         GlStateManager.loadIdentity();
-
-        GlStateManager.rotated(180, 1, 0, 0);
 
         // Disable light map
         GlStateManager.activeTexture(GLX.GL_TEXTURE1);
@@ -90,13 +87,15 @@ public class ReflectionRenderer extends ReflectionRendererBase {
 
         GlStateManager.pushMatrix();
 
-        GlStateManager.translated(0, 0, 1.5);
-        GlStateManager.rotatef(facing, 0, 1, 0);
+        // Position within the frame
+        GlStateManager.translatef(.5f, .9f, 0);
+        GlStateManager.scalef(-.8f, -.4f, .8f);
+        GlStateManager.rotatef(facing + 180, 0, 1, 0);
 
         // The typing of these classes works out a little weird, so instead of complicating things too much, let's go
         // with the unchecked cast.
         //noinspection unchecked
-        ((EntityRenderer<Entity>) entityRenderer).render(entity, 0, -1, 0, 0, partialTicks);
+        ((EntityRenderer<Entity>) entityRenderer).render(entity, 0, 0, 0, 0, partialTicks);
 
         GlStateManager.popMatrix();
     }
