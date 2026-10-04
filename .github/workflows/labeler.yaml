@@ -2,7 +2,7 @@ name: Pull Request Labeler
 on:
   pull_request:
     branches:
-    - '26.3'
+    - '26.3.0'
 
 jobs:
   triage:
