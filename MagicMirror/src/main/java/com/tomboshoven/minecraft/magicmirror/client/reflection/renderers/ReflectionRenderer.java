@@ -5,7 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.CachedPerspectiveProjectionMatrixBuffer;
+import net.minecraft.client.renderer.CachedOrthoProjectionMatrixBuffer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -29,7 +29,7 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
     /**
      * The projection matrix to use inside the reflection.
      */
-    private final CachedPerspectiveProjectionMatrixBuffer cachedProjectionMatrixBuffer = new CachedPerspectiveProjectionMatrixBuffer("Reflection", .05f, 50f);
+    private final CachedOrthoProjectionMatrixBuffer cachedProjectionMatrixBuffer = new CachedOrthoProjectionMatrixBuffer("Reflection", -1000f, 1000f, false);
 
     /**
      * @param entity The entity to render.
@@ -54,7 +54,7 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
     public void setUp() {
         // Re-initialize the projection matrix to keep full control over the perspective
         RenderSystem.backupProjectionMatrix();
-        RenderSystem.setProjectionMatrix(cachedProjectionMatrixBuffer.getBuffer(16, 32, 90), ProjectionType.PERSPECTIVE);
+        RenderSystem.setProjectionMatrix(cachedProjectionMatrixBuffer.getBuffer(1, 1), ProjectionType.ORTHOGRAPHIC);
     }
 
     @Override
@@ -72,12 +72,11 @@ public class ReflectionRenderer<E extends Entity> extends ReflectionRendererBase
     public void submit(float facing, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
         PoseStack reflectionMatrixStack = new PoseStack();
 
-        // Head's up
-        reflectionMatrixStack.mulPose(Axis.XP.rotationDegrees(180));
         // Position within the frame
-        reflectionMatrixStack.translate(0, -1, 1.5);
+        reflectionMatrixStack.translate(.5, .9, 0);
+        reflectionMatrixStack.scale(-.8f, -.4f, .8f);
         // Face toward the front of the mirror
-        reflectionMatrixStack.mulPose(Axis.YP.rotationDegrees(facing));
+        reflectionMatrixStack.mulPose(Axis.YP.rotationDegrees(facing + 180));
 
         statefulRenderer.submit(reflectionMatrixStack, submitNodeCollector, cameraRenderState);
     }
