@@ -23,11 +23,6 @@ import static org.lwjgl.opengl.GL11.GL_QUADS;
  * A modifier for a reflection renderer which puts a banner pattern in the background of the reflection.
  */
 public class BannerReflectionRendererModifier extends ReflectionRendererModifier {
-    /**
-     * The distance at which to render the background.
-     */
-    private static final double BACKGROUND_DISTANCE = 16;
-
     // Texture coordinates of the rendered banner in the banner texture
     private static final double BANNER_TEXTURE_START_U = 0, BANNER_TEXTURE_END_U = 22.0 / 64.0;
     private static final double BANNER_TEXTURE_START_V = 0, BANNER_TEXTURE_END_V = 41.0 / 64.0;
@@ -89,10 +84,10 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
             // Draw a simple quad
             // Perspective is 90 degrees, so width should be distance for a perfect fit
             bufferbuilder.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-            bufferbuilder.vertex(-BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).uv(BANNER_TEXTURE_START_U, BANNER_TEXTURE_START_V).endVertex();
-            bufferbuilder.vertex(BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).uv(BANNER_TEXTURE_END_U, BANNER_TEXTURE_START_V).endVertex();
-            bufferbuilder.vertex(BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).uv(BANNER_TEXTURE_END_U, BANNER_TEXTURE_END_V).endVertex();
-            bufferbuilder.vertex(-BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, BACKGROUND_DISTANCE).uv(BANNER_TEXTURE_START_U, BANNER_TEXTURE_END_V).endVertex();
+            bufferbuilder.vertex(0, 0, -16).uv(BANNER_TEXTURE_START_U, BANNER_TEXTURE_START_V).endVertex();
+            bufferbuilder.vertex(1, 0, -16).uv(BANNER_TEXTURE_END_U, BANNER_TEXTURE_START_V).endVertex();
+            bufferbuilder.vertex(1, 1, -16).uv(BANNER_TEXTURE_END_U, BANNER_TEXTURE_END_V).endVertex();
+            bufferbuilder.vertex(0, 1, -16).uv(BANNER_TEXTURE_START_U, BANNER_TEXTURE_END_V).endVertex();
             tessellator.end();
         }
     }
