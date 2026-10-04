@@ -80,7 +80,7 @@ jobs:
             FILE="$(ls /tmp/workspace/libs/*.jar | grep -v sources | head -n 1)"
             # Use the build number on the JAR to prevent confusion.
             ORIGINAL_BUILD_NUM="$(echo "$FILE" | sed -E 's/^.*\.([0-9]+)\.jar$/\1/')"
-            METADATA="$(jq -n '{"changelog": $ARGS.positional[0], "changelogType": "markdown", "displayName": $ARGS.positional[1], "gameVersions": [6756, 7498, 4458], "releaseType": "release"}' --args "$DESCRIPTION" "v$TAG_VERSION.$ORIGINAL_BUILD_NUM")"
+            METADATA="$(jq -n '{"changelog": $ARGS.positional[0], "changelogType": "markdown", "displayName": $ARGS.positional[1], "gameVersions": [6756, 7498, 4458, 9638, 9639], "releaseType": "release"}' --args "$DESCRIPTION" "v$TAG_VERSION.$ORIGINAL_BUILD_NUM")"
             curl -f -XPOST "https://minecraft.curseforge.com/api/projects/$PROJECT_ID/upload-file" -F "file=@$FILE" -F "metadata=$METADATA" -H "X-Api-Token: $CURSEFORGE_TOKEN"
   release-modrinth:
     docker:
