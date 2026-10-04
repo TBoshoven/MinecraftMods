@@ -194,7 +194,6 @@ public class OffModelRenderers {
             super.mapRenderState(sourceState, targetState);
 
             targetState.mainArm = sourceState.mainArm;
-            targetState.attackArm = sourceState.attackArm;
             targetState.rightArmPose = sourceState.rightArmPose;
             if (targetState.rightHandItemState instanceof OffModelRenderer.CopyableItemStackRenderState targetItemStackRenderState) {
                 if (sourceState.rightHandItemState instanceof OffModelRenderer.CopyableItemStackRenderState sourceItemStackRenderState) {
@@ -211,8 +210,8 @@ public class OffModelRenderers {
             }
             targetState.leftHandItemStack = sourceState.leftHandItemStack;
 
-            targetState.swingAnimationType = sourceState.swingAnimationType;
-            targetState.attackTime = sourceState.attackTime;
+            targetState.currentSwing = sourceState.currentSwing;
+            targetState.swingAnimation = sourceState.swingAnimation;
         }
     }
 

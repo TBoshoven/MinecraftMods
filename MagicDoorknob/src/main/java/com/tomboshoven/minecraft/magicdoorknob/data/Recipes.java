@@ -1,30 +1,29 @@
 package com.tomboshoven.minecraft.magicdoorknob.data;
 
 import com.tomboshoven.minecraft.magicdoorknob.items.Items;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.triggers.InventoryChangeTrigger;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.Tags;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import static net.minecraft.world.item.Items.ENDER_PEARL;
 
 final class Recipes extends RecipeProvider {
-    private Recipes(HolderLookup.Provider lookupProvider, RecipeOutput output) {
-        super(lookupProvider, output);
+    public Recipes(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     @Override
@@ -57,21 +56,5 @@ final class Recipes extends RecipeProvider {
                     }
                 }
         );
-    }
-
-    static class Runner extends RecipeProvider.Runner {
-        Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> holderLookupProvider) {
-            super(output, holderLookupProvider);
-        }
-
-        @Override
-        protected RecipeProvider createRecipeProvider(HolderLookup.Provider holderLookupProvider, RecipeOutput output) {
-            return new Recipes(holderLookupProvider, output);
-        }
-
-        @Override
-        public String getName() {
-            return "Magic Doorknob Recipes";
-        }
     }
 }

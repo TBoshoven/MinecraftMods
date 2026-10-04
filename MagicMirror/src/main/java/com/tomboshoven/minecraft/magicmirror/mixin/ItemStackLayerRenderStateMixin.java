@@ -4,6 +4,7 @@ import com.tomboshoven.minecraft.magicmirror.client.renderers.OffModelRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.resources.model.cuboid.ItemTransform;
+import net.minecraft.client.resources.model.geometry.ItemQuads;
 import net.minecraft.client.resources.model.sprite.Material;
 import org.joml.Matrix4f;
 import org.joml.Vector3fc;
@@ -18,6 +19,9 @@ import java.util.function.Supplier;
  */
 @Mixin(ItemStackRenderState.LayerRenderState.class)
 public interface ItemStackLayerRenderStateMixin extends OffModelRenderer.CopyableItemStackRenderState.CopyableLayerRenderState {
+    @Accessor
+    ItemQuads getQuads();
+
     @Accessor
     boolean getUsesBlockLight();
 

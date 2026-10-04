@@ -86,7 +86,7 @@ abstract class BlockEntityMagicMirrorRendererBase<E extends BlockEntity> impleme
         poseStack.translate(.5, .5, .5);
 
         // Draw on top of the model instead of in the center of the block
-        poseStack.mulPose(Axis.YN.rotationDegrees(renderState.facing.toYRot()));
+        poseStack.rotate(Axis.YN.rotationDegrees(renderState.facing.toYRot()));
         poseStack.translate(0, 0, -.4);
 
         boolean top = isTop();

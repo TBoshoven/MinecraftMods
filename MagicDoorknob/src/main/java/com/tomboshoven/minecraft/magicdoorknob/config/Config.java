@@ -32,6 +32,6 @@ public final class Config {
     }
 
     public static void register(ModLoadingContext context) {
-        context.getActiveContainer().registerConfig(ModConfig.Type.SERVER, SERVER_CONFIG);
+        context.getActiveContainer().registerConfig(ModConfig.Type.SYNCED, SERVER_CONFIG);
     }
 }

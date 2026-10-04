@@ -34,8 +34,6 @@ import org.jspecify.annotations.Nullable;
 import static com.tomboshoven.minecraft.magicmirror.blocks.MagicMirrorInactiveBlock.EnumPartType.TOP;
 
 public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
-    private static final MapCodec<MagicMirrorCoreBlock> CODEC = simpleCodec(MagicMirrorCoreBlock::new);
-
     /**
      * Number of ticks between updating who we're reflecting
      */
@@ -46,11 +44,6 @@ public class MagicMirrorCoreBlock extends MagicMirrorActiveBlock {
      */
     MagicMirrorCoreBlock(Block.Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return CODEC;
     }
 
     @Override

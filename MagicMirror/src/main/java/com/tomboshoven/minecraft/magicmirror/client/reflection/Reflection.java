@@ -1,6 +1,7 @@
 package com.tomboshoven.minecraft.magicmirror.client.reflection;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.renderpearl.api.commands.RenderPass;
 import com.tomboshoven.minecraft.magicmirror.MagicMirrorMod;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.MagicMirrorCoreBlockEntity;
 import com.tomboshoven.minecraft.magicmirror.blocks.entities.modifiers.MagicMirrorBlockEntityModifier;
@@ -17,9 +18,12 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
+import org.joml.Vector4f;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Locale;
+import java.util.Optional;
+import java.util.OptionalDouble;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
@@ -228,21 +232,31 @@ public class Reflection {
             RenderSystem.setupDefaultState();
             FeatureRenderDispatcher featureRenderDispatcher = minecraft.gameRenderer.featureRenderDispatcher();
 
-            reflectionTexture.clear();
-            reflectionTexture.activate();
-
+            reflectionRenderer.setUp();
             try {
-                reflectionRenderer.setUp();
-
                 CameraRenderState cameraRenderState = new CameraRenderState();
 
                 SubmitNodeStorage collector = new SubmitNodeStorage();
                 reflectionRenderer.submit(angle, collector, cameraRenderState);
-                featureRenderDispatcher.renderAllFeatures(collector);
 
+                try (
+                        FeatureRenderDispatcher.PreparedFrame frame = featureRenderDispatcher.prepareFrame(collector);
+                        RenderPass pass = RenderSystem.getDevice()
+                                .createCommandEncoder()
+                                .createRenderPass(
+                                        textureIdentifier::getPath,
+                                        reflectionTexture.colorView(),
+                                        Optional.of(new Vector4f(0)),
+                                        reflectionTexture.depthView(),
+                                        OptionalDouble.of(0)
+                                )
+                ) {
+                    RenderSystem.bindDefaultUniforms(pass);
+                    FeatureRenderDispatcher.renderAllFeatures(pass, frame);
+                }
+            }
+            finally {
                 reflectionRenderer.tearDown();
-            } finally {
-                reflectionTexture.deactivate();
             }
         }
     }

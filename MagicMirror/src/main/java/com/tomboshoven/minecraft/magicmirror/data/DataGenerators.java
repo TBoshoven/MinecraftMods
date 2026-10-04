@@ -1,10 +1,9 @@
 package com.tomboshoven.minecraft.magicmirror.data;
 
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-
-import java.util.concurrent.CompletableFuture;
 
 public final class DataGenerators {
     private DataGenerators() {
@@ -16,11 +15,12 @@ public final class DataGenerators {
 
     // NeoForge recommend generating all data as part of the client event
     private static void gatherData(GatherDataEvent.Client event) {
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-
+        event.createReloadableRegistryObjects(
+                new RegistrySetBuilder()
+                        .add(Recipes.asBootstrap(Recipes::new))
+                        .add(Registries.LOOT_TABLE, new LootTables())
+        );
         event.createProvider(Language::new);
         event.createProvider(Models::new);
-        event.createProvider(output -> new LootTables(output, lookupProvider));
-        event.createProvider(output -> new Recipes.Runner(output, lookupProvider));
     }
 }
