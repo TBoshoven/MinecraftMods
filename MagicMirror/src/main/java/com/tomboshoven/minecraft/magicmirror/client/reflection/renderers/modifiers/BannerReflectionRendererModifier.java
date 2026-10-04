@@ -20,11 +20,6 @@ import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 
 public class BannerReflectionRendererModifier<E extends Entity> extends ReflectionRendererModifier<E> {
-    /**
-     * The distance at which to render the background.
-     */
-    private static final float BACKGROUND_DISTANCE = 16;
-
     // Texture coordinates of the rendered banner in the banner texture
     private static final float BANNER_TEXTURE_START_U = 0, BANNER_TEXTURE_END_U = 22f / 64f;
     private static final float BANNER_TEXTURE_START_V = 0, BANNER_TEXTURE_END_V = 41f / 64f;
@@ -70,9 +65,9 @@ public class BannerReflectionRendererModifier<E extends Entity> extends Reflecti
         float startV = sprite.getV(BANNER_TEXTURE_START_V);
         float endU = sprite.getU(BANNER_TEXTURE_END_U);
         float endV = sprite.getV(BANNER_TEXTURE_END_V);
-        vertexConsumer.addVertex(-BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).setColor(rgb).setUv(startU, startV).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
-        vertexConsumer.addVertex(BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).setColor(rgb).setUv(endU, startV).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
-        vertexConsumer.addVertex(BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).setColor(rgb).setUv(endU, endV).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
-        vertexConsumer.addVertex(-BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).setColor(rgb).setUv(startU, endV).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
+        vertexConsumer.addVertex(0, 0, -16).setColor(rgb).setUv(startU, startV).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
+        vertexConsumer.addVertex(1, 0, -16).setColor(rgb).setUv(endU, startV).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
+        vertexConsumer.addVertex(1, 1, -16).setColor(rgb).setUv(endU, endV).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
+        vertexConsumer.addVertex(0, 1, -16).setColor(rgb).setUv(startU, endV).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0x00f000f0).setNormal(0, 0, 1);
     }
 }
