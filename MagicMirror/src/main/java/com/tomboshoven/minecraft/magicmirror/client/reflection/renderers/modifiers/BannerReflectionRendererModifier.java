@@ -18,11 +18,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 public class BannerReflectionRendererModifier extends ReflectionRendererModifier {
-    /**
-     * The distance at which to render the background.
-     */
-    private static final double BACKGROUND_DISTANCE = 16;
-
     // Texture coordinates of the rendered banner in the banner texture
     private static final float BANNER_TEXTURE_START_U = 0, BANNER_TEXTURE_END_U = 22f / 64f;
     private static final float BANNER_TEXTURE_START_V = 0, BANNER_TEXTURE_END_V = 41f / 64f;
@@ -51,10 +46,10 @@ public class BannerReflectionRendererModifier extends ReflectionRendererModifier
 
             // Draw a simple quad
             // Perspective is 90 degrees, so width should be distance for a perfect fit
-            buffer.vertex(-BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).color(rgb[0], rgb[1], rgb[2], 1).uv(BANNER_TEXTURE_START_U, BANNER_TEXTURE_START_V).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0x00f000f0).normal(0, 0, 1).endVertex();
-            buffer.vertex(BACKGROUND_DISTANCE / 2, -BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).color(rgb[0], rgb[1], rgb[2], 1).uv(BANNER_TEXTURE_END_U, BANNER_TEXTURE_START_V).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0x00f000f0).normal(0, 0, 1).endVertex();
-            buffer.vertex(BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).color(rgb[0], rgb[1], rgb[2], 1).uv(BANNER_TEXTURE_END_U, BANNER_TEXTURE_END_V).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0x00f000f0).normal(0, 0, 1).endVertex();
-            buffer.vertex(-BACKGROUND_DISTANCE / 2, BACKGROUND_DISTANCE, -BACKGROUND_DISTANCE).color(rgb[0], rgb[1], rgb[2], 1).uv(BANNER_TEXTURE_START_U, BANNER_TEXTURE_END_V).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0x00f000f0).normal(0, 0, 1).endVertex();
+            buffer.vertex(0, 0, -16).color(rgb[0], rgb[1], rgb[2], 1).uv(BANNER_TEXTURE_START_U, BANNER_TEXTURE_START_V).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0x00f000f0).normal(0, 0, 1).endVertex();
+            buffer.vertex(1, 0, -16).color(rgb[0], rgb[1], rgb[2], 1).uv(BANNER_TEXTURE_END_U, BANNER_TEXTURE_START_V).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0x00f000f0).normal(0, 0, 1).endVertex();
+            buffer.vertex(1, 1, -16).color(rgb[0], rgb[1], rgb[2], 1).uv(BANNER_TEXTURE_END_U, BANNER_TEXTURE_END_V).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0x00f000f0).normal(0, 0, 1).endVertex();
+            buffer.vertex(0, 1, -16).color(rgb[0], rgb[1], rgb[2], 1).uv(BANNER_TEXTURE_START_U, BANNER_TEXTURE_END_V).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0x00f000f0).normal(0, 0, 1).endVertex();
         }
     }
 }
