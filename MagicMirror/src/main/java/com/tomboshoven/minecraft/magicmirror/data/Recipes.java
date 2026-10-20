@@ -3,18 +3,13 @@ package com.tomboshoven.minecraft.magicmirror.data;
 import com.tomboshoven.minecraft.magicmirror.items.Items;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.triggers.InventoryChangeTrigger;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.crafting.Recipe;
 
-import java.util.concurrent.CompletableFuture;
-
 import static net.minecraft.world.item.Items.ENDER_EYE;
-import static net.neoforged.neoforge.common.Tags.Items.GLASS_PANES;
+import static net.neoforged.neoforge.common.Tags.BlockItems.GLASS_PANES;
 import static net.neoforged.neoforge.common.Tags.Items.RODS_WOODEN;
 
 class Recipes extends RecipeProvider {
@@ -30,7 +25,7 @@ class Recipes extends RecipeProvider {
                 .pattern("|#|")
                 .define('|', RODS_WOODEN)
                 .define('e', ENDER_EYE)
-                .define('#', GLASS_PANES)
+                .define('#', GLASS_PANES.item())
                 .group("magic_mirror")
                 .unlockedBy("ender_eye", InventoryChangeTrigger.TriggerInstance.hasItems(ENDER_EYE))
                 .save(output);
